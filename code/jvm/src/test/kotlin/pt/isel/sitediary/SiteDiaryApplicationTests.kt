@@ -9,7 +9,7 @@ class SiteDiaryApplicationTests {
 
 	@Test
 	fun contextLoads() {
-		//assertTrue(true)
+		assertTrue(true)
 	}
 
 }
