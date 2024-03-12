@@ -23,6 +23,9 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	// If using JUnit Jupiter
+	testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.withType<KotlinCompile> {
@@ -31,7 +34,8 @@ tasks.withType<KotlinCompile> {
 		jvmTarget = "17"
 	}
 }
-
+/*
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+*/
