@@ -1,4 +1,4 @@
-# Livro de obra
+# Eletronic Construction Book
 
 With this project we'll be focusing on the development of a platform to support the Electronic Construction Book.
 This platform must be used to replace the traditional Construction Book (on paper), in which all the relevant
