@@ -23,6 +23,9 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
+	implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1")
 	// If using JUnit Jupiter
 	testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
