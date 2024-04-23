@@ -19,6 +19,10 @@ repositories {
 }
 
 dependencies {
+	implementation("org.jdbi:jdbi3-core:3.32.0")
+	implementation("org.jdbi:jdbi3-kotlin:3.28.0")
+	implementation("org.jdbi:jdbi3-postgres:3.32.0")
+	implementation("org.postgresql:postgresql:42.5.0")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -37,8 +41,7 @@ tasks.withType<KotlinCompile> {
 		jvmTarget = "17"
 	}
 }
-/*
+
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
-*/

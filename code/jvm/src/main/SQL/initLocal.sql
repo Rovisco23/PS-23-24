@@ -1,0 +1,1 @@
+--insert das freguesias concelhos e distritos respetivos

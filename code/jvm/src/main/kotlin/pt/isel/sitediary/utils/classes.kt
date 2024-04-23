@@ -1,4 +1,4 @@
-package pt.isel.sitediary
+package pt.isel.sitediary.utils
 
 import java.security.MessageDigest
 import java.util.*
@@ -38,23 +38,23 @@ data class Member(
 data class User(
     val id: Int,
     // profile_picture
-    val name: String,
+    val username: String,
     val email: String,
-    val phone: String,
+    val phone: String?,
     val role: String,
     val location: Location
 )
 
 data class AuthenticatedUser(
-        val user: User,
-        val token: String
+    val user: User,
+    val token: String
 )
 
 class Token(
-        val tokenValidationInfo: TokenValidationInfo,
-        val userId: Int,
-        val createdAt: Instant,
-        val lastUsedAt: Instant
+    val tokenValidationInfo: TokenValidationInfo,
+    val userId: Int,
+    val createdAt: Instant,
+    val lastUsedAt: Instant
 )
 
 data class TokenExternalInfo(
@@ -104,8 +104,8 @@ data class UsersDomainConfig(
 @Component
 class UsersDomain(
         //private val passwordEncoder: PasswordEncoder,
-        private val tokenEncoder: TokenEncoder,
-        private val config: UsersDomainConfig
+    private val tokenEncoder: TokenEncoder,
+    private val config: UsersDomainConfig
 ) {
 
         fun generateTokenValue(): String =

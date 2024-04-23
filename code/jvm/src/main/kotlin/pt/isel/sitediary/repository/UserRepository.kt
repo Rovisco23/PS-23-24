@@ -1,0 +1,23 @@
+package pt.isel.sitediary.repository
+
+
+import pt.isel.sitediary.utils.Location
+import pt.isel.sitediary.utils.User
+
+interface UserRepository {
+    fun createUser(
+        email: String,
+        role: String,
+        username: String,
+        password: String,
+        firstName: String,
+        lastName: String,
+        phone: String?,
+        location: Location
+    ) : Int
+    fun getUser(id: Int) : User?
+    fun getUserByUsername(username: String) : User?
+    fun updatePhoneNumber(id: Int, number : String)
+    fun checkUsernameTaken(username: String): Boolean
+    fun checkEmailInUse(email: String): Boolean
+}
