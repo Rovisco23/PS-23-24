@@ -5,6 +5,7 @@ import pt.isel.sitediary.repository.transaction.TransactionManager
 import pt.isel.sitediary.utils.*
 
 typealias UserCreationResult = Result<Errors, User>
+typealias LoginResult = Result<Errors, Int>
 
 @Component
 class UserService(
@@ -34,6 +35,20 @@ class UserService(
             val location = Location("Fixolândia", "Fixoconcelho", parish)
             val id = rep.createUser(email, role, username, password, firstName, lastName, phone, location)
             success(User(id, username, email, phone, role, location))
+        }
+    }
+
+    fun login(user: String, password: String) : LoginResult {
+        if (user.isBlank() || password.isBlank()) {
+            failure(Errors.invalidLoginParamCombination)
+        }
+        return transactionManager.run {
+            val u = it.usersRepository.login(user, password)
+            if (u == null) {
+                failure(Errors.invalidLoginParamCombination)
+            } else {
+                success(u)
+            }
         }
     }
 

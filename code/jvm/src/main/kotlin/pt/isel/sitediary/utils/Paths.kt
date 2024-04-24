@@ -6,7 +6,9 @@ object Paths {
 
     object User {
         const val SIGN_UP = "$PREFIX/signup"
-        const val GET_USER = "$PREFIX/users/{id}"
+        const val LOGIN = "$PREFIX/login"
+        const val GET_USER_ID = "$PREFIX/users/{id}"
+        const val GET_USER_USERNAME = "$PREFIX/users"
     }
 
 }

@@ -2,6 +2,7 @@ package pt.isel.sitediary.repository.jdbi
 
 
 import org.jdbi.v3.core.Handle
+import pt.isel.sitediary.model.GetUserModel
 import pt.isel.sitediary.utils.Location
 import pt.isel.sitediary.utils.User
 import pt.isel.sitediary.repository.UserRepository
@@ -34,15 +35,27 @@ class JdbiUser(private val handle: Handle): UserRepository {
     .mapTo(Int::class.java)
     .one()
 
-    override fun getUser(id: Int): User? = handle.createQuery("select * from UTILIZADOR where id = :id ")
-        .bind("id", id)
-        .mapTo(User::class.java)
+    override fun login(user: String, password: String): Int? = handle.createQuery(
+        "select id from UTILIZADOR where (username = :username or email = :email) and password = :password"
+    )
+        .bind("username", user)
+        .bind("email", user)
+        .bind("password", password)
+        .mapTo(Int::class.java)
         .singleOrNull()
 
-    override fun getUserByUsername(username: String): User? =
+
+    override fun getUser(id: Int): GetUserModel? = handle.createQuery(
+        "select id, username, email, telefone, role, freguesia, concelho, distrito from UTILIZADOR where id = :id "
+    )
+        .bind("id", id)
+        .mapTo(GetUserModel::class.java)
+        .singleOrNull()
+
+    override fun getUserByUsername(username: String): GetUserModel? =
         handle.createQuery("select * from UTILIZADOR where username = :username")
         .bind("username", username)
-        .mapTo(User::class.java)
+        .mapTo(GetUserModel::class.java)
         .singleOrNull()
 
     override fun updatePhoneNumber(id: Int, number: String) {

@@ -27,7 +27,7 @@ class Errors(val status: Int, val reason: String) {
 
         val internalError = Errors(500, "Internal Server Error. Please try again later.")
 
-        val userOrPasswordAreInvalid = Errors(400, "User or password are invalid.")
+        val invalidLoginParamCombination = Errors(400, "User or password are invalid.")
 
         val invalidPassword = Errors(
             400,
