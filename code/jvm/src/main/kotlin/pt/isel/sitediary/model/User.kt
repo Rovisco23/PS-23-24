@@ -26,3 +26,5 @@ data class GetUserModel(
     val role: String,
     val location: Location
 )
+
+data class TokenOutputModel(val userId: Int, val username: String, val token: String)

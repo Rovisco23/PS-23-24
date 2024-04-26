@@ -29,6 +29,8 @@ class Errors(val status: Int, val reason: String) {
 
         val invalidLoginParamCombination = Errors(400, "User or password are invalid.")
 
+        val noUserLoggedIn = Errors(401, "No user is logged in.")
+
         val invalidPassword = Errors(
             400,
             "Invalid Password.\nPassword must have at least 8 digits, one uppercase letter, one number and a symbol."

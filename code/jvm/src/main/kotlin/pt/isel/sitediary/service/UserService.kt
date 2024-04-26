@@ -1,15 +1,19 @@
 package pt.isel.sitediary.service
 
+import kotlinx.datetime.Clock
 import org.springframework.stereotype.Component
 import pt.isel.sitediary.repository.transaction.TransactionManager
 import pt.isel.sitediary.utils.*
 
 typealias UserCreationResult = Result<Errors, User>
-typealias LoginResult = Result<Errors, Int>
+typealias LoginResult = Result<Errors, TokenExternalInfo>
+typealias LogoutResult = Result<Errors, String>
 
 @Component
 class UserService(
-    private val transactionManager: TransactionManager
+    private val transactionManager: TransactionManager,
+    private val usersDomain: UsersDomain,
+    private val clock: Clock
 ) {
     fun createUser(
         email: String,
@@ -43,11 +47,47 @@ class UserService(
             failure(Errors.invalidLoginParamCombination)
         }
         return transactionManager.run {
-            val u = it.usersRepository.login(user, password)
-            if (u == null) {
+            val uRep = it.usersRepository
+            val tRep = it.tokenRepository
+            val userId = uRep.login(user, password)
+            if (userId == null) {
                 failure(Errors.invalidLoginParamCombination)
             } else {
-                success(u)
+                val tokenValue = usersDomain.generateTokenValue()
+                val now = clock.now()
+                val newToken = Token(
+                    tokenValidationInfo = usersDomain.createTokenValidationInformation(tokenValue),
+                    userId = userId,
+                    createdAt = now,
+                    lastUsedAt = now
+                )
+                tRep.createToken(newToken, usersDomain.maxNumberOfTokensPerUser)
+                val username = uRep.getUser(userId)
+                if (username == null) {
+                    failure(Errors.userNotFound)
+                } else {
+                    success(
+                        TokenExternalInfo(
+                            tokenValue = tokenValue,
+                            userId = userId,
+                            username = username.username,
+                            tokenExpiration = usersDomain.getTokenExpiration(newToken)
+                        )
+                    )
+                }
+
+            }
+        }
+    }
+
+    fun logout(token: String): LogoutResult {
+        val tokenValidationInfo = usersDomain.createTokenValidationInformation(token)
+        return transactionManager.run {
+            val out = it.tokenRepository.deleteToken(tokenValidationInfo)
+            if (!out) {
+                failure(Errors.internalError)
+            } else {
+                success("Logout successful")
             }
         }
     }
