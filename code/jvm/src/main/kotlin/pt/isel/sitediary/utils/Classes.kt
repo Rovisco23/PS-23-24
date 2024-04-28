@@ -28,6 +28,13 @@ data class Location(
     val parish: String,
 )
 
+data class Tecnitian(
+    val name: String,
+    val role: String,
+    val association: String,
+    val associationNum: Int
+)
+
 data class Member(
     val id: Int,
     val name: String,

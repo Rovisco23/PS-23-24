@@ -1,6 +1,8 @@
 drop table if exists TECNICOS;
 drop table if exists TERMO_FECHO;
 drop table if exists TERMO_ABERTURA;
+drop table if exists EMPRESA_CONSTRUCAO;
+drop table if exists CAMARA_MUNICIPAL;
 drop table if exists DOCUMENTOS;
 drop table if exists IMAGENS;
 drop table if exists REGISTO;
@@ -8,7 +10,6 @@ drop table if exists MEMBROS;
 drop table if exists OBRA;
 drop table if exists SESSAO;
 drop table if exists UTILIZADOR;
-drop table if exists LOCALIDADES;
 
 create table UTILIZADOR (
                             id serial,
@@ -56,17 +57,17 @@ create table OBRA (
 );
 
 create table MEMBROS (
-                          uId integer,
-                          oId varchar(50),
-                          role varchar(255),
-                          primary key (uId, oId),
-                          constraint UserId foreign key (uId) references UTILIZADOR(id),
-                          constraint ObraId foreign key (oId) references OBRA(id)
+                         uId integer,
+                         oId varchar(255),
+                         role varchar(255),
+                         primary key (uId, oId),
+                         constraint UserId foreign key (uId) references UTILIZADOR(id),
+                         constraint ObraId foreign key (oId) references OBRA(id)
 );
 
 create table REGISTO (
                          id serial,
-                         oId varchar(50),
+                         oId varchar(255),
                          texto varchar(2500),
                          estado varchar(50),
                          creation_date timestamp,
@@ -79,18 +80,19 @@ create table REGISTO (
 
 create table IMAGENS (
                          id serial,
-                         oId varchar(50),
+                         oId varchar(255),
                          rId integer,
                          name varchar(255),
                          upload_date date,
-                         imagem bytea,
+                         content bytea,
+                         compressed_content bytea,
                          primary key (id, oId, rId),
                          constraint RegistoId foreign key (rId, oId) references REGISTO(id, oId)
 );
 
 create table DOCUMENTOS (
                             id serial,
-                            oId varchar(50),
+                            oId varchar(255),
                             rId integer,
                             name varchar(255),
                             upload_date date,
@@ -99,36 +101,53 @@ create table DOCUMENTOS (
                             constraint RegistoId foreign key (rId, oId) references REGISTO(id, oId)
 );
 
+create table EMPRESA_CONSTRUCAO (
+                                    id serial,
+                                    nome varchar(255),
+                                    numero integer,
+                                    primary key (id)
+);
+
+create table CAMARA_MUNICIPAL (
+                                  id serial,
+                                  nome varchar(255),
+                                  freguesia varchar(255),
+                                  conselho varchar(255),
+                                  distrito varchar(255),
+                                  primary key (id)
+);
+
 create table TERMO_ABERTURA (
                                 id serial,
-                                oId varchar(50),
+                                oId varchar(255),
                                 inicio timestamp,
-                                camara varchar(255),
+                                camara integer,
                                 titular_licença varchar(255),
-                                construção varchar(255),
-                                diretor varchar(255),
-                                predio varchar(255),
+                                empresa_construção integer,
+                                predio varchar(255), -- Nova tabela?
                                 primary key (id, oId),
-                                constraint ObraId foreign key (oId) references OBRA(id)
-
+                                constraint ObraId foreign key (oId) references OBRA(id),
+                                constraint EmpresaId foreign key (empresa_construção) references EMPRESA_CONSTRUCAO(id),
+                                constraint CamaraId foreign key (camara) references CAMARA_MUNICIPAL(id)
 );
 
 create table TECNICOS (
-                         tId integer,
-                         oId varchar(50),
-                         id integer,
-                         nome varchar(50),
-                         tipo varchar(50),
-                         associacao varchar(255),
-                         numero integer,
-                         primary key (id, tId, oId),
-                         constraint ObraId foreign key (oId) references OBRA(id),
-                         constraint TermoId foreign key (tId, oId) references TERMO_ABERTURA(id, oId)
+                          id serial,
+                          tId integer,
+                          oId varchar(255),
+                          nome varchar(50),
+                          tipo varchar(50),
+                          associacao varchar(255),
+                          numero integer,
+                          primary key (id, tId, oId),
+                          constraint ObraId foreign key (oId) references OBRA(id),
+                          constraint TermoId foreign key (tId, oId) references TERMO_ABERTURA(id, oId),
+                          constraint Tipo CHECK (tipo IN ('FISCALIZAÇÃO','COORDENADOR','ARQUITETURA','ESTABILIDADE','ELETRICIDADE','GÁS','CANALIZAÇÃO','TELECOMUNICAÇÕES','TERMICO','ACUSTICO','TRANSPORTES','DIRETOR'))
 );
 
 create table TERMO_FECHO (
                              id serial,
-                             oId varchar(50),
+                             oId varchar(255),
                              procedimento varchar(255),
                              numero integer,
                              inicio timestamp,
@@ -139,11 +158,4 @@ create table TERMO_FECHO (
                              primary key (id, oId),
                              constraint ObraId foreign key (oId) references OBRA(id),
                              constraint TermoAberturaId foreign key (abertura, oId) references TERMO_ABERTURA(id, oId)
-);
-
-create table LOCALIDADES (
-                            id serial,
-                            freguesia varchar(255),
-                            concelho varchar (255),
-                            distrito varchar (50)
 );
