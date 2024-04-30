@@ -1,8 +1,8 @@
 package pt.isel.sitediary.repository
 
 import kotlinx.datetime.Instant
-import pt.isel.sitediary.utils.Token
-import pt.isel.sitediary.utils.TokenValidationInfo
+import pt.isel.sitediary.domainmodel.authentication.Token
+import pt.isel.sitediary.domainmodel.authentication.TokenValidationInfo
 
 interface TokenRepository {
     fun createToken(token: Token, maxTokens: Int)

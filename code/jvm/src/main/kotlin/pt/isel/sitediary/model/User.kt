@@ -1,6 +1,7 @@
 package pt.isel.sitediary.model
 
-import pt.isel.sitediary.utils.Location
+import pt.isel.sitediary.domainmodel.work.Location
+
 
 data class SignUpInputModel(
     val email: String,
@@ -33,6 +34,8 @@ data class GetUserModel(
     val username: String,
     val email: String,
     val phone: String?,
+    val firstName: String,
+    val lastName: String,
     val role: String,
     val location: Location
 )

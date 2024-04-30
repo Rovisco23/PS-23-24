@@ -1,10 +1,13 @@
 package pt.isel.sitediary.repository.jdbi
 
 
+import kotlinx.datetime.Instant
 import org.jdbi.v3.core.Handle
+import pt.isel.sitediary.domainmodel.authentication.Token
+import pt.isel.sitediary.domainmodel.authentication.TokenValidationInfo
+import pt.isel.sitediary.domainmodel.user.User
+import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.model.GetUserModel
-import pt.isel.sitediary.utils.Location
-import pt.isel.sitediary.utils.User
 import pt.isel.sitediary.repository.UserRepository
 
 class JdbiUser(private val handle: Handle): UserRepository {
@@ -46,7 +49,7 @@ class JdbiUser(private val handle: Handle): UserRepository {
 
 
     override fun getUser(id: Int): GetUserModel? = handle.createQuery(
-        "select id, username, email, telefone, role, freguesia, concelho, distrito from UTILIZADOR where id = :id "
+        "select * from UTILIZADOR where id = :id "
     )
         .bind("id", id)
         .mapTo(GetUserModel::class.java)
@@ -58,13 +61,6 @@ class JdbiUser(private val handle: Handle): UserRepository {
         .mapTo(GetUserModel::class.java)
         .singleOrNull()
 
-    override fun getFullUser(id: Int): User? = handle.createQuery(
-        "select * from UTILIZADOR where id = :id"
-    )
-        .bind("id", id)
-        .mapTo(User::class.java)
-        .singleOrNull()
-
     override fun updatePhoneNumber(id: Int, number: String) {
         handle.createUpdate("update UTILIZADOR set telefone = :phone where id = :id")
             .bind("phone", number)
@@ -72,17 +68,64 @@ class JdbiUser(private val handle: Handle): UserRepository {
             .execute()
     }
 
-    override fun checkUsernameTaken(username: String): Boolean = handle.createQuery(
-       "select count(*) from UTILIZADOR where username = :username"
-    )
-        .bind("username", username)
-        .mapTo(Int::class.java)
-        .single() == 1
-
     override fun checkEmailInUse(email: String): Boolean = handle.createQuery(
         "select count(*) from UTILIZADOR where email = :email"
     )
         .bind("email", email)
         .mapTo(Int::class.java)
         .single() == 1
+
+    override fun checkUsernameTaken(username: String): Int? = handle.createQuery(
+        "select id from UTILIZADOR where username = :username"
+    )
+        .bind("username", username)
+        .mapTo(Int::class.java)
+        .singleOrNull()
+
+    override fun editProfile(user: GetUserModel) {
+        handle.createUpdate(
+            "update utilizador set username = :username, telemovel = :phone, nome = :firstName, apelido = :lastName, " +
+                    "freguesia = :parish, concelho = :county, distrito = :district where id = :id"
+        )
+            .bind("username", user.username)
+            .bind("phone", user.phone)
+            .bind("firstName", user.firstName)
+            .bind("lastName", user.lastName)
+            .bind("parish", user.location.parish)
+            .bind("county", user.location.county)
+            .bind("district", user.location.district)
+            .bind("id", user.id)
+            .execute()
+    }
+
+    override fun getUserByToken(token: TokenValidationInfo): Pair<User, Token>? = handle.createQuery(
+        "select id, username, email, password, token_validation, created_at, last_used_at from users " +
+                "inner join tokens  on users.id = tokens.user_id where token_validation = :validation_information"
+    )
+        .bind("validation_information", token.validationInfo)
+        .mapTo(UserAndTokenModel::class.java)
+        .singleOrNull()?.userAndToken // TODO("REFAZER QUERY")
+
+    private data class UserAndTokenModel(
+        val id: Int,
+        val username: String,
+        val email: String,
+        val phone: String?,
+        val role: String,
+        val location: Location,
+        val tokenValidation: TokenValidationInfo,
+        val createdAt: Long,
+        val lastUsedAt: Long
+    ) {
+        val userAndToken: Pair<User, Token>
+            get() = Pair(
+                User(id, username, email, phone, role, location),
+                Token(
+                    tokenValidation,
+                    id,
+                    Instant.fromEpochSeconds(createdAt),
+                    Instant.fromEpochSeconds(lastUsedAt)
+                )
+            )
+    }
 }

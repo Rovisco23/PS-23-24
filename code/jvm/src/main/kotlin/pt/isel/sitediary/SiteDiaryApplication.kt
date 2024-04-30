@@ -6,8 +6,8 @@ import org.postgresql.ds.PGSimpleDataSource
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
-import pt.isel.sitediary.utils.Sha256TokenEncoder
-import pt.isel.sitediary.utils.UsersDomainConfig
+import pt.isel.sitediary.domainmodel.authentication.Sha256TokenEncoder
+import pt.isel.sitediary.domainmodel.authentication.UsersDomainConfig
 import pt.isel.sitediary.utils.configureWithAppRequirements
 import kotlin.time.Duration.Companion.hours
 

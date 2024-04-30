@@ -6,12 +6,12 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
 import pt.isel.sitediary.model.EditProfileInputModel
 import pt.isel.sitediary.model.LoginInputModel
 import pt.isel.sitediary.model.SignUpInputModel
 import pt.isel.sitediary.model.TokenOutputModel
 import pt.isel.sitediary.service.UserService
-import pt.isel.sitediary.utils.AuthenticatedUser
 import pt.isel.sitediary.utils.Paths
 import pt.isel.sitediary.utils.handleResponse
 

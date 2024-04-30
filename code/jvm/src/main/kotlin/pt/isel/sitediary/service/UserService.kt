@@ -2,12 +2,19 @@ package pt.isel.sitediary.service
 
 import kotlinx.datetime.Clock
 import org.springframework.stereotype.Component
+import pt.isel.sitediary.domainmodel.authentication.Token
+import pt.isel.sitediary.domainmodel.authentication.TokenExternalInfo
+import pt.isel.sitediary.domainmodel.authentication.UsersDomain
+import pt.isel.sitediary.domainmodel.user.User
+import pt.isel.sitediary.domainmodel.work.Location
+import pt.isel.sitediary.model.GetUserModel
 import pt.isel.sitediary.repository.transaction.TransactionManager
 import pt.isel.sitediary.utils.*
 
 typealias UserCreationResult = Result<Errors, User>
 typealias LoginResult = Result<Errors, TokenExternalInfo>
 typealias LogoutResult = Result<Errors, String>
+typealias UserEditResult = Result<Errors, GetUserModel>
 
 @Component
 class UserService(
@@ -28,7 +35,7 @@ class UserService(
     ): UserCreationResult = transactionManager.run {
         val rep = it.usersRepository
 
-        if (rep.checkUsernameTaken(username)) {
+        if (rep.checkUsernameTaken(username) != null) {
             failure(Errors.usernameAlreadyInUse)
         } else if (rep.checkEmailInUse(email)) {
             failure(Errors.emailAlreadyInUse)
@@ -98,6 +105,24 @@ class UserService(
         }
     }
 
+    fun getUserByToken(token: String): User? {
+        if (!usersDomain.canBeToken(token)) {
+            return null
+        }
+        return transactionManager.run {
+            val usersRepository = it.usersRepository
+            val tokensRepository = it.tokenRepository
+            val tokenValidationInfo = usersDomain.createTokenValidationInformation(token)
+            val userAndToken = usersRepository.getUserByToken(tokenValidationInfo)
+            if (userAndToken != null && usersDomain.isTokenTimeValid(clock, userAndToken.second)) {
+                tokensRepository.updateLastUsedToken(userAndToken.second, clock.now())
+                userAndToken.first
+            } else {
+                null
+            }
+        }
+    }
+
     fun editProfile(
         userId: Int,
         username: String?,
@@ -106,11 +131,17 @@ class UserService(
         phone: String?,
         parish: String?,
         county: String?
-    ) {
-        transactionManager.run {
-            val user = it.usersRepository.getUser(userId)
+    ): UserEditResult = transactionManager.run {
+            val rep = it.usersRepository
+            val user = rep.getUser(userId)
             if (user == null) {
                 failure(Errors.userNotFound)
+            } else if (username != null && rep.checkUsernameTaken(username) == userId){
+                failure(Errors.usernameAlreadyInUse)
+            } else if (!checkPhoneNumberFormat(phone)) {
+                failure(Errors.invalidPhoneNumber)
+            } else if (parish != null && county != null && it.addressRepository.getLocation(parish, county) == null) {
+                failure(Errors.invalidLocation)
             } else {
                 val location = it.addressRepository.getLocation(parish ?: user.location.parish, county ?: user.location.county)
                 if (location == null) {
@@ -123,13 +154,11 @@ class UserService(
                         phone = phone ?: user.phone,
                         location = Location(location.district, location.county, location.parish)
                     )
-                    it.usersRepository.updateUser(updatedUser)
+                    rep.editProfile(updatedUser)
                     success(updatedUser)
                 }
             }
         }
-
-    }
 
     fun getUserById(id: Int) = transactionManager.run {
         val user = it.usersRepository.getUser(id)

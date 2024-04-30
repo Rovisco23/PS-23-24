@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
+import pt.isel.sitediary.domainmodel.user.Technician
 import pt.isel.sitediary.service.WorkService
-import pt.isel.sitediary.utils.AuthenticatedUser
 import pt.isel.sitediary.utils.Paths
-import pt.isel.sitediary.utils.Tecnitian
 import pt.isel.sitediary.utils.handleResponse
 import java.util.*
 

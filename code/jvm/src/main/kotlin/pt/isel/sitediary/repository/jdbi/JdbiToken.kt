@@ -2,9 +2,10 @@ package pt.isel.sitediary.repository.jdbi
 
 import org.jdbi.v3.core.Handle
 import pt.isel.sitediary.repository.TokenRepository
-import pt.isel.sitediary.utils.Token
 import kotlinx.datetime.Instant
-import pt.isel.sitediary.utils.TokenValidationInfo
+import pt.isel.sitediary.domainmodel.authentication.Token
+import pt.isel.sitediary.domainmodel.authentication.TokenValidationInfo
+import pt.isel.sitediary.domainmodel.user.User
 
 class JdbiToken(private val handle: Handle) : TokenRepository {
     override fun createToken(token: Token, maxTokens: Int) {
@@ -43,5 +44,4 @@ class JdbiToken(private val handle: Handle) : TokenRepository {
     )
         .bind("token_validation", token.validationInfo)
         .execute() == 0
-
 }

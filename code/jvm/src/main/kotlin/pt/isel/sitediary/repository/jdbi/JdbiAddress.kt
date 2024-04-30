@@ -4,7 +4,6 @@ import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.kotlin.mapTo
 import pt.isel.sitediary.model.LocationModel
 import pt.isel.sitediary.repository.AddressRepository
-import pt.isel.sitediary.utils.Location
 
 class JdbiAddress (private val handle: Handle): AddressRepository {
     override fun getLocation(parish: String, county: String): LocationModel? = handle.createQuery(

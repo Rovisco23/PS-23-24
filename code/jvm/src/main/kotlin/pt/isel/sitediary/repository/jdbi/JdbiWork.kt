@@ -1,8 +1,8 @@
 package pt.isel.sitediary.repository.jdbi
 
 import org.jdbi.v3.core.Handle
+import pt.isel.sitediary.domainmodel.work.Work
 import pt.isel.sitediary.repository.WorkRepository
-import pt.isel.sitediary.utils.Work
 import java.util.*
 
 class JdbiWork (private val handle: Handle): WorkRepository {
