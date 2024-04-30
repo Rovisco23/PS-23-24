@@ -6,10 +6,12 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import pt.isel.sitediary.model.EditProfileInputModel
 import pt.isel.sitediary.model.LoginInputModel
 import pt.isel.sitediary.model.SignUpInputModel
 import pt.isel.sitediary.model.TokenOutputModel
 import pt.isel.sitediary.service.UserService
+import pt.isel.sitediary.utils.AuthenticatedUser
 import pt.isel.sitediary.utils.Paths
 import pt.isel.sitediary.utils.handleResponse
 
@@ -26,7 +28,8 @@ class UserController (private val service: UserService) {
             user.firstName,
             user.lastName,
             user.phone,
-            user.parish
+            user.parish,
+            user.county
         )
         return handleResponse(res){
             ResponseEntity.status(201).body(it)
@@ -102,6 +105,23 @@ class UserController (private val service: UserService) {
     @GetMapping(Paths.User.GET_USER_USERNAME)
     fun getUserByUsername(@RequestParam username: String): ResponseEntity<*> {
         val res = service.getUserByUsername(username)
+        return handleResponse(res){
+            ResponseEntity.status(200).body(it)
+        }
+    }
+
+    @PutMapping(Paths.User.GET_USER_ID)
+    fun editProfile(@RequestBody u: EditProfileInputModel, user: AuthenticatedUser): ResponseEntity<*> {
+        val res = service.editProfile(
+            userId = user.user.id,
+            //user.img,
+            username = u.username,
+            firstName = u.firstName,
+            lastName = u.lastName,
+            phone = u.phone,
+            parish = u.parish,
+            county = u.county
+        )
         return handleResponse(res){
             ResponseEntity.status(200).body(it)
         }

@@ -23,9 +23,11 @@ class UserService(
         firstName: String,
         lastName: String,
         phone: String?,
-        parish: String
+        parish: String,
+        county: String
     ): UserCreationResult = transactionManager.run {
         val rep = it.usersRepository
+
         if (rep.checkUsernameTaken(username)) {
             failure(Errors.usernameAlreadyInUse)
         } else if (rep.checkEmailInUse(email)) {
@@ -35,14 +37,18 @@ class UserService(
         } else if (!checkPhoneNumberFormat(phone)) {
             failure(Errors.invalidPhoneNumber)
         } else {
-            //verificação da Location futuramente
-            val location = Location("Fixolândia", "Fixoconcelho", parish)
-            val id = rep.createUser(email, role, username, password, firstName, lastName, phone, location)
-            success(User(id, username, email, phone, role, location))
+            val l = it.addressRepository.getLocation(parish, county)
+            if (l == null) {
+                failure(Errors.invalidLocation)
+            } else {
+                val location = Location(l.district, l.county, l.parish)
+                val id = rep.createUser(email, role, username, password, firstName, lastName, phone, location)
+                success(User(id, username, email, phone, role, location))
+            }
         }
     }
 
-    fun login(user: String, password: String) : LoginResult {
+    fun login(user: String, password: String): LoginResult {
         if (user.isBlank() || password.isBlank()) {
             failure(Errors.invalidLoginParamCombination)
         }
@@ -90,6 +96,39 @@ class UserService(
                 success("Logout successful")
             }
         }
+    }
+
+    fun editProfile(
+        userId: Int,
+        username: String?,
+        firstName: String?,
+        lastName: String?,
+        phone: String?,
+        parish: String?,
+        county: String?
+    ) {
+        transactionManager.run {
+            val user = it.usersRepository.getUser(userId)
+            if (user == null) {
+                failure(Errors.userNotFound)
+            } else {
+                val location = it.addressRepository.getLocation(parish ?: user.location.parish, county ?: user.location.county)
+                if (location == null) {
+                    failure(Errors.invalidLocation)
+                } else {
+                    val updatedUser = user.copy(
+                        username = username ?: user.username,
+                        firstName = firstName ?: user.firstName,
+                        lastName = lastName ?: user.lastName,
+                        phone = phone ?: user.phone,
+                        location = Location(location.district, location.county, location.parish)
+                    )
+                    it.usersRepository.updateUser(updatedUser)
+                    success(updatedUser)
+                }
+            }
+        }
+
     }
 
     fun getUserById(id: Int) = transactionManager.run {

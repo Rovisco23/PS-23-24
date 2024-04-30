@@ -58,6 +58,13 @@ class JdbiUser(private val handle: Handle): UserRepository {
         .mapTo(GetUserModel::class.java)
         .singleOrNull()
 
+    override fun getFullUser(id: Int): User? = handle.createQuery(
+        "select * from UTILIZADOR where id = :id"
+    )
+        .bind("id", id)
+        .mapTo(User::class.java)
+        .singleOrNull()
+
     override fun updatePhoneNumber(id: Int, number: String) {
         handle.createUpdate("update UTILIZADOR set telefone = :phone where id = :id")
             .bind("phone", number)
