@@ -6,6 +6,7 @@ import pt.isel.sitediary.repository.transaction.TransactionManager
 import pt.isel.sitediary.utils.failure
 import pt.isel.sitediary.utils.Errors
 import pt.isel.sitediary.utils.success
+import pt.isel.sitediary.domainmodel.user.containsMemberById
 import java.util.*
 
 @Component
@@ -22,7 +23,7 @@ class WorkService(
         val work = it.workRepository.getById(id)
         if (work == null) {
             failure(Errors.workNotFound)
-        } else if (work.members.any { m-> m.id == userId }) {
+        } else if (work.members.containsMemberById(userId)) {
             failure(Errors.notMember)
         } else {
             success(work)

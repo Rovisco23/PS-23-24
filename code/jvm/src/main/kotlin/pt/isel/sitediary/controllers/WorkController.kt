@@ -47,7 +47,7 @@ class WorkController(private val service: WorkService) {
         val parish: String,
         val street: String,
         val postalCode: String,
-        val members: List<Tecnitian>
+        val members: List<Technician>
     )
 
 }

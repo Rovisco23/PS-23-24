@@ -1,6 +1,6 @@
 package pt.isel.sitediary.repository
 
-import pt.isel.sitediary.utils.Work
+import pt.isel.sitediary.domainmodel.work.Work
 import java.util.*
 
 interface WorkRepository {
