@@ -12,4 +12,9 @@ object Paths {
         const val GET_USER_USERNAME = "$PREFIX/users"
     }
 
+    object Work {
+        const val GET_BY_ID = "$PREFIX/work/{id}"
+        const val GET_ALL_WORKS = "$PREFIX/work"
+    }
+
 }
