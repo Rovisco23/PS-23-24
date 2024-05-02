@@ -16,6 +16,10 @@ class AuthenticationInterceptor (
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         logger.info("on preHandle")
         logger.info("Before calling $handler (${handler.javaClass.name})")
+        if (request.requestURI.endsWith("/swagger-ui/index.html")) {
+            logger.info("Skipping authentication for Swagger UI endpoint")
+            return true
+        }
         if (handler is HandlerMethod && handler.methodParameters.any {
                 it.parameterType == AuthenticatedUser::class.java
             }

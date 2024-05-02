@@ -123,7 +123,7 @@ class UserService(
         }
     }
 
-    fun editProfile(
+    /*fun editProfile(
         userId: Int,
         username: String?,
         firstName: String?,
@@ -158,7 +158,7 @@ class UserService(
                     success(updatedUser)
                 }
             }
-        }
+        }*/
 
     fun getUserById(id: Int) = transactionManager.run {
         val user = it.usersRepository.getUser(id)
