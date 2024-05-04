@@ -123,7 +123,7 @@ class UserService(
         }
     }
 
-    /*fun editProfile(
+    fun editProfile(
         userId: Int,
         username: String?,
         firstName: String?,
@@ -148,9 +148,9 @@ class UserService(
                     failure(Errors.invalidLocation)
                 } else {
                     val updatedUser = user.copy(
-                        username = username ?: user.username,
-                        firstName = firstName ?: user.firstName,
-                        lastName = lastName ?: user.lastName,
+                        username = if(username.isNullOrBlank()) user.username else username,
+                        firstName = if(firstName.isNullOrBlank()) user.firstName else firstName,
+                        lastName = if(lastName.isNullOrBlank()) user.lastName else lastName,
                         phone = phone ?: user.phone,
                         location = Location(location.district, location.county, location.parish)
                     )
@@ -158,7 +158,7 @@ class UserService(
                     success(updatedUser)
                 }
             }
-        }*/
+        }
 
     fun getUserById(id: Int) = transactionManager.run {
         val user = it.usersRepository.getUser(id)

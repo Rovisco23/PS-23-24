@@ -1,13 +1,12 @@
 package pt.isel.sitediary.repository.jdbi
 
-
-import kotlinx.datetime.Instant
 import org.jdbi.v3.core.Handle
 import pt.isel.sitediary.domainmodel.authentication.Token
 import pt.isel.sitediary.domainmodel.authentication.TokenValidationInfo
 import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.model.GetUserModel
+import pt.isel.sitediary.model.UserAndTokenModel
 import pt.isel.sitediary.repository.UserRepository
 
 class JdbiUser(private val handle: Handle): UserRepository {
@@ -84,7 +83,7 @@ class JdbiUser(private val handle: Handle): UserRepository {
 
     override fun editProfile(user: GetUserModel) {
         handle.createUpdate(
-            "update utilizador set username = :username, telemovel = :phone, nome = :firstName, apelido = :lastName, " +
+            "update utilizador set username = :username, telefone = :phone, nome = :firstName, apelido = :lastName, " +
                     "freguesia = :parish, concelho = :county, distrito = :district where id = :id"
         )
             .bind("username", user.username)
@@ -107,26 +106,4 @@ class JdbiUser(private val handle: Handle): UserRepository {
         .mapTo(UserAndTokenModel::class.java)
         .singleOrNull()?.userAndToken
 
-    private data class UserAndTokenModel(
-        val id: Int,
-        val username: String,
-        val email: String,
-        val phone: String?,
-        val role: String,
-        val location: Location,
-        val tokenValidation: TokenValidationInfo,
-        val createdAt: Long,
-        val lastUsedAt: Long
-    ) {
-        val userAndToken: Pair<User, Token>
-            get() = Pair(
-                User(id, username, email, phone, role, location),
-                Token(
-                    tokenValidation,
-                    id,
-                    Instant.fromEpochSeconds(createdAt),
-                    Instant.fromEpochSeconds(lastUsedAt)
-                )
-            )
-    }
 }

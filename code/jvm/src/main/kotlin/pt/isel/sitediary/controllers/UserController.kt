@@ -123,7 +123,7 @@ class UserController (private val service: UserService) {
         }
     }
 
-    /*@PutMapping(Paths.User.GET_USER_ID)
+    @PutMapping(Paths.User.GET_USER_ID)
     fun editProfile(@RequestBody u: EditProfileInputModel, user: AuthenticatedUser): ResponseEntity<*> {
         val res = service.editProfile(
             userId = user.user.id,
@@ -138,6 +138,6 @@ class UserController (private val service: UserService) {
         return handleResponse(res){
             ResponseEntity.status(200).body(it)
         }
-    }*/
+    }
 
 }

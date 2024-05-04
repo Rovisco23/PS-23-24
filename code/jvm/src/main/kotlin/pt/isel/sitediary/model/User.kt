@@ -1,5 +1,9 @@
 package pt.isel.sitediary.model
 
+import kotlinx.datetime.Instant
+import pt.isel.sitediary.domainmodel.authentication.Token
+import pt.isel.sitediary.domainmodel.authentication.TokenValidationInfo
+import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.work.Location
 
 
@@ -45,5 +49,28 @@ data class LocationModel(
     val county: String,
     val parish: String
 )
+
+data class UserAndTokenModel(
+    val id: Int,
+    val username: String,
+    val email: String,
+    val phone: String?,
+    val role: String,
+    val location: Location,
+    val tokenValidation: TokenValidationInfo,
+    val createdAt: Long,
+    val lastUsedAt: Long
+) {
+    val userAndToken: Pair<User, Token>
+        get() = Pair(
+            User(id, username, email, phone, role, location),
+            Token(
+                tokenValidation,
+                id,
+                Instant.fromEpochSeconds(createdAt),
+                Instant.fromEpochSeconds(lastUsedAt)
+            )
+        )
+}
 
 data class TokenOutputModel(val userId: Int, val username: String, val token: String)
