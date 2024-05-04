@@ -98,7 +98,7 @@ class UserService(
         return transactionManager.run {
             val out = it.tokenRepository.deleteToken(tokenValidationInfo)
             if (!out) {
-                failure(Errors.internalError)
+                failure(Errors.noUserLoggedIn)
             } else {
                 success("Logout successful")
             }

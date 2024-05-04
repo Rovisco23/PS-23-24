@@ -14,11 +14,11 @@ import kotlin.time.Duration.Companion.hours
 @SpringBootApplication
 class SiteDiaryApplication {
 
+	private val databaseURL = ""
+
 	@Bean
 	fun jdbi(): Jdbi {
-		val jdbcDatabaseURL =
-			System.getenv("JDBC_DATABASE_URL")
-				?: "jdbc:postgresql://localhost/postgres?user=postgres&password=ps2324"
+		val jdbcDatabaseURL = System.getenv("JDBC_DATABASE_URL") ?: databaseURL
 		val dataSource = PGSimpleDataSource()
 		dataSource.setURL(jdbcDatabaseURL)
 		return Jdbi.create(dataSource).configureWithAppRequirements()
