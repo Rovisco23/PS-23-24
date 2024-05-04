@@ -1,6 +1,8 @@
 package pt.isel.sitediary.controllers
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.servlet.http.Cookie
@@ -42,7 +44,10 @@ class UserController (private val service: UserService) {
     @PostMapping(Paths.User.LOGIN)
     @Operation(summary = "Login", description = "Endpoint to login user")
     @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Successful login"),
+        ApiResponse(responseCode = "200", description = "Successful login",
+            content= [
+                Content(mediaType = "application/json", schema = Schema(implementation = TokenOutputModel::class))
+            ]),
         ApiResponse(responseCode = "401", description = "Unauthorized")
     ])
     fun login(@RequestBody u: LoginInputModel, response: HttpServletResponse): ResponseEntity<*> {

@@ -99,12 +99,13 @@ class JdbiUser(private val handle: Handle): UserRepository {
     }
 
     override fun getUserByToken(token: TokenValidationInfo): Pair<User, Token>? = handle.createQuery(
-        "select id, username, email, password, token_validation, created_at, last_used_at from users " +
-                "inner join tokens  on users.id = tokens.user_id where token_validation = :validation_information"
+        "select id, username, email, telefone, role, freguesia, concelho, distrito, token_validation, created_at," +
+                " last_used_at from utilizador inner join sessao  on utilizador.id = sessao.uId " +
+                "where token_validation = :validation_information"
     )
         .bind("validation_information", token.validationInfo)
         .mapTo(UserAndTokenModel::class.java)
-        .singleOrNull()?.userAndToken // TODO("REFAZER QUERY")
+        .singleOrNull()?.userAndToken
 
     private data class UserAndTokenModel(
         val id: Int,
