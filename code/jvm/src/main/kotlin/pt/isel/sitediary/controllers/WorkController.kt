@@ -80,21 +80,30 @@ class WorkController(private val service: WorkService) {
         }
     }
 
-    @Serializable
-    data class OpeningTerm(
-        //val image: Image,
-        val name: String,
-        val type: String,
-        val description: String?,
-        val holder: String,
-        val director: String,
-        val company: String,
-        val companyNum: Int,
-        val building: String,
-        val parish: String,
-        val street: String,
-        val postalCode: String,
-        val members: List<Technician>
+    @PostMapping(Paths.Work.GET_ALL_WORKS)
+    @Operation(summary = "Start Work", description = "Used to start a new work")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "201", description = "Work created successfully",
+                content = [
+                    Content(mediaType = "application/json", schema = Schema(implementation = Work::class))
+                ]
+            ),
+            ApiResponse(
+                responseCode = "400", description = "Invalid parameters",
+                content = [
+                    Content(mediaType = "application/json", schema = Schema(implementation = Errors::class))
+                ]
+            )
+        ]
     )
+    fun createWork(@RequestBody work: OpeningTerm, @Parameter(hidden = true) user: AuthenticatedUser)
+            : ResponseEntity<*> {
+        val res = service.createWork(work, user.user)
+        return handleResponse(res) {
+            ResponseEntity.status(201).body(it)
+        }
+    }
 
 }

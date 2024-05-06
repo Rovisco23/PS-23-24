@@ -23,9 +23,38 @@ class WorkService(
     private val transactionManager: TransactionManager,
     private val clock: Clock
 ) {
-    fun createWork(userId: Int) = transactionManager.run {
-        val rep = it.workRepository
 
+    fun createWork(openingTerm: OpeningTerm, user: User): CreateWorkResult = transactionManager.run {
+        val workRep = it.workRepository
+        val addressRep = it.addressRepository
+        if (openingTerm.checkParams()) {
+            failure(Errors.invalidParameter)
+        } else {
+            val location = addressRep.getLocation(openingTerm.parish, openingTerm.county)
+            if (location == null) {
+                failure(Errors.invalidLocation)
+            } else {
+                val work = Work(
+                    id = UUID.randomUUID(),
+                    name = openingTerm.name,
+                    description = openingTerm.description ?: "",
+                    state = IN_PROGRESS,
+                    type = openingTerm.type,
+                    address = Address(
+                        Location(
+                            location.district,
+                            location.county,
+                            location.parish
+                        ),
+                        openingTerm.street,
+                        openingTerm.postalCode
+                    ),
+                    members = listOf(user.toMember())
+                )
+                workRep.createWork(work, openingTerm, user.id)
+                success(work)
+            }
+        }
     }
 
     fun getWork(id: UUID, userId: Int) = transactionManager.run {
@@ -43,4 +72,5 @@ class WorkService(
         val work = it.workRepository.getWorkList(skip, userId) // List with next 6 Work for pagination
         success(work)
     }
+
 }
