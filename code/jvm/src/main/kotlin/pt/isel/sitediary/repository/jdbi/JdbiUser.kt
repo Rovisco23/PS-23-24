@@ -9,7 +9,7 @@ import pt.isel.sitediary.model.GetUserModel
 import pt.isel.sitediary.model.UserAndTokenModel
 import pt.isel.sitediary.repository.UserRepository
 
-class JdbiUser(private val handle: Handle): UserRepository {
+class JdbiUser(private val handle: Handle) : UserRepository {
     override fun createUser(
         email: String,
         role: String,
@@ -20,22 +20,22 @@ class JdbiUser(private val handle: Handle): UserRepository {
         phone: String?,
         location: Location
     ): Int = handle.createUpdate(
-    "insert into utilizador(email, role, username, password, nome, apelido, telefone, freguesia, concelho, distrito)" +
-            "values (:email, :role, :username, :password, :nome, :apelido, :telefone, :freguesia, :concelho, :distrito)"
+        "insert into utilizador(email, role, username, password, nome, apelido, telefone, freguesia, concelho, distrito)" +
+                "values (:email, :role, :username, :password, :nome, :apelido, :telefone, :freguesia, :concelho, :distrito)"
     )
-    .bind("email", email)
-    .bind("role", role)
-    .bind("username", username)
-    .bind("password", password)
-    .bind("nome", firstName)
-    .bind("apelido", lastName)
-    .bind("telefone", phone)
-    .bind("freguesia", location.parish)
-    .bind("concelho", location.county)
-    .bind("distrito", location.district)
-    .executeAndReturnGeneratedKeys()
-    .mapTo(Int::class.java)
-    .one()
+        .bind("email", email)
+        .bind("role", role)
+        .bind("username", username)
+        .bind("password", password)
+        .bind("nome", firstName)
+        .bind("apelido", lastName)
+        .bind("telefone", phone)
+        .bind("freguesia", location.parish)
+        .bind("concelho", location.county)
+        .bind("distrito", location.district)
+        .executeAndReturnGeneratedKeys()
+        .mapTo(Int::class.java)
+        .one()
 
     override fun login(user: String, password: String): Int? = handle.createQuery(
         "select id from UTILIZADOR where (username = :username or email = :email) and password = :password"
@@ -47,7 +47,7 @@ class JdbiUser(private val handle: Handle): UserRepository {
         .singleOrNull()
 
 
-    override fun getUser(id: Int): GetUserModel? = handle.createQuery(
+    override fun getUserById(id: Int): GetUserModel? = handle.createQuery(
         "select * from UTILIZADOR where id = :id "
     )
         .bind("id", id)
@@ -56,9 +56,9 @@ class JdbiUser(private val handle: Handle): UserRepository {
 
     override fun getUserByUsername(username: String): GetUserModel? =
         handle.createQuery("select * from UTILIZADOR where username = :username")
-        .bind("username", username)
-        .mapTo(GetUserModel::class.java)
-        .singleOrNull()
+            .bind("username", username)
+            .mapTo(GetUserModel::class.java)
+            .singleOrNull()
 
     override fun updatePhoneNumber(id: Int, number: String) {
         handle.createUpdate("update UTILIZADOR set telefone = :phone where id = :id")

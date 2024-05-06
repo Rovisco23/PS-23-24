@@ -75,7 +75,7 @@ class UserService(
                     lastUsedAt = now
                 )
                 tRep.createToken(newToken, usersDomain.maxNumberOfTokensPerUser)
-                val username = uRep.getUser(userId)
+                val username = uRep.getUserById(userId)
                 if (username == null) {
                     failure(Errors.userNotFound)
                 } else {
@@ -133,7 +133,7 @@ class UserService(
         county: String?
     ): UserEditResult = transactionManager.run {
             val rep = it.usersRepository
-            val user = rep.getUser(userId)
+            val user = rep.getUserById(userId)
             if (user == null) {
                 failure(Errors.userNotFound)
             } else if (username != null && rep.checkUsernameTaken(username) == userId){
@@ -161,7 +161,7 @@ class UserService(
         }
 
     fun getUserById(id: Int) = transactionManager.run {
-        val user = it.usersRepository.getUser(id)
+        val user = it.usersRepository.getUserById(id)
         if (user == null) {
             failure(Errors.userNotFound)
         } else {

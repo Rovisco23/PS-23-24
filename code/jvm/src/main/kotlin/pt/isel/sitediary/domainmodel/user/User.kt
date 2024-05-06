@@ -10,4 +10,11 @@ data class User(
     val phone: String?,
     val role: String,
     val location: Location
-)
+) {
+    fun toMember() = Member(
+        id = id,
+        name = username,
+        role = role,
+        phone = phone ?: ""
+    )
+}
