@@ -58,27 +58,15 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         .mapTo(WorkSimplified::class.java)
         .list()
 
+    //TODO("Discutir como dar input das camaras municipais porque input das pessoas pode criar erros desnecessários")
     private fun getCouncil(location: Location) =
-        handle.createQuery("select id from CAMARA_MUNICIPAL where freguesia = :freguesia and concelho = :concelho and distrito = :distrito")
+        handle.createQuery("select id from CAMARA_MUNICIPAL where freguesia = :freguesia and concelho = " +
+                ":concelho and distrito = :distrito")
             .bind("freguesia", location.parish)
             .bind("concelho", location.county)
             .bind("distrito", location.district)
             .mapTo(Int::class.java)
             .single()
-
-    private fun insertOpeningTerm(openingTerm: OpeningTerm, companyId: Int, workId: UUID, councilId: Int) {
-        handle.createUpdate(
-            "insert into TERMO_ABERTURA(oId, inicio, camara, titular_licença, empresa_construção, predio)" +
-                    "values (:oId, :inicio, :camara, :titular_licença, :empresa_construção, :predio)"
-        )
-            .bind("oId", workId)
-            .bind("inicio", Timestamp.valueOf(LocalDateTime.now()))
-            .bind("camara", councilId)
-            .bind("titular_licença", openingTerm.holder)
-            .bind("empresa_construção", companyId)
-            .bind("predio", openingTerm.building)
-            .execute()
-    }
 
     private fun getCompanyId(name: String, number: Int) = handle.createQuery(
         "select id from EMPRESA_CONSTRUCAO where nome = :nome and numero = :numero"
@@ -95,4 +83,18 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         .executeAndReturnGeneratedKeys()
         .mapTo(Int::class.java)
         .one()
+
+    private fun insertOpeningTerm(openingTerm: OpeningTerm, companyId: Int, workId: UUID, councilId: Int) {
+        handle.createUpdate(
+            "insert into TERMO_ABERTURA(oId, inicio, camara, titular_licença, empresa_construção, predio)" +
+                    "values (:oId, :inicio, :camara, :titular_licença, :empresa_construção, :predio)"
+        )
+            .bind("oId", workId)
+            .bind("inicio", Timestamp.valueOf(LocalDateTime.now()))
+            .bind("camara", councilId)
+            .bind("titular_licença", openingTerm.holder)
+            .bind("empresa_construção", companyId)
+            .bind("predio", openingTerm.building)
+            .execute()
+    }
 }
