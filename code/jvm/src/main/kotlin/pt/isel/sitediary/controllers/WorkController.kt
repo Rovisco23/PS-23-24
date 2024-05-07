@@ -17,6 +17,7 @@ import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
 import pt.isel.sitediary.domainmodel.work.OpeningTerm
 import pt.isel.sitediary.domainmodel.work.Work
 import pt.isel.sitediary.model.ListOfWorksOutputModel
+import pt.isel.sitediary.model.OpeningTermInputModel
 import pt.isel.sitediary.service.WorkService
 import pt.isel.sitediary.utils.Errors
 import pt.isel.sitediary.utils.Paths
@@ -98,9 +99,9 @@ class WorkController(private val service: WorkService) {
             )
         ]
     )
-    fun createWork(@RequestBody work: OpeningTerm, @Parameter(hidden = true) user: AuthenticatedUser)
+    fun createWork(@RequestBody work: OpeningTermInputModel, @Parameter(hidden = true) user: AuthenticatedUser)
             : ResponseEntity<*> {
-        val res = service.createWork(work, user.user)
+        val res = service.createWork(work.toOpeningTerm(), user.user)
         return handleResponse(res) {
             ResponseEntity.status(201).body(it)
         }

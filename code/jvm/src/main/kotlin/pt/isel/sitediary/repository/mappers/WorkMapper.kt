@@ -34,8 +34,7 @@ class WorkMapper : RowMapper<Work> {
                     Member(
                         id = aux[0].toInt(),
                         name = aux[1],
-                        role = aux[2],
-                        phone = aux[3]
+                        role = aux[2]
                     )
                 }
         )

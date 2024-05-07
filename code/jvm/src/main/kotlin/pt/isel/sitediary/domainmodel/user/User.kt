@@ -14,7 +14,6 @@ data class User(
     fun toMember() = Member(
         id = id,
         name = username,
-        role = role,
-        phone = phone ?: ""
+        role = role
     )
 }

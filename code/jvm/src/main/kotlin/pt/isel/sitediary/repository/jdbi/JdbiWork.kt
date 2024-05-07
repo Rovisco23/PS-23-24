@@ -10,6 +10,7 @@ import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.util.*
 
+import java.io.File
 class JdbiWork(private val handle: Handle) : WorkRepository {
     override fun createWork(work: Work, openingTerm: OpeningTerm, userId: Int) {
         handle.createUpdate(
@@ -44,7 +45,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
                 "UTILIZADOR on uId = id WHERE oId = :id) as membros from OBRA " +
                 "where id = :id"
     )
-        .bind("id", id)
+        .bind("id", id.toString())
         .mapTo(Work::class.java)
         .singleOrNull()
 
@@ -60,7 +61,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
 
     //TODO("Discutir como dar input das camaras municipais porque input das pessoas pode criar erros desnecessários")
     private fun getCouncil(location: Location) =
-        handle.createQuery("select id from CAMARA_MUNICIPAL where freguesia = :freguesia and concelho = " +
+        handle.createQuery("select id from Localidade where freguesia = :freguesia and concelho = " +
                 ":concelho and distrito = :distrito")
             .bind("freguesia", location.parish)
             .bind("concelho", location.county)

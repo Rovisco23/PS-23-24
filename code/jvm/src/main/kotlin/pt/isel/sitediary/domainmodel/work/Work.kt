@@ -26,9 +26,7 @@ data class WorkSimplified(
 data class BuildingCompany(
     val name: String,
     val num: Int
-) {
-    fun isBlank() = name.isBlank() || num <= 0
-}
+)
 
 data class OpeningTerm(
     //val image: Image,
@@ -39,10 +37,7 @@ data class OpeningTerm(
     val director: String,
     val company: BuildingCompany,
     val building: String,
-    val parish: String,
-    val county: String,
-    val street: String,
-    val postalCode: String,
+    val address: Address,
     val technicians: List<Technician>
 ) {
     fun checkParams() =

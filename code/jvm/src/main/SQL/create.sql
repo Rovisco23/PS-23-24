@@ -23,9 +23,9 @@ create table UTILIZADOR
     nome      varchar(50),
     apelido   varchar(50),
     telefone  varchar(9),
-    freguesia varchar(50),
-    concelho  varchar(50),
-    distrito  varchar(50),
+    freguesia varchar(255),
+    concelho  varchar(255),
+    distrito  varchar(255),
     primary key (id),
     constraint Role_Format check (ROLE IN ('OPERÁRIO', 'CÂMARA')),
     constraint Email_Format check (email like '%@%.%')
@@ -121,16 +121,6 @@ create table EMPRESA_CONSTRUCAO
     primary key (id)
 );
 
-create table CAMARA_MUNICIPAL
-(
-    id        serial,
-    nome      varchar(255),
-    freguesia varchar(255),
-    conselho  varchar(255),
-    distrito  varchar(255),
-    primary key (id)
-);
-
 create table TERMO_ABERTURA
 (
     id                 serial,
@@ -143,7 +133,7 @@ create table TERMO_ABERTURA
     primary key (id, oId),
     constraint ObraId foreign key (oId) references OBRA (id),
     constraint EmpresaId foreign key (empresa_construção) references EMPRESA_CONSTRUCAO (id),
-    constraint CamaraId foreign key (camara) references CAMARA_MUNICIPAL (id)
+    constraint CamaraId foreign key (camara) references localidade (id)
 );
 
 create table TECNICO
@@ -178,10 +168,11 @@ create table TERMO_FECHO
     constraint TermoAberturaId foreign key (abertura, oId) references TERMO_ABERTURA (id, oId)
 );
 
---create table LOCALIDADE (
---                           id serial,
---                           freguesia varchar(255),
---                           concelho varchar(255),
---                           distrito varchar(255),
---                           primary key (id)
+--create table LOCALIDADE
+--(
+--    id        serial,
+--    distrito  varchar(255),
+--    concelho  varchar(255),
+--    freguesia varchar(255),
+--    primary key (id)
 --);

@@ -61,7 +61,7 @@ class WorkService(
         val work = it.workRepository.getById(id)
         if (work == null) {
             failure(Errors.workNotFound)
-        } else if (work.members.containsMemberById(userId)) {
+        } else if (!work.members.containsMemberById(userId)) {
             failure(Errors.notMember)
         } else {
             success(work)

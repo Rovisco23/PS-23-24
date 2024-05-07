@@ -127,7 +127,7 @@ class UserController(private val service: UserService) {
             ApiResponse(
                 responseCode = "200", description = "Successful logout",
                 content = [
-                    Content(mediaType = "application/json", schema = Schema(implementation = String::class))
+                    Content(mediaType = "application/json", schema = Schema(implementation = TokenModel::class))
                 ]
             ),
             ApiResponse(
@@ -155,7 +155,7 @@ class UserController(private val service: UserService) {
 
             response.addCookie(cookieId)
             response.addCookie(cookieToken)
-            ResponseEntity.status(200).body(it)
+            ResponseEntity.status(200).body(TokenModel(it))
         }
     }
 
