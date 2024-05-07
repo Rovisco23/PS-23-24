@@ -9,6 +9,7 @@ import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.domainmodel.work.OpeningTerm
 import pt.isel.sitediary.domainmodel.work.Work
 import pt.isel.sitediary.domainmodel.work.WorkState.IN_PROGRESS
+import pt.isel.sitediary.model.OpeningTermInputModel
 import pt.isel.sitediary.repository.transaction.TransactionManager
 import pt.isel.sitediary.utils.Errors
 import pt.isel.sitediary.utils.Result
@@ -30,7 +31,8 @@ class WorkService(
         if (openingTerm.checkParams()) {
             failure(Errors.invalidParameter)
         } else {
-            val location = addressRep.getLocation(openingTerm.parish, openingTerm.county)
+            val location =
+                addressRep.getLocation(openingTerm.address.location.parish, openingTerm.address.location.county)
             if (location == null) {
                 failure(Errors.invalidLocation)
             } else {
@@ -46,8 +48,8 @@ class WorkService(
                             location.county,
                             location.parish
                         ),
-                        openingTerm.street,
-                        openingTerm.postalCode
+                        openingTerm.address.street,
+                        openingTerm.address.postalCode
                     ),
                     members = listOf(user.toMember())
                 )

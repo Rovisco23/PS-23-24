@@ -41,7 +41,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
     }
 
     override fun getById(id: UUID): Work? = handle.createQuery(
-        "select *, ARRAY(SELECT CONCAT(uId, ';', username, ';', MEMBRO.role, ';', telefone) FROM MEMBRO join " +
+        "select *, ARRAY(SELECT CONCAT(uId, ';', username, ';', MEMBRO.role) FROM MEMBRO join " +
                 "UTILIZADOR on uId = id WHERE oId = :id) as membros from OBRA " +
                 "where id = :id"
     )

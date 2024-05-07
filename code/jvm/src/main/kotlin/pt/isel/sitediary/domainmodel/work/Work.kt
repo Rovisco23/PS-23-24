@@ -41,8 +41,9 @@ data class OpeningTerm(
     val technicians: List<Technician>
 ) {
     fun checkParams() =
-        name.isBlank() || description.isNullOrBlank() || holder.isBlank() || director.isBlank() || company.isBlank() ||
-                building.isBlank() || parish.isBlank() || street.isBlank() || postalCode.isBlank() || county.isBlank()
+        name.isBlank()  || holder.isBlank() || director.isBlank() || company.name.isBlank() || company.num <= 0 ||
+                building.isBlank() || address.location.parish.isBlank() || address.street.isBlank() ||
+                address.postalCode.isBlank() || address.location.county.isBlank()
 }
 
 enum class WorkType {

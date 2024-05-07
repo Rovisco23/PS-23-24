@@ -140,8 +140,6 @@ class UserService(
                 failure(Errors.usernameAlreadyInUse)
             } else if (!checkPhoneNumberFormat(phone)) {
                 failure(Errors.invalidPhoneNumber)
-            } else if (parish != null && county != null && it.addressRepository.getLocation(parish, county) == null) {
-                failure(Errors.invalidLocation)
             } else {
                 val location = it.addressRepository.getLocation(parish ?: user.location.parish, county ?: user.location.county)
                 if (location == null) {
