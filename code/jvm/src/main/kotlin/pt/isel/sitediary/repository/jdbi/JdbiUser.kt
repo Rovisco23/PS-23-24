@@ -13,7 +13,7 @@ import pt.isel.sitediary.repository.UserRepository
 class JdbiUser(private val handle: Handle) : UserRepository {
     override fun createUser(user: SignUpInputModel, location: Location): Int = handle.createUpdate(
         "insert into utilizador(email, role, username, password, nome, apelido, nif, telefone, freguesia, concelho, distrito)" +
-                "values (:email, :role, :username, :password, :nome, :apelido, :telefone, :freguesia, :concelho, :distrito)"
+                "values (:email, :role, :username, :password, :nome, :apelido, :nif, :telefone, :freguesia, :concelho, :distrito)"
     )
         .bind("email", user.email)
         .bind("role", user.role)
@@ -91,7 +91,7 @@ class JdbiUser(private val handle: Handle) : UserRepository {
     }
 
     override fun getUserByToken(token: TokenValidationInfo): Pair<User, Token>? = handle.createQuery(
-        "select id, username, email, telefone, role, freguesia, concelho, distrito, token_validation, created_at," +
+        "select id, username, nif, email, telefone, role, freguesia, concelho, distrito, token_validation, created_at," +
                 " last_used_at from utilizador inner join sessao  on utilizador.id = sessao.uId " +
                 "where token_validation = :validation_information"
     )

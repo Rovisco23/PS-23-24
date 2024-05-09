@@ -48,6 +48,7 @@ data class GetUserModel(
 data class UserAndTokenModel(
     val id: Int,
     val username: String,
+    val nif: Int,
     val email: String,
     val phone: String?,
     val role: String,
@@ -58,7 +59,7 @@ data class UserAndTokenModel(
 ) {
     val userAndToken: Pair<User, Token>
         get() = Pair(
-            User(id, username, email, phone, role, location),
+            User(id, username, nif, email, phone, role, location),
             Token(
                 tokenValidation,
                 id,

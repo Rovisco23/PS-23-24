@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import io.swagger.v3.oas.annotations.tags.Tag
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
-import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.model.EditProfileInputModel
 import pt.isel.sitediary.model.GetUserModel
 import pt.isel.sitediary.model.LoginInputModel
@@ -33,7 +32,6 @@ import pt.isel.sitediary.service.UserService
 import pt.isel.sitediary.utils.Errors
 import pt.isel.sitediary.utils.Paths
 import pt.isel.sitediary.utils.handleResponse
-import java.net.URI
 
 @RestController
 @Tag(name = "User", description = "Operations related the User.")
