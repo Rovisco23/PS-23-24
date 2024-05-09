@@ -1,15 +1,13 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from "./login/login.component";
 import { WorkComponent } from "./work/work.component";
+import {TokenGuard} from "./token.guard";
 
 export const routes: Routes = [
   {
-    path: '**',
-    redirectTo: '/work'
-  },
-  {
     path: 'work',
     component: WorkComponent,
+    canActivate: [TokenGuard],
     /*children: [
       {
         path: 'create',
@@ -32,5 +30,9 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent
+  },
+  {
+    path: '**',
+    redirectTo: '/work'
   }
 ];
