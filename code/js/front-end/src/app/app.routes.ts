@@ -1,31 +1,33 @@
 import { Routes } from '@angular/router';
+import { LoginComponent } from "./login/login.component";
+import { WorkComponent } from "./work/work.component";
 
 export const routes: Routes = [
   {
     path: '**',
-    redirectTo: '/obras'
+    redirectTo: '/work'
   },
   {
-    path: 'obras',
-    component: ObrasComponent,
-    children: [
+    path: 'work',
+    component: WorkComponent,
+    /*children: [
       {
         path: 'create',
-        component: ObrasCreateComponent
+        component: WorkCreateComponent
       },
       {
         path: 'obras/:id',
-        component: ObrasByIdComponent
+        component: WorkByIdComponent
       },
       {
         path: 'edit/:id',
-        component: ObrasEditComponent
+        component: WorkEditComponent
       },
       {
         path: 'delete/:id',
-        component: ObrasDeleteComponent
+        component: WorkDeleteComponent
       }
-      ]
+      ]*/
   },
   {
     path: 'login',

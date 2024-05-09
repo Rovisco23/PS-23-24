@@ -88,18 +88,13 @@ enum class WorkType {
     }
 }
 
-enum class WorkState {
-    IN_PROGRESS,
-    FINISHED,
-    CANCELED,
-    PAUSED;
+enum class WorkState(val description: String) {
+    IN_PROGRESS("EM PROGRESSO"),
+    FINISHED("TERMINADA"),
+    CANCELED("CANCELADA"),
+    PAUSED("EM PAUSA");
 
-    override fun toString() = when (this) {
-        IN_PROGRESS -> "EM PROGRESSO"
-        FINISHED -> "TERMINADA"
-        CANCELED -> "CANCELADA"
-        PAUSED -> "EM PAUSA"
-    }
+    override fun toString() = description
 
     companion object {
         fun fromString(state: String) = when (state) {

@@ -1,17 +1,16 @@
 package pt.isel.sitediary.repository.jdbi
 
 import org.jdbi.v3.core.Handle
-import org.jdbi.v3.core.kotlin.mapTo
-import pt.isel.sitediary.model.LocationModel
+import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.repository.AddressRepository
 
 class JdbiAddress (private val handle: Handle): AddressRepository {
-    override fun getLocation(parish: String, county: String): LocationModel? = handle.createQuery(
+    override fun getLocation(parish: String, county: String): Location? = handle.createQuery(
         "select freguesia, concelho, distrito from localidade where freguesia = :parish and concelho = :county"
     )
         .bind("parish", parish)
         .bind("county", county)
-        .mapTo(LocationModel::class.java)
+        .mapTo(Location::class.java)
         .singleOrNull()
 
     override fun getParishes(county: String, district: String): List<String> = handle.createQuery(

@@ -1,5 +1,7 @@
 package pt.isel.sitediary.controllers
 
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
@@ -31,6 +33,7 @@ import pt.isel.sitediary.service.UserService
 import pt.isel.sitediary.utils.Errors
 import pt.isel.sitediary.utils.Paths
 import pt.isel.sitediary.utils.handleResponse
+import java.net.URI
 
 @RestController
 @Tag(name = "User", description = "Operations related the User.")
@@ -41,10 +44,7 @@ class UserController(private val service: UserService) {
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "201", description = "Successful signup",
-                content = [
-                    Content(mediaType = "application/json", schema = Schema(implementation = User::class))
-                ]
+                responseCode = "201", description = "Successful signup"
             ),
             ApiResponse(
                 responseCode = "400", description = "Invalid parameters",
@@ -54,21 +54,10 @@ class UserController(private val service: UserService) {
             )
         ]
     )
-    fun createUser(@RequestBody user: SignUpInputModel): ResponseEntity<*> {
-        val res = service.createUser(
-            user.email,
-            user.role,
-            user.username,
-            user.password,
-            user.firstName,
-            user.lastName,
-            user.phone,
-            user.parish,
-            user.county
-        )
-        return handleResponse(res) {
-            ResponseEntity.status(201).body(it)
-        }
+    fun createUser(@RequestBody user: SignUpInputModel, response: HttpServletResponse) {//: ResponseEntity<*> {
+        service.createUser(user)
+        response.addHeader(HttpHeaders.LOCATION, "/login")
+        response.status = 201
     }
 
     @PostMapping(Paths.User.LOGIN)
@@ -238,19 +227,34 @@ class UserController(private val service: UserService) {
     )
     fun editProfile(@RequestBody u: EditProfileInputModel, @Parameter(hidden = true) user: AuthenticatedUser)
             : ResponseEntity<*> {
-        val res = service.editProfile(
-            userId = user.user.id,
-            //user.img,
-            username = u.username,
-            firstName = u.firstName,
-            lastName = u.lastName,
-            phone = u.phone,
-            parish = u.parish,
-            county = u.county
-        )
+        val res = service.editProfile(userId = user.user.id, editUser = u)
         return handleResponse(res) {
             ResponseEntity.status(200).body(it)
         }
     }
 
+}
+
+
+fun main() {
+    val secret = "your_secret_key"
+    val algorithm = Algorithm.HMAC256(secret)
+    val map = mapOf("id" to 1, "username" to "JMota", "role" to "admin", "token" to "pCRJ4OWSJarFvFV943aebPScJ5u5Y27KWuBbbLbx1mg=")
+    val jwt = JWT.create().withPayload(map).sign(algorithm)
+    println("JWT = $jwt")
+
+    // FRONT-END
+    val verifier = JWT.require(algorithm).build()
+    val decodedJWT = verifier.verify(jwt)
+
+    val id = decodedJWT.getClaim("id").asInt()
+    val username = decodedJWT.getClaim("username").asString()
+    val role = decodedJWT.getClaim("role").asString()
+    val token = decodedJWT.getClaim("token").asString()
+
+    println("Decoded Info:")
+    println("id = $id")
+    println("username = $username")
+    println("role = $role")
+    println("token = $token")
 }

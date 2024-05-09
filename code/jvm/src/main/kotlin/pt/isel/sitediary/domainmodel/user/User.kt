@@ -6,6 +6,7 @@ data class User(
     val id: Int,
     // profile_picture
     val username: String,
+    val nif: Int,
     val email: String,
     val phone: String?,
     val role: String,

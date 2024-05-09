@@ -22,6 +22,7 @@ create table UTILIZADOR
     password  varchar(255),
     nome      varchar(50),
     apelido   varchar(50),
+    nif       integer unique,
     telefone  varchar(9),
     freguesia varchar(255),
     concelho  varchar(255),
@@ -138,14 +139,14 @@ create table TERMO_ABERTURA
 
 create table TECNICO
 (
-    id         serial,
+    nif        integer,
     tId        integer,
     oId        varchar(255),
     nome       varchar(50),
     tipo       varchar(50),
     associacao varchar(255),
     numero     integer,
-    primary key (id, tId, oId),
+    primary key (nif, tId, oId),
     constraint ObraId foreign key (oId) references OBRA (id),
     constraint TermoId foreign key (tId, oId) references TERMO_ABERTURA (id, oId),
     constraint Tipo CHECK (tipo IN ('FISCALIZAÇÃO', 'COORDENADOR', 'ARQUITETURA', 'ESTABILIDADE', 'ELETRICIDADE', 'GÁS',

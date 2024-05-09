@@ -6,30 +6,23 @@ import pt.isel.sitediary.domainmodel.authentication.TokenValidationInfo
 import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.model.GetUserModel
+import pt.isel.sitediary.model.SignUpInputModel
 import pt.isel.sitediary.model.UserAndTokenModel
 import pt.isel.sitediary.repository.UserRepository
 
 class JdbiUser(private val handle: Handle) : UserRepository {
-    override fun createUser(
-        email: String,
-        role: String,
-        username: String,
-        password: String,
-        firstName: String,
-        lastName: String,
-        phone: String?,
-        location: Location
-    ): Int = handle.createUpdate(
-        "insert into utilizador(email, role, username, password, nome, apelido, telefone, freguesia, concelho, distrito)" +
+    override fun createUser(user: SignUpInputModel, location: Location): Int = handle.createUpdate(
+        "insert into utilizador(email, role, username, password, nome, apelido, nif, telefone, freguesia, concelho, distrito)" +
                 "values (:email, :role, :username, :password, :nome, :apelido, :telefone, :freguesia, :concelho, :distrito)"
     )
-        .bind("email", email)
-        .bind("role", role)
-        .bind("username", username)
-        .bind("password", password)
-        .bind("nome", firstName)
-        .bind("apelido", lastName)
-        .bind("telefone", phone)
+        .bind("email", user.email)
+        .bind("role", user.role)
+        .bind("username", user.username)
+        .bind("password", user.password)
+        .bind("nome", user.firstName)
+        .bind("apelido", user.lastName)
+        .bind("nif", user.nif)
+        .bind("telefone", user.phone)
         .bind("freguesia", location.parish)
         .bind("concelho", location.county)
         .bind("distrito", location.district)

@@ -5,19 +5,10 @@ import pt.isel.sitediary.domainmodel.authentication.TokenValidationInfo
 import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.model.GetUserModel
+import pt.isel.sitediary.model.SignUpInputModel
 
 interface UserRepository {
-    fun createUser(
-        email: String,
-        role: String,
-        username: String,
-        password: String,
-        firstName: String,
-        lastName: String,
-        phone: String?,
-        location: Location
-    ): Int
-
+    fun createUser(user:SignUpInputModel, location: Location): Int
     fun login(user: String, password: String): Int?
     fun getUserById(id: Int): GetUserModel?
     fun getUserByUsername(username: String): GetUserModel?

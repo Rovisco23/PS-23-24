@@ -14,6 +14,7 @@ data class SignUpInputModel(
     val password: String,
     val firstName: String,
     val lastName: String,
+    val nif: Int,
     val phone: String?,
     val parish: String,
     val county: String
@@ -25,12 +26,12 @@ data class LoginInputModel(
 )
 
 data class EditProfileInputModel(
-    val username: String?,
-    val firstName: String?,
-    val lastName: String?,
-    val phone: String?,
-    val parish: String?,
-    val county: String?
+    val username: String,
+    val firstName: String,
+    val lastName: String,
+    val phone: String,
+    val parish: String,
+    val county: String
 )
 
 data class GetUserModel(
@@ -42,12 +43,6 @@ data class GetUserModel(
     val lastName: String,
     val role: String,
     val location: Location
-)
-
-data class LocationModel(
-    val district: String,
-    val county: String,
-    val parish: String
 )
 
 data class UserAndTokenModel(
