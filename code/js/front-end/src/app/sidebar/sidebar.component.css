@@ -1,0 +1,27 @@
+/* sidebar.component.css */
+
+.sidebar {
+  background-color: #333;
+  color: #f2f2f2;
+  width: 200px; /* Set the width of the sidebar */
+  height: 100vh; /* Set the height to full viewport height */
+  box-sizing: border-box;
+  padding: 20px; /* Adjust padding as needed */
+  position: fixed; /* Position fixed */
+  top: 30px; /* Stick to the top */
+  left: 0; /* Align to the left */
+  z-index: 1000; /* Ensure it's above other content */
+}
+
+.sidebar a {
+  display: block;
+  padding: 10px 0; /* Zero out vertical padding */
+  width: 100%; /* Occupy the full width */
+  color: #f2f2f2;
+  text-decoration: none;
+  text-align: center;
+}
+
+.sidebar a:hover {
+  background-color: #444;
+}

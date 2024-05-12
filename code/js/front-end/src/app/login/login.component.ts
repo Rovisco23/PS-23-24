@@ -27,17 +27,9 @@ export class LoginComponent {
       const token = res.token;
       const userId = res.userId;
 
-      // Set cookies
-      this.setCookie('token', token);
-      this.setCookie('userId', userId);
+      localStorage.setItem('userId', userId);
+      localStorage.setItem('token', token);
       this.router.navigate(['/work']);
     })
-  }
-
-  private setCookie(name: string, value: string, days: number = 1): void {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    const expires = "expires=" + date.toUTCString();
-    document.cookie = name + "=" + value + ";" + expires + ";path=/";
   }
 }
