@@ -10,6 +10,7 @@ object Paths {
         const val LOGOUT = "$PREFIX/logout"
         const val GET_USER_ID = "$PREFIX/users/{id}"
         const val GET_USER_USERNAME = "$PREFIX/users"
+        const val SESSION = "$PREFIX/session"
     }
 
     object Work {

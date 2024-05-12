@@ -9,6 +9,7 @@ import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.model.EditProfileInputModel
 import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.model.GetUserModel
+import pt.isel.sitediary.model.SessionModel
 import pt.isel.sitediary.model.SignUpInputModel
 import pt.isel.sitediary.repository.transaction.TransactionManager
 import pt.isel.sitediary.utils.*
@@ -17,6 +18,7 @@ typealias UserCreationResult = Result<Errors, User>
 typealias LoginResult = Result<Errors, TokenExternalInfo>
 typealias LogoutResult = Result<Errors, String>
 typealias UserEditResult = Result<Errors, GetUserModel>
+typealias SessionResult = Result<Errors, SessionModel>
 
 @Component
 class UserService(
@@ -84,6 +86,16 @@ class UserService(
         }
     }
 
+    fun checkSession(userId: Int, token: String): SessionResult = transactionManager.run {
+        val rep = it.tokenRepository
+        val session = rep.checkSession(userId, token)
+        if (session == null) {
+            failure(Errors.noUserLoggedIn)
+        } else {
+            success(session)
+        }
+    }
+
     fun logout(token: String): LogoutResult {
         val tokenValidationInfo = usersDomain.createTokenValidationInformation(token)
         return transactionManager.run {
@@ -114,12 +126,12 @@ class UserService(
         }
     }
 
-    fun editProfile(userId: Int, editUser :EditProfileInputModel): UserEditResult = transactionManager.run {
+    fun editProfile(userId: Int, editUser: EditProfileInputModel): UserEditResult = transactionManager.run {
         val rep = it.usersRepository
         val u = rep.getUserById(userId)
         if (u == null) {
             failure(Errors.userNotFound)
-        } else if (rep.checkUsernameTaken(editUser.username) != userId){
+        } else if (rep.checkUsernameTaken(editUser.username) != userId) {
             failure(Errors.usernameAlreadyInUse)
         } else if (!checkPhoneNumberFormat(editUser.phone)) {
             failure(Errors.invalidPhoneNumber)

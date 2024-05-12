@@ -22,12 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import io.swagger.v3.oas.annotations.tags.Tag
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
-import pt.isel.sitediary.model.EditProfileInputModel
-import pt.isel.sitediary.model.GetUserModel
-import pt.isel.sitediary.model.LoginInputModel
-import pt.isel.sitediary.model.SignUpInputModel
-import pt.isel.sitediary.model.TokenModel
-import pt.isel.sitediary.model.TokenOutputModel
+import pt.isel.sitediary.model.*
 import pt.isel.sitediary.service.UserService
 import pt.isel.sitediary.utils.Errors
 import pt.isel.sitediary.utils.Paths
@@ -106,6 +101,14 @@ class UserController(private val service: UserService) {
             response.addHeader(HttpHeaders.SET_COOKIE, cookieToken.toString())
             response.addHeader(HttpHeaders.SET_COOKIE, cookieId.toString())
             ResponseEntity.status(200).body(tokenValue)
+        }
+    }
+
+    @GetMapping(Paths.User.SESSION)
+    fun checkSession(@RequestBody u: SessionInputModel): ResponseEntity<*> {
+        val res = service.checkSession(u.userId, u.token)
+        return handleResponse(res) {
+            ResponseEntity.status(200).body(it)
         }
     }
 
