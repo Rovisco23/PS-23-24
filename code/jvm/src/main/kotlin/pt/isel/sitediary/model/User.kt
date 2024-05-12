@@ -75,9 +75,4 @@ data class TokenModel(val token: String)
 
 data class SessionInputModel(val userId: Int, val token: String)
 
-data class SessionModel(
-    val userId: Int,
-    val token: String,
-    val createdAt: Long,
-    val lastUsedAt: Long
-)
+data class SessionValidation(val valid: Boolean)

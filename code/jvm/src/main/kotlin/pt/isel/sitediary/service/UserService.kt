@@ -9,7 +9,7 @@ import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.model.EditProfileInputModel
 import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.model.GetUserModel
-import pt.isel.sitediary.model.SessionModel
+import pt.isel.sitediary.model.SessionValidation
 import pt.isel.sitediary.model.SignUpInputModel
 import pt.isel.sitediary.repository.transaction.TransactionManager
 import pt.isel.sitediary.utils.*
@@ -18,7 +18,7 @@ typealias UserCreationResult = Result<Errors, User>
 typealias LoginResult = Result<Errors, TokenExternalInfo>
 typealias LogoutResult = Result<Errors, String>
 typealias UserEditResult = Result<Errors, GetUserModel>
-typealias SessionResult = Result<Errors, SessionModel>
+typealias SessionResult = Result<Errors, SessionValidation>
 
 @Component
 class UserService(
@@ -88,11 +88,10 @@ class UserService(
 
     fun checkSession(userId: Int, token: String): SessionResult = transactionManager.run {
         val rep = it.tokenRepository
-        val session = rep.checkSession(userId, token)
-        if (session == null) {
-            failure(Errors.noUserLoggedIn)
+        if (!rep.checkSession(userId, token)) {
+            success(SessionValidation(false))
         } else {
-            success(session)
+            success(SessionValidation(true))
         }
     }
 

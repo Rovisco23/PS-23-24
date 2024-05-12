@@ -14,7 +14,6 @@ fun Jdbi.configureWithAppRequirements(): Jdbi {
     registerRowMapper(UserAndTokenMapper())
     registerRowMapper(WorkMapper())
     registerRowMapper(WorkSimplifiedMapper())
-    registerRowMapper(SessionMapper())
 
     return this
 }

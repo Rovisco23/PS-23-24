@@ -5,7 +5,6 @@ import pt.isel.sitediary.repository.TokenRepository
 import kotlinx.datetime.Instant
 import pt.isel.sitediary.domainmodel.authentication.Token
 import pt.isel.sitediary.domainmodel.authentication.TokenValidationInfo
-import pt.isel.sitediary.model.SessionModel
 
 class JdbiToken(private val handle: Handle) : TokenRepository {
     override fun createToken(token: Token, maxTokens: Int) {
@@ -40,13 +39,12 @@ class JdbiToken(private val handle: Handle) : TokenRepository {
     }
 
     override fun checkSession(userId: Int, token: String) = handle.createQuery(
-        "select * from sessao where uid = :user_id and token_validation = :token"
+        "select uid from sessao where uid = :user_id and token_validation = :token"
     )
         .bind("user_id", userId)
         .bind("token", token)
-        .mapTo(SessionModel::class.java)
-        .findFirst()
-        .orElse(null)
+        .mapTo(Int::class.java)
+        .singleOrNull() == userId
 
     override fun deleteToken(token: TokenValidationInfo) = handle.createUpdate(
         "delete from sessao where token_validation = :token_validation"
