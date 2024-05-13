@@ -1,0 +1,7 @@
+
+<section class="listing">
+  <img class="listing-photo" [src]="workListing.photo" alt="Exterior photo of {{workListing.name}}">
+  <h2 class="listing-heading">{{ workListing.name }}</h2>
+  <p class="listing-location">{{ workListing.city}}, {{workListing.state }}</p>
+  <a [routerLink]="['/work-details', workListing.id]">Learn More</a>
+</section>
