@@ -18,4 +18,9 @@ object Paths {
         const val GET_ALL_WORKS = "$PREFIX/work"
     }
 
+    object Log {
+        const val GET_BY_ID = "$PREFIX/logs/{id}"
+        const val GET_ALL_LOGS = "$PREFIX/logs"
+    }
+
 }
