@@ -72,3 +72,7 @@ data class UserAndTokenModel(
 data class TokenOutputModel(val userId: Int, val username: String, val token: String)
 
 data class TokenModel(val token: String)
+
+data class SessionInputModel(val userId: Int, val token: String)
+
+data class SessionValidation(val valid: Boolean)
