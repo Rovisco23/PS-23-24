@@ -1,6 +1,10 @@
-<main class="main">
-  <div class="content">
+<main>
+  <a [routerLink]="['/work']">
+    <header class="brand-name">
+      <img class="brand-logo" src="/assets/home.svg" alt="logo" aria-hidden="true">
+    </header>
+  </a>
+  <section class="content">
     <router-outlet></router-outlet>
-  </div>
+  </section>
 </main>
-<router-outlet />
