@@ -18,8 +18,8 @@ data class WorkSimplified(
     val id: UUID,
     val name: String,
     val description: String,
-    val type: WorkType,
-    val state: WorkState,
+    val type: String,
+    val state: String,
     val address: Address,
 )
 
@@ -46,30 +46,19 @@ data class OpeningTerm(
                 address.postalCode.isBlank() || address.location.county.isBlank()
 }
 
-enum class WorkType {
-    RESIDENCIAL,
-    COMERCIAL,
-    INDUSTRIAL,
-    INFRAESTRUTURA,
-    INSTITUCIONAL,
-    REABILITACAO,
-    ESTRUTURA_ESPECIAL,
-    OBRA_DE_ARTE,
-    HABITACAO,
-    EDIFICIOS_ESPECIAL;
+enum class WorkType(val description: String) {
+    RESIDENCIAL("RESIDENCIAL"),
+    COMERCIAL("COMERCIAL"),
+    INDUSTRIAL("INDUSTRIAL"),
+    INFRAESTRUTURA("INFRAESTRUTURA"),
+    INSTITUCIONAL("INSTITUCIONAL"),
+    REABILITACAO("REABILITAÇÃO"),
+    ESTRUTURA_ESPECIAL("ESTRUTURA ESPECIAL"),
+    OBRA_DE_ARTE("OBRA DE ARTE"),
+    HABITACAO("HABITAÇÃO"),
+    EDIFICIOS_ESPECIAL("EDIFICIOS ESPECIAL");
 
-    override fun toString() = when (this) {
-        RESIDENCIAL -> "RESIDENCIAL"
-        COMERCIAL -> "COMERCIAL"
-        INDUSTRIAL -> "INDUSTRIAL"
-        INFRAESTRUTURA -> "INFRAESTRUTURA"
-        INSTITUCIONAL -> "INSTITUCIONAL"
-        REABILITACAO -> "REABILITAÇÃO"
-        ESTRUTURA_ESPECIAL -> "ESTRUTURA ESPECIAL"
-        OBRA_DE_ARTE -> "OBRA DE ARTE"
-        HABITACAO -> "HABITAÇÃO"
-        EDIFICIOS_ESPECIAL -> "EDIFICIOS ESPECIAL"
-    }
+    override fun toString() = description
 
     companion object {
         fun fromString(type: String) = when (type) {

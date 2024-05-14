@@ -5,8 +5,6 @@ import org.jdbi.v3.core.statement.StatementContext
 import pt.isel.sitediary.domainmodel.work.Address
 import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.domainmodel.work.WorkSimplified
-import pt.isel.sitediary.domainmodel.work.WorkState
-import pt.isel.sitediary.domainmodel.work.WorkType
 import java.sql.ResultSet
 import java.util.*
 
@@ -16,8 +14,8 @@ class WorkSimplifiedMapper : RowMapper<WorkSimplified> {
             id = UUID.fromString(rs.getString("id")),
             name = rs.getString("nome"),
             description = rs.getString("descricao"),
-            type = WorkType.fromString(rs.getString("tipo")) ?: WorkType.RESIDENCIAL,
-            state = WorkState.fromString(rs.getString("estado")) ?: WorkState.IN_PROGRESS,
+            type = rs.getString("tipo"),
+            state = rs.getString("estado"),
             address = Address(
                 location = Location(
                     rs.getString("distrito"),
