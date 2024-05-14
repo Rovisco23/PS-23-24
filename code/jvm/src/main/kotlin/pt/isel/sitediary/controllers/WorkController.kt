@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
-import pt.isel.sitediary.domainmodel.work.OpeningTerm
 import pt.isel.sitediary.domainmodel.work.Work
 import pt.isel.sitediary.model.ListOfWorksOutputModel
+import pt.isel.sitediary.model.MemberInputModel
 import pt.isel.sitediary.model.OpeningTermInputModel
 import pt.isel.sitediary.service.WorkService
 import pt.isel.sitediary.utils.Errors
@@ -81,6 +81,29 @@ class WorkController(private val service: WorkService) {
         return handleResponse(res) {
             ResponseEntity.status(200).body(it)
         }
+    }
+
+    @PostMapping(Paths.Work.GET_BY_ID)
+    @Operation(summary = "Invite Members", description = "Used to to invite users to a work")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "Invites sent successfully",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = String::class)
+                    )
+                ]
+            )
+        ]
+    )
+    fun inviteMembers(
+        @PathVariable id: UUID,
+        @RequestBody members: List<MemberInputModel>,
+        @Parameter(hidden = true) user: AuthenticatedUser
+    ) {
+        val res = service.inviteMembers(members, id, user.user.id)
     }
 
     @PostMapping(Paths.Work.GET_ALL_WORKS)

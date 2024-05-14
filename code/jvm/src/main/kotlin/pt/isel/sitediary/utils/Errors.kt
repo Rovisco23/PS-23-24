@@ -39,6 +39,9 @@ class Errors(val status: Int, val reason: String) {
         val usernameAlreadyInUse = Errors(400, "That username is already in use.")
 
         val workNotFound = Errors(404, "Work does not exist.")
+
         val notMember = Errors(401, "You are not a member of this Work")
+
+        val notAdmin = Errors(401, "You are not an Admin of this Work")
     }
 }

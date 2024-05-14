@@ -3,13 +3,14 @@ package pt.isel.sitediary.service
 import kotlinx.datetime.Clock
 import org.springframework.stereotype.Component
 import pt.isel.sitediary.domainmodel.user.User
+import pt.isel.sitediary.domainmodel.user.checkAdmin
 import pt.isel.sitediary.domainmodel.user.containsMemberById
 import pt.isel.sitediary.domainmodel.work.Address
 import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.domainmodel.work.OpeningTerm
 import pt.isel.sitediary.domainmodel.work.Work
 import pt.isel.sitediary.domainmodel.work.WorkState.IN_PROGRESS
-import pt.isel.sitediary.model.OpeningTermInputModel
+import pt.isel.sitediary.model.MemberInputModel
 import pt.isel.sitediary.repository.transaction.TransactionManager
 import pt.isel.sitediary.utils.Errors
 import pt.isel.sitediary.utils.Result
@@ -73,6 +74,21 @@ class WorkService(
     fun getWorkList(skip: Int, userId: Int) = transactionManager.run {
         val work = it.workRepository.getWorkList(skip, userId) // List with next 6 Work for pagination
         success(work)
+    }
+
+    fun inviteMembers(members: List<MemberInputModel>, workId: UUID, userId: Int) {
+        transactionManager.run {
+            val work = it.workRepository.getById(workId)
+            if(work == null){
+                failure(Errors.workNotFound)
+            } else if(!work.members.checkAdmin(userId)){
+                failure(Errors.notAdmin)
+            } else {
+                for (m in members) {
+                    work.createInvites(m)
+                }
+            }
+        }
     }
 
 }

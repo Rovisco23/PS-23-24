@@ -37,3 +37,8 @@ data class OpeningTermInputModel(
         technicians = emptyList()
     )
 }
+
+data class MemberInputModel(
+    val email: String,
+    val role: String
+)

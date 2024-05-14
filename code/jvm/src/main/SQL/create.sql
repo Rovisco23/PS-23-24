@@ -10,7 +10,7 @@ drop table if exists MEMBRO;
 drop table if exists OBRA;
 drop table if exists SESSAO;
 drop table if exists UTILIZADOR;
---drop table if exists LOCALIDADE;
+drop table if exists LOCALIDADE;
 
 create table UTILIZADOR
 (
@@ -72,7 +72,7 @@ create table MEMBRO
     primary key (uId, oId),
     constraint UserId foreign key (uId) references UTILIZADOR (id),
     constraint ObraId foreign key (oId) references OBRA (id),
-    constraint Role CHECK (role IN ('ADMIN', 'MEMBRO', 'CAMARA'))
+    constraint Role CHECK (role IN ('ADMIN', 'MEMBRO', 'CAMARA', 'TECNICO'))
 );
 
 create table REGISTO
@@ -123,14 +123,14 @@ create table EMPRESA_CONSTRUCAO
     primary key (id)
 );
 
---create table LOCALIDADE
---(
---    id        serial,
---    distrito  varchar(255),
---    concelho  varchar(255),
---    freguesia varchar(255),
---    primary key (id)
---);
+create table LOCALIDADE
+(
+    id        serial,
+    distrito  varchar(255),
+    concelho  varchar(255),
+    freguesia varchar(255),
+    primary key (id)
+);
 
 create table TERMO_ABERTURA
 (

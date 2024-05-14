@@ -40,6 +40,7 @@ class SiteDiaryApplication {
 		tokenRollingTtl = 1.hours,
 		maxTokensPerUser = 1
 	)
+
 }
 
 @Configuration
