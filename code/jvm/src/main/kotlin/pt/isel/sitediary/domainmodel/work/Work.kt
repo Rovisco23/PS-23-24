@@ -1,7 +1,10 @@
 package pt.isel.sitediary.domainmodel.work
 
+import org.apache.commons.mail.DefaultAuthenticator
+import org.apache.commons.mail.SimpleEmail
 import pt.isel.sitediary.domainmodel.user.Member
 import pt.isel.sitediary.domainmodel.user.Technician
+import pt.isel.sitediary.model.MemberInputModel
 import java.util.*
 
 data class Work(
@@ -12,7 +15,22 @@ data class Work(
     val state: WorkState,
     val address: Address,
     val members: List<Member>
-)
+) {
+    fun createInvites(member: MemberInputModel) {
+        val mail = SimpleEmail()
+        mail.hostName = "smtp.googlemail.com"
+        mail.setSmtpPort(465)
+        mail.setAuthenticator(DefaultAuthenticator("ricardorovisco23@gmail.com", "jkqi ailn dgfa oyzt"))
+        mail.isSSLOnConnect = true
+        mail.setFrom("ricardorovisco23@gmail.com", "SiteDiary")
+        mail.addTo(member.email)
+        mail.subject = "Convite para a obra $name"
+        mail.setMsg("Olá\n\nFoi convidado para a obra $name para participar como ${member.role}.\n\n" +
+        "Clique no link para aceitar o convite: http://localhost:8080/accept-invite\n\n" +
+                "Cumprimentos,\nA equipa da SiteDiary")
+        mail.send()
+    }
+}
 
 data class WorkSimplified(
     val id: UUID,
