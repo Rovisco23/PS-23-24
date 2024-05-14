@@ -1,22 +1,28 @@
 import {Component, inject} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import {WorkListing} from "../work-listings/worklisting";
+import {Work} from "../work-listings/worklisting";
 import {WorkService} from "../work/work.service";
+import {HttpClientModule} from "@angular/common/http";
 
 @Component({
   selector: 'app-work-details',
   standalone: true,
-  imports: [],
+  imports: [
+    HttpClientModule,
+  ],
+  providers: [WorkService],
   templateUrl: './work-details.component.html',
   styleUrl: './work-details.component.css'
 })
 export class WorkDetailsComponent {
   route: ActivatedRoute = inject(ActivatedRoute);
   workService = inject(WorkService);
-  workListing : WorkListing | undefined;
+  work : Work | undefined;
   constructor() {
-    const workListingId =  Number(this.route.snapshot.params['id']);
-    this.workListing = this.workService.getWorkListingById(workListingId);
-
+    const workListingId =  String(this.route.snapshot.params['id']);
+    console.log("Dentro do Construtor")
+    this.workService.getWorkById(workListingId).subscribe((work: Work) => {
+      this.work = work;
+    });
   }
 }

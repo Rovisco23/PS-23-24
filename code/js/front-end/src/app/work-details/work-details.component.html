@@ -1,16 +1,15 @@
 <article>
-  <img class="listing-photo" [src]="workListing?.photo"
-       alt="Exterior photo of {{workListing?.name}}"/>
   <section class="listing-description">
-    <h2 class="listing-heading">{{workListing?.name}}</h2>
-    <p class="listing-location">{{workListing?.city}}, {{workListing?.state}}</p>
-  </section>
-  <section class="listing-features">
-    <h2 class="section-heading">About this housing location</h2>
-    <ul>
-      <li>Units available: {{workListing?.availableUnits}}</li>
-      <li>Does this location have wifi: {{workListing?.wifi}}</li>
-      <li>Does this location have laundry: {{workListing?.laundry}}</li>
-    </ul>
+    <h2 class="work-heading">{{ work?.name }}</h2>
+    <p class="work-type">Tipo: {{ work?.type }}</p>
+    <p class="work-state">Estado: {{ work?.state }}</p>
+    <p class="work-description">Descrição: {{ work?.description }}</p>
+    <p class="work-address">Morada: {{ work?.address?.street }}, {{ work?.address?.postalCode }}</p>
+    <p class="work-location">
+      Distrito: {{ work?.address?.location?.district }}<br>
+      Concelho: {{ work?.address?.location?.county }}<br>
+      Freguesia: {{ work?.address?.location?.parish }}
+    </p>
+    <p class="work-members">Membros: {{ work?.members }}</p>
   </section>
 </article>

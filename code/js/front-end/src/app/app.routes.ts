@@ -34,12 +34,12 @@ export const routes: Routes = [
     component: WorkDetailsComponent,
     title: 'Work details'
   },
-  /*{
+  {
     path: 'login',
     component: LoginComponent
   },
   {
     path: '**',
     redirectTo: '/work'
-  }*/
+  }
 ];
