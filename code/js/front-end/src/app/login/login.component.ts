@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import {Component, inject} from '@angular/core';
 import { Router } from "@angular/router";
 import {AuthService} from "../auth/auth.service";
 import {FormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
+import {WorkService} from "../work/work.service";
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,9 @@ export class LoginComponent {
   username: string = '';
   password: string = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  authService = inject(AuthService);
+
+  constructor(private router: Router) {}
 
   login(): void {
     this.authService.login(this.username, this.password).subscribe(res => {

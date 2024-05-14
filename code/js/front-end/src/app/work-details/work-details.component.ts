@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import {Work} from "../work-listings/worklisting";
+import {ActivatedRoute, Router} from '@angular/router';
+import {Member, Work} from "../work-listings/worklisting";
 import {WorkService} from "../work/work.service";
 import {HttpClientModule} from "@angular/common/http";
 
@@ -18,11 +18,19 @@ export class WorkDetailsComponent {
   route: ActivatedRoute = inject(ActivatedRoute);
   workService = inject(WorkService);
   work : Work | undefined;
-  constructor() {
+  constructor(private router: Router) {
     const workListingId =  String(this.route.snapshot.params['id']);
-    console.log("Dentro do Construtor")
     this.workService.getWorkById(workListingId).subscribe((work: Work) => {
       this.work = work;
     });
+  }
+
+  navigateToWorkMembers(id: string, members: Member[]) {
+    const navigationExtras = {
+      state: {
+        data: members
+      }
+    };
+    this.router.navigate(['/work-members', id], navigationExtras);
   }
 }

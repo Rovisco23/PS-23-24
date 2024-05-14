@@ -19,7 +19,7 @@ interface Location {
   parish: String
 }
 
-interface Member {
+export interface Member {
   id: number;
   name: string;
   role: string;

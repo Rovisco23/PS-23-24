@@ -3,6 +3,7 @@ import { LoginComponent } from "./login/login.component";
 import { WorkComponent } from "./work/work.component";
 import {TokenGuard} from "./token.guard";
 import {WorkDetailsComponent} from "./work-details/work-details.component";
+import {WorkMembersComponent} from "./work-members/work-members.component";
 
 export const routes: Routes = [
   {
@@ -33,6 +34,11 @@ export const routes: Routes = [
     path: 'work-details/:id',
     component: WorkDetailsComponent,
     title: 'Work details'
+  },
+  {
+    path: 'work-members/:id',
+    component: WorkMembersComponent,
+    title: 'Work members'
   },
   {
     path: 'login',

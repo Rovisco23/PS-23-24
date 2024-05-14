@@ -10,6 +10,6 @@
       Concelho: {{ work?.address?.location?.county }}<br>
       Freguesia: {{ work?.address?.location?.parish }}
     </p>
-    <p class="work-members">Membros: {{ work?.members }}</p>
+    <button class="work-button" (click)="navigateToWorkMembers(work?.id!!, work?.members!!)">Membros</button>
   </section>
 </article>
