@@ -1,6 +1,4 @@
 import {Component, inject} from '@angular/core';
-import {TopbarComponent} from "../topbar/topbar.component";
-import {SidebarComponent} from "../sidebar/sidebar.component";
 import {WorkListingsComponent} from "../work-listings/work-listings.component";
 import {CommonModule} from "@angular/common";
 import {WorkService} from './work.service';
@@ -13,9 +11,7 @@ import {HttpClientModule} from "@angular/common/http";
   imports: [
     HttpClientModule,
     CommonModule,
-    WorkListingsComponent,
-    TopbarComponent,
-    SidebarComponent
+    WorkListingsComponent
   ],
   providers: [WorkService],
   templateUrl: './work.component.html',

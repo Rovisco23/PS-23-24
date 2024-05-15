@@ -1,10 +1,35 @@
-<main>
-  <a [routerLink]="['/work']">
-    <header class="brand-name">
-      <img class="brand-logo" src="/assets/home.svg" alt="logo" aria-hidden="true">
-    </header>
-  </a>
-  <section class="content">
-    <router-outlet></router-outlet>
+<main class="main-container">
+  <mat-toolbar class="top-bar">
+    <button (click)="drawer.toggle()" mat-icon-button class="side-bar-button">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <a [routerLink]="['/work']">
+      <img src="./assets/logo-updated.png" alt="Site Diary" class="top-bar-image" >
+      <span class="logo-description">Site Diary</span>
+    </a>
+  </mat-toolbar>
+  <section class="container">
+    <mat-drawer-container class="full-height" hasBackdrop="false">
+      <mat-drawer #drawer mode="push" [class.side-bar-retracted]="!drawer.opened" [class.side-bar]="drawer.opened">
+        <button
+          class="side-option-button"
+          routerLinkActive="side-option-active"
+          routerLink="login">Login
+        </button>
+        <button
+          class="side-option-button"
+          routerLinkActive="side-option-active"
+          routerLink="work">Works
+        </button>
+        <button
+          class="side-option-button"
+          routerLinkActive="side-option-active"
+          routerLink="signup">Sign Up
+        </button>
+      </mat-drawer>
+      <mat-drawer-content>
+        <router-outlet></router-outlet>
+      </mat-drawer-content>
+    </mat-drawer-container>
   </section>
 </main>

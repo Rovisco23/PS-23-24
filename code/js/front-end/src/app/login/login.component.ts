@@ -3,7 +3,6 @@ import { Router } from "@angular/router";
 import {AuthService} from "../auth/auth.service";
 import {FormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
-import {WorkService} from "../work/work.service";
 
 @Component({
   selector: 'app-login',

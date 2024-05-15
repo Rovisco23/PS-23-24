@@ -13,6 +13,10 @@ export class AuthService {
     return this.http.post<any>('http://localhost:8080/api/login', { user, password })
   }
 
+  signup(email: string, username: string, password: string, firstName: string, lastName: string, nif: number, phone: string, parish: string, county: string, role: string): Observable<any> {
+    return this.http.post<any>('http://localhost:8080/api/signup', { email, username, password, firstName, lastName, nif, phone, parish, county, role})
+  }
+
   checkToken(): Observable<any> {
     return this.http.get<any>('http://localhost:8080/api/checkToken')
   }

@@ -1,0 +1,79 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.top-bar {
+  background-color: #11113D;
+  color: #FF7A00;
+}
+
+.top-bar a {
+  text-align: center;
+  text-decoration: none;
+}
+
+.top-bar-image {
+  height: 64px;
+  width: 64px;
+  vertical-align: middle;
+}
+
+.logo-description {
+  margin-left: 10px;
+  font-size: 20px;
+  color: #FF7A00;
+}
+
+.container {
+  height: 100%;
+}
+
+.full-height {
+  height: 100%;
+}
+
+.side-bar-wrapper {
+  display: flex;
+}
+
+.side-bar {
+  background-color: #11113D;
+  width: 200px;
+}
+
+.side-bar-retracted .side-bar {
+  width: 100px; /* Set the width of the sidebar when retracted */
+}
+
+.side-bar-button {
+  background-color: #11113D;
+  color: #FF7A00;
+  vertical-align: middle;
+}
+
+.side-option-button {
+  background-color: #11113D; /* Default background color */
+  color: #ffffff; /* Default text color */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s; /* Add transition for smooth effect */
+  width: 100%;
+}
+
+.side-option-button:hover {
+  background-color: #FF7A00;
+}
+
+.side-option-active {
+  background-color: #FF7A00;
+}
+
+@media all and (max-width: 500px) {
+  .container {
+    height: 95%;
+  }
+}

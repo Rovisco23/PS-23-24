@@ -4,11 +4,13 @@
   column-gap: 14px;
   row-gap: 14px;
   grid-template-columns: repeat(auto-fill, minmax(400px, 400px));
-  margin-top: 50px;
+  margin-top: 20px;
   justify-content: space-around;
 }
 
 input[type="text"] {
+  margin-top: 10px;
+  margin-left: 10px;
   border: solid 1px #000000;
   padding: 10px;
   border-radius: 8px;
@@ -18,6 +20,8 @@ input[type="text"] {
 }
 
 button {
+  margin-top: 10px;
+  margin-left: 10px;
   padding: 10px;
   border: solid 1px #020241;
   background: #0326da;
@@ -37,5 +41,6 @@ button {
 @media (max-width: 499px) {
   .results {
     grid-template-columns: 1fr;
+    height: 90%;
   }
 }
