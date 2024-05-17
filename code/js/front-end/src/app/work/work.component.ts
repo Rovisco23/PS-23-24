@@ -1,7 +1,7 @@
 import {Component, inject} from '@angular/core';
 import {WorkListingsComponent} from "../work-listings/work-listings.component";
 import {CommonModule} from "@angular/common";
-import {WorkService} from './work.service';
+import {HttpService} from '../http.service';
 import {WorkListing} from "../work-listings/worklisting";
 import {HttpClientModule} from "@angular/common/http";
 
@@ -13,17 +13,17 @@ import {HttpClientModule} from "@angular/common/http";
     CommonModule,
     WorkListingsComponent
   ],
-  providers: [WorkService],
+  providers: [HttpService],
   templateUrl: './work.component.html',
   styleUrl: './work.component.css'
 })
 export class WorkComponent {
   workListingsList: WorkListing[] = [];
   filteredWorkList: WorkListing[] = [];
-  workService: WorkService = inject(WorkService);
+  httpService: HttpService = inject(HttpService);
 
   constructor() {
-    this.workService.getWorkListings().subscribe(res => {
+    this.httpService.getWorkListings().subscribe(res => {
       this.workListingsList = res;
       this.filteredWorkList = this.workListingsList.slice(0, 10);
     });

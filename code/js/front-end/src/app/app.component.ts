@@ -1,18 +1,54 @@
 import {Component} from '@angular/core';
-import {RouterModule} from '@angular/router';
+import {NavigationEnd, Router, RouterModule} from '@angular/router';
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatSidenavModule} from "@angular/material/sidenav";
 import {MatIconModule} from "@angular/material/icon";
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {MatButton, MatIconButton} from "@angular/material/button";
+import {NgIf} from "@angular/common";
+import {filter} from 'rxjs/operators';
+import {HttpService} from "./http.service";
+import {HttpClientModule} from "@angular/common/http";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterModule, MatToolbarModule, MatSidenavModule, MatIconModule, RouterLink, RouterLinkActive, MatIconButton, MatButton],
+  imports: [
+    RouterModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatIconModule,
+    RouterLink,
+    RouterLinkActive,
+    MatIconButton,
+    MatButton,
+    HttpClientModule,
+    NgIf
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
+  providers: [HttpService],
 })
 export class AppComponent {
   title = 'livro-de-obra-eletronico';
+  showLayout = true;
+
+  logout(): void {
+    this.httpService.logout(localStorage.getItem('token')?? '').subscribe(() => {
+      console.log("Logout Done")
+      localStorage.removeItem('userId');
+      localStorage.removeItem('token');
+      this.router.navigate(['/login']);
+    })
+  }
+
+  constructor(private router: Router, private httpService: HttpService) {
+    this.router.events
+      .pipe(filter((events) => events instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        const navigationEndEvent = event as NavigationEnd;
+        this.showLayout = navigationEndEvent.urlAfterRedirects !== '/login' &&
+          navigationEndEvent.urlAfterRedirects !== '/signup';
+      })
+  }
 }

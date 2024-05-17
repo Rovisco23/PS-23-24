@@ -1,16 +1,21 @@
-<main class="main-container">
+<main class="main-container" *ngIf="showLayout">
   <mat-toolbar class="top-bar">
     <button (click)="drawer.toggle()" mat-icon-button class="side-bar-button">
       <mat-icon>menu</mat-icon>
     </button>
     <a [routerLink]="['/work']">
-      <img src="../assets/logo.png" alt="Site Diary" class="top-bar-image" >
+      <img src="./assets/logo.png" alt="Site Diary" class="top-bar-image">
       <span class="logo-description">Site Diary</span>
     </a>
+    <div class="profile">
+      <button (click)="drawerProfile.toggle()" class="profile-button">
+        <img src="./assets/profile.png" class="profile-image" alt="profile image">
+      </button>
+    </div>
   </mat-toolbar>
   <section class="container">
     <mat-drawer-container class="full-height" hasBackdrop="false">
-      <mat-drawer #drawer mode="push" [class.side-bar-retracted]="!drawer.opened" [class.side-bar]="drawer.opened">
+      <mat-drawer #drawer class="side-bar" mode="push">
         <button
           class="side-option-button"
           routerLinkActive="side-option-active"
@@ -27,9 +32,26 @@
           routerLink="signup">Sign Up
         </button>
       </mat-drawer>
+      <mat-drawer #drawerProfile class="profile-drawer" mode="over" position="end">
+        <div class="profile-content">
+          <button
+            class="side-option-button"
+            routerLinkActive="side-option-active"
+            routerLink="profile">Profile
+          </button>
+          <button
+            class="side-option-button"
+            routerLinkActive="side-option-active"
+            routerLink="Logout"
+            (click)="logout()">Logout
+          </button>
+        </div>
+      </mat-drawer>
       <mat-drawer-content>
         <router-outlet></router-outlet>
       </mat-drawer-content>
     </mat-drawer-container>
   </section>
 </main>
+  <router-outlet *ngIf="!showLayout"></router-outlet>
+

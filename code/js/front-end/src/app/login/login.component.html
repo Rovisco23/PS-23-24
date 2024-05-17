@@ -1,11 +1,35 @@
-<form (ngSubmit)="login()">
-  <div class="input">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" [(ngModel)]="username" required>
+<body>
+<div class="container">
+  <div class="left">
+    <img src="assets/logo.png" alt="" class="logo">
+    <h1 class="title">Site Diary</h1>
   </div>
-  <div class="input">
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" [(ngModel)]="password" required>
+  <div class="right">
+    <h1 class="page-title">Login</h1>
+    <form (ngSubmit)="login()">
+        <div class="input">
+          <div>
+            <label for="username">Username</label>
+          </div>
+          <div>
+            <input type="text" id="username" name="username" [(ngModel)]="username" required>
+          </div>
+        </div>
+        <div class="input">
+          <div>
+            <label for="password">Password</label>
+          </div>
+          <div>
+            <input type="password" id="password" name="password" [(ngModel)]="password" required>
+          </div>
+        </div>
+      <div >
+        <button mat-stroked-button class="button" type="submit">Login</button>
+      </div>
+    </form>
+    <div>
+      <p class="text">Don't have an account? <a [routerLink]="'/signup'">Register here.</a></p>
+    </div>
   </div>
-  <button class="button" type="submit">Login</button>
-</form>
+</div>
+</body>

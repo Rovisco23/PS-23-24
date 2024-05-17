@@ -1,5 +1,11 @@
-<article>
+<!--<article>
   <section class="listing-description">
+
+    <button class="work-button" (click)="navigateToWorkMembers(work?.id!!, work?.members!!)">Membros</button>
+  </section>
+</article>-->
+<mat-tab-group>
+  <mat-tab label="Geral">
     <h2 class="work-heading">{{ work?.name }}</h2>
     <p class="work-type">Tipo: {{ work?.type }}</p>
     <p class="work-state">Estado: {{ work?.state }}</p>
@@ -10,6 +16,11 @@
       Concelho: {{ work?.address?.location?.county }}<br>
       Freguesia: {{ work?.address?.location?.parish }}
     </p>
-    <button class="work-button" (click)="navigateToWorkMembers(work?.id!!, work?.members!!)">Membros</button>
-  </section>
-</article>
+  </mat-tab>
+  <mat-tab label="Equipa">
+    <ul>
+      <li *ngFor="let member of work?.members">{{ member.name }} | {{ member.role }}</li>
+    </ul>
+  </mat-tab>
+  <mat-tab label="Registos"> Content 3</mat-tab>
+</mat-tab-group>

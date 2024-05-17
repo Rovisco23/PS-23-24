@@ -1,0 +1,10 @@
+.tab {
+  background-color: #11113D;
+  color: #FF7A00;
+  width: auto;
+}
+
+.tab.mat-tab-label-active {
+  background-color: #FF7A00; /* Slightly darker cyan */
+  color: white;
+}

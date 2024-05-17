@@ -1,9 +1,71 @@
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #11113D;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.left {
+  text-align: center;
+  margin-right: 500px; /* Adjust as needed */
+}
+
+.logo {
+  max-width: 650px; /* Adjust as needed */
+  height: auto;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center items horizontally */
+}
+
 .input {
   margin: 10px;
+  text-align: center;
+}
+
+.title {
+  color: #FF7A00;
+  font-size: 64px;
+  font-family: "Monotype Corsiva", serif; /* Specify font family */
+}
+
+.page-title {
+  color: #FF7A00;
+  font-size: 40px;
+  font-family: Helvetica, serif; /* Specify font family */
+  margin-bottom: auto;
 }
 
 .button {
-  margin-left: 10px;
+  margin-top: 10px; /* Add some space between inputs and button */
   background-color: #FF7A00;
   color: white;
+  margin-left: 60px;
+}
+
+label {
+  color: white;
+  text-align: center;
+}
+
+.text {
+  color: #FF7A00;
+  text-align: center;
+}
+
+.text a {
+  color: white;
+  text-decoration: none;
 }

@@ -50,5 +50,5 @@ class JdbiToken(private val handle: Handle) : TokenRepository {
         "delete from sessao where token_validation = :token_validation"
     )
         .bind("token_validation", token.validationInfo)
-        .execute() == 0
+        .execute() == 1
 }

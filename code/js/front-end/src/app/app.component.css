@@ -5,6 +5,8 @@
 }
 
 .top-bar {
+  display: flex;
+  justify-content: space-between; /* Align items on the toolbar */
   background-color: #11113D;
   color: #FF7A00;
 }
@@ -34,17 +36,9 @@
   height: 100%;
 }
 
-.side-bar-wrapper {
-  display: flex;
-}
-
 .side-bar {
   background-color: #11113D;
   width: 200px;
-}
-
-.side-bar-retracted .side-bar {
-  width: 100px; /* Set the width of the sidebar when retracted */
 }
 
 .side-bar-button {
@@ -70,6 +64,35 @@
 
 .side-option-active {
   background-color: #FF7A00;
+}
+
+.profile {
+  display: flex; /* Enable flexbox for profile */
+  align-items: center; /* Align items vertically */
+}
+
+.profile-button {
+  background-color: transparent; /* Set button background to transparent */
+  border: none; /* Remove button border */
+  cursor: pointer;
+}
+
+.profile-image {
+  height: 50px;
+  width: 50px;
+  vertical-align: middle;
+}
+
+.profile-drawer {
+  background-color: #11113D;
+  width: 100px;
+  height: 8.5%;
+}
+
+.profile-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 @media all and (max-width: 500px) {

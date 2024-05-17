@@ -1,36 +1,33 @@
 import {Component, inject} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Member, Work} from "../work-listings/worklisting";
-import {WorkService} from "../work/work.service";
+import {Work} from "../work-listings/worklisting";
+import {HttpService} from '../http.service';
 import {HttpClientModule} from "@angular/common/http";
+import {MatTab, MatTabGroup} from "@angular/material/tabs";
+import {NgClass, NgForOf} from "@angular/common";
 
 @Component({
   selector: 'app-work-details',
   standalone: true,
   imports: [
     HttpClientModule,
+    MatTabGroup,
+    MatTab,
+    NgForOf,
+    NgClass,
   ],
-  providers: [WorkService],
+  providers: [HttpService],
   templateUrl: './work-details.component.html',
   styleUrl: './work-details.component.css'
 })
 export class WorkDetailsComponent {
   route: ActivatedRoute = inject(ActivatedRoute);
-  workService = inject(WorkService);
+  httpService = inject(HttpService);
   work : Work | undefined;
   constructor(private router: Router) {
     const workListingId =  String(this.route.snapshot.params['id']);
-    this.workService.getWorkById(workListingId).subscribe((work: Work) => {
+    this.httpService.getWorkById(workListingId).subscribe((work: Work) => {
       this.work = work;
     });
-  }
-
-  navigateToWorkMembers(id: string, members: Member[]) {
-    const navigationExtras = {
-      state: {
-        data: members
-      }
-    };
-    this.router.navigate(['/work-members', id], navigationExtras);
   }
 }

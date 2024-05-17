@@ -3,8 +3,8 @@ import { LoginComponent } from "./login/login.component";
 import { WorkComponent } from "./work/work.component";
 import {TokenGuard} from "./token.guard";
 import {WorkDetailsComponent} from "./work-details/work-details.component";
-import {WorkMembersComponent} from "./work-members/work-members.component";
 import {SignUpComponent} from "./sign-up/sign-up.component";
+import {ProfileComponent} from "./profile/profile.component";
 
 export const routes: Routes = [
   {
@@ -37,17 +37,16 @@ export const routes: Routes = [
     title: 'Work details'
   },
   {
-    path: 'work-members/:id',
-    component: WorkMembersComponent,
-    title: 'Work members'
-  },
-  {
     path: 'login',
     component: LoginComponent
   },
   {
     path: 'signup',
     component: SignUpComponent
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent
   },
   {
     path: '**',
