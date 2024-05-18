@@ -1,0 +1,51 @@
+<form (ngSubmit)="edit()">
+  <div class="input">
+    <div>
+      <label for="username">Username</label>
+    </div>
+    <div>
+      <input *ngIf="user" type="text" id="username" name="username" [(ngModel)]="user.username" required>
+    </div>
+  </div>
+  <div class="input">
+    <div>
+      <label for="firstName">First Name</label>
+    </div>
+    <div>
+      <input *ngIf="user" type="firstName" id="firstName" name="firstName" [(ngModel)]="user.firstName" required>
+    </div>
+  </div>
+  <div class="input">
+    <div>
+      <label for="lastName">Last Name</label>
+    </div>
+    <div>
+      <input *ngIf="user" type="text" id="lastName" name="lastName" [(ngModel)]="user.lastName" required>
+    </div>
+  </div>
+  <div class="input">
+    <div>
+      <label for="phone">Phone</label>
+    </div>
+    <div>
+      <input *ngIf="user" type="text" id="phone" name="phone" [(ngModel)]="user.phone">
+    </div>
+  </div>
+  <div class="input">
+    <div>
+      <label for="parish">Parish</label>
+    </div>
+    <div>
+      <input *ngIf="user" type="text" id="parish" name="parish" [(ngModel)]="user.location.parish">
+    </div>
+  </div>
+  <div class="input">
+    <div>
+      <label for="county">Parish</label>
+    </div>
+    <div>
+      <input *ngIf="user" type="text" id="county" name="county" [(ngModel)]="user.location.county">
+    </div>
+  </div>
+    <button mat-stroked-button class="button" type="submit">Submit</button>
+</form>

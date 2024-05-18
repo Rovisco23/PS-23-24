@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { WorkListing } from './worklisting';
+import { Classes } from '../classes';
 import {RouterLink} from "@angular/router";
 
 @Component({
@@ -13,5 +12,5 @@ import {RouterLink} from "@angular/router";
   styleUrl: './work-listings.component.css'
 })
 export class WorkListingsComponent {
-  @Input() workListing!: WorkListing;
+  @Input() workListing!: Classes;
 }

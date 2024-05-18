@@ -1,0 +1,19 @@
+form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Ensure the form takes the full height of the viewport */
+  margin: 0; /* Remove default margin */
+  flex-direction: column; /* Ensure content is arranged in a column */
+}
+
+.input {
+  margin: 5px;
+  text-align: center;
+}
+
+.button {
+  background-color: #FF7A00;
+  color: white;
+  margin-top: 20px; /* Add some space between inputs and button */
+}

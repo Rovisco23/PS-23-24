@@ -2,7 +2,7 @@ import {Component, inject} from '@angular/core';
 import {WorkListingsComponent} from "../work-listings/work-listings.component";
 import {CommonModule} from "@angular/common";
 import {HttpService} from '../http.service';
-import {WorkListing} from "../work-listings/worklisting";
+import {Classes} from "../classes";
 import {HttpClientModule} from "@angular/common/http";
 
 @Component({
@@ -18,8 +18,8 @@ import {HttpClientModule} from "@angular/common/http";
   styleUrl: './work.component.css'
 })
 export class WorkComponent {
-  workListingsList: WorkListing[] = [];
-  filteredWorkList: WorkListing[] = [];
+  workListingsList: Classes[] = [];
+  filteredWorkList: Classes[] = [];
   httpService: HttpService = inject(HttpService);
 
   constructor() {

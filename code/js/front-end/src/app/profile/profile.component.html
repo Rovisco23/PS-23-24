@@ -1,1 +1,28 @@
-<p>profile works!</p>
+<body  *ngIf="!edit">
+  <div>
+    <img src="assets/profile.png" alt="" class="profile-image">
+  </div>
+<div>
+  <p>{{ user?.username }}</p>
+</div>
+  <div>
+    <p>{{ user?.email }}</p>
+  </div>
+  <div>
+    <p>{{ user?.phone }}</p>
+  </div>
+  <div>
+    <p>{{ user?.firstName }}</p>
+  </div>
+  <div>
+    <p>{{ user?.lastName }}</p>
+  </div>
+  <div>
+    <p>{{ user?.role }}</p>
+  </div>
+  <div>
+    <p>{{ user?.location?.parish }}, {{ user?.location?.county }}, {{ user?.location?.district }}</p>
+  </div>
+  <button (click)="editCall()">Edit Profile</button>
+</body>
+<router-outlet *ngIf="edit"></router-outlet>

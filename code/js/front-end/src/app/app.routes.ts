@@ -5,6 +5,7 @@ import {TokenGuard} from "./token.guard";
 import {WorkDetailsComponent} from "./work-details/work-details.component";
 import {SignUpComponent} from "./sign-up/sign-up.component";
 import {ProfileComponent} from "./profile/profile.component";
+import {EditProfileComponent} from "./edit-profile/edit-profile.component";
 
 export const routes: Routes = [
   {
@@ -46,7 +47,11 @@ export const routes: Routes = [
   },
   {
     path: 'profile',
-    component: ProfileComponent
+    component: ProfileComponent,
+    children: [{
+      path: 'edit',
+      component: EditProfileComponent
+    }]
   },
   {
     path: '**',

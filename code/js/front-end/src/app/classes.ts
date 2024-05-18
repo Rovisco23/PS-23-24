@@ -1,4 +1,4 @@
-export interface WorkListing {
+export interface Classes {
   id: string;
   name: string;
   description: string;
@@ -34,3 +34,14 @@ export interface Work {
   state: string;
   members: Member[];
 }
+
+export interface User {
+  username: String,
+  email: String,
+  phone: String | null,
+  firstName: String,
+  lastName: String,
+  role: String,
+  location: Location
+}
+

@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: hidden;
 }
 
 .top-bar {
@@ -86,13 +87,12 @@
 .profile-drawer {
   background-color: #11113D;
   width: 100px;
-  height: 8.5%;
+  height: fit-content;
 }
 
 .profile-content {
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
 @media all and (max-width: 500px) {
