@@ -1,8 +1,8 @@
 import {Component, inject} from '@angular/core';
 import {WorkListingsComponent} from "../work-listings/work-listings.component";
 import {CommonModule} from "@angular/common";
-import {HttpService} from '../http.service';
-import {Classes} from "../classes";
+import {HttpService} from '../utils/http.service';
+import {Classes} from "../utils/classes";
 import {HttpClientModule} from "@angular/common/http";
 
 @Component({

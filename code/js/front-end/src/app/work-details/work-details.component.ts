@@ -1,7 +1,7 @@
 import {Component, inject} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import {Work} from "../classes";
-import {HttpService} from '../http.service';
+import {Work} from "../utils/classes";
+import {HttpService} from '../utils/http.service';
 import {HttpClientModule} from "@angular/common/http";
 import {MatTab, MatTabGroup} from "@angular/material/tabs";
 import {NgClass, NgForOf} from "@angular/common";

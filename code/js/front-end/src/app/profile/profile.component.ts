@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
-import {HttpService} from "../http.service";
-import {User} from "../classes";
+import {HttpService} from "../utils/http.service";
+import {User} from "../utils/classes";
 import {ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 import {NgIf} from "@angular/common";
 

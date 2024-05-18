@@ -1,7 +1,7 @@
 import {Component, inject} from '@angular/core';
-import {HttpService} from "../http.service";
+import {HttpService} from "../utils/http.service";
 import {Router} from "@angular/router";
-import {User} from "../classes";
+import {User} from "../utils/classes";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatButton} from "@angular/material/button";
 import {NgIf} from "@angular/common";

@@ -1,4 +1,4 @@
-const concelhos = {
+const counties = {
   "Aveiro": ["Águeda", "Albergaria-a-Velha", "Anadia", "Arouca", "Aveiro", "Castelo de Paiva", "Espinho", "Estarreja", "Santa Maria da Feira", "Ílhavo", "Mealhada", "Murtosa", "Oliveira de Azeméis", "Oliveira do Bairro", "Ovar", "São João da Madeira", "Sever do Vouga", "Vagos", "Vale de Cambra"],
   "Beja": ["Aljustrel", "Almodôvar", "Alvito", "Barrancos", "Beja", "Castro Verde", "Cuba", "Ferreira do Alentejo", "Mértola", "Moura", "Odemira", "Ourique", "Serpa", "Vidigueira"],
   "Braga": ["Amares", "Barcelos", "Braga", "Cabeceiras de Basto", "Celorico de Basto", "Esposende", "Fafe", "Guimarães", "Póvoa de Lanhoso", "Terras de Bouro", "Vieira do Minho", "Vila Nova de Famalicão", "Vila Verde", "Vizela"],
@@ -30,7 +30,7 @@ const concelhos = {
   "Ilha do Corvo": ["Corvo"],
 }
 
-const freguesias = {
+const parishes = {
   "Águeda": ["Aguada de Cima", "Fermentelos", "Macinhata do Vouga", "Valongo do Vouga", "União das freguesias de Águeda e Borralha", "União das freguesias de Barrô e Aguada de Baixo", "União das freguesias de Belazaima do Chão, Castanheira do Vouga e Agadão", "União das freguesias de Recardães e Espinhel", "União das freguesias de Travassô e Óis da Ribeira", "União das freguesias de Trofa, Segadães e Lamas do Vouga", "União das freguesias do Préstimo e Macieira de Alcoba"],
   "Albergaria-a-Velha": ["Alquerubim", "Angeja", "Branca", "Ribeira de Fráguas", "Albergaria-a-Velha e Valmaior", "São João de Loure e Frossos"],
   "Anadia": ["Avelãs de Caminho", "Avelãs de Cima", "Moita", "Sangalhos", "São Lourenço do Bairro", "Vila Nova de Monsarros", "Vilarinho do Bairro", "União das freguesias de Amoreira da Gândara, Paredes do Bairro e Ancas", "União das freguesias de Arcos e Mogofores", "União das freguesias de Tamengos, Aguim e Óis do Bairro"],
@@ -338,3 +338,17 @@ const freguesias = {
   "Santa Cruz das Flores": ["Caveira", "Cedros", "Ponta Delgada", "Santa Cruz das Flores"],
   "Corvo": ["Corvo"],
 }
+
+export const concelhos = new Map();
+
+export const freguesias = new Map();
+
+Object.keys(counties).forEach(c => {
+  const concelhoList = counties[c];
+  concelhos.set(c, concelhoList);
+});
+
+Object.keys(parishes).forEach(f => {
+  const freguesiaList = parishes[f];
+  freguesias.set(f, freguesiaList);
+});

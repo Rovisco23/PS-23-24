@@ -1,0 +1,22 @@
+<form (ngSubmit)="create()">
+  <div>
+    <label>Select County</label>
+    <select name="county">
+      <ng-container *ngFor="let distrito of concelhos | keyvalue">
+        <ng-container *ngFor="let concelho of distrito.value">
+          <option [value]="concelho">{{ concelho }}</option>
+        </ng-container>
+      </ng-container>
+    </select>
+  </div>
+  <div>
+    <label>Select Parish</label>
+    <select name="Parish">
+      <ng-container *ngFor="let concelho of freguesias | keyvalue">
+        <ng-container *ngFor="let freguesia of concelho.value">
+          <option [value]="freguesia">{{ freguesia }}</option>
+        </ng-container>
+      </ng-container>
+    </select>
+  </div>
+</form>

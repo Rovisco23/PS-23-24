@@ -1,11 +1,12 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from "./login/login.component";
 import { WorkComponent } from "./work/work.component";
-import {TokenGuard} from "./token.guard";
+import {TokenGuard} from "./utils/token.guard";
 import {WorkDetailsComponent} from "./work-details/work-details.component";
 import {SignUpComponent} from "./sign-up/sign-up.component";
 import {ProfileComponent} from "./profile/profile.component";
 import {EditProfileComponent} from "./edit-profile/edit-profile.component";
+import {CreateWorkComponent} from "./create-work/create-work.component";
 
 export const routes: Routes = [
   {
@@ -65,6 +66,10 @@ export const routes: Routes = [
     path: 'edit-profile',
     component: EditProfileComponent,
     canActivate: [TokenGuard],
+  },
+  {
+    path: 'create-work',
+    component: CreateWorkComponent,
   },
   {
     path: '**',

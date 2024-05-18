@@ -1,7 +1,7 @@
 import {Component, inject} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {Router, RouterLink, RouterLinkActive} from "@angular/router";
-import {HttpService} from "../http.service";
+import {HttpService} from "../utils/http.service";
 import {HttpClientModule} from "@angular/common/http";
 import {MatButton} from "@angular/material/button";
 

@@ -35,8 +35,13 @@ export interface Work {
   members: Member[];
 }
 
+export interface Company {
+  name: string;
+  num: number;
+}
+
 export interface User {
-  id: String,
+  id: String
   username: String,
   email: String,
   phone: String | null,
@@ -46,3 +51,13 @@ export interface User {
   location: Location
 }
 
+export interface InputWork {
+  name: string;
+  type: string;
+  description: string;
+  holder: string;
+  director: string;
+  company: Company;
+  building: string;
+  address: Address
+}

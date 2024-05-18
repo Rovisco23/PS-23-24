@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Classes } from '../classes';
+import { Classes } from '../utils/classes';
 import {RouterLink} from "@angular/router";
 
 @Component({

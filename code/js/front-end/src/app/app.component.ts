@@ -7,7 +7,7 @@ import {RouterLink, RouterLinkActive} from "@angular/router";
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {NgIf} from "@angular/common";
 import {filter} from 'rxjs/operators';
-import {HttpService} from "./http.service";
+import {HttpService} from "./utils/http.service";
 import {HttpClientModule} from "@angular/common/http";
 
 @Component({
