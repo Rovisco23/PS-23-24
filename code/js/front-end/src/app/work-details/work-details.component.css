@@ -1,10 +1,21 @@
-.tab {
-  background-color: #11113D;
-  color: #FF7A00;
-  width: auto;
+
+.members-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
 }
 
-.tab.mat-tab-label-active {
-  background-color: #FF7A00; /* Slightly darker cyan */
-  color: white;
+.member-profile {
+  width: 150px;
+  text-align: center;
+}
+
+.member-card {
+  margin: 10px;
+  width: 250px;
+  height: 250px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #000000;
 }

@@ -24,7 +24,8 @@ export class EditProfileComponent {
   httpService = inject(HttpService);
 
   constructor(private router: Router) {
-    this.httpService.getProfile().subscribe((user: User) => {
+    const uId =  localStorage.getItem('userId');
+    this.httpService.getProfile(uId!!).subscribe((user: User) => {
       this.user = user;
     });
   }

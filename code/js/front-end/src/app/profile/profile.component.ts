@@ -34,13 +34,18 @@ export class ProfileComponent {
   }
 
   loadUser() {
-    this.httpService.getProfile().subscribe((user: User) => {
+    const uId = String(this.route.snapshot.params['id'] ?? localStorage.getItem('userId'));
+    this.httpService.getProfile(uId).subscribe((user: User) => {
       this.user = user;
     });
   }
 
+  isOwner() {
+    return String(this.user?.id) === localStorage.getItem('userId');
+  }
+
   editCall() {
     this.edit = true;
-    this.router.navigate(['/profile/edit']);
+    this.router.navigate(['/edit-profile']);
   }
 }

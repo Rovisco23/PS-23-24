@@ -1,9 +1,3 @@
-<!--<article>
-  <section class="listing-description">
-
-    <button class="work-button" (click)="navigateToWorkMembers(work?.id!!, work?.members!!)">Membros</button>
-  </section>
-</article>-->
 <mat-tab-group>
   <mat-tab label="Geral">
     <h2 class="work-heading">{{ work?.name }}</h2>
@@ -18,9 +12,15 @@
     </p>
   </mat-tab>
   <mat-tab label="Equipa">
-    <ul>
-      <li *ngFor="let member of work?.members">{{ member.name }} | {{ member.role }}</li>
-    </ul>
+    <div class="members-container">
+      <mat-card *ngFor="let member of work?.members" class="member-card" (click)="onCardClick(member.id)">
+        <img mat-card-image src="/assets/profile.png" alt="{{ member.name }}" class="member-profile">
+        <mat-card-header>
+          <mat-card-title>{{ member.name }}</mat-card-title>
+          <mat-card-subtitle>{{ member.role }}</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+    </div>
   </mat-tab>
   <mat-tab label="Registos"> Content 3</mat-tab>
 </mat-tab-group>

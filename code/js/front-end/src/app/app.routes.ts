@@ -35,6 +35,7 @@ export const routes: Routes = [
   {
     path: 'work-details/:id',
     component: WorkDetailsComponent,
+    canActivate: [TokenGuard],
     title: 'Work details'
   },
   {
@@ -46,12 +47,24 @@ export const routes: Routes = [
     component: SignUpComponent
   },
   {
+    path: 'profile/:id',
+    component: ProfileComponent,
+    canActivate: [TokenGuard],
+  },
+  {
     path: 'profile',
     component: ProfileComponent,
+    canActivate: [TokenGuard],
     children: [{
       path: 'edit',
+      canActivate: [TokenGuard],
       component: EditProfileComponent
     }]
+  },
+  {
+    path: 'edit-profile',
+    component: EditProfileComponent,
+    canActivate: [TokenGuard],
   },
   {
     path: '**',

@@ -51,8 +51,7 @@ export class HttpService {
     return this.http.get<Classes>(`http://localhost:8080/api/work/${id}`, { headers: headers })
   }
 
-  getProfile() {
-    const id = localStorage.getItem('userId');
+  getProfile(id: string): Observable<any> {
     const headers = this.getTokenHeader();
     return this.http.get<any>(`http://localhost:8080/api/users/${id}`, {headers: headers})
   }

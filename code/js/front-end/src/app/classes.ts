@@ -36,6 +36,7 @@ export interface Work {
 }
 
 export interface User {
+  id: String,
   username: String,
   email: String,
   phone: String | null,
