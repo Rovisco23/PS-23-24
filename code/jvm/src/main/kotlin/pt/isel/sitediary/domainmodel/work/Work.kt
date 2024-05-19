@@ -15,7 +15,7 @@ data class Work(
     val state: WorkState,
     val address: Address,
     val members: List<Member>,
-    //val log: List<LogEntry>
+    //val log: List<LogEntrySimplified>
 ) {
     fun createInvites(member: MemberInputModel) {
         val mail = SimpleEmail()
