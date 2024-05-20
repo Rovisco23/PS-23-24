@@ -71,6 +71,6 @@ export class HttpService {
 
   createWork(work: InputWork): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.post<any>('http://localhost:8080/api/work', {work}, { headers: headers })
+    return this.http.post<any>('http://localhost:8080/api/work', work, { headers: headers })
   }
 }

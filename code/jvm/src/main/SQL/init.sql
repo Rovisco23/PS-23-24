@@ -15,6 +15,7 @@ insert into utilizador(email, role, username, password, nome, apelido, nif, tele
     ('joaomota15@gmail.com', 'CÂMARA', 'JMota15', '12345', 'João', 'Mota', 123454332, '917709988', 'Margem', 'Sul', 'Nárnia');
 
 -- Alterar local do ficheiro conforme necessário
-COPY LOCALIDADE (distrito, concelho, freguesia) FROM 'C:\Users\ricar\Documents\Universidade\Projeto\PS-23-24\docs\localidades.csv' DELIMITER ';' CSV HEADER;
+COPY LOCALIDADE (distrito, concelho, freguesia)
+    FROM 'E:\Documentos\Universidade\Projeto\PS-23-24\docs\localidades.csv' DELIMITER ';' CSV HEADER;
 
 --insert into membro(oid, uid, role) values ('6e963d9b-d522-43cf-8cf0-9fab0bef5779', 2, 'MEMBRO');

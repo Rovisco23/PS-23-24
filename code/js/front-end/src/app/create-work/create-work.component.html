@@ -1,7 +1,72 @@
 <form (ngSubmit)="create()">
+  <div class="input">
+    <div>
+      <label for="name">Name </label>
+    </div>
+    <div>
+      <input type="text" id="name" name="name" [(ngModel)]="work.name" required>
+    </div>
+  </div>
   <div>
-    <label>Select County</label>
-    <select name="county">
+    <label>Work Type </label>
+    <select name="Type" [(ngModel)]="work.type">
+      <ng-container *ngFor="let type of types">
+        <option [value]="type">{{ type }}</option>
+      </ng-container>
+    </select>
+  </div>
+  <div class="input">
+    <div>
+      <label for="description">Description</label>
+    </div>
+    <div>
+      <input type="text" id="description" name="description" [(ngModel)]="work.description" required>
+    </div>
+  </div>
+  <div class="input">
+    <div>
+      <label for="holder">Holder</label>
+    </div>
+    <div>
+      <input type="text" id="holder" name="holder" [(ngModel)]="work.holder" required>
+    </div>
+  </div>
+  <div class="input">
+    <div>
+      <label for="director">Director</label>
+    </div>
+    <div>
+      <input type="text" id="director" name="director" [(ngModel)]="work.director" required>
+    </div>
+  </div>
+  <div class="input">
+    <div>
+      <label for="company">Company</label>
+    </div>
+    <div>
+      <input type="text" id="company" name="company" [(ngModel)]="work.company.name" required>
+      <input type="text" id="companyNum" name="companyNum" [(ngModel)]="work.company.num" required>
+    </div>
+  </div>
+  <div class="input">
+    <div>
+      <label for="building">Building</label>
+    </div>
+    <div>
+      <input type="text" id="building" name="building" [(ngModel)]="work.building" required>
+    </div>
+  </div>
+  <div>
+    <label>Select District </label>
+    <select name="district" [(ngModel)]="work.address.location.district">
+      <ng-container *ngFor="let distrito of concelhos | keyvalue">
+        <option [value]="distrito.key">{{ distrito.key }}</option>
+      </ng-container>
+    </select>
+  </div>
+  <div>
+    <label>Select County </label>
+    <select name="county" [(ngModel)]="work.address.location.county">
       <ng-container *ngFor="let distrito of concelhos | keyvalue">
         <ng-container *ngFor="let concelho of distrito.value">
           <option [value]="concelho">{{ concelho }}</option>
@@ -10,8 +75,8 @@
     </select>
   </div>
   <div>
-    <label>Select Parish</label>
-    <select name="Parish">
+    <label>Select Parish </label>
+    <select name="Parish" [(ngModel)]="work.address.location.parish">
       <ng-container *ngFor="let concelho of freguesias | keyvalue">
         <ng-container *ngFor="let freguesia of concelho.value">
           <option [value]="freguesia">{{ freguesia }}</option>
@@ -19,4 +84,15 @@
       </ng-container>
     </select>
   </div>
+  <div class="input">
+    <div>
+      <label for="street">Street</label>
+    </div>
+    <div>
+      <input type="text" id="street" name="street" [(ngModel)]="work.address.street" required>
+      <input type="text" id="zipCode" name="zipCode" [(ngModel)]="work.address.postalCode" required>
+    </div>
+  </div>
+  <button type="submit">Submit</button>
 </form>
+<button (click)="check()">Check</button>

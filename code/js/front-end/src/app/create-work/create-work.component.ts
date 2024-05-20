@@ -1,7 +1,7 @@
 import {Component, inject} from '@angular/core';
 import {freguesias, concelhos} from '../utils/utils';
 import {HttpService} from "../utils/http.service";
-import {InputWork} from "../utils/classes";
+import {InputWork, WorkTypes} from "../utils/classes";
 import {Router} from "@angular/router";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatButton} from "@angular/material/button";
@@ -27,7 +27,8 @@ import {CommonModule, NgForOf, NgIf} from "@angular/common";
 })
 export class CreateWorkComponent {
 
-  work: InputWork | undefined = undefined;
+  work: InputWork;
+  types = Object.values(WorkTypes);
 
   httpService = inject(HttpService)
 
@@ -59,13 +60,15 @@ export class CreateWorkComponent {
   }
 
   create() {
-    if (this.work) {
-      this.httpService.createWork(this.work).subscribe(() => {
-        console.log("Sign Up Finished");
-        this.router.navigate(['/login']);
-      })
-    } else {
-      this.router.navigate(['/login']);
-    }
+    this.httpService.createWork(this.work).subscribe(() => {
+      console.log("Work Created!");
+      this.router.navigate(['/work']);
+    });
+  }
+
+  check() {
+    console.log("District: " + this.work?.address.location.district);
+    console.log("County: " + this.work?.address.location.county);
+    console.log("Parish: " + this.work?.address.location.parish);
   }
 }

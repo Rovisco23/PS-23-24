@@ -61,3 +61,17 @@ export interface InputWork {
   building: string;
   address: Address
 }
+
+
+export enum  WorkTypes {
+  Residential = 'RESIDENCIAL',
+  Comercial ='COMERCIAL',
+  Industrial = 'INDUSTRIAL',
+  Infrastructural = 'INFRAESTRUTURA',
+  Institutional = 'INSTITUCIONAL',
+  Rehabilitation ='REABILITAÇÃO',
+  Special_Structure = 'ESTRUTURA ESPECIAL',
+  Work_of_Art = 'OBRA DE ARTE',
+  Habitation = 'HABITAÇÃO',
+  Special_Building ='EDIFICIOS ESPECIAL'
+}
