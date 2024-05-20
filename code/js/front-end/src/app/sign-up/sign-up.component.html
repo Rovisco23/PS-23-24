@@ -66,18 +66,26 @@
       </div>
       <div class="input">
         <div>
-          <label for="parish">Parish</label>
+          <label>County</label>
         </div>
         <div>
-          <input type="text" id="parish" name="parish" [(ngModel)]="parish" required>
+          <select class="selector" name="county" [(ngModel)]="county">
+            <ng-container *ngFor="let concelho of counties">
+              <option [value]="concelho">{{ concelho }}</option>
+            </ng-container>
+          </select>
         </div>
       </div>
       <div class="input">
         <div>
-          <label for="county">County</label>
+          <label>Parish</label>
         </div>
         <div>
-          <input type="text" id="county" name="county" [(ngModel)]="county" required>
+          <select class="selector" name="Parish" [(ngModel)]="parish" (change)="updateLocation()">
+            <ng-container *ngFor="let freguesia of parishes">
+              <option [value]="freguesia">{{ freguesia }}</option>
+            </ng-container>
+          </select>
         </div>
       </div>
       <div class="input">

@@ -4,6 +4,8 @@ import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {HttpService} from "../utils/http.service";
 import {HttpClientModule} from "@angular/common/http";
 import {MatButton} from "@angular/material/button";
+import {NgForOf} from "@angular/common";
+import {concelhos, freguesias} from "../utils/utils";
 
 @Component({
   selector: 'app-sign-up',
@@ -14,7 +16,8 @@ import {MatButton} from "@angular/material/button";
     ReactiveFormsModule,
     MatButton,
     RouterLink,
-    RouterLinkActive
+    RouterLinkActive,
+    NgForOf
   ],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.css',
@@ -35,13 +38,35 @@ export class SignUpComponent {
 
   isChecked: boolean = false;
 
+  counties: string[] = [];
+  parishes: string[] = [];
+
   httpService = inject(HttpService);
 
   constructor(private router: Router) {
+    concelhos.forEach((value) => {
+      value.forEach((v: string) => this.counties.push(v));
+    })
+    freguesias.forEach((value) => {
+      value.forEach((x: string) => this.parishes.push(x));
+    })
   }
 
-  changeRole():void {
+  changeRole(): void {
     this.role = this.isChecked ? 'CÂMARA' : 'OPERÁRIO';
+  }
+
+  updateLocation() {
+    const selectedParish = this.parish;
+    const cList: string[] = [];
+    for (const c of freguesias.keys()) {
+      const pList = freguesias.get(c);
+      if (pList.includes(selectedParish)) {
+        cList.push(c);
+      }
+    }
+    this.counties = cList;
+    this.county = this.counties[0];
   }
 
   signUp(): void {

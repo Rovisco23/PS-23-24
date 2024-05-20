@@ -1,0 +1,26 @@
+form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  flex-direction: column; /* Ensure content is arranged in a column */
+}
+
+.input {
+  margin: 5px;
+  text-align: center;
+}
+
+.selector {
+  margin: 5px;
+  width: 200px;
+}
+
+.button {
+  margin-top: 10px; /* Add some space between inputs and button */
+  background-color: #FF7A00;
+  color: white;
+}
+
+
+

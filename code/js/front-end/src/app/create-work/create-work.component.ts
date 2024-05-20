@@ -32,8 +32,9 @@ export class CreateWorkComponent {
 
   httpService = inject(HttpService)
 
-  concelhos = concelhos;
-  freguesias = freguesias;
+  counties: string[] = [];
+  parishes: string[] = [];
+  districts: string[] = [];
 
   constructor(private router: Router) {
     this.work = {
@@ -57,6 +58,50 @@ export class CreateWorkComponent {
         postalCode: ''
       }
     }
+    concelhos.forEach((value, key) => {
+      value.forEach((v: string) => this.counties.push(v));
+      this.districts.push(key);
+    })
+    freguesias.forEach((value) => {
+      value.forEach((x: string) => this.parishes.push(x));
+    })
+  }
+
+  updateLocation(change: boolean) {
+    const selectedParish = this.work.address.location.parish;
+    const selectedCounty = this.work.address.location.county;
+    if (!change) {
+      const cList: string[] = [];
+      const dList: string[] = [];
+      for (const c of freguesias.keys()) {
+        const pList = freguesias.get(c);
+        if (pList.includes(selectedParish)) {
+          cList.push(c);
+        }
+      }
+      for (const d of concelhos.keys()) {
+        const conList = concelhos.get(d);
+        for (const c of cList) {
+          if (conList.includes(c)) {
+            dList.push(d);
+          }
+        }
+      }
+      this.counties = cList;
+      this.districts = dList;
+      this.work.address.location.county = cList[0];
+    }
+    if (change) {
+      const dList: string[] = [];
+      for (const d of concelhos.keys()) {
+        const cList = concelhos.get(d);
+        if (cList.includes(selectedCounty)) {
+          dList.push(d);
+        }
+      }
+      this.districts = dList;
+    }
+    this.work.address.location.district = this.districts[0];
   }
 
   create() {
@@ -64,11 +109,5 @@ export class CreateWorkComponent {
       console.log("Work Created!");
       this.router.navigate(['/work']);
     });
-  }
-
-  check() {
-    console.log("District: " + this.work?.address.location.district);
-    console.log("County: " + this.work?.address.location.county);
-    console.log("Parish: " + this.work?.address.location.parish);
   }
 }

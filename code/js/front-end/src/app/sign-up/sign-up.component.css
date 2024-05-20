@@ -32,8 +32,13 @@ body {
 }
 
 .input {
-  margin: 10px;
+  margin: 5px;
   text-align: center;
+}
+
+.selector {
+  margin: 5px;
+  width: 200px;
 }
 
 .title {
