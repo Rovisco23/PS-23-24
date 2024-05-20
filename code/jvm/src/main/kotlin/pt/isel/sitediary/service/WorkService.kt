@@ -52,7 +52,8 @@ class WorkService(
                         openingTerm.address.street,
                         openingTerm.address.postalCode
                     ),
-                    members = listOf(user.toMember())
+                    members = listOf(user.toMember()),
+                    log = emptyList()
                 )
                 workRep.createWork(work, openingTerm, user.id)
                 success(work)

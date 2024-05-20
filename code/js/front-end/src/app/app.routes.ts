@@ -7,6 +7,8 @@ import {SignUpComponent} from "./sign-up/sign-up.component";
 import {ProfileComponent} from "./profile/profile.component";
 import {EditProfileComponent} from "./edit-profile/edit-profile.component";
 import {CreateWorkComponent} from "./create-work/create-work.component";
+import {LogEntryDetailsComponent} from "./log-entry-details/log-entry-details.component";
+import {CreateLogEntryComponent} from "./create-log-entry/create-log-entry.component";
 
 export const routes: Routes = [
   {
@@ -70,6 +72,17 @@ export const routes: Routes = [
   {
     path: 'create-work',
     component: CreateWorkComponent,
+    canActivate: [TokenGuard],
+  },
+  {
+    path: 'log-entry/:id',
+    component: LogEntryDetailsComponent,
+    canActivate: [TokenGuard],
+  },
+  {
+    path: 'create-log-entry/:id',
+    component: CreateLogEntryComponent,
+    canActivate: [TokenGuard],
   },
   {
     path: '**',

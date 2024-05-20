@@ -33,6 +33,21 @@ export interface Work {
   type: string;
   state: string;
   members: Member[];
+  log: LogEntrySimplified[];
+}
+
+export interface LogEntrySimplified {
+  id: number,
+  author: Author,
+  content: string,
+  state: string,
+  createdAt: string
+}
+
+interface Author {
+  id: number,
+  name: string,
+  role: string
 }
 
 export interface Company {

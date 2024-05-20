@@ -10,7 +10,6 @@ import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.util.*
 
-import java.io.File
 class JdbiWork(private val handle: Handle) : WorkRepository {
     override fun createWork(work: Work, openingTerm: OpeningTerm, userId: Int) {
         handle.createUpdate(
@@ -41,9 +40,12 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
     }
 
     override fun getById(id: UUID): Work? = handle.createQuery(
-        "select *, ARRAY(SELECT CONCAT(uId, ';', username, ';', MEMBRO.role) FROM MEMBRO join " +
-                "UTILIZADOR on uId = id WHERE oId = :id) as membros from OBRA " +
-                "where id = :id"
+        "select *, ARRAY(SELECT CONCAT(uId, ';', username, ';', MEMBRO.role) FROM MEMBRO " +
+                "join UTILIZADOR on uId = id WHERE oId = :id) as membros, ARRAY(" +
+                "SELECT CONCAT(REGISTO.id, ';', author, ';', UTILIZADOR.username, ';', MEMBRO.role, ';', " +
+                "texto, ';', estado, ';', TO_CHAR(REGISTO.creation_date, 'YYYY-MM-DD')) FROM REGISTO " +
+                "join UTILIZADOR on author = UTILIZADOR.id join MEMBRO on uId = author where REGISTO.oId = :id) " +
+                "as log from OBRA where id = :id"
     )
         .bind("id", id.toString())
         .mapTo(Work::class.java)
@@ -61,8 +63,10 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
 
     //TODO("Discutir como dar input das camaras municipais porque input das pessoas pode criar erros desnecessários")
     private fun getCouncil(location: Location) =
-        handle.createQuery("select id from Localidade where freguesia = :freguesia and concelho = " +
-                ":concelho and distrito = :distrito")
+        handle.createQuery(
+            "select id from Localidade where freguesia = :freguesia and concelho = " +
+                    ":concelho and distrito = :distrito"
+        )
             .bind("freguesia", location.parish)
             .bind("concelho", location.county)
             .bind("distrito", location.district)
