@@ -109,7 +109,7 @@ enum class WorkType(val description: String) {
             "INDUSTRIAL" -> INDUSTRIAL
             "INFRAESTRUTURA" -> INFRAESTRUTURA
             "INSTITUCIONAL" -> INSTITUCIONAL
-            "REABILITACAO" -> REABILITACAO
+            "REABILITAÇÃO" -> REABILITACAO
             "ESTRUTURA ESPECIAL" -> ESTRUTURA_ESPECIAL
             "OBRA DE ARTE" -> OBRA_DE_ARTE
             "HABITAÇÃO" -> HABITACAO

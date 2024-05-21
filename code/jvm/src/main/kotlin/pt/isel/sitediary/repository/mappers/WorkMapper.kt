@@ -16,6 +16,7 @@ import java.util.*
 
 class WorkMapper : RowMapper<Work> {
     override fun map(rs: ResultSet?, ctx: StatementContext?): Work? = if (rs != null) {
+        val log = rs.getString("log").removeSurrounding("{", "}")
         Work(
             id = UUID.fromString(rs.getString("id")),
             name = rs.getString("nome"),
@@ -40,22 +41,24 @@ class WorkMapper : RowMapper<Work> {
                         role = aux[2]
                     )
                 },
-            log = rs.getString("log").removeSurrounding("{", "}").split(",")
-                .map {
-                    val x = '"'.toString()
-                    val aux = it.removeSurrounding(x, x).split(";")
-                    LogEntrySimplified(
-                        id = aux[0].toInt(),
-                        author = Author(
-                            id = aux[1].toInt(),
-                            name = aux[2],
-                            role = aux[3]
-                        ),
-                        content = aux[4],
-                        state = aux[5],
-                        createdAt = Date.valueOf(aux[6])
-                    )
-                }
+            log = if (log.isEmpty()) emptyList() else {
+                log.split(",")
+                    .map {
+                        val x = '"'.toString()
+                        val aux = it.removeSurrounding(x, x).split(";")
+                        LogEntrySimplified(
+                            id = aux[0].toInt(),
+                            author = Author(
+                                id = aux[1].toInt(),
+                                name = aux[2],
+                                role = aux[3]
+                            ),
+                            content = aux[4],
+                            state = aux[5],
+                            createdAt = Date.valueOf(aux[6])
+                        )
+                    }
+            }
         )
     } else null
 }

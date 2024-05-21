@@ -32,6 +32,7 @@
         <mat-icon>add</mat-icon>
       </button>
     </div>
+    <mat-divider></mat-divider>
     <div class="log-container">
       <mat-list *ngFor="let entry of filteredLogList">
         <mat-list-item (click)="onLogEntryClick(entry.id)">

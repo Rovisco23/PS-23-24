@@ -31,7 +31,6 @@ form {
 }
 
 .log-button {
-  margin-top: 10px;
-  margin-right: 10px;
-  margin-left: auto; /* Pushes the button to the far right */
+  /* Pushes the button to the far right */
+  margin: 10px 10px 10px auto;
 }
