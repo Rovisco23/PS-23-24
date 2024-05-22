@@ -36,12 +36,13 @@ data class Work(
 
 data class LogEntry (
     val id: Int,
+    val workId: UUID,
     val author: Author,
     val title: String,
     val content: String,
     val state: String,
     val createdAt: Date,
-    val lastModifiedAt: Date
+    val lastModifiedAt: Date?
 )
 
 data class Author (

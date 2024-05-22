@@ -13,10 +13,6 @@ class Errors(val status: Int, val reason: String) {
 
         val emailAlreadyInUse = Errors(400, "That email is already in use.")
 
-        val cellOccupied = Errors(400, "That cell already has a piece.")
-
-        val wrongTurn = Errors(400, "It's not your turn.")
-
         val invalidParameter = Errors(400, "Invalid Parameter.")
 
         val invalidPhoneNumber = Errors(400, "Invalid Phone number.")
@@ -43,5 +39,7 @@ class Errors(val status: Int, val reason: String) {
         val notMember = Errors(401, "You are not a member of this Work")
 
         val notAdmin = Errors(401, "You are not an Admin of this Work")
+
+        val logNotFound = Errors(404, "Log does not exist.")
     }
 }

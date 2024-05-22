@@ -9,15 +9,18 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpHeaders
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
-import pt.isel.sitediary.domainmodel.work.LogEntry
 import pt.isel.sitediary.model.LogInputModel
+import pt.isel.sitediary.model.LogOutputModel
 import pt.isel.sitediary.service.LogService
 import pt.isel.sitediary.utils.Errors
 import pt.isel.sitediary.utils.Paths
+import pt.isel.sitediary.utils.handleResponse
 
 @RestController
 @Tag(name = "Log", description = "Operations related the Logs.")
@@ -44,7 +47,34 @@ class LogController (private val service: LogService) {
         response.status = 201
     }
 
-    fun getLogById(@Parameter(description = "The id of the log to be retrieved") id: Int, @Parameter(hidden = true) user: AuthenticatedUser): LogEntry {
-        TODO()
+    @PostMapping(Paths.Log.GET_BY_ID)
+    @Operation(summary = "Get Log By Id", description = "Used to get the details of a log")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "201", description = "Log received successfully"
+            ),
+            ApiResponse(
+                responseCode = "401", description = "Not a Member of the Work",
+                content = [
+                    Content(mediaType = "application/json", schema = Schema(implementation = Errors::class))
+                ]
+            )
+        ]
+    )
+    fun getLogById(@PathVariable id: Int, @Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
+        val res = service.getLog(id, user.user.id)
+        return handleResponse(res) {
+            val log = LogOutputModel(
+                id = it.id,
+                title = it.title,
+                content = it.content,
+                state = it.state,
+                createdAt = it.createdAt,
+                lastModifiedAt = it.lastModifiedAt,
+                author = it.author
+            )
+            ResponseEntity.status(200).body(log)
+        }
     }
 }
