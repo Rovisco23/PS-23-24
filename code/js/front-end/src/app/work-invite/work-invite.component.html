@@ -1,0 +1,60 @@
+<div class="container">
+  <div class="form-container">
+      <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
+               placeholder="Ex. pat@example.com">
+        <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+          Please enter a valid email address
+        </mat-error>
+        <mat-error *ngIf="emailFormControl.hasError('required')">
+          Email is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Choose a Role</mat-label>
+        <mat-select [formControl]="roles" [errorStateMatcher]="matcher">
+          <mat-option value=""></mat-option>
+          <mat-option value="CAMARA">Câmara</mat-option>
+          <mat-option value="TECNICO">Técnico</mat-option>
+          <mat-option value="MEMBRO">Membro</mat-option>
+        </mat-select>
+        <mat-error *ngIf="roles.hasError('required')">
+          You must select a role
+        </mat-error>
+      </mat-form-field>
+      <button class="button" mat-flat-button (click)="addInvite(email, role)">Add</button>
+  </div>
+  <table mat-table [dataSource]="invites" class="table">
+    <ng-container matColumnDef="position">
+      <th class="mat-header-cell" *matHeaderCellDef> Order</th>
+      <td class="mat-cell" *matCellDef="let element"> {{ element.position }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th class="mat-header-cell" *matHeaderCellDef> Email</th>
+      <td class="mat-cell" *matCellDef="let element"> {{ element.email }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="role">
+      <th class="mat-header-cell" *matHeaderCellDef> Role</th>
+      <td class="mat-cell" *matCellDef="let element"> {{ element.role }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="delete">
+      <th class="mat-header-cell" *matHeaderCellDef> Delete</th>
+      <td class="mat-cell" *matCellDef="let element">
+        <button class="remove-button" mat-fab (click)="removeInvite(element.position)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <div class="button-container">
+    <button class="button" mat-flat-button (click)="sendInvites()">Invite</button>
+  </div>
+</div>

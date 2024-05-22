@@ -26,8 +26,9 @@ data class Work(
         mail.setFrom("ricardorovisco23@gmail.com", "SiteDiary")
         mail.addTo(member.email)
         mail.subject = "Convite para a obra $name"
+        val acceptLink = "http://localhost:8080/accept-invite?email=${member.email}&work=$id&role=${member.role}"
         mail.setMsg("Olá\n\nFoi convidado para a obra $name para participar como ${member.role}.\n\n" +
-        "Clique no link para aceitar o convite: http://localhost:8080/accept-invite\n\n" +
+        "Clique no link para aceitar o convite: $acceptLink\n\n" +
                 "Cumprimentos,\nA equipa da SiteDiary")
         mail.send()
     }

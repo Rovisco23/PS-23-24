@@ -4,7 +4,7 @@ import {LogEntrySimplified, Work} from "../utils/classes";
 import {HttpService} from '../utils/http.service';
 import {HttpClientModule} from "@angular/common/http";
 import {MatTab, MatTabGroup} from "@angular/material/tabs";
-import {DatePipe, NgClass, NgForOf} from "@angular/common";
+import {DatePipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {MatCardModule} from "@angular/material/card";
 import {MatListModule} from "@angular/material/list";
 import {MatIcon} from "@angular/material/icon";
@@ -24,7 +24,8 @@ import {MatFabButton} from "@angular/material/button";
     RouterLink,
     DatePipe,
     MatIcon,
-    MatFabButton
+    MatFabButton,
+    NgIf
   ],
   providers: [HttpService],
   templateUrl: './work-details.component.html',
@@ -34,13 +35,19 @@ export class WorkDetailsComponent {
   route: ActivatedRoute = inject(ActivatedRoute);
   httpService = inject(HttpService);
   work : Work | undefined;
+  admin : boolean | undefined;
   filteredLogList: LogEntrySimplified[] = [];
   constructor(private router: Router) {
     const workListingId =  String(this.route.snapshot.params['id']);
     this.httpService.getWorkById(workListingId).subscribe((work: Work) => {
       this.work = work;
       this.filteredLogList = work.log;
+      this.admin = this.work.members.find(member => member.role === 'ADMIN')?.id === Number(localStorage.getItem('userId'));
     });
+  }
+
+  onInviteClick() {
+    this.router.navigate(['/invite-members'], {state: {workId: this.work?.id}})
   }
 
   createNewEntry() {

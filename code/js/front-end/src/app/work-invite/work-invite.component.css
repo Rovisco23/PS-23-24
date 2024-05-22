@@ -1,0 +1,52 @@
+.container {
+  height: calc(100vh - 100px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-container {
+  text-align: center;
+}
+
+.mat-form-field {
+  width: 45%;
+  margin-right: 10px;
+}
+
+.table {
+  width: 80%;
+  margin: 0 auto;
+  border-collapse: collapse;
+}
+
+.button-container {
+  text-align: center;
+}
+
+.button {
+  background-color: white;
+  color: black;
+}
+
+.button:hover {
+  background-color: #FF7A00;
+  color: white;
+}
+
+.remove-button {
+  height: auto;
+  width: auto;
+  background-color: white;
+  color: black;
+}
+
+.remove-button:hover {
+  background-color: red;
+  color: white;
+}
+
+.mat-cell, .mat-header-cell {
+  text-align: center;
+  vertical-align: middle;
+}

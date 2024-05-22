@@ -9,6 +9,7 @@ import {EditProfileComponent} from "./edit-profile/edit-profile.component";
 import {CreateWorkComponent} from "./create-work/create-work.component";
 import {LogEntryDetailsComponent} from "./log-entry-details/log-entry-details.component";
 import {CreateLogEntryComponent} from "./create-log-entry/create-log-entry.component";
+import {WorkInviteComponent} from "./work-invite/work-invite.component";
 
 export const routes: Routes = [
   {
@@ -73,6 +74,11 @@ export const routes: Routes = [
     path: 'create-work',
     component: CreateWorkComponent,
     canActivate: [TokenGuard],
+  },
+  {
+    path: 'invite-members',
+    component: WorkInviteComponent,
+    canActivate: [TokenGuard]
   },
   {
     path: 'log-entry/:id',

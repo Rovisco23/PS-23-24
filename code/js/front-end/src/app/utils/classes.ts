@@ -1,3 +1,6 @@
+import {FormControl, FormGroupDirective, NgForm} from "@angular/forms";
+import {ErrorStateMatcher} from "@angular/material/core";
+
 export interface Classes {
   id: string;
   name: string;
@@ -77,7 +80,6 @@ export interface InputWork {
   address: Address
 }
 
-
 export enum  WorkTypes {
   Residential = 'RESIDENCIAL',
   Comercial ='COMERCIAL',
@@ -89,4 +91,17 @@ export enum  WorkTypes {
   Work_of_Art = 'OBRA DE ARTE',
   Habitation = 'HABITAÇÃO',
   Special_Building ='EDIFICIOS ESPECIAL'
+}
+
+export interface Invite {
+  position: number;
+  email: string;
+  role: string;
+}
+
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
 }

@@ -18,4 +18,8 @@ insert into utilizador(email, role, username, password, nome, apelido, nif, tele
 COPY LOCALIDADE (distrito, concelho, freguesia)
     FROM 'E:\Documentos\Universidade\Projeto\PS-23-24\docs\localidades.csv' DELIMITER ';' CSV HEADER;
 
---insert into membro(oid, uid, role) values ('6e963d9b-d522-43cf-8cf0-9fab0bef5779', 2, 'MEMBRO');
+insert into membro(oid, uid, role) values ('4c7eecdf-1caf-4763-ab38-eaeca807d509', 2, 'MEMBRO');
+
+insert into registo(oid, texto, estado, creation_date, last_modification_date, author)
+    values ('4c7eecdf-1caf-4763-ab38-eaeca807d509','O andaime não se encontrava corretamente instalado','FINISHED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1),
+           ('4c7eecdf-1caf-4763-ab38-eaeca807d509','Um dos tubos comprados encontra-se com defeito','EDITÁVEL',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1 );

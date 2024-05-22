@@ -8,5 +8,4 @@ import { Component } from '@angular/core';
   styleUrl: './create-log-entry.component.css'
 })
 export class CreateLogEntryComponent {
-
 }
