@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
+import pt.isel.sitediary.domainmodel.work.LogEntry
 import pt.isel.sitediary.model.LogInputModel
 import pt.isel.sitediary.service.LogService
 import pt.isel.sitediary.utils.Errors
@@ -41,5 +42,9 @@ class LogController (private val service: LogService) {
         service.createLog(log, user.user.id)
         response.addHeader(HttpHeaders.LOCATION, "/logs")
         response.status = 201
+    }
+
+    fun getLogById(@Parameter(description = "The id of the log to be retrieved") id: Int, @Parameter(hidden = true) user: AuthenticatedUser): LogEntry {
+        TODO()
     }
 }

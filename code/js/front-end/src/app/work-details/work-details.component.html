@@ -39,7 +39,7 @@
     <div class="log-container">
       <mat-list *ngFor="let entry of filteredLogList">
         <mat-list-item (click)="onLogEntryClick(entry.id)">
-          <div matListItemTitle>{{entry.content}}</div>
+          <div matListItemTitle>{{entry.title}}</div>
           <div matListItemLine>Posted by {{entry.author.name}} on {{entry.createdAt | date}}</div>
         </mat-list-item>
         <mat-divider></mat-divider>

@@ -37,6 +37,7 @@ data class Work(
 data class LogEntry (
     val id: Int,
     val author: Author,
+    val title: String,
     val content: String,
     val state: String,
     val createdAt: Date,
@@ -52,7 +53,7 @@ data class Author (
 data class LogEntrySimplified (
     val id: Int,
     val author: Author,
-    val content: String,
+    val title: String,
     val state: String,
     val createdAt: Date
 )

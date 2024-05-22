@@ -9,19 +9,18 @@ import java.sql.Timestamp
 
 class JdbiLog(private val handle: Handle) : LogRepository {
 
-    override fun createLog(log: LogInputModel, createdAt: Instant, lastUsedAt: Instant, user: Int): Int =
+    override fun createLog(log: LogInputModel, createdAt: Instant, author: Int): Int =
         handle.createUpdate(
-        "insert into registo(oId, texto, estado, creation_date, last_modification_date, author)" +
-                "values (:workId, :description, :state, :createdAt, :lastUsedAt, :user)"
+        "insert into registo(oId, titulo, texto, estado, creation_date, author)" +
+                "values (:workId, :title, :description, :state, :createdAt, :author)"
     )
             .bind("workId", log.workId)
+            .bind("title", log.title)
             .bind("description", log.description)
             .bind("state", "EDITÁVEL")
             .bind("createdAt", Timestamp.from(createdAt.toJavaInstant()))
-            .bind("lastUsedAt", Timestamp.from(lastUsedAt.toJavaInstant()))
-            .bind("user", user)
+            .bind("author", author)
             .executeAndReturnGeneratedKeys()
             .mapTo(Int::class.java)
             .one()
-
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {Classes, InputWork, User} from "./classes";
+import {Classes, InputWork, LogEntryInputModel, User} from "./classes";
 
 @Injectable({
   providedIn: 'root',
@@ -72,5 +72,10 @@ export class HttpService {
   createWork(work: InputWork): Observable<any> {
     const headers = this.getTokenHeader();
     return this.http.post<any>('http://localhost:8080/api/work', work, { headers: headers })
+  }
+
+  createLogEntry(logEntry: LogEntryInputModel) {
+    const headers = this.getTokenHeader()
+    return this.http.post<any>('http://localhost:8080/api/logs', logEntry, { headers: headers })
   }
 }

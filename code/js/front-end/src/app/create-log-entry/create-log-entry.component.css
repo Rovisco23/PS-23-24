@@ -1,0 +1,62 @@
+.example-form {
+  margin-top: 20px;
+  margin-left: 20px;
+  min-width: 150px;
+  max-width: 5000px;
+}
+
+.example-form mat-form-field {
+  max-width: 1000px;
+  width: 100%;
+}
+
+.example-form mat-form-field input {
+  box-sizing: border-box;
+  max-width: 1000px;
+}
+.example-form mat-form-field textarea {
+  box-sizing: border-box;
+  width: 950px;
+  height: 200px;
+}
+
+.file-container {
+  margin-left: 20px;
+}
+
+.uploaded-images {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -10px;
+}
+
+.uploaded-image {
+  position: relative;
+  margin: 10px;
+}
+
+.uploaded-image img {
+  max-width: 200px;
+  max-height: 200px;
+  object-fit: contain;
+}
+
+.uploaded-image button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.content {
+  margin-left: 20px;
+}
+
+.button {
+  margin-left: 400px;
+}

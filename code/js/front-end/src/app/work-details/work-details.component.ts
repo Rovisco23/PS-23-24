@@ -69,7 +69,7 @@ export class WorkDetailsComponent {
     }
 
     this.filteredLogList = this.work!!.log.filter(
-      entry => entry.content.toLowerCase().includes(text.toLowerCase())
+      entry => entry.title.toLowerCase().includes(text.toLowerCase())
     );
   }
 }

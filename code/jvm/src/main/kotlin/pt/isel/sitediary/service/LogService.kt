@@ -24,10 +24,10 @@ class LogService (
         } else if (!work.members.containsMemberById(user)){
             failure(Errors.notMember)
         } else {
-            val t = TODO("Verificar se é tecnico")
-            val l = it.logRepository.createLog(log, clock.now(), clock.now(), user)
+            val l = it.logRepository.createLog(log, clock.now(), user)
             success(l)
         }
+        //Verificar se é tecnico
     }
 
     fun getLogs() {

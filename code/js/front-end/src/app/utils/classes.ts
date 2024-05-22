@@ -42,9 +42,15 @@ export interface Work {
 export interface LogEntrySimplified {
   id: number,
   author: Author,
-  content: string,
+  title: string,
   state: string,
   createdAt: string
+}
+
+export interface LogEntryInputModel {
+  workId: string,
+  title: string,
+  description: string
 }
 
 interface Author {

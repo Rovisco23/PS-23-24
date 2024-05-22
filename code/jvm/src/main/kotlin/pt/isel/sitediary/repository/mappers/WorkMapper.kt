@@ -53,7 +53,7 @@ class WorkMapper : RowMapper<Work> {
                                 name = aux[2],
                                 role = aux[3]
                             ),
-                            content = aux[4],
+                            title = aux[4],
                             state = aux[5],
                             createdAt = Date.valueOf(aux[6])
                         )
