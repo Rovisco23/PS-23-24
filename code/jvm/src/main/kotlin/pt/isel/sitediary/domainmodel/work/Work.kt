@@ -27,14 +27,16 @@ data class Work(
         mail.addTo(member.email)
         mail.subject = "Convite para a obra $name"
         val acceptLink = "http://localhost:8080/accept-invite?email=${member.email}&work=$id&role=${member.role}"
-        mail.setMsg("Olá\n\nFoi convidado para a obra $name para participar como ${member.role}.\n\n" +
-        "Clique no link para aceitar o convite: $acceptLink\n\n" +
-                "Cumprimentos,\nA equipa da SiteDiary")
+        mail.setMsg(
+            "Olá\n\nFoi convidado para a obra $name para participar como ${member.role}.\n\n" +
+                    "Clique no link para aceitar o convite: $acceptLink\n\n" +
+                    "Cumprimentos,\nA equipa da SiteDiary"
+        )
         mail.send()
     }
 }
 
-data class LogEntry (
+data class LogEntry(
     val id: Int,
     val workId: UUID,
     val author: Author,
@@ -45,13 +47,13 @@ data class LogEntry (
     val lastModifiedAt: Date?
 )
 
-data class Author (
+data class Author(
     val id: Int,
     val name: String,
     val role: String
 )
 
-data class LogEntrySimplified (
+data class LogEntrySimplified(
     val id: Int,
     val author: Author,
     val title: String,
@@ -68,28 +70,19 @@ data class WorkSimplified(
     val address: Address,
 )
 
-data class BuildingCompany(
+data class ConstructionCompany(
     val name: String,
     val num: Int
 )
 
 data class OpeningTerm(
-    //val image: Image,
-    val name: String,
-    val type: WorkType,
-    val description: String?,
-    val holder: String,
-    val director: String,
-    val company: BuildingCompany,
-    val building: String,
-    val address: Address,
-    val technicians: List<Technician>
-) {
-    fun checkParams() =
-        name.isBlank()  || holder.isBlank() || director.isBlank() || company.name.isBlank() || company.num <= 0 ||
-                building.isBlank() || address.location.parish.isBlank() || address.street.isBlank() ||
-                address.postalCode.isBlank() || address.location.county.isBlank()
-}
+    val name: String, //
+    val type: WorkType, //
+    val licenseHolder: String,
+    val technicians: List<Technician>,
+    val constructionCompany: ConstructionCompany, //
+    val building: String //
+)
 
 enum class WorkType(val description: String) {
     RESIDENCIAL("RESIDENCIAL"),

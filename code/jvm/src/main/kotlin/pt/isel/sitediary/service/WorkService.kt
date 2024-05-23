@@ -7,10 +7,10 @@ import pt.isel.sitediary.domainmodel.user.checkAdmin
 import pt.isel.sitediary.domainmodel.user.containsMemberById
 import pt.isel.sitediary.domainmodel.work.Address
 import pt.isel.sitediary.domainmodel.work.Location
-import pt.isel.sitediary.domainmodel.work.OpeningTerm
 import pt.isel.sitediary.domainmodel.work.Work
 import pt.isel.sitediary.domainmodel.work.WorkState.IN_PROGRESS
 import pt.isel.sitediary.model.MemberInputModel
+import pt.isel.sitediary.model.OpeningTermInputModel
 import pt.isel.sitediary.repository.transaction.TransactionManager
 import pt.isel.sitediary.utils.Errors
 import pt.isel.sitediary.utils.Result
@@ -26,7 +26,7 @@ class WorkService(
     private val clock: Clock
 ) {
 
-    fun createWork(openingTerm: OpeningTerm, user: User): CreateWorkResult = transactionManager.run {
+    fun createWork(openingTerm: OpeningTermInputModel, user: User): CreateWorkResult = transactionManager.run {
         val workRep = it.workRepository
         val addressRep = it.addressRepository
         if (openingTerm.checkParams()) {
@@ -55,7 +55,7 @@ class WorkService(
                     members = listOf(user.toMember()),
                     log = emptyList()
                 )
-                workRep.createWork(work, openingTerm, user.id)
+                workRep.createWork(work, openingTerm, user)
                 success(work)
             }
         }
@@ -80,9 +80,9 @@ class WorkService(
     fun inviteMembers(members: List<MemberInputModel>, workId: UUID, userId: Int) {
         transactionManager.run {
             val work = it.workRepository.getById(workId)
-            if(work == null){
+            if (work == null) {
                 failure(Errors.workNotFound)
-            } else if(!work.members.checkAdmin(userId)){
+            } else if (!work.members.checkAdmin(userId)) {
                 failure(Errors.notAdmin)
             } else {
                 for (m in members) {
@@ -92,4 +92,32 @@ class WorkService(
         }
     }
 
+    fun getOpeningTerm(workId: UUID, userId: Int) = transactionManager.run {
+        val workRep = it.workRepository
+        val work = workRep.getById(workId)
+        if (work == null) {
+            failure(Errors.workNotFound)
+        } else if (!work.members.containsMemberById(userId)) {
+            failure(Errors.notMember)
+        } else {
+            val openingTerm = workRep.getOpeningTerm(workId)
+            success(openingTerm)
+        }
+    }
+
+    fun finishWork(workId: UUID, userId: Int) = transactionManager.run {
+        val workRep = it.workRepository
+        val work = workRep.getById(workId)
+        if (work == null) {
+            failure(Errors.workNotFound)
+        } else if (!work.members.checkAdmin(userId)) {
+            failure(Errors.notAdmin)
+        } else {
+            TODO(
+                "Falar com os orientadores sobre como seria a melhor abordagem para finalizar uma obra " +
+                        "seguindo as informações neste site: https://www.imovel.pt/news/imobiliario/livro-de-obra"
+            )
+            //workRep.finishWork(workId)
+        }
+    }
 }

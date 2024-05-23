@@ -4,6 +4,7 @@ import pt.isel.sitediary.domainmodel.authentication.Token
 import pt.isel.sitediary.domainmodel.authentication.TokenValidationInfo
 import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.work.Location
+import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.GetUserModel
 import pt.isel.sitediary.model.SignUpInputModel
 
@@ -17,4 +18,6 @@ interface UserRepository {
     fun checkUsernameTaken(username: String): Int?
     fun editProfile(user: GetUserModel)
     fun getUserByToken(token: TokenValidationInfo): Pair<User, Token>?
+    fun changeProfilePicture(id: Int, picture: FileModel)
+    fun getProfilePicture(id: Int): FileModel?
 }

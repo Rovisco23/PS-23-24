@@ -8,9 +8,12 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -20,9 +23,16 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.web.multipart.MultipartFile
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
-import pt.isel.sitediary.model.*
+import pt.isel.sitediary.model.EditProfileInputModel
+import pt.isel.sitediary.model.FileModel
+import pt.isel.sitediary.model.GetUserModel
+import pt.isel.sitediary.model.LoginInputModel
+import pt.isel.sitediary.model.LoginOutputModel
+import pt.isel.sitediary.model.SessionInputModel
+import pt.isel.sitediary.model.SignUpInputModel
+import pt.isel.sitediary.model.TokenModel
 import pt.isel.sitediary.service.UserService
 import pt.isel.sitediary.utils.Errors
 import pt.isel.sitediary.utils.Paths
@@ -60,7 +70,7 @@ class UserController(private val service: UserService) {
             ApiResponse(
                 responseCode = "200", description = "Successful login",
                 content = [
-                    Content(mediaType = "application/json", schema = Schema(implementation = TokenOutputModel::class))
+                    Content(mediaType = "application/json", schema = Schema(implementation = LoginOutputModel::class))
                 ]
             ),
             ApiResponse(
@@ -77,7 +87,7 @@ class UserController(private val service: UserService) {
             u.password
         )
         return handleResponse(res) {
-            val tokenValue = TokenOutputModel(
+            val tokenValue = LoginOutputModel(
                 userId = it.userId,
                 username = it.username,
                 token = it.tokenValue
@@ -207,7 +217,7 @@ class UserController(private val service: UserService) {
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "202", description = "Edition of profile accepted",
+                responseCode = "200", description = "Edition of profile accepted",
                 content = [
                     Content(mediaType = "application/json", schema = Schema(implementation = GetUserModel::class))
                 ]
@@ -227,20 +237,56 @@ class UserController(private val service: UserService) {
         ]
     )
     fun editProfile(@RequestBody u: EditProfileInputModel, @Parameter(hidden = true) user: AuthenticatedUser)
-            : ResponseEntity<*> {
-        val res = service.editProfile(userId = user.user.id, editUser = u)
-        return handleResponse(res) {
-            ResponseEntity.status(200).body(it)
-        }
+            : ResponseEntity<Unit> {
+        service.editProfile(userId = user.user.id, editUser = u)
+        return ResponseEntity.ok().body(Unit)
     }
 
+    @PutMapping(Paths.User.PROFILE_PICTURE)
+    fun changeProfilePicture(@RequestParam file: MultipartFile, @Parameter(hidden = true) user: AuthenticatedUser) {
+        val profilePicture = FileModel(
+            file.bytes,
+            file.originalFilename!!,
+            file.contentType!!
+        )
+        service.changeProfilePicture(profilePicture, user.user.id)
+        println("ola")
+    }
+
+    @GetMapping(Paths.User.PROFILE_PICTURE)
+    @Operation(summary = "Get profile Picture", description = "Gets the profile picture of a user")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "Successful profile picture retrieval",
+                content = [
+                    Content(schema = Schema(implementation = FileModel::class))
+                ]
+            )
+        ]
+    )
+    fun getProfilePicture(@Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
+        val res = service.getProfilePicture(user.user.id)
+        return handleResponse(res) {
+            if (it == null) ResponseEntity.ok().body(null)
+            else ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "Attachment;filename=${it.filename}")
+                .contentType(MediaType.parseMediaType(it.contentType))
+                .body(ByteArrayResource(it.file))
+        }
+    }
 }
 
 
 fun main() {
     val secret = "your_secret_key"
     val algorithm = Algorithm.HMAC256(secret)
-    val map = mapOf("id" to 1, "username" to "JMota", "role" to "admin", "token" to "pCRJ4OWSJarFvFV943aebPScJ5u5Y27KWuBbbLbx1mg=")
+    val map = mapOf(
+        "id" to 1,
+        "username" to "JMota",
+        "role" to "admin",
+        "token" to "pCRJ4OWSJarFvFV943aebPScJ5u5Y27KWuBbbLbx1mg="
+    )
     val jwt = JWT.create().withPayload(map).sign(algorithm)
     println("JWT = $jwt")
 

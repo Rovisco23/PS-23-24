@@ -81,6 +81,7 @@
 .profile-image {
   height: 50px;
   width: 50px;
+  border-radius: 50%;
   vertical-align: middle;
 }
 

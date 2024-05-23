@@ -1,6 +1,6 @@
 <body  *ngIf="!edit">
   <div>
-    <img src="assets/profile.png" alt="" class="profile-image">
+    <img src="{{localStorage.getItem('profilePicture')}}" alt="" class="profile-image">
   </div>
 <div>
   <p>{{ user?.username }}</p>

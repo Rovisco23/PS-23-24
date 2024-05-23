@@ -28,9 +28,9 @@ create table UTILIZADOR
     concelho  varchar(255),
     distrito  varchar(255),
     primary key (id),
-    constraint Role_Format check (ROLE IN ('OPERÁRIO', 'CÂMARA')),
+    constraint Role_Format check (ROLE IN ('OPERÁRIO', 'CÂMARA')), -- Adicionar ADMIN?
     constraint Email_Format check (email like '%@%.%')
-    --constraint Telefone_Format check (telefone like '^[0-9]+$')
+    --constraint Telefone_Format check (telefone not like '%[^0-9]%') -- This may work
 );
 
 create table SESSAO
@@ -139,12 +139,12 @@ create table TERMO_ABERTURA
     oId                varchar(255),
     inicio             timestamp,
     camara             integer,
-    titular_licença    varchar(255),
-    empresa_construção integer,
-    predio             varchar(255), -- Nova tabela?
+    titular_licenca    varchar(255),
+    empresa_construcao integer,
+    predio             varchar(255),
     primary key (id, oId),
     constraint ObraId foreign key (oId) references OBRA (id),
-    constraint EmpresaId foreign key (empresa_construção) references EMPRESA_CONSTRUCAO (id),
+    constraint EmpresaId foreign key (empresa_construcao) references EMPRESA_CONSTRUCAO (id),
     constraint CamaraId foreign key (camara) references localidade (id)
 );
 
@@ -168,14 +168,25 @@ create table TERMO_FECHO
 (
     id           serial,
     oId          varchar(255),
-    procedimento varchar(255),
-    numero       integer,
+    --procedimento varchar(255),
+    --numero       integer,
     inicio       timestamp,
     conclusao    timestamp,
     abertura     integer,
-    dono         varchar(50),
+    fiscalização varchar(50),
     diretor      varchar(50),
     primary key (id, oId),
     constraint ObraId foreign key (oId) references OBRA (id),
     constraint TermoAberturaId foreign key (abertura, oId) references TERMO_ABERTURA (id, oId)
+);
+
+create table profile_picture
+(
+    id      serial,
+    user_id integer,
+    name    varchar(255),
+    type    varchar(255),
+    img     bytea,
+    primary key (id),
+    constraint UserId foreign key (user_id) references UTILIZADOR (id)
 );

@@ -5,6 +5,7 @@ import pt.isel.sitediary.domainmodel.authentication.Token
 import pt.isel.sitediary.domainmodel.authentication.TokenValidationInfo
 import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.work.Location
+import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.GetUserModel
 import pt.isel.sitediary.model.SignUpInputModel
 import pt.isel.sitediary.model.UserAndTokenModel
@@ -99,4 +100,19 @@ class JdbiUser(private val handle: Handle) : UserRepository {
         .mapTo(UserAndTokenModel::class.java)
         .singleOrNull()?.userAndToken
 
+    override fun changeProfilePicture(id: Int, picture: FileModel) {
+        handle.createUpdate("insert into profile_picture(user_id, name, type, img) values (:id, :name, :type, :img)")
+            .bind("id", id)
+            .bind("name", picture.filename)
+            .bind("type", picture.contentType)
+            .bind("img", picture.file)
+            .execute()
+    }
+
+    override fun getProfilePicture(id: Int): FileModel? = handle.createQuery(
+        "select img, name, type from profile_picture where user_id = :id"
+    )
+        .bind("id", id)
+        .mapTo(FileModel::class.java)
+        .singleOrNull()
 }

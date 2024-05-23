@@ -8,6 +8,7 @@ import pt.isel.sitediary.domainmodel.authentication.UsersDomain
 import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.model.EditProfileInputModel
 import pt.isel.sitediary.domainmodel.work.Location
+import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.GetUserModel
 import pt.isel.sitediary.model.SessionValidation
 import pt.isel.sitediary.model.SignUpInputModel
@@ -19,6 +20,7 @@ typealias LoginResult = Result<Errors, TokenExternalInfo>
 typealias LogoutResult = Result<Errors, String>
 typealias UserEditResult = Result<Errors, GetUserModel>
 typealias SessionResult = Result<Errors, SessionValidation>
+typealias GetProfilePictureResult = Result<Errors, FileModel?>
 
 @Component
 class UserService(
@@ -167,6 +169,28 @@ class UserService(
             failure(Errors.userNotFound)
         } else {
             success(user)
+        }
+    }
+
+    fun changeProfilePicture(file: FileModel, userId: Int) = transactionManager.run {
+        val rep = it.usersRepository
+        val user = rep.getUserById(userId)
+        if (user == null) {
+            failure(Errors.userNotFound)
+        } else {
+            rep.changeProfilePicture(userId, file)
+            success(user)
+        }
+    }
+
+    fun getProfilePicture(id: Int): GetProfilePictureResult = transactionManager.run {
+        val rep = it.usersRepository
+        val user = rep.getUserById(id)
+        if (user == null) {
+            failure(Errors.userNotFound)
+        } else {
+            val pfp = rep.getProfilePicture(id)
+            success(pfp)
         }
     }
 }

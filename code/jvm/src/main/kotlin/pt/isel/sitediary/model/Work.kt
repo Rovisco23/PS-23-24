@@ -1,8 +1,7 @@
 package pt.isel.sitediary.model
 
 import pt.isel.sitediary.domainmodel.work.Address
-import pt.isel.sitediary.domainmodel.work.BuildingCompany
-import pt.isel.sitediary.domainmodel.work.OpeningTerm
+import pt.isel.sitediary.domainmodel.work.ConstructionCompany
 import pt.isel.sitediary.domainmodel.work.WorkType
 import java.util.*
 
@@ -21,21 +20,14 @@ data class OpeningTermInputModel(
     val description: String?,
     val holder: String,
     val director: String,
-    val company: BuildingCompany,
+    val company: ConstructionCompany,
     val building: String,
     val address: Address,
 ) {
-    fun toOpeningTerm() = OpeningTerm(
-        name = name,
-        type = type,
-        description = description,
-        holder = holder,
-        director = director,
-        company = company,
-        building = building,
-        address = address,
-        technicians = emptyList()
-    )
+    fun checkParams() =
+        name.isBlank() || holder.isBlank() || director.isBlank() || company.name.isBlank() || company.num <= 0 ||
+                building.isBlank() || address.location.parish.isBlank() || address.street.isBlank() ||
+                address.postalCode.isBlank() || address.location.county.isBlank()
 }
 
 data class MemberInputModel(

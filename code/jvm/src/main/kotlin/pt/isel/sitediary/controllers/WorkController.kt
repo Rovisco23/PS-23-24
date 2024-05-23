@@ -126,10 +126,25 @@ class WorkController(private val service: WorkService) {
     )
     fun createWork(@RequestBody work: OpeningTermInputModel, @Parameter(hidden = true) user: AuthenticatedUser)
             : ResponseEntity<*> {
-        val res = service.createWork(work.toOpeningTerm(), user.user)
+        val res = service.createWork(work, user.user)
         return handleResponse(res) {
             ResponseEntity.status(201).body(it)
         }
+    }
+
+    @GetMapping(Paths.Work.GET_OPENING_TERM)
+    fun getOpeningTerm(@PathVariable work: UUID, @Parameter(hidden = true) user: AuthenticatedUser)
+            : ResponseEntity<*> {
+        val res = service.getOpeningTerm(work, user.user.id)
+        return handleResponse(res) {
+            ResponseEntity.status(200).body(it)
+        }
+    }
+
+    fun finishWork(@RequestParam work: UUID, @Parameter(hidden = true) user: AuthenticatedUser)
+            : ResponseEntity<*> {
+        service.finishWork(work, user.user.id)
+        return ResponseEntity.status(200).body("Work finished successfully")
     }
 
 }

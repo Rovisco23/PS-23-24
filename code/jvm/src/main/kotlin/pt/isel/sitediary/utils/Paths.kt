@@ -11,11 +11,13 @@ object Paths {
         const val GET_USER_ID = "$PREFIX/users/{id}"
         const val GET_USER_USERNAME = "$PREFIX/users"
         const val SESSION = "$PREFIX/session"
+        const val PROFILE_PICTURE = "$PREFIX/profile-picture"
     }
 
     object Work {
         const val GET_BY_ID = "$PREFIX/work/{id}"
         const val GET_ALL_WORKS = "$PREFIX/work"
+        const val GET_OPENING_TERM = "$PREFIX/opening-term/{id}"
     }
 
     object Log {

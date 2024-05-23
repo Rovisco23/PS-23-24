@@ -24,5 +24,4 @@ class GetUserMapper : RowMapper<GetUserModel> {
             )
         )
     } else null
-
 }

@@ -78,4 +78,12 @@ export class HttpService {
     const headers = this.getTokenHeader()
     return this.http.post<any>('http://localhost:8080/api/logs', logEntry, { headers: headers })
   }
+
+  getProfilePicture() {
+    const headers = this.getTokenHeader();
+    return this.http.get<any>('http://localhost:8080/api/profile-picture', {
+      headers: headers,
+      responseType: 'blob' as 'json'
+    })
+  }
 }

@@ -29,12 +29,17 @@ export class LoginComponent {
   login(): void {
     this.httpService.login(this.username, this.password).subscribe(res => {
       console.log("Done")
-      const token = res.token;
-      const userId = res.userId;
+      const token = res.token
+      const userId = res.userId
+      const bytes = res.pfp
 
-      localStorage.setItem('userId', userId);
-      localStorage.setItem('token', token);
-      this.router.navigate(['/work']);
+      localStorage.setItem('userId', userId)
+      localStorage.setItem('token', token)
+      if (bytes) {
+        localStorage.setItem('pfp', window.btoa(bytes))
+      }
+      this.router.navigate(['/work'])
     })
   }
+
 }

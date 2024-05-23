@@ -48,4 +48,6 @@ export class ProfileComponent {
     this.edit = true;
     this.router.navigate(['/edit-profile']);
   }
+
+  protected readonly localStorage = localStorage;
 }
