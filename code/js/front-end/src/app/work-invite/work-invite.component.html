@@ -23,7 +23,9 @@
           You must select a role
         </mat-error>
       </mat-form-field>
-      <button class="button" mat-flat-button (click)="addInvite(email, role)">Add</button>
+      <button class="add-button" mat-fab (click)="addInvite(email, role)">
+        <mat-icon>add</mat-icon>
+      </button>
   </div>
   <table mat-table [dataSource]="invites" class="table">
     <ng-container matColumnDef="position">

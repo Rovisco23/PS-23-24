@@ -8,7 +8,7 @@ import {DatePipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {MatCardModule} from "@angular/material/card";
 import {MatListModule} from "@angular/material/list";
 import {MatIcon} from "@angular/material/icon";
-import {MatFabButton} from "@angular/material/button";
+import {MatButton, MatFabButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-work-details',
@@ -25,7 +25,8 @@ import {MatFabButton} from "@angular/material/button";
     DatePipe,
     MatIcon,
     MatFabButton,
-    NgIf
+    NgIf,
+    MatButton
   ],
   providers: [HttpService],
   templateUrl: './work-details.component.html',
@@ -71,5 +72,9 @@ export class WorkDetailsComponent {
     this.filteredLogList = this.work!!.log.filter(
       entry => entry.title.toLowerCase().includes(text.toLowerCase())
     );
+  }
+
+  closeWork(){
+    console.log("Closing work");
   }
 }

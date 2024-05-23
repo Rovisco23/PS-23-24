@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, inject, ViewChild} from '@angular/core';
 import {Router} from "@angular/router";
 import {MatButton, MatFabButton} from "@angular/material/button";
 import {Invite, MyErrorStateMatcher} from "../utils/classes";
@@ -17,6 +17,7 @@ import {FormControl, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatInput} from "@angular/material/input";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {NgIf} from "@angular/common";
+import {HttpService} from "../utils/http.service";
 
 @Component({
   selector: 'app-work-invite',
@@ -56,22 +57,29 @@ export class WorkInviteComponent {
     Validators.pattern(/^(CAMARA|TECNICO|MEMBRO)$/)
   ]);
 
+  @ViewChild(MatTable, { static: false }) table: MatTable<Invite> | undefined;
+
   matcher = new MyErrorStateMatcher()
 
   workId: string;
-  invites: Invite[] = [{ position: 1, email: 'fixolas', role: 'bacans' }];
+  invites: Invite[] = [];
   email: string | null = this.emailFormControl.value;
   role: string | null = this.roles.value;
   displayedColumns: string[] = ['position', 'email', 'role', 'delete'];
-
-  @ViewChild(MatTable, { static: false }) table: MatTable<Invite> | undefined;
+  httpService = inject(HttpService)
 
   constructor(private router: Router) {
     this.workId = this.router.getCurrentNavigation()?.extras.state?.['workId'];
+    this.emailFormControl.valueChanges.subscribe(value => {
+      this.email = value;
+    });
+    this.roles.valueChanges.subscribe(value => {
+      this.role = value;
+    });
   }
 
   addInvite(email: string | null, role: string | null) {
-    if (!email || !role) {
+    if (!email || !role || this.invites.some(i => i.email === email)) {
       return;
     }
     const invite: Invite = {
@@ -95,6 +103,8 @@ export class WorkInviteComponent {
   }
 
   sendInvites() {
-    console.log('Invites sent');
+      this.httpService.inviteMembers(this.workId, this.invites).subscribe(() => {
+        this.router.navigate([`/work-details/${this.workId}`]);
+      });
   }
 }

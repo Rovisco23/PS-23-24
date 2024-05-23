@@ -1,5 +1,25 @@
+.main-container {
+  display: flex;
+  height: 100%; /* Full height */
+}
+
+.sidebar {
+  margin: 5px;
+  width: 20%;
+  height: auto;
+  padding: 10px;
+  border: black 1px solid;
+  text-align: center;
+  display: grid;
+}
+
+.content {
+  width: 80%;
+}
 
 .members-container {
+  flex-grow: 1;
+  overflow-y: auto; /* Enable vertical scrolling if necessary */
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -12,12 +32,23 @@
 }
 
 .member-card {
-  margin: 10px;
   width: 250px;
   height: 250px;
   align-items: center;
   justify-content: center;
   border: 1px solid #000000;
+}
+
+.page-container {
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+.invite-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
 }
 
 .log-top-bar {
@@ -33,4 +64,40 @@ form {
 .log-button {
   /* Pushes the button to the far right */
   margin: 10px 10px 10px auto;
+}
+
+.work-image {
+  max-width: 100%;
+  height: auto;
+}
+
+.location-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.location-image {
+  max-width: 8%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.location-details {
+  text-align: center;
+}
+
+.location-details p {
+  margin: 2px 0;
+}
+
+.sidebar .close-button {
+  background-color: #FF7A00;
+  color: white;
+  margin-top: auto;
+
+}
+
+.sidebar .close-button:hover {
+  background-color: red;
 }

@@ -1,49 +1,70 @@
-<mat-tab-group>
-  <mat-tab label="Geral">
-    <h2 class="work-heading">{{ work?.name }}</h2>
-    <p class="work-type">Tipo: {{ work?.type }}</p>
-    <p class="work-state">Estado: {{ work?.state }}</p>
-    <p class="work-description">Descrição: {{ work?.description }}</p>
-    <p class="work-address">Morada: {{ work?.address?.street }}, {{ work?.address?.postalCode }}</p>
-    <p class="work-location">
-      Distrito: {{ work?.address?.location?.district }}<br>
-      Concelho: {{ work?.address?.location?.county }}<br>
-      Freguesia: {{ work?.address?.location?.parish }}
-    </p>
-  </mat-tab>
-  <mat-tab label="Equipa">
-    <div class="members-container">
-      <mat-card *ngFor="let member of work?.members" class="member-card" (click)="onMemberClick(member.id)">
-        <img mat-card-image src="/assets/profile.png" alt="{{ member.name }}" class="member-profile">
-        <mat-card-header>
-          <mat-card-title>{{ member.name }}</mat-card-title>
-          <mat-card-subtitle>{{ member.role }}</mat-card-subtitle>
-        </mat-card-header>
-      </mat-card>
+<div class="main-container">
+  <div class="sidebar">
+      <div>
+        <img src="/assets/work.png" alt="work image" class="work-image">
+        <h1>{{ work?.name }}</h1>
+      </div>
+      <div>
+        <p>Tipo de Obra: {{ work?.type }}</p>
+      </div>
+      <div class="location-container">
+        <img src="/assets/location-pin.svg" alt="location logo" class="location-image">
+        <div class="location-details">
+          <p>{{ work?.address?.street }}, {{ work?.address?.postalCode }}</p>
+          <p>{{ work?.address?.location?.parish }}, {{ work?.address?.location?.county }}, {{ work?.address?.location?.district }}</p>
+        </div>
+      </div>
+      <button mat-flat-button (click)="closeWork()" class="close-button">Fechar Obra</button>
     </div>
-    <button *ngIf="admin" mat-fab color="primary" aria-label="Example icon button with a delete icon" class="log-button" (click)="onInviteClick()">
-      <mat-icon>add</mat-icon>
-    </button>
-  </mat-tab>
-  <mat-tab label="Registos">
-    <div class="log-top-bar">
-      <form>
-        <input type="text" placeholder="Search log by name" #filter>
-        <button class="primary" type="button" (click)="filterResults(filter.value)">Search</button>
-      </form>
-      <button mat-fab color="primary" aria-label="Example icon button with a delete icon" class="log-button" (click)="createNewEntry()">
-        <mat-icon>add</mat-icon>
-      </button>
-    </div>
-    <mat-divider></mat-divider>
-    <div class="log-container">
-      <mat-list *ngFor="let entry of filteredLogList">
-        <mat-list-item (click)="onLogEntryClick(entry.id)">
-          <div matListItemTitle>{{entry.title}}</div>
-          <div matListItemLine>Posted by {{entry.author.name}} on {{entry.createdAt | date}}</div>
-        </mat-list-item>
+  <div class="content">
+    <mat-tab-group>
+      <mat-tab label="Registos">
+        <div class="log-top-bar">
+          <form>
+            <input type="text" placeholder="Search log by name" #filter>
+            <button class="primary" type="button" (click)="filterResults(filter.value)">Search</button>
+          </form>
+          <button mat-fab color="primary" aria-label="Example icon button with a delete icon" class="log-button" (click)="createNewEntry()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
         <mat-divider></mat-divider>
-      </mat-list>
-    </div>
-  </mat-tab>
-</mat-tab-group>
+        <div class="log-container">
+          <mat-list *ngFor="let entry of filteredLogList">
+            <mat-list-item (click)="onLogEntryClick(entry.id)">
+              <div matListItemTitle>{{ entry.title }}</div>
+              <div matListItemLine>Posted by {{ entry.author.name }} on {{ entry.createdAt | date }}</div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+          </mat-list>
+        </div>
+      </mat-tab>
+      <mat-tab label="Geral">
+        <h2 class="work-heading">{{ work?.name }}</h2>
+        <p class="work-type">Tipo: {{ work?.type }}</p>
+        <p class="work-state">Estado: {{ work?.state }}</p>
+        <p class="work-description">Descrição: {{ work?.description }}</p>
+        <p class="work-address">Morada: {{ work?.address?.street }}, {{ work?.address?.postalCode }}</p>
+        <p class="work-location">
+          Distrito: {{ work?.address?.location?.district }}<br>
+          Concelho: {{ work?.address?.location?.county }}<br>
+          Freguesia: {{ work?.address?.location?.parish }}
+        </p>
+      </mat-tab>
+      <mat-tab label="Equipa">
+        <div class="members-container">
+          <mat-card *ngFor="let member of work?.members" class="member-card" (click)="onMemberClick(member.id)">
+            <img mat-card-image src="/assets/profile.png" alt="{{ member.name }}" class="member-profile">
+            <mat-card-header>
+              <mat-card-title>{{ member.name }}</mat-card-title>
+              <mat-card-subtitle>{{ member.role }}</mat-card-subtitle>
+            </mat-card-header>
+          </mat-card>
+        </div>
+        <button *ngIf="admin" mat-fab color="primary" class="invite-button" (click)="onInviteClick()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

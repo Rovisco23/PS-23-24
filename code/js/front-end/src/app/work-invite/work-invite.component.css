@@ -18,6 +18,8 @@
   width: 80%;
   margin: 0 auto;
   border-collapse: collapse;
+  max-height: 100%;
+  overflow: auto;
 }
 
 .button-container {
@@ -30,6 +32,18 @@
 }
 
 .button:hover {
+  background-color: #FF7A00;
+  color: white;
+}
+
+.add-button {
+  height: auto;
+  width: auto;
+  background-color: white;
+  color: black;
+}
+
+.add-button:hover {
   background-color: #FF7A00;
   color: white;
 }

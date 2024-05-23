@@ -86,4 +86,9 @@ export class HttpService {
       responseType: 'blob' as 'json'
     })
   }
+
+  inviteMembers(workId: string, invites: any): Observable<any> {
+    const headers = this.getTokenHeader();
+    return this.http.post<any>(`http://localhost:8080/api/work/${workId}`, invites, { headers: headers })
+  }
 }
