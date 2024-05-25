@@ -16,13 +16,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
 import pt.isel.sitediary.model.EditProfileInputModel
@@ -242,14 +236,29 @@ class UserController(private val service: UserService) {
         return ResponseEntity.ok().body(Unit)
     }
 
-    @PutMapping(Paths.User.PROFILE_PICTURE)
-    fun changeProfilePicture(@RequestParam file: MultipartFile, @Parameter(hidden = true) user: AuthenticatedUser) {
-        val profilePicture = FileModel(
-            file.bytes,
-            file.originalFilename!!,
-            file.contentType!!
+    @PutMapping(Paths.User.PROFILE_PICTURE, consumes = ["multipart/form-data"])
+    @Operation(
+        summary = "Change profile picture",
+        description = "Operation used to change the profile picture of a user",
+        requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Profile picture to be uploaded",
+            required = true,
+            content = [
+                Content(
+                    mediaType = "multipart/form-data",
+                    schema = Schema(type = "String", format = "binary")
+                )
+            ]
         )
-        service.changeProfilePicture(profilePicture, user.user.id)
+    )
+    fun changeProfilePicture(@RequestPart("file") file: MultipartFile?, @Parameter(hidden = true) user: AuthenticatedUser) {
+        val profilePicture = if (file == null) null else
+            FileModel(
+                file.bytes,
+                file.originalFilename!!,
+                file.contentType!!
+            )
+        if (profilePicture != null) service.changeProfilePicture(profilePicture, user.user.id)
         println("ola")
     }
 
