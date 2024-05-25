@@ -9,6 +9,7 @@ drop table if exists REGISTO;
 drop table if exists MEMBRO;
 drop table if exists OBRA;
 drop table if exists SESSAO;
+drop table if exists profile_picture;
 drop table if exists UTILIZADOR;
 --drop table if exists LOCALIDADE;
 

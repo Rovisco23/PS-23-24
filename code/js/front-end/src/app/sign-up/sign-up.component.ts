@@ -43,7 +43,10 @@ export class SignUpComponent {
 
   httpService = inject(HttpService);
 
+  redirect = ''
+
   constructor(private router: Router) {
+    this.redirect = this.router.getCurrentNavigation()?.extras.state?.['redirect']
     concelhos.forEach((value) => {
       value.forEach((v: string) => this.counties.push(v));
     })
@@ -75,6 +78,10 @@ export class SignUpComponent {
       console.log("Sign Up Finished");
       this.router.navigate(['/login']);
     })
+  }
+
+  login(){
+    this.router.navigate(['/login']), {state: {redirect: this.redirect}}
   }
 
 }

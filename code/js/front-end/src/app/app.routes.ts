@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from "./login/login.component";
 import { WorkComponent } from "./work/work.component";
-import {TokenGuard} from "./utils/token.guard";
 import {WorkDetailsComponent} from "./work-details/work-details.component";
 import {SignUpComponent} from "./sign-up/sign-up.component";
 import {ProfileComponent} from "./profile/profile.component";
@@ -10,12 +9,13 @@ import {CreateWorkComponent} from "./create-work/create-work.component";
 import {LogEntryDetailsComponent} from "./log-entry-details/log-entry-details.component";
 import {CreateLogEntryComponent} from "./create-log-entry/create-log-entry.component";
 import {WorkInviteComponent} from "./work-invite/work-invite.component";
+import {AuthGuard} from "./utils/auth.guard";
 
 export const routes: Routes = [
   {
     path: 'work',
     component: WorkComponent,
-    canActivate: [TokenGuard],
+    canActivate: [AuthGuard],
     title: 'Work Page'
     /*children: [
       {
@@ -39,7 +39,7 @@ export const routes: Routes = [
   {
     path: 'work-details/:id',
     component: WorkDetailsComponent,
-    canActivate: [TokenGuard],
+    canActivate: [AuthGuard],
     title: 'Work details'
   },
   {
@@ -53,42 +53,42 @@ export const routes: Routes = [
   {
     path: 'profile/:id',
     component: ProfileComponent,
-    canActivate: [TokenGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'profile',
     component: ProfileComponent,
-    canActivate: [TokenGuard],
+    canActivate: [AuthGuard],
     children: [{
       path: 'edit',
-      canActivate: [TokenGuard],
+      canActivate: [AuthGuard],
       component: EditProfileComponent
     }]
   },
   {
     path: 'edit-profile',
     component: EditProfileComponent,
-    canActivate: [TokenGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'create-work',
     component: CreateWorkComponent,
-    canActivate: [TokenGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'invite-members',
     component: WorkInviteComponent,
-    canActivate: [TokenGuard]
+    canActivate: [AuthGuard]
   },
   {
     path: 'log-entry/:id',
     component: LogEntryDetailsComponent,
-    canActivate: [TokenGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'create-log-entry/:id',
     component: CreateLogEntryComponent,
-    canActivate: [TokenGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: '**',

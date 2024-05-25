@@ -121,7 +121,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         workId: UUID,
         councilId: Int
     ): Int = handle.createUpdate(
-            "insert into TERMO_ABERTURA(oId, inicio, camara, titular_licença, empresa_construção, predio)" +
+            "insert into TERMO_ABERTURA(oId, inicio, camara, titular_licenca, empresa_construcao, predio)" +
                     "values (:oId, :inicio, :camara, :titular_licença, :empresa_construção, :predio)"
         )
             .bind("oId", workId)
