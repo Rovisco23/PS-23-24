@@ -41,6 +41,7 @@ export class LoginComponent {
       }
       const redirect = this.originalUrlService.getOriginalUrl()
       if (redirect) {
+        this.originalUrlService.resetOriginalUrl()
         this.router.navigate([redirect])
       } else {
         this.router.navigate(['/work'])

@@ -9,6 +9,7 @@ import pt.isel.sitediary.domainmodel.work.Address
 import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.domainmodel.work.Work
 import pt.isel.sitediary.domainmodel.work.WorkState.IN_PROGRESS
+import pt.isel.sitediary.model.Invite
 import pt.isel.sitediary.model.MemberInputModel
 import pt.isel.sitediary.model.OpeningTermInputModel
 import pt.isel.sitediary.repository.transaction.TransactionManager
@@ -79,15 +80,27 @@ class WorkService(
 
     fun inviteMembers(members: List<MemberInputModel>, workId: UUID, userId: Int) {
         transactionManager.run {
+            val user = it.usersRepository.getUserById(userId)
             val work = it.workRepository.getById(workId)
-            if (work == null) {
+            if (user == null) {
+                failure(Errors.userNotFound)
+            } else if (work == null) {
                 failure(Errors.workNotFound)
             } else if (!work.members.checkAdmin(userId)) {
                 failure(Errors.notAdmin)
             } else {
+                val list = mutableListOf<Invite>()
                 for (m in members) {
-                    work.createInvites(m)
+                    if (!it.workRepository.checkInvite(workId, m.email)) {
+                        val invite = Invite(UUID.randomUUID(), m.email, m.role, workId)
+                        list.add(invite)
+                    }
                 }
+                if (list.isNotEmpty()) {
+                    it.workRepository.inviteMembers(list)
+                    list.forEach{i -> work.createInvites(i)}
+                }
+                success("Invites sent successfully")
             }
         }
     }

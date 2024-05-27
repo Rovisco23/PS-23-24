@@ -7,6 +7,7 @@ drop table if exists DOCUMENTO;
 drop table if exists IMAGEM;
 drop table if exists REGISTO;
 drop table if exists MEMBRO;
+drop table if exists CONVITE;
 drop table if exists OBRA;
 drop table if exists SESSAO;
 drop table if exists profile_picture;
@@ -73,7 +74,7 @@ create table MEMBRO
     primary key (uId, oId),
     constraint UserId foreign key (uId) references UTILIZADOR (id),
     constraint ObraId foreign key (oId) references OBRA (id),
-    constraint Role CHECK (role IN ('ADMIN', 'MEMBRO', 'CAMARA', 'TECNICO'))
+    constraint Role CHECK (role IN ('ADMIN', 'MEMBRO', 'ESPECTADOR', 'TECNICO'))
 );
 
 create table REGISTO
@@ -199,6 +200,6 @@ create table CONVITE(
     oId varchar(255),
     primary key (id, oId),
     constraint ObraId foreign key (oId) references OBRA (id),
-    constraint Tipo CHECK (role IN ('FISCALIZAÇÃO', 'COORDENADOR', 'ARQUITETURA', 'ESTABILIDADE', 'ELETRICIDADE', 'GÁS',
+    constraint Tipo CHECK (role IN ('MEMBRO', 'VIEWER', 'FISCALIZAÇÃO', 'COORDENADOR', 'ARQUITETURA', 'ESTABILIDADE', 'ELETRICIDADE', 'GÁS',
         'CANALIZAÇÃO', 'TELECOMUNICAÇÕES', 'TERMICO', 'ACUSTICO', 'TRANSPORTES', 'DIRETOR'))
 )

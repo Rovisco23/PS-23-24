@@ -54,7 +54,7 @@ export class WorkInviteComponent {
 
   roles = new FormControl('', [
     Validators.required,
-    Validators.pattern(/^(CAMARA|TECNICO|MEMBRO)$/)
+    Validators.pattern(/^(ESPECTADOR|MEMBRO|FISCALIZAÇÃO|COORDENADOR|ARQUITETURA|ESTABILIDADE|ELETRICIDADE|GÁS|CANALIZAÇÃO|TELECOMUNICAÇÕES|TERMICO|ACUSTICO|TRANSPORTES|DIRETOR)$/)
   ]);
 
   @ViewChild(MatTable, { static: false }) table: MatTable<Invite> | undefined;

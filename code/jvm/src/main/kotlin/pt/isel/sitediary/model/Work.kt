@@ -34,3 +34,5 @@ data class MemberInputModel(
     val email: String,
     val role: String
 )
+
+data class Invite (val id: UUID, val email: String, val role: String, val workId: UUID)

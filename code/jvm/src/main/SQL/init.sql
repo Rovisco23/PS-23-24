@@ -18,8 +18,8 @@ insert into utilizador(email, role, username, password, nome, apelido, nif, tele
 COPY LOCALIDADE (distrito, concelho, freguesia)
     FROM 'E:\Documentos\Universidade\Projeto\PS-23-24\docs\localidades.csv' DELIMITER ';' CSV HEADER;
 
-insert into membro(oid, uid, role) values ('25cab4aa-1003-4c1a-af7a-eca925e38cb7', 2, 'MEMBRO');
+insert into membro(oid, uid, role) values ('fc278a7c-97d2-4e2c-aa2b-2adc3e8736f5', 2, 'MEMBRO');
 
 insert into registo(oid, titulo,texto, estado, creation_date, last_modification_date, author)
-    values ('25cab4aa-1003-4c1a-af7a-eca925e38cb7','O andaime não se encontrava corretamente instalado','No dia x observei que o andaime estava mal montado','FINISHED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1),
-           ('25cab4aa-1003-4c1a-af7a-eca925e38cb7','Um dos tubos comprados encontra-se com defeito','Foi necessário comprar novos tubos aumentando a conta da obra por 50€','EDITÁVEL',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1 );
+    values ('fc278a7c-97d2-4e2c-aa2b-2adc3e8736f5','O andaime não se encontrava corretamente instalado','No dia x observei que o andaime estava mal montado','FINISHED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1),
+           ('fc278a7c-97d2-4e2c-aa2b-2adc3e8736f5','Um dos tubos comprados encontra-se com defeito','Foi necessário comprar novos tubos aumentando a conta da obra por 50€','EDITÁVEL',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1 );

@@ -6,6 +6,7 @@ import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.domainmodel.work.OpeningTerm
 import pt.isel.sitediary.domainmodel.work.Work
 import pt.isel.sitediary.domainmodel.work.WorkSimplified
+import pt.isel.sitediary.model.Invite
 import pt.isel.sitediary.model.OpeningTermInputModel
 import pt.isel.sitediary.repository.WorkRepository
 import java.sql.Timestamp
@@ -133,4 +134,21 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
             .executeAndReturnGeneratedKeys()
             .mapTo(Int::class.java)
             .one()
+
+    override fun inviteMembers(invites: List<Invite>) {
+        val query = StringBuilder("insert into CONVITE(id, email, role, oId) values ")
+        invites.forEach() {
+            query.append("('${it.id}', '${it.email}', '${it.role}', '${it.workId}'), ")
+        }
+        handle.createUpdate(query.toString().dropLast(2)).execute()
+    }
+
+    override fun checkInvite(workId: UUID, email: String): Boolean = handle.createQuery(
+        "select count(*) from CONVITE where oId = :oId and email = :email"
+    )
+        .bind("oId", workId.toString())
+        .bind("email", email)
+        .mapTo(Int::class.java)
+        .single() == 1
+
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +8,10 @@ export class OriginalUrlService {
 
   setOriginalUrl(url: string) {
     this.originalUrl = url;
+  }
+
+  resetOriginalUrl() {
+    this.originalUrl = undefined;
   }
 
   getOriginalUrl(): string | undefined {

@@ -1,31 +1,42 @@
 <div class="container">
   <div class="form-container">
-      <mat-form-field>
-        <mat-label>Email</mat-label>
-        <input type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
-               placeholder="Ex. pat@example.com">
-        <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
-          Please enter a valid email address
-        </mat-error>
-        <mat-error *ngIf="emailFormControl.hasError('required')">
-          Email is <strong>required</strong>
-        </mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Choose a Role</mat-label>
-        <mat-select [formControl]="roles" [errorStateMatcher]="matcher">
-          <mat-option value=""></mat-option>
-          <mat-option value="CAMARA">Câmara</mat-option>
-          <mat-option value="TECNICO">Técnico</mat-option>
-          <mat-option value="MEMBRO">Membro</mat-option>
-        </mat-select>
-        <mat-error *ngIf="roles.hasError('required')">
-          You must select a role
-        </mat-error>
-      </mat-form-field>
-      <button class="add-button" mat-fab (click)="addInvite(email, role)">
-        <mat-icon>add</mat-icon>
-      </button>
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
+             placeholder="Ex. pat@example.com">
+      <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+        Please enter a valid email address
+      </mat-error>
+      <mat-error *ngIf="emailFormControl.hasError('required')">
+        Email is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Choose a Role</mat-label>
+      <mat-select [formControl]="roles" [errorStateMatcher]="matcher">
+        <mat-option value=""></mat-option>
+        <mat-option value="ESPECTADOR">Espectador</mat-option>
+        <mat-option value="MEMBRO">Membro</mat-option>
+        <mat-option value="FISCALIZAÇÃO">Fiscalização</mat-option>
+        <mat-option value="COORDENADOR">Coordenador</mat-option>
+        <mat-option value="ARQUITETURA">Arquitetura</mat-option>
+        <mat-option value="ESTABILIDADE">Estabilidade</mat-option>
+        <mat-option value="ELETRICIDADE">Eletricidade</mat-option>
+        <mat-option value="GÁS">Gás</mat-option>
+        <mat-option value="CANALIZAÇÃO">Canalização</mat-option>
+        <mat-option value="TELECOMUNICAÇÕES">Telecomunicações</mat-option>
+        <mat-option value="TERMICO">Térmico</mat-option>
+        <mat-option value="ACUSTICO">Acústico</mat-option>
+        <mat-option value="TRANSPORTES">Transportes</mat-option>
+        <mat-option value="DIRETOR">Diretor</mat-option>
+      </mat-select>
+      <mat-error *ngIf="roles.hasError('required')">
+        You must select a role
+      </mat-error>
+    </mat-form-field>
+    <button class="add-button" mat-fab (click)="addInvite(email, role)">
+      <mat-icon>add</mat-icon>
+    </button>
   </div>
   <table mat-table [dataSource]="invites" class="table">
     <ng-container matColumnDef="position">

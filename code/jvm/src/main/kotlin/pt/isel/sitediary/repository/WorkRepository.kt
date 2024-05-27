@@ -4,6 +4,7 @@ import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.work.OpeningTerm
 import pt.isel.sitediary.domainmodel.work.Work
 import pt.isel.sitediary.domainmodel.work.WorkSimplified
+import pt.isel.sitediary.model.Invite
 import pt.isel.sitediary.model.OpeningTermInputModel
 import java.util.*
 
@@ -12,4 +13,6 @@ interface WorkRepository {
     fun getById(id: UUID): Work?
     fun getWorkList(skip: Int, userId: Int): List<WorkSimplified>
     fun getOpeningTerm(workId: UUID): OpeningTerm
+    fun inviteMembers(invites: List<Invite>)
+    fun checkInvite(workId: UUID, email: String): Boolean
 }
