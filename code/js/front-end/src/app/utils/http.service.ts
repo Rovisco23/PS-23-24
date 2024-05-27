@@ -91,4 +91,9 @@ export class HttpService {
     const headers = this.getTokenHeader();
     return this.http.post<any>(`http://localhost:8080/api/work/${workId}`, invites, { headers: headers })
   }
+
+  getInviteList(): Observable<any> {
+    const headers = this.getTokenHeader();
+    return this.http.get<any>('http://localhost:8080/api/invite', { headers: headers })
+  }
 }

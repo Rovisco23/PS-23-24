@@ -2,11 +2,9 @@ package pt.isel.sitediary.repository.jdbi
 
 import org.jdbi.v3.core.Handle
 import pt.isel.sitediary.domainmodel.user.User
-import pt.isel.sitediary.domainmodel.work.Location
-import pt.isel.sitediary.domainmodel.work.OpeningTerm
-import pt.isel.sitediary.domainmodel.work.Work
-import pt.isel.sitediary.domainmodel.work.WorkSimplified
-import pt.isel.sitediary.model.Invite
+import pt.isel.sitediary.domainmodel.work.*
+import pt.isel.sitediary.model.GetUserModel
+import pt.isel.sitediary.model.InviteResponseModel
 import pt.isel.sitediary.model.OpeningTermInputModel
 import pt.isel.sitediary.repository.WorkRepository
 import java.sql.Timestamp
@@ -168,5 +166,59 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
                 .bind("oId", workId.toString())
                 .bind("role", "ESPECTADOR")
         }
+    }
+
+    override fun getInviteList(email: String): List<InviteSimplified> = handle.createQuery(
+        "select c.id as id, o.nome as workTitle, u.username as admin, c.role as role from CONVITE c " +
+                "join OBRA o on o.id = c.oId join MEMBRO m on o.id = m.oId join UTILIZADOR u on m.uId = u.id " +
+                "where c.email = :email and m.role = 'ADMIN'"
+    )
+        .bind("email", email)
+        .mapTo(InviteSimplified::class.java)
+        .list()
+
+    override fun getInvite(id: UUID): Invite? = handle.createQuery(
+        "select * from CONVITE where id = :id"
+    )
+        .bind("id", id.toString())
+        .mapTo(Invite::class.java)
+        .singleOrNull()
+
+    override fun acceptInvite(inv: InviteResponseModel, user: GetUserModel) {
+        val role = if (inv.role != "ESPECTADOR" && inv.role != "MEMBRO") "TECNICO" else inv.role
+        handle.createUpdate(
+            "insert into MEMBRO(uId, oId, role) values(:uId, :oId, :role)"
+        )
+            .bind("uId", user.id)
+            .bind("oId", inv.workId.toString())
+            .bind("role", role)
+            .execute()
+        if (role == "TECNICO") {
+            val termo = handle.createQuery("select id from TERMO_ABERTURA where oId = :oId")
+                .bind("oId", inv.workId.toString())
+                .mapTo(Int::class.java)
+                .single()
+
+            handle.createUpdate("insert into TECNICO(nif, tId, oId, nome, tipo, associacao, numero) " +
+                    "values(:nif, :tId, :oId, :nome, :tipo, :associacao, :numero)")
+                .bind("nif", user.nif)
+                .bind("tId", termo)
+                .bind("oId", inv.workId.toString())
+                .bind("nome", user.username)
+                .bind("tipo", inv.role)
+                .bind("associacao", inv.association?.name )
+                .bind("numero", inv.association?.num)
+                .execute()
+        }
+
+        handle.createUpdate("delete from CONVITE where id = :id")
+            .bind("id", inv.id.toString())
+            .execute()
+    }
+
+    override fun declineInvite(id: UUID) {
+        handle.createUpdate("delete from CONVITE where id = :id")
+            .bind("id", id.toString())
+            .execute()
     }
 }

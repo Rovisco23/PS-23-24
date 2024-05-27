@@ -43,5 +43,9 @@ class Errors(val status: Int, val reason: String) {
         val notAdmin = Errors(401, "You are not an Admin of this Work")
 
         val logNotFound = Errors(404, "Log does not exist.")
+
+        val inviteNotFound = Errors(404, "Invite does not exist.")
+
+        val notInviteOwner = Errors(403, "You are not the owner of this Invite")
     }
 }

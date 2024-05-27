@@ -17,6 +17,8 @@ fun Jdbi.configureWithAppRequirements(): Jdbi {
     registerRowMapper(LogEntryMapper())
     registerRowMapper(OpeningTermMapper())
     registerRowMapper(FileModelMapper())
+    registerRowMapper(InviteMapper())
+    registerRowMapper(InviteSimplifiedModel())
 
     return this
 }

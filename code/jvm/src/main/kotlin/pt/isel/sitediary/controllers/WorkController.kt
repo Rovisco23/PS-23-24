@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
 import pt.isel.sitediary.domainmodel.work.Work
+import pt.isel.sitediary.model.InviteResponseModel
 import pt.isel.sitediary.model.ListOfWorksOutputModel
 import pt.isel.sitediary.model.MemberInputModel
 import pt.isel.sitediary.model.OpeningTermInputModel
@@ -103,8 +104,38 @@ class WorkController(private val service: WorkService) {
         @PathVariable id: UUID,
         @RequestBody members: List<MemberInputModel>,
         @Parameter(hidden = true) user: AuthenticatedUser
-    ) {
+    ): ResponseEntity<*> {
         val res = service.inviteMembers(members, id, user.user.id)
+        return handleResponse(res) {
+            ResponseEntity.status(200).body(it)
+        }
+    }
+
+    @GetMapping(Paths.Work.GET_INVITE_LIST)
+    fun getInviteList(@Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
+        val res = service.getInviteList(user.user.id)
+        return handleResponse(res) {
+            ResponseEntity.status(200).body(it)
+        }
+    }
+
+    @GetMapping(Paths.Work.GET_INVITE)
+    fun getInvite(@PathVariable id: UUID, @Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
+        val res = service.getInvite(id, user.user.id)
+        return handleResponse(res) {
+            ResponseEntity.status(200).body(it)
+        }
+    }
+
+    @PostMapping(Paths.Work.GET_INVITE_LIST)
+    fun answerInvite(
+        @RequestBody resp: InviteResponseModel,
+        @Parameter(hidden = true) user: AuthenticatedUser
+    ): ResponseEntity<*> {
+        val res = service.inviteResponse(resp, user.user.id)
+        return handleResponse(res) {
+            ResponseEntity.status(200).body(it)
+        }
     }
 
     @PostMapping(Paths.Work.GET_ALL_WORKS)

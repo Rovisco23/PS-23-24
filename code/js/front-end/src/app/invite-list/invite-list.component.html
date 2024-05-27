@@ -1,0 +1,16 @@
+<div>
+  <form>
+    <input type="text" placeholder="Search log by name" #filter>
+    <button class="primary" type="button" (click)="filterInvites(filter.value)">Search</button>
+  </form>
+</div>
+<mat-divider></mat-divider>
+<div >
+  <mat-list *ngFor="let entry of filteredInvites">
+    <mat-list-item (click)="onInviteClick(entry.id)">
+      <div matListItemTitle>{{ entry.workTitle }}</div>
+      <div matListItemLine>{{ entry.admin }} convidou-te para seres parte desta obra como {{entry.role}}</div>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+  </mat-list>
+</div>

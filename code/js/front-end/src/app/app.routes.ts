@@ -10,6 +10,8 @@ import {LogEntryDetailsComponent} from "./log-entry-details/log-entry-details.co
 import {CreateLogEntryComponent} from "./create-log-entry/create-log-entry.component";
 import {WorkInviteComponent} from "./work-invite/work-invite.component";
 import {AuthGuard} from "./utils/auth.guard";
+import {InviteListComponent} from "./invite-list/invite-list.component";
+import {InviteDetailsComponent} from "./invite-details/invite-details.component";
 
 export const routes: Routes = [
   {
@@ -89,6 +91,16 @@ export const routes: Routes = [
     path: 'create-log-entry/:id',
     component: CreateLogEntryComponent,
     canActivate: [AuthGuard],
+  },
+  {
+    path: 'invites',
+    component: InviteListComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'invites/:id',
+    component: InviteDetailsComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: '**',

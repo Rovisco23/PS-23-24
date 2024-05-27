@@ -6,10 +6,11 @@ import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.user.checkAdmin
 import pt.isel.sitediary.domainmodel.user.containsMemberById
 import pt.isel.sitediary.domainmodel.work.Address
+import pt.isel.sitediary.domainmodel.work.Invite
 import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.domainmodel.work.Work
 import pt.isel.sitediary.domainmodel.work.WorkState.IN_PROGRESS
-import pt.isel.sitediary.model.Invite
+import pt.isel.sitediary.model.InviteResponseModel
 import pt.isel.sitediary.model.MemberInputModel
 import pt.isel.sitediary.model.OpeningTermInputModel
 import pt.isel.sitediary.repository.transaction.TransactionManager
@@ -78,8 +79,7 @@ class WorkService(
         success(work)
     }
 
-    fun inviteMembers(members: List<MemberInputModel>, workId: UUID, userId: Int) {
-        transactionManager.run {
+    fun inviteMembers(members: List<MemberInputModel>, workId: UUID, userId: Int) = transactionManager.run {
             val user = it.usersRepository.getUserById(userId)
             val work = it.workRepository.getById(workId)
             if (user == null) {
@@ -103,7 +103,58 @@ class WorkService(
                 success("Invites sent successfully")
             }
         }
+
+
+    fun getInviteList(userId: Int) = transactionManager.run {
+        val user = it.usersRepository.getUserById(userId)
+        if (user == null) {
+            failure(Errors.userNotFound)
+        } else {
+            val invites = it.workRepository.getInviteList(user.email)
+            success(invites)
+        }
     }
+
+    fun getInvite(invId: UUID, userId: Int) = transactionManager.run {
+        val user = it.usersRepository.getUserById(userId)
+        if (user == null) {
+            failure(Errors.userNotFound)
+        } else {
+            val invite = it.workRepository.getInvite(invId)
+            if (invite == null) {
+                failure(Errors.inviteNotFound)
+            } else {
+                if (invite.email != user.email) {
+                    failure(Errors.notInviteOwner)
+                } else {
+                    success(invite)
+                }
+            }
+        }
+    }
+
+    fun inviteResponse(response: InviteResponseModel, userId: Int) = transactionManager.run {
+        val user = it.usersRepository.getUserById(userId)
+        if (user == null) {
+            failure(Errors.userNotFound)
+        } else {
+            val invite = it.workRepository.getInvite(response.id)
+            if (invite == null) {
+                failure(Errors.inviteNotFound)
+            } else if (invite.email != user.email) {
+                failure(Errors.notInviteOwner)
+            } else {
+                if (response.accepted) {
+                    it.workRepository.acceptInvite(response, user)
+                    success("Invite accepted")
+                } else {
+                    it.workRepository.declineInvite(response.id)
+                    success("Invite denied")
+                }
+            }
+        }
+    }
+
 
     fun getOpeningTerm(workId: UUID, userId: Int) = transactionManager.run {
         val workRep = it.workRepository

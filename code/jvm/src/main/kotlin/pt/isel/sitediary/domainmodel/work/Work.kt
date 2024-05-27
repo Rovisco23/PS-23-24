@@ -4,7 +4,6 @@ import org.apache.commons.mail.DefaultAuthenticator
 import org.apache.commons.mail.SimpleEmail
 import pt.isel.sitediary.domainmodel.user.Member
 import pt.isel.sitediary.domainmodel.user.Technician
-import pt.isel.sitediary.model.Invite
 import java.util.*
 
 data class Work(
@@ -26,7 +25,7 @@ data class Work(
         mail.setFrom("ricardorovisco23@gmail.com", "SiteDiary")
         mail.addTo(invite.email)
         mail.subject = "Convite para a obra $name"
-        val acceptLink = "http://localhost:4200/invites?workId=$id"
+        val acceptLink = "http://localhost:4200/invites/$id"
         val role = if (invite.role != "MEMBRO" && invite.role != "VIEWER") "Técnico de ${invite.role}" else invite.role
         mail.setMsg(
             "Olá\n\nFoi convidado para a obra $name para participar como ${role}.\n\n" +
@@ -72,6 +71,11 @@ data class WorkSimplified(
 )
 
 data class ConstructionCompany(
+    val name: String,
+    val num: Int
+)
+
+data class Association(
     val name: String,
     val num: Int
 )
@@ -134,3 +138,7 @@ enum class WorkState(val description: String) {
         }
     }
 }
+
+data class Invite (val id: UUID, val email: String, val role: String, val workId: UUID)
+
+data class InviteSimplified(val id: UUID, val workTitle: String, val role: String, val admin: String)

@@ -1,10 +1,9 @@
 package pt.isel.sitediary.repository
 
 import pt.isel.sitediary.domainmodel.user.User
-import pt.isel.sitediary.domainmodel.work.OpeningTerm
-import pt.isel.sitediary.domainmodel.work.Work
-import pt.isel.sitediary.domainmodel.work.WorkSimplified
-import pt.isel.sitediary.model.Invite
+import pt.isel.sitediary.domainmodel.work.*
+import pt.isel.sitediary.model.GetUserModel
+import pt.isel.sitediary.model.InviteResponseModel
 import pt.isel.sitediary.model.OpeningTermInputModel
 import java.util.*
 
@@ -15,4 +14,8 @@ interface WorkRepository {
     fun getOpeningTerm(workId: UUID): OpeningTerm
     fun inviteMembers(invites: List<Invite>)
     fun checkInvite(workId: UUID, email: String): Boolean
+    fun getInviteList(email: String): List<InviteSimplified>
+    fun getInvite(id: UUID): Invite?
+    fun acceptInvite(inv: InviteResponseModel, user: GetUserModel)
+    fun declineInvite(id: UUID)
 }

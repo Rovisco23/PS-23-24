@@ -37,6 +37,7 @@ data class EditProfileInputModel(
 data class GetUserModel(
     val id: Int,
     val username: String,
+    val nif: Int,
     val email: String,
     val phone: String?,
     val firstName: String,

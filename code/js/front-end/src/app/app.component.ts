@@ -53,6 +53,7 @@ export class AppComponent {
         this.showLayout = navigationEndEvent.urlAfterRedirects !== '/login' &&
           navigationEndEvent.urlAfterRedirects !== '/signup';
         this.httpService.getProfilePicture().subscribe((data) => {
+          console.log('DATA: ' + data.size)
           if (data.size === 0) {
             this.src = './assets/profile.png'
           } else {
