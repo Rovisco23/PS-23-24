@@ -190,3 +190,14 @@ create table profile_picture
     primary key (id),
     constraint UserId foreign key (user_id) references UTILIZADOR (id)
 );
+
+create table CONVITE(
+    id varchar(255),
+    email varchar(255),
+    role varchar(50),
+    oId varchar(255),
+    primary key (id, oId),
+    constraint ObraId foreign key (oId) references OBRA (id),
+    constraint Tipo CHECK (role IN ('FISCALIZAÇÃO', 'COORDENADOR', 'ARQUITETURA', 'ESTABILIDADE', 'ELETRICIDADE', 'GÁS',
+        'CANALIZAÇÃO', 'TELECOMUNICAÇÕES', 'TERMICO', 'ACUSTICO', 'TRANSPORTES', 'DIRETOR'))
+)
