@@ -12,6 +12,7 @@ object Paths {
         const val GET_USER_USERNAME = "$PREFIX/users"
         const val SESSION = "$PREFIX/session"
         const val PROFILE_PICTURE = "$PREFIX/profile-picture"
+        const val PENDING = "$PREFIX/pending/{id}"
     }
 
     object Work {

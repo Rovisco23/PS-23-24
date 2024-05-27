@@ -17,7 +17,7 @@ class JdbiUser(private val handle: Handle) : UserRepository {
                 "values (:email, :role, :username, :password, :nome, :apelido, :nif, :telefone, :freguesia, :concelho, :distrito)"
     )
         .bind("email", user.email)
-        .bind("role", user.role)
+        .bind("role", "OPERÁRIO")
         .bind("username", user.username)
         .bind("password", user.password)
         .bind("nome", user.firstName)
@@ -109,10 +109,52 @@ class JdbiUser(private val handle: Handle) : UserRepository {
             .execute()
     }
 
+    override fun removeProfilePicture(id: Int) {
+        handle.createUpdate("remove from profile_picture where id = :id")
+            .bind("id", id)
+            .execute()
+    }
+
     override fun getProfilePicture(id: Int): FileModel? = handle.createQuery(
         "select img, name, type from profile_picture where user_id = :id"
     )
         .bind("id", id)
         .mapTo(FileModel::class.java)
         .singleOrNull()
+
+    override fun insertPending(id: Int, role: String) {
+        handle.createUpdate("insert into pendente(uId) values (:id)")
+            .bind("id", id)
+            .execute()
+    }
+
+    override fun acceptCouncil(userId: Int) {
+        handle.createUpdate("update utilizador set role = 'CÂMARA' where id = :id")
+            .bind("id", userId)
+            .execute()
+        handle.createUpdate("delete from pendente where uId = :id")
+            .bind("id", userId)
+            .execute()
+        addCouncilToExistentWorks(userId)
+    }
+
+    private fun addCouncilToExistentWorks(councilId: Int) {
+        val councilLocation = handle.createQuery("select distrito, concelho, freguesia from UTILIZADOR where id = :id")
+            .bind("id", councilId)
+            .mapTo(Location::class.java)
+            .single()
+        val workIds = handle.createQuery("select id from OBRA where freguesia = :parish and concelho = :county" +
+                " and distrito = :district")
+            .bind("parish", councilLocation.parish)
+            .bind("county", councilLocation.county)
+            .bind("district", councilLocation.district)
+            .mapTo(String::class.java)
+            .list()
+        val query = StringBuilder("insert into MEMBRO(uId, oId, role) values ")
+        workIds.forEach {
+            query.append("('${councilId}', '${it}', 'ESPECTADOR'), ")
+        }
+        handle.createUpdate(query.toString().dropLast(2)).execute()
+    }
+
 }

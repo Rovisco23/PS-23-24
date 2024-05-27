@@ -19,7 +19,7 @@ import pt.isel.sitediary.utils.failure
 import pt.isel.sitediary.utils.success
 import java.util.*
 
-typealias CreateWorkResult = Result<Errors, Work>
+typealias CreateWorkResult = Result<Errors, Unit>
 
 @Component
 class WorkService(
@@ -57,7 +57,7 @@ class WorkService(
                     log = emptyList()
                 )
                 workRep.createWork(work, openingTerm, user)
-                success(work)
+                success(Unit)
             }
         }
     }

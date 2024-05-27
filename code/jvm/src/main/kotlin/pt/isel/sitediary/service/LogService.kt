@@ -11,7 +11,7 @@ import pt.isel.sitediary.utils.Result
 import pt.isel.sitediary.utils.failure
 import pt.isel.sitediary.utils.success
 
-typealias CreateLogResult = Result<Errors, Int>
+typealias CreateLogResult = Result<Errors, Unit>
 typealias GetLogResult = Result<Errors, LogEntry>
 
 @Component
@@ -27,7 +27,7 @@ class LogService (
             failure(Errors.notMember)
         } else {
             val l = it.logRepository.createLog(log, clock.now(), userId)
-            success(l)
+            success(Unit)
         }
         //Verificar se é tecnico
     }

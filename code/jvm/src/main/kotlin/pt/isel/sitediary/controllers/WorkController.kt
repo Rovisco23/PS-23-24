@@ -23,6 +23,7 @@ import pt.isel.sitediary.service.WorkService
 import pt.isel.sitediary.utils.Errors
 import pt.isel.sitediary.utils.Paths
 import pt.isel.sitediary.utils.handleResponse
+import java.net.URI
 import java.util.*
 
 
@@ -57,7 +58,7 @@ class WorkController(private val service: WorkService) {
     fun getWorkById(@PathVariable id: UUID, @Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
         val res = service.getWork(id, user.user.id)
         return handleResponse(res) {
-            ResponseEntity.status(200).body(it)
+            ResponseEntity.ok(it)
         }
     }
 
@@ -79,7 +80,7 @@ class WorkController(private val service: WorkService) {
     fun getWorkList(@RequestParam skip: Int, @Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
         val res = service.getWorkList(skip, user.user.id)
         return handleResponse(res) {
-            ResponseEntity.status(200).body(it)
+            ResponseEntity.ok(it)
         }
     }
 
@@ -113,7 +114,7 @@ class WorkController(private val service: WorkService) {
             ApiResponse(
                 responseCode = "201", description = "Work created successfully",
                 content = [
-                    Content(mediaType = "application/json", schema = Schema(implementation = Work::class))
+                    Content(mediaType = "application/json", schema = Schema(implementation = Unit::class))
                 ]
             ),
             ApiResponse(
@@ -128,7 +129,7 @@ class WorkController(private val service: WorkService) {
             : ResponseEntity<*> {
         val res = service.createWork(work, user.user)
         return handleResponse(res) {
-            ResponseEntity.status(201).body(it)
+            ResponseEntity.created(URI.create("/works")).body(it)
         }
     }
 
@@ -137,14 +138,14 @@ class WorkController(private val service: WorkService) {
             : ResponseEntity<*> {
         val res = service.getOpeningTerm(work, user.user.id)
         return handleResponse(res) {
-            ResponseEntity.status(200).body(it)
+            ResponseEntity.ok(it)
         }
     }
 
     fun finishWork(@RequestParam work: UUID, @Parameter(hidden = true) user: AuthenticatedUser)
             : ResponseEntity<*> {
         service.finishWork(work, user.user.id)
-        return ResponseEntity.status(200).body("Work finished successfully")
+        return ResponseEntity.ok("Work finished successfully")
     }
 
 }

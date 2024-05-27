@@ -9,6 +9,8 @@ class Errors(val status: Int, val reason: String) {
             .header("Content-Type", "application/problem+json")
             .body<Any>(error.reason)
 
+        val forbidden = Errors(403, "Forbidden")
+
         val userNotFound = Errors(404, "User does not exist.")
 
         val emailAlreadyInUse = Errors(400, "That email is already in use.")

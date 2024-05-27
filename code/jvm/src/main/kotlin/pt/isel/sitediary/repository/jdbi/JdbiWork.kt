@@ -37,23 +37,24 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
             .bind("id_utilizador", user.id)
             .bind("role", "ADMIN")
             .execute()
+        addCouncilAsMember(work.id, work.address.location)
         val companyId = getCompanyId(openingTerm.company.name, openingTerm.company.num)
         val councilId = getCouncil(work.address.location)
         val termId = insertOpeningTerm(openingTerm, companyId, work.id, councilId)
         /** Exemplo
         handle.createUpdate(
-            "insert into TECNICO(nif,tId, oId, nome, tipo, associacao, numero) " +
-                    "values (:nif, :tId, :oId, :nome, :tipo, :associacao, :numero)"
+        "insert into TECNICO(nif,tId, oId, nome, tipo, associacao, numero) " +
+        "values (:nif, :tId, :oId, :nome, :tipo, :associacao, :numero)"
         )
-            .bind("nif", user.nif)
-            .bind("tId", termId)
-            .bind("oId", work.id)
-            .bind("nome", work.name)
-            .bind("tipo", "Por Adicionar mas virá no openingTerm.fiscalization.type")
-            .bind("associacao", "Por Adicionar mas virá no openingTerm.fiscalization.association")
-            .bind("numero", 0) // Por Adicionar mas virá no openingTerm.fiscalization.number
-            .execute()
-        */
+        .bind("nif", user.nif)
+        .bind("tId", termId)
+        .bind("oId", work.id)
+        .bind("nome", work.name)
+        .bind("tipo", "Por Adicionar mas virá no openingTerm.fiscalization.type")
+        .bind("associacao", "Por Adicionar mas virá no openingTerm.fiscalization.association")
+        .bind("numero", 0) // Por Adicionar mas virá no openingTerm.fiscalization.number
+        .execute()
+         */
     }
 
     override fun getById(id: UUID): Work? = handle.createQuery(
@@ -122,22 +123,22 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         workId: UUID,
         councilId: Int
     ): Int = handle.createUpdate(
-            "insert into TERMO_ABERTURA(oId, inicio, camara, titular_licenca, empresa_construcao, predio)" +
-                    "values (:oId, :inicio, :camara, :titular_licença, :empresa_construção, :predio)"
-        )
-            .bind("oId", workId)
-            .bind("inicio", Timestamp.valueOf(LocalDateTime.now()))
-            .bind("camara", councilId)
-            .bind("titular_licença", openingTerm.holder)
-            .bind("empresa_construção", companyId)
-            .bind("predio", openingTerm.building)
-            .executeAndReturnGeneratedKeys()
-            .mapTo(Int::class.java)
-            .one()
+        "insert into TERMO_ABERTURA(oId, inicio, camara, titular_licenca, empresa_construcao, predio)" +
+                "values (:oId, :inicio, :camara, :titular_licença, :empresa_construção, :predio)"
+    )
+        .bind("oId", workId)
+        .bind("inicio", Timestamp.valueOf(LocalDateTime.now()))
+        .bind("camara", councilId)
+        .bind("titular_licença", openingTerm.holder)
+        .bind("empresa_construção", companyId)
+        .bind("predio", openingTerm.building)
+        .executeAndReturnGeneratedKeys()
+        .mapTo(Int::class.java)
+        .one()
 
     override fun inviteMembers(invites: List<Invite>) {
         val query = StringBuilder("insert into CONVITE(id, email, role, oId) values ")
-        invites.forEach() {
+        invites.forEach {
             query.append("('${it.id}', '${it.email}', '${it.role}', '${it.workId}'), ")
         }
         handle.createUpdate(query.toString().dropLast(2)).execute()
@@ -151,4 +152,21 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         .mapTo(Int::class.java)
         .single() == 1
 
+    private fun addCouncilAsMember(workId: UUID, location: Location) {
+        val councilId = handle.createQuery(
+            "select id from UTILIZADOR where freguesia = :parish and " +
+                    "concelho = :county and distrito = :district and role='CÂMARA'"
+        )
+            .bind("parish", location.parish)
+            .bind("county", location.county)
+            .bind("district", location.district)
+            .mapTo(Int::class.java)
+            .singleOrNull()
+        if (councilId != null) {
+            handle.createUpdate("insert into MEMBRO(uId, oId, role) values(:uId, :oId, :role)")
+                .bind("uId", councilId)
+                .bind("oId", workId.toString())
+                .bind("role", "ESPECTADOR")
+        }
+    }
 }

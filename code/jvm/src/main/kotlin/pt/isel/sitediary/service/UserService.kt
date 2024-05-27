@@ -15,7 +15,7 @@ import pt.isel.sitediary.model.SignUpInputModel
 import pt.isel.sitediary.repository.transaction.TransactionManager
 import pt.isel.sitediary.utils.*
 
-typealias UserCreationResult = Result<Errors, User>
+typealias UserCreationResult = Result<Errors, Unit>
 typealias LoginResult = Result<Errors, TokenExternalInfo>
 typealias LogoutResult = Result<Errors, String>
 typealias UserEditResult = Result<Errors, GetUserModel>
@@ -45,7 +45,10 @@ class UserService(
             } else {
                 val location = Location(l.district, l.county, l.parish)
                 val id = rep.createUser(user, location)
-                success(User(id, user.username, user.nif, user.email, user.phone, user.role, location))
+                if (user.role != "OPERÁRIO") {
+                    rep.insertPending(id, user.role)
+                }
+                success(Unit)
             }
         }
     }
@@ -172,13 +175,13 @@ class UserService(
         }
     }
 
-    fun changeProfilePicture(file: FileModel, userId: Int) = transactionManager.run {
+    fun changeProfilePicture(file: FileModel?, userId: Int) = transactionManager.run {
         val rep = it.usersRepository
         val user = rep.getUserById(userId)
         if (user == null) {
             failure(Errors.userNotFound)
         } else {
-            rep.changeProfilePicture(userId, file)
+            if (file != null) rep.changeProfilePicture(userId, file) else rep.removeProfilePicture(userId)
             success(user)
         }
     }
@@ -191,6 +194,21 @@ class UserService(
         } else {
             val pfp = rep.getProfilePicture(id)
             success(pfp)
+        }
+    }
+
+    fun acceptCouncil(userId: Int, authUser: User) = transactionManager.run {
+        val rep = it.usersRepository
+        if (authUser.role != "ADMIN") {
+            failure(Errors.forbidden)
+        } else {
+            val user = rep.getUserById(userId)
+            if (user == null) {
+                failure(Errors.userNotFound)
+            } else {
+                rep.acceptCouncil(userId)
+                success(user)
+            }
         }
     }
 }

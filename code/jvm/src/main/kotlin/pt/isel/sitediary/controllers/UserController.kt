@@ -1,7 +1,5 @@
 package pt.isel.sitediary.controllers
 
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
@@ -16,7 +14,14 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RequestPart
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
 import pt.isel.sitediary.model.EditProfileInputModel
@@ -31,6 +36,7 @@ import pt.isel.sitediary.service.UserService
 import pt.isel.sitediary.utils.Errors
 import pt.isel.sitediary.utils.Paths
 import pt.isel.sitediary.utils.handleResponse
+import java.net.URI
 
 @RestController
 @Tag(name = "User", description = "Operations related the User.")
@@ -51,10 +57,11 @@ class UserController(private val service: UserService) {
             )
         ]
     )
-    fun createUser(@RequestBody user: SignUpInputModel, response: HttpServletResponse) {//: ResponseEntity<*> {
-        service.createUser(user)
-        response.addHeader(HttpHeaders.LOCATION, "/login")
-        response.status = 201
+    fun createUser(@RequestBody user: SignUpInputModel): ResponseEntity<*> {
+        val res = service.createUser(user)
+        return handleResponse(res) {
+            ResponseEntity.created(URI.create("/login")).body(it)
+        }
     }
 
     @PostMapping(Paths.User.LOGIN)
@@ -104,7 +111,7 @@ class UserController(private val service: UserService) {
 
             response.addHeader(HttpHeaders.SET_COOKIE, cookieToken.toString())
             response.addHeader(HttpHeaders.SET_COOKIE, cookieId.toString())
-            ResponseEntity.status(200).body(tokenValue)
+            ResponseEntity.ok(tokenValue)
         }
     }
 
@@ -152,7 +159,7 @@ class UserController(private val service: UserService) {
 
             response.addCookie(cookieId)
             response.addCookie(cookieToken)
-            ResponseEntity.status(200).body(TokenModel(it))
+            ResponseEntity.ok(TokenModel(it))
         }
     }
 
@@ -177,7 +184,7 @@ class UserController(private val service: UserService) {
     fun getUserById(@PathVariable id: Int): ResponseEntity<*> {
         val res = service.getUserById(id)
         return handleResponse(res) {
-            ResponseEntity.status(200).body(it)
+            ResponseEntity.ok(it)
         }
     }
 
@@ -202,7 +209,7 @@ class UserController(private val service: UserService) {
     fun getUserByUsername(@RequestParam username: String): ResponseEntity<*> {
         val res = service.getUserByUsername(username)
         return handleResponse(res) {
-            ResponseEntity.status(200).body(it)
+            ResponseEntity.ok(it)
         }
     }
 
@@ -233,7 +240,7 @@ class UserController(private val service: UserService) {
     fun editProfile(@RequestBody u: EditProfileInputModel, @Parameter(hidden = true) user: AuthenticatedUser)
             : ResponseEntity<Unit> {
         service.editProfile(userId = user.user.id, editUser = u)
-        return ResponseEntity.ok().body(Unit)
+        return ResponseEntity.ok(Unit)
     }
 
     @PutMapping(Paths.User.PROFILE_PICTURE, consumes = ["multipart/form-data"])
@@ -251,15 +258,20 @@ class UserController(private val service: UserService) {
             ]
         )
     )
-    fun changeProfilePicture(@RequestPart("file") file: MultipartFile?, @Parameter(hidden = true) user: AuthenticatedUser) {
+    fun changeProfilePicture(
+        @RequestPart("file") file: MultipartFile?,
+        @Parameter(hidden = true) user: AuthenticatedUser
+    ): ResponseEntity<*> {
         val profilePicture = if (file == null) null else
             FileModel(
                 file.bytes,
                 file.originalFilename!!,
                 file.contentType!!
             )
-        if (profilePicture != null) service.changeProfilePicture(profilePicture, user.user.id)
-        println("ola")
+        val res = service.changeProfilePicture(profilePicture, user.user.id)
+        return handleResponse(res) {
+            ResponseEntity.ok().header("Location", "/profile").body(Unit)
+        }
     }
 
     @GetMapping(Paths.User.PROFILE_PICTURE)
@@ -284,9 +296,18 @@ class UserController(private val service: UserService) {
                 .body(ByteArrayResource(it.file))
         }
     }
+
+
+    @PutMapping(Paths.User.PENDING)
+    fun acceptCouncil(@PathVariable id: Int, @Parameter(hidden = true) authUser: AuthenticatedUser): ResponseEntity<*> {
+        val res = service.acceptCouncil(id, authUser.user)
+        return handleResponse(res) {
+            ResponseEntity.ok().body(Unit)
+        }
+    }
 }
 
-
+/*
 fun main() {
     val secret = "your_secret_key"
     val algorithm = Algorithm.HMAC256(secret)
@@ -313,4 +334,4 @@ fun main() {
     println("username = $username")
     println("role = $role")
     println("token = $token")
-}
+}*/

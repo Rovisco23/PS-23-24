@@ -19,5 +19,8 @@ interface UserRepository {
     fun editProfile(user: GetUserModel)
     fun getUserByToken(token: TokenValidationInfo): Pair<User, Token>?
     fun changeProfilePicture(id: Int, picture: FileModel)
+    fun removeProfilePicture(id: Int)
     fun getProfilePicture(id: Int): FileModel?
+    fun insertPending(id: Int, role: String)
+    fun acceptCouncil(userId: Int)
 }

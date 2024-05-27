@@ -7,31 +7,37 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
-import jakarta.servlet.http.HttpServletResponse
-import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
+import pt.isel.sitediary.domainmodel.work.LogEntry
 import pt.isel.sitediary.model.LogInputModel
 import pt.isel.sitediary.model.LogOutputModel
 import pt.isel.sitediary.service.LogService
 import pt.isel.sitediary.utils.Errors
 import pt.isel.sitediary.utils.Paths
 import pt.isel.sitediary.utils.handleResponse
+import java.net.URI
 
 @RestController
 @Tag(name = "Log", description = "Operations related the Logs.")
-class LogController (private val service: LogService) {
+class LogController(private val service: LogService) {
 
     @PostMapping(Paths.Log.GET_ALL_LOGS)
     @Operation(summary = "Create Log", description = "Used to create a log for a specific work.")
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "201", description = "Successful Log Creation"
+                responseCode = "201", description = "Successful Log Creation",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = Unit::class)
+                    )
+                ]
             ),
             ApiResponse(
                 responseCode = "401", description = "Not a Member of the Work",
@@ -41,10 +47,14 @@ class LogController (private val service: LogService) {
             )
         ]
     )
-    fun createLog(@RequestBody log: LogInputModel, @Parameter(hidden = true) user: AuthenticatedUser, response: HttpServletResponse) {
-        service.createLog(log, user.user.id)
-        response.addHeader(HttpHeaders.LOCATION, "/logs")
-        response.status = 201
+    fun createLog(
+        @RequestBody log: LogInputModel,
+        @Parameter(hidden = true) user: AuthenticatedUser
+    ): ResponseEntity<*> {
+        val res = service.createLog(log, user.user.id)
+        return handleResponse(res) {
+            ResponseEntity.created(URI.create("/logs")).body(it)
+        }
     }
 
     @PostMapping(Paths.Log.GET_BY_ID)
@@ -52,7 +62,13 @@ class LogController (private val service: LogService) {
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "201", description = "Log received successfully"
+                responseCode = "200", description = "Log received successfully",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = LogEntry::class)
+                    )
+                ]
             ),
             ApiResponse(
                 responseCode = "401", description = "Not a Member of the Work",
@@ -74,7 +90,7 @@ class LogController (private val service: LogService) {
                 lastModifiedAt = it.lastModifiedAt,
                 author = it.author
             )
-            ResponseEntity.status(200).body(log)
+            ResponseEntity.ok(log)
         }
     }
 }

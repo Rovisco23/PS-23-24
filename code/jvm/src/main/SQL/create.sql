@@ -11,13 +11,13 @@ drop table if exists CONVITE;
 drop table if exists OBRA;
 drop table if exists SESSAO;
 drop table if exists profile_picture;
+drop table if exists PENDENTE;
 drop table if exists UTILIZADOR;
 --drop table if exists LOCALIDADE;
 
 create table UTILIZADOR
 (
     id        serial,
-    img_pfp   bytea,
     email     varchar(255) unique,
     role      varchar(8),
     username  varchar(255) unique,
@@ -30,7 +30,7 @@ create table UTILIZADOR
     concelho  varchar(255),
     distrito  varchar(255),
     primary key (id),
-    constraint Role_Format check (ROLE IN ('OPERÁRIO', 'CÂMARA')), -- Adicionar ADMIN?
+    constraint Role_Format check (ROLE IN ('OPERÁRIO', 'CÂMARA', 'ADMIN')), -- Adicionar ADMIN?
     constraint Email_Format check (email like '%@%.%')
     --constraint Telefone_Format check (telefone not like '%[^0-9]%') -- This may work
 );
@@ -193,13 +193,24 @@ create table profile_picture
     constraint UserId foreign key (user_id) references UTILIZADOR (id)
 );
 
-create table CONVITE(
-    id varchar(255),
+create table CONVITE
+(
+    id    varchar(255),
     email varchar(255),
-    role varchar(50),
-    oId varchar(255),
+    role  varchar(50),
+    oId   varchar(255),
     primary key (id, oId),
     constraint ObraId foreign key (oId) references OBRA (id),
     constraint Tipo CHECK (role IN ('MEMBRO', 'VIEWER', 'FISCALIZAÇÃO', 'COORDENADOR', 'ARQUITETURA', 'ESTABILIDADE', 'ELETRICIDADE', 'GÁS',
-        'CANALIZAÇÃO', 'TELECOMUNICAÇÕES', 'TERMICO', 'ACUSTICO', 'TRANSPORTES', 'DIRETOR'))
+                                    'CANALIZAÇÃO', 'TELECOMUNICAÇÕES', 'TERMICO', 'ACUSTICO', 'TRANSPORTES',
+                                    'DIRETOR')),
+    constraint Email_Format check (email like '%@%.%')
+);
+
+create table PENDENTE
+(
+    id serial,
+    uId integer,
+    primary key (id),
+    constraint UserId foreign key (uId) references UTILIZADOR (id)
 )
