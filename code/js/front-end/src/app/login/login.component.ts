@@ -4,6 +4,7 @@ import {HttpService} from "../utils/http.service";
 import {FormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
 import {MatButton} from "@angular/material/button";
+import {OriginalUrlService} from "../utils/originalUrl.service";
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,7 @@ export class LoginComponent {
 
   httpService = inject(HttpService);
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private originalUrlService: OriginalUrlService) {}
 
   login(): void {
     this.httpService.login(this.username, this.password).subscribe(res => {
@@ -38,8 +39,16 @@ export class LoginComponent {
       if (bytes) {
         localStorage.setItem('pfp', window.btoa(bytes))
       }
-      this.router.navigate(['/work'])
+      const redirect = this.originalUrlService.getOriginalUrl()
+      if (redirect) {
+        this.router.navigate([redirect])
+      } else {
+        this.router.navigate(['/work'])
+      }
     })
   }
 
+  register() {
+    this.router.navigate(['/signup']);
+  }
 }
