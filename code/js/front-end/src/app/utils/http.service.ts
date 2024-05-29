@@ -25,8 +25,12 @@ export class HttpService {
     return this.http.post<any>('http://localhost:8080/api/logout', { token })
   }
 
-  signup(email: string, username: string, password: string, firstName: string, lastName: string, nif: number, phone: string, parish: string, county: string, role: string): Observable<any> {
-    return this.http.post<any>('http://localhost:8080/api/signup', { email, username, password, firstName, lastName, nif, phone, parish, county, role})
+  signup(email: string, username: string, password: string, firstName: string, lastName: string, nif: number,
+         phone: string, parish: string, county: string, role: string, associationName: string, associationNum: number)
+    : Observable<any> {
+    return this.http.post<any>('http://localhost:8080/api/signup', {
+        email, username, password, firstName, lastName, nif, phone, parish, county, role, associationName, associationNum
+      })
   }
 
   checkToken(): Observable<any> {

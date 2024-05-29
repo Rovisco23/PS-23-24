@@ -29,7 +29,7 @@ class JdbiUser(private val handle: Handle) : UserRepository {
         .bind("freguesia", location.parish)
         .bind("concelho", location.county)
         .bind("distrito", location.district)
-        .bind("associacao_nome", user.association)
+        .bind("associacao_nome", user.associationName)
         .bind("associacao_numero", user.associationNum)
         .executeAndReturnGeneratedKeys()
         .mapTo(Int::class.java)

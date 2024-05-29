@@ -136,7 +136,7 @@ class UserService(
         val u = rep.getUserById(userId)
         if (u == null) {
             failure(Errors.userNotFound)
-        } else if (rep.checkUsernameTaken(editUser.username) != userId) {
+        } else if (rep.checkUsernameTaken(editUser.username) != null) {
             failure(Errors.usernameAlreadyInUse)
         } else if (!checkPhoneNumberFormat(editUser.phone)) {
             failure(Errors.invalidPhoneNumber)

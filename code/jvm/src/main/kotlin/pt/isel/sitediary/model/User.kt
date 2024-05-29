@@ -18,7 +18,7 @@ data class SignUpInputModel(
     val phone: String?,
     val parish: String,
     val county: String,
-    val association: String,
+    val associationName: String,
     val associationNum: Int
 )
 

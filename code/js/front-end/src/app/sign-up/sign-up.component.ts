@@ -35,6 +35,8 @@ export class SignUpComponent {
   parish: string = '';
   county: string = '';
   role: string = 'OPERÁRIO';
+  association_name: string = '';
+  association_num: string = '';
 
   isChecked: boolean = false;
 
@@ -71,7 +73,7 @@ export class SignUpComponent {
 
   signUp(): void {
     this.httpService.signup(this.email, this.username, this.password, this.firstName, this.lastName, this.nif,
-      this.phone, this.parish, this.county, this.role).subscribe(() => {
+      this.phone, this.parish, this.county, this.role, this.association_name, Number(this.association_num)).subscribe(() => {
       console.log("Sign Up Finished");
       this.router.navigate(['/login']);
     })
