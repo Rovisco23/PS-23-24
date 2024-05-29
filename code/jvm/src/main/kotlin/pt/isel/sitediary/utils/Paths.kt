@@ -21,6 +21,7 @@ object Paths {
         const val GET_OPENING_TERM = "$PREFIX/opening-term/{id}"
         const val GET_INVITE_LIST = "$PREFIX/invite"
         const val GET_INVITE = "$PREFIX/invite/{id}"
+        const val FINISH_WORK = "$PREFIX/finish-work"
     }
 
     object Log {
