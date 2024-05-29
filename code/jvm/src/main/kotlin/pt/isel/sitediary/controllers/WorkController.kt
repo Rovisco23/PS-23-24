@@ -57,7 +57,7 @@ class WorkController(private val service: WorkService) {
         ]
     )
     fun getWorkById(@PathVariable id: UUID, @Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
-        val res = service.getWork(id, user.user.id)
+        val res = service.getWork(id, user.user)
         return handleResponse(res) {
             ResponseEntity.ok(it)
         }
@@ -79,7 +79,7 @@ class WorkController(private val service: WorkService) {
         ]
     )
     fun getWorkList(@RequestParam skip: Int, @Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
-        val res = service.getWorkList(skip, user.user.id)
+        val res = service.getWorkList(skip, user.user)
         return handleResponse(res) {
             ResponseEntity.ok(it)
         }

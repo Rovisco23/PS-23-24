@@ -181,8 +181,12 @@ class UserService(
         if (user == null) {
             failure(Errors.userNotFound)
         } else {
-            if (file != null) rep.changeProfilePicture(userId, file) else rep.removeProfilePicture(userId)
-            success(user)
+            if (rep.checkProfilePictureExists(userId) == null) {
+                rep.insertProfilePicture(userId, file!!)
+            } else {
+                if (file != null) rep.changeProfilePicture(userId, file) else rep.removeProfilePicture(userId)
+            }
+            success(Unit)
         }
     }
 

@@ -18,4 +18,6 @@ interface WorkRepository {
     fun getInvite(id: UUID, email: String): InviteSimplified?
     fun acceptInvite(inv: InviteResponseModel, user: GetUserModel)
     fun declineInvite(id: UUID)
+    fun getWorkListAdmin(skip: Int): List<WorkSimplified>
+    fun getWorkListCouncil(skip: Int, location: Location): List<WorkSimplified>
 }

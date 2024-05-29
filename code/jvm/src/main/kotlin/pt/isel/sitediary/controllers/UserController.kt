@@ -2,6 +2,8 @@ package pt.isel.sitediary.controllers
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.StringToClassMapItem
+import io.swagger.v3.oas.annotations.enums.ParameterIn
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -247,19 +249,25 @@ class UserController(private val service: UserService) {
     @Operation(
         summary = "Change profile picture",
         description = "Operation used to change the profile picture of a user",
-        requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
+        /*requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Profile picture to be uploaded",
             required = true,
             content = [
                 Content(
                     mediaType = "multipart/form-data",
-                    schema = Schema(type = "String", format = "binary")
+                    schema = Schema(
+                        name = "file",
+                        type = "string",
+                        format = "binary",
+                        description = "Profile picture to be uploaded",
+                        implementation = MultipartFile::class
+                    )
                 )
             ]
-        )
+        )*/
     )
     fun changeProfilePicture(
-        @RequestPart("file") file: MultipartFile?,
+        @RequestParam("file") file: MultipartFile?,
         @Parameter(hidden = true) user: AuthenticatedUser
     ): ResponseEntity<*> {
         val profilePicture = if (file == null) null else

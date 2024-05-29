@@ -63,19 +63,23 @@ class WorkService(
         }
     }
 
-    fun getWork(id: UUID, userId: Int) = transactionManager.run {
+    fun getWork(id: UUID, user: User) = transactionManager.run {
         val work = it.workRepository.getById(id)
         if (work == null) {
             failure(Errors.workNotFound)
-        } else if (!work.members.containsMemberById(userId)) {
+        } else if (user.role != "ADMIN" && !work.members.containsMemberById(user.id)) {
             failure(Errors.notMember)
         } else {
             success(work)
         }
     }
 
-    fun getWorkList(skip: Int, userId: Int) = transactionManager.run {
-        val work = it.workRepository.getWorkList(skip, userId) // List with next 6 Work for pagination
+    fun getWorkList(skip: Int, user: User) = transactionManager.run {
+        val work = when (user.role) {
+            "ADMIN" -> it.workRepository.getWorkListAdmin(skip)
+            "CÂMARA" -> it.workRepository.getWorkListCouncil(skip, user.location)
+            else -> it.workRepository.getWorkList(skip, user.id)
+        }
         success(work)
     }
 

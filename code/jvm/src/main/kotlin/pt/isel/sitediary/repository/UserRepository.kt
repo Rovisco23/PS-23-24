@@ -19,7 +19,9 @@ interface UserRepository {
     fun checkUsernameTaken(username: String): Int?
     fun editProfile(user: GetUserModel)
     fun getUserByToken(token: TokenValidationInfo): Pair<User, Token>?
+    fun insertProfilePicture(id: Int, picture: FileModel)
     fun changeProfilePicture(id: Int, picture: FileModel)
+    fun checkProfilePictureExists(id: Int): Int?
     fun removeProfilePicture(id: Int)
     fun getProfilePicture(id: Int): FileModel?
     fun insertPending(id: Int, role: String)

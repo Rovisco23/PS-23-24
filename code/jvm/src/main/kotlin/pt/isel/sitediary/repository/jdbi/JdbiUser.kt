@@ -107,7 +107,7 @@ class JdbiUser(private val handle: Handle) : UserRepository {
         .mapTo(UserAndTokenModel::class.java)
         .singleOrNull()?.userAndToken
 
-    override fun changeProfilePicture(id: Int, picture: FileModel) {
+    override fun insertProfilePicture(id: Int, picture: FileModel) {
         handle.createUpdate("insert into profile_picture(user_id, name, type, img) values (:id, :name, :type, :img)")
             .bind("id", id)
             .bind("name", picture.filename)
@@ -116,8 +116,24 @@ class JdbiUser(private val handle: Handle) : UserRepository {
             .execute()
     }
 
+    override fun changeProfilePicture(id: Int, picture: FileModel) {
+        handle.createUpdate("update profile_picture set name = :name, type = :type, img = :img where user_id = :id")
+            .bind("id", id)
+            .bind("name", picture.filename)
+            .bind("type", picture.contentType)
+            .bind("img", picture.file)
+            .execute()
+    }
+
+    override fun checkProfilePictureExists(id: Int) = handle.createQuery(
+        "select user_id from profile_picture where user_id = :id"
+    )
+        .bind("id", id)
+        .mapTo(Int::class.java)
+        .singleOrNull()
+
     override fun removeProfilePicture(id: Int) {
-        handle.createUpdate("remove from profile_picture where id = :id")
+        handle.createUpdate("delete from profile_picture where user_id = :id")
             .bind("id", id)
             .execute()
     }

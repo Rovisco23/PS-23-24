@@ -2,7 +2,12 @@ package pt.isel.sitediary.repository.jdbi
 
 import org.jdbi.v3.core.Handle
 import pt.isel.sitediary.domainmodel.user.User
-import pt.isel.sitediary.domainmodel.work.*
+import pt.isel.sitediary.domainmodel.work.Invite
+import pt.isel.sitediary.domainmodel.work.InviteSimplified
+import pt.isel.sitediary.domainmodel.work.Location
+import pt.isel.sitediary.domainmodel.work.OpeningTerm
+import pt.isel.sitediary.domainmodel.work.Work
+import pt.isel.sitediary.domainmodel.work.WorkSimplified
 import pt.isel.sitediary.model.GetUserModel
 import pt.isel.sitediary.model.InviteResponseModel
 import pt.isel.sitediary.model.OpeningTermInputModel
@@ -202,14 +207,16 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
                 .mapTo(Int::class.java)
                 .single()
 
-            handle.createUpdate("insert into TECNICO(nif, tId, oId, nome, tipo, associacao, numero) " +
-                    "values(:nif, :tId, :oId, :nome, :tipo, :associacao, :numero)")
+            handle.createUpdate(
+                "insert into TECNICO(nif, tId, oId, nome, tipo, associacao, numero) " +
+                        "values(:nif, :tId, :oId, :nome, :tipo, :associacao, :numero)"
+            )
                 .bind("nif", user.nif)
                 .bind("tId", termo)
                 .bind("oId", inv.workId.toString())
                 .bind("nome", user.username)
                 .bind("tipo", inv.role)
-                .bind("associacao", inv.association?.name )
+                .bind("associacao", inv.association?.name)
                 .bind("numero", inv.association?.number)
                 .execute()
         }
@@ -224,4 +231,23 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
             .bind("id", id.toString())
             .execute()
     }
+
+    override fun getWorkListAdmin(skip: Int) = handle.createQuery(
+        "select id, nome, tipo, descricao, estado, freguesia, concelho, distrito, rua, cpostal from OBRA " +
+                "OFFSET :skip LIMIT 6"
+    )
+        .bind("skip", skip)
+        .mapTo(WorkSimplified::class.java)
+        .list()
+
+    override fun getWorkListCouncil(skip: Int, location: Location) = handle.createQuery(
+        "select id, nome, tipo, descricao, estado, freguesia, concelho, distrito, rua, cpostal from OBRA " +
+                "where freguesia = :parish and concelho = :county and distrito = :district OFFSET :skip LIMIT 6"
+    )
+        .bind("parish", location.parish)
+        .bind("county", location.county)
+        .bind("district", location.district)
+        .bind("skip", skip)
+        .mapTo(WorkSimplified::class.java)
+        .list()
 }
