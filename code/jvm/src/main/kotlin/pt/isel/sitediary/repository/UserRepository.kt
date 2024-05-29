@@ -12,6 +12,7 @@ interface UserRepository {
     fun createUser(user:SignUpInputModel, location: Location): Int
     fun login(user: String, password: String): Int?
     fun getUserById(id: Int): GetUserModel?
+    fun getUserByEmail(email: String): GetUserModel?
     fun getUserByUsername(username: String): GetUserModel?
     fun updatePhoneNumber(id: Int, number: String)
     fun checkEmailInUse(email: String): Boolean

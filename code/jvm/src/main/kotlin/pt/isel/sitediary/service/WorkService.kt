@@ -80,29 +80,30 @@ class WorkService(
     }
 
     fun inviteMembers(members: List<MemberInputModel>, workId: UUID, userId: Int) = transactionManager.run {
-            val user = it.usersRepository.getUserById(userId)
-            val work = it.workRepository.getById(workId)
-            if (user == null) {
-                failure(Errors.userNotFound)
-            } else if (work == null) {
-                failure(Errors.workNotFound)
-            } else if (!work.members.checkAdmin(userId)) {
-                failure(Errors.notAdmin)
-            } else {
-                val list = mutableListOf<Invite>()
-                for (m in members) {
-                    if (!it.workRepository.checkInvite(workId, m.email)) {
-                        val invite = Invite(UUID.randomUUID(), m.email, m.role, workId)
-                        list.add(invite)
-                    }
+        val user = it.usersRepository.getUserById(userId)
+        val work = it.workRepository.getById(workId)
+        if (user == null) {
+            failure(Errors.userNotFound)
+        } else if (work == null) {
+            failure(Errors.workNotFound)
+        } else if (!work.members.checkAdmin(userId)) {
+            failure(Errors.notAdmin)
+        } else {
+            val list = mutableListOf<Invite>()
+            for (m in members) {
+                val invUser = it.usersRepository.getUserByEmail(m.email)
+                if (!it.workRepository.checkInvite(workId, m.email) && work.members.find { mem -> mem.id == invUser?.id } == null) {
+                    val invite = Invite(UUID.randomUUID(), m.email, m.role, workId)
+                    list.add(invite)
                 }
-                if (list.isNotEmpty()) {
-                    it.workRepository.inviteMembers(list)
-                    list.forEach{i -> work.createInvites(i)}
-                }
-                success("Invites sent successfully")
             }
+            if (list.isNotEmpty()) {
+                it.workRepository.inviteMembers(list)
+                list.forEach { i -> work.createInvites(i) }
+            }
+            success(mapOf("message" to "Invites sent successfully"))
         }
+    }
 
 
     fun getInviteList(userId: Int) = transactionManager.run {
@@ -120,15 +121,11 @@ class WorkService(
         if (user == null) {
             failure(Errors.userNotFound)
         } else {
-            val invite = it.workRepository.getInvite(invId)
+            val invite = it.workRepository.getInvite(invId, user.email)
             if (invite == null) {
                 failure(Errors.inviteNotFound)
             } else {
-                if (invite.email != user.email) {
-                    failure(Errors.notInviteOwner)
-                } else {
-                    success(invite)
-                }
+                success(invite)
             }
         }
     }
@@ -138,18 +135,16 @@ class WorkService(
         if (user == null) {
             failure(Errors.userNotFound)
         } else {
-            val invite = it.workRepository.getInvite(response.id)
+            val invite = it.workRepository.getInvite(response.id, user.email)
             if (invite == null) {
                 failure(Errors.inviteNotFound)
-            } else if (invite.email != user.email) {
-                failure(Errors.notInviteOwner)
             } else {
                 if (response.accepted) {
                     it.workRepository.acceptInvite(response, user)
-                    success("Invite accepted")
+                    success(mapOf("message" to "Invite accepted"))
                 } else {
                     it.workRepository.declineInvite(response.id)
-                    success("Invite denied")
+                    success(mapOf("message" to "Invite declined"))
                 }
             }
         }

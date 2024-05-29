@@ -48,6 +48,13 @@ class JdbiUser(private val handle: Handle) : UserRepository {
         .mapTo(GetUserModel::class.java)
         .singleOrNull()
 
+    override fun getUserByEmail(email: String): GetUserModel? = handle.createQuery(
+        "select * from UTILIZADOR where email = :email "
+    )
+        .bind("email", email)
+        .mapTo(GetUserModel::class.java)
+        .singleOrNull()
+
     override fun getUserByUsername(username: String): GetUserModel? =
         handle.createQuery("select * from UTILIZADOR where username = :username")
             .bind("username", username)

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {Classes, InputWork, LogEntryInputModel, User} from "./classes";
+import {AnswerInvite, Classes, InputWork, LogEntryInputModel, User} from "./classes";
 
 @Injectable({
   providedIn: 'root',
@@ -95,5 +95,15 @@ export class HttpService {
   getInviteList(): Observable<any> {
     const headers = this.getTokenHeader();
     return this.http.get<any>('http://localhost:8080/api/invite', { headers: headers })
+  }
+
+  getInvite(id: string): Observable<any> {
+    const headers = this.getTokenHeader();
+    return this.http.get<any>(`http://localhost:8080/api/invite/${id}`, { headers: headers })
+  }
+
+  answerInvite(answer: AnswerInvite): Observable<any> {
+    const headers = this.getTokenHeader();
+    return this.http.post<any>('http://localhost:8080/api/invite', answer,{ headers: headers })
   }
 }

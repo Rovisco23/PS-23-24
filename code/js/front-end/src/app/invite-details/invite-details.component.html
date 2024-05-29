@@ -1,1 +1,36 @@
-<p>invite-details works!</p>
+<div style="height: 100%; overflow: hidden">
+  <button (click)="onBackCall()" class="small-button">
+    <mat-icon class="small-icon">arrow_back</mat-icon>
+  </button>
+  <div class="container">
+    <mat-card class="centered-card">
+      <mat-card-header>
+        <h1 class="header-title">Participar na obra {{ invite?.workTitle }}?</h1>
+      </mat-card-header>
+      <mat-card-content>
+        <h2 class="invite-text">O administrador {{ invite?.admin }} convidou-te para participares nesta obra! </h2>
+        <h3 class="invite-text">Role: {{ invite?.role }}</h3>
+        <div class="association-section">
+          <div>
+            <h3 class="invite-text">Associação</h3>
+          </div>
+          <div class="association-forms">
+            <mat-form-field *ngIf="tecnico" class="form-association">
+              <input matInput placeholder="Nome da Associação" [(ngModel)]="associationName">
+            </mat-form-field>
+            <mat-form-field *ngIf="tecnico" class="form-association">
+              <input matInput placeholder="Número da Associação" [(ngModel)]="associationNumber">
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-actions class="centered-actions">
+        <button mat-raised-button class="action-button" color="primary"
+                [disabled]="(!associationName || !checkIsNumber(associationNumber)) && tecnico"
+                (click)="onAcceptCall()">Aceitar
+        </button>
+        <button mat-raised-button class="action-button" color="warn" (click)="onRefuseCall()">Recusar</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

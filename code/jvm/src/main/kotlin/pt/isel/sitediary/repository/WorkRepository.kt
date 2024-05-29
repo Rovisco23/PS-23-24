@@ -15,7 +15,7 @@ interface WorkRepository {
     fun inviteMembers(invites: List<Invite>)
     fun checkInvite(workId: UUID, email: String): Boolean
     fun getInviteList(email: String): List<InviteSimplified>
-    fun getInvite(id: UUID): Invite?
+    fun getInvite(id: UUID, email: String): InviteSimplified?
     fun acceptInvite(inv: InviteResponseModel, user: GetUserModel)
     fun declineInvite(id: UUID)
 }

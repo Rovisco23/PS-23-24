@@ -169,7 +169,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
     }
 
     override fun getInviteList(email: String): List<InviteSimplified> = handle.createQuery(
-        "select c.id as id, o.nome as workTitle, u.username as admin, c.role as role from CONVITE c " +
+        "select c.id as id, o.id as workId, o.nome as workTitle, u.username as admin, c.role as role from CONVITE c " +
                 "join OBRA o on o.id = c.oId join MEMBRO m on o.id = m.oId join UTILIZADOR u on m.uId = u.id " +
                 "where c.email = :email and m.role = 'ADMIN'"
     )
@@ -177,11 +177,14 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         .mapTo(InviteSimplified::class.java)
         .list()
 
-    override fun getInvite(id: UUID): Invite? = handle.createQuery(
-        "select * from CONVITE where id = :id"
+    override fun getInvite(id: UUID, email: String): InviteSimplified? = handle.createQuery(
+        "select c.id as id, o.id as workId, o.nome as workTitle, u.username as admin, c.role as role from CONVITE c " +
+                "join OBRA o on o.id = c.oId join MEMBRO m on o.id = m.oId join UTILIZADOR u on m.uId = u.id " +
+                "where c.id = :id and c.email = :email and m.role = 'ADMIN'"
     )
         .bind("id", id.toString())
-        .mapTo(Invite::class.java)
+        .bind("email", email)
+        .mapTo(InviteSimplified::class.java)
         .singleOrNull()
 
     override fun acceptInvite(inv: InviteResponseModel, user: GetUserModel) {
@@ -207,7 +210,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
                 .bind("nome", user.username)
                 .bind("tipo", inv.role)
                 .bind("associacao", inv.association?.name )
-                .bind("numero", inv.association?.num)
+                .bind("numero", inv.association?.number)
                 .execute()
         }
 

@@ -11,6 +11,7 @@ class InviteSimplifiedModel  : RowMapper<InviteSimplified> {
     override fun map(rs: ResultSet?, ctx: StatementContext?): InviteSimplified? = if (rs != null) {
         InviteSimplified(
             UUID.fromString(rs.getString("id")),
+            UUID.fromString(rs.getString("workId")),
             rs.getString("workTitle"),
             rs.getString("role"),
             rs.getString("admin")

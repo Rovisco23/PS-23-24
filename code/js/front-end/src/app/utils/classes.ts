@@ -55,6 +55,7 @@ export interface LogEntryInputModel {
 
 export interface InviteSimplified {
   id: string,
+  workId: string,
   workTitle: string,
   admin: string,
   role: string
@@ -112,12 +113,27 @@ export interface Invite {
   role: string;
 }
 
+export interface AnswerInvite {
+  id: string;
+  workId: string | null;
+  accepted: boolean;
+  role: string;
+  association: Association | null;
+}
+
+export interface Association {
+  name: string;
+  number: number;
+}
+
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = form && form.submitted;
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 }
+
+
 
 export class Role {
 
