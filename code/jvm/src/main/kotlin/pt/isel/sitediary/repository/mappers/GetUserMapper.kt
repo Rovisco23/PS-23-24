@@ -10,15 +10,15 @@ class GetUserMapper : RowMapper<GetUserModel> {
 
     override fun map(rs: ResultSet?, ctx: StatementContext?): GetUserModel? = if (rs != null) {
         GetUserModel(
-            rs.getInt("id"),
-            rs.getString("username"),
-            rs.getInt("nif"),
-            rs.getString("email"),
-            rs.getString("telefone"),
-            rs.getString("nome"),
-            rs.getString("apelido"),
-            rs.getString("role"),
-            Location(
+            id = rs.getInt("id"),
+            username = rs.getString("username"),
+            nif = rs.getInt("nif"),
+            email = rs.getString("email"),
+            phone = rs.getString("telefone"),
+            firstName = rs.getString("nome"),
+            lastName = rs.getString("apelido"),
+            role = rs.getString("role"),
+            location = Location(
                 rs.getString("distrito"),
                 rs.getString("concelho"),
                 rs.getString("freguesia")

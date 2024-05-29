@@ -10,20 +10,21 @@ import pt.isel.sitediary.domainmodel.work.WorkType
 import java.sql.ResultSet
 
 class OpeningTermMapper : RowMapper<OpeningTerm> {
-
     override fun map(rs: ResultSet?, ctx: StatementContext?): OpeningTerm? = if (rs != null) {
+        val technicians = rs.getString("tecnicos").removeSurrounding("{", "}").split(",")
         OpeningTerm(
             name = rs.getString("nome"),
             type = WorkType.fromString(rs.getString("tipo"))!!,
             licenseHolder = rs.getString("titular_licenca"),
             constructionCompany = ConstructionCompany(
-                name = rs.getString("nome_empresa"),
-                num = rs.getInt("num_empresa")
+                name = rs.getString("company_name"),
+                num = rs.getInt("company_num")
             ),
             building = rs.getString("predio"),
-            technicians = rs.getString("tecnicos").removeSurrounding("{", "}").split(",")
+            technicians = if(technicians.isEmpty()) emptyList() else technicians
                 .map {
-                    val aux = it.split(";")
+                    val x = '"'.toString()
+                    val aux = it.removeSurrounding(x, x).split(";")
                     Technician(
                         nif = aux[0].toInt(),
                         name = aux[1],

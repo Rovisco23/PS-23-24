@@ -13,8 +13,10 @@ import pt.isel.sitediary.repository.UserRepository
 
 class JdbiUser(private val handle: Handle) : UserRepository {
     override fun createUser(user: SignUpInputModel, location: Location): Int = handle.createUpdate(
-        "insert into utilizador(email, role, username, password, nome, apelido, nif, telefone, freguesia, concelho, distrito)" +
-                "values (:email, :role, :username, :password, :nome, :apelido, :nif, :telefone, :freguesia, :concelho, :distrito)"
+        "insert into utilizador(email, role, username, password, nome, apelido, nif, telefone, freguesia, " +
+                "concelho, distrito, associacao_nome, associacao_numero) values (:email, :role, :username, " +
+                ":password, :nome, :apelido, :nif, :telefone, :freguesia, :concelho, :distrito, :associacao_nome," +
+                " :associacao_numero)"
     )
         .bind("email", user.email)
         .bind("role", "OPERÁRIO")
@@ -27,6 +29,8 @@ class JdbiUser(private val handle: Handle) : UserRepository {
         .bind("freguesia", location.parish)
         .bind("concelho", location.county)
         .bind("distrito", location.district)
+        .bind("associacao_nome", user.association)
+        .bind("associacao_numero", user.associationNum)
         .executeAndReturnGeneratedKeys()
         .mapTo(Int::class.java)
         .one()

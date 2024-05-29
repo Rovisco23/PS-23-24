@@ -1,4 +1,4 @@
-drop table if exists TECNICO;
+--drop table if exists TECNICO;
 drop table if exists TERMO_FECHO;
 drop table if exists TERMO_ABERTURA;
 drop table if exists EMPRESA_CONSTRUCAO;
@@ -17,20 +17,22 @@ drop table if exists UTILIZADOR;
 
 create table UTILIZADOR
 (
-    id        serial,
-    email     varchar(255) unique,
-    role      varchar(8),
-    username  varchar(255) unique,
-    password  varchar(255),
-    nome      varchar(50),
-    apelido   varchar(50),
-    nif       integer unique,
-    telefone  varchar(9),
-    freguesia varchar(255),
-    concelho  varchar(255),
-    distrito  varchar(255),
+    id                serial,
+    email             varchar(255) unique,
+    username          varchar(255) unique,
+    nif               integer unique,
+    role              varchar(8),
+    password          varchar(255),
+    nome              varchar(50),
+    apelido           varchar(50),
+    associacao_nome   varchar(255),
+    associacao_numero integer,
+    telefone          varchar(9),
+    freguesia         varchar(255),
+    concelho          varchar(255),
+    distrito          varchar(255),
     primary key (id),
-    constraint Role_Format check (ROLE IN ('OPERÁRIO', 'CÂMARA', 'ADMIN')), -- Adicionar ADMIN?
+    constraint Role_Format check (ROLE IN ('OPERÁRIO', 'CÂMARA', 'ADMIN')),
     constraint Email_Format check (email like '%@%.%')
     --constraint Telefone_Format check (telefone not like '%[^0-9]%') -- This may work
 );
@@ -74,7 +76,11 @@ create table MEMBRO
     primary key (uId, oId),
     constraint UserId foreign key (uId) references UTILIZADOR (id),
     constraint ObraId foreign key (oId) references OBRA (id),
-    constraint Role CHECK (role IN ('ADMIN', 'MEMBRO', 'ESPECTADOR', 'TECNICO'))
+--    constraint Role CHECK (role IN ('ADMIN', 'MEMBRO', 'ESPECTADOR', 'TECNICO'))
+    constraint MEMBER_ROLE CHECK (role IN ('ADMIN', 'MEMBRO', 'ESPECTADOR', 'FISCALIZAÇÃO', 'COORDENADOR',
+                                           'ARQUITETURA', 'ESTABILIDADE', 'ELETRICIDADE', 'GÁS', 'CANALIZAÇÃO',
+                                           'TELECOMUNICAÇÕES', 'TERMICO', 'ACUSTICO',
+                                           'TRANSPORTES', 'DIRETOR'))
 );
 
 create table REGISTO
@@ -150,22 +156,6 @@ create table TERMO_ABERTURA
     constraint CamaraId foreign key (camara) references localidade (id)
 );
 
-create table TECNICO
-(
-    nif        integer,
-    tId        integer,
-    oId        varchar(255),
-    nome       varchar(50),
-    tipo       varchar(50),
-    associacao varchar(255),
-    numero     integer,
-    primary key (nif, tId, oId),
-    constraint ObraId foreign key (oId) references OBRA (id),
-    constraint TermoId foreign key (tId, oId) references TERMO_ABERTURA (id, oId),
-    constraint Tipo CHECK (tipo IN ('FISCALIZAÇÃO', 'COORDENADOR', 'ARQUITETURA', 'ESTABILIDADE', 'ELETRICIDADE', 'GÁS',
-                                    'CANALIZAÇÃO', 'TELECOMUNICAÇÕES', 'TERMICO', 'ACUSTICO', 'TRANSPORTES', 'DIRETOR'))
-);
-
 create table TERMO_FECHO
 (
     id           serial,
@@ -201,7 +191,8 @@ create table CONVITE
     oId   varchar(255),
     primary key (id, oId),
     constraint ObraId foreign key (oId) references OBRA (id),
-    constraint Tipo CHECK (role IN ('MEMBRO', 'VIEWER', 'FISCALIZAÇÃO', 'COORDENADOR', 'ARQUITETURA', 'ESTABILIDADE', 'ELETRICIDADE', 'GÁS',
+    constraint Tipo CHECK (role IN ('MEMBRO', 'VIEWER', 'FISCALIZAÇÃO', 'COORDENADOR', 'ARQUITETURA', 'ESTABILIDADE',
+                                    'ELETRICIDADE', 'GÁS',
                                     'CANALIZAÇÃO', 'TELECOMUNICAÇÕES', 'TERMICO', 'ACUSTICO', 'TRANSPORTES',
                                     'DIRETOR')),
     constraint Email_Format check (email like '%@%.%')
@@ -209,7 +200,7 @@ create table CONVITE
 
 create table PENDENTE
 (
-    id serial,
+    id  serial,
     uId integer,
     primary key (id),
     constraint UserId foreign key (uId) references UTILIZADOR (id)

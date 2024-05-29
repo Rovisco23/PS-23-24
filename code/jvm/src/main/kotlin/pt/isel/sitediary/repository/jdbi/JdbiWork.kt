@@ -43,7 +43,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         addCouncilAsMember(work.id, work.address.location)
         val companyId = getCompanyId(openingTerm.company.name, openingTerm.company.num)
         val councilId = getCouncil(work.address.location)
-        val termId = insertOpeningTerm(openingTerm, companyId, work.id, councilId)
+        insertOpeningTerm(openingTerm, companyId, work.id, councilId)
         /** Exemplo
         handle.createUpdate(
         "insert into TECNICO(nif,tId, oId, nome, tipo, associacao, numero) " +
@@ -84,12 +84,14 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
 
     override fun getOpeningTerm(workId: UUID): OpeningTerm = handle.createQuery(
         "select OBRA.nome, OBRA.tipo, TERMO_ABERTURA.titular_licenca, EMPRESA_CONSTRUCAO.nome as company_name, " +
-                "EMPRESA_CONSTRUCAO.numero as company_num, TERMO_ABERTURA.predio, ARRAY(select CONCAT(nif, nome, " +
-                "tipo, associacao, numero) from TECNICO where TECNICO.oId = :id) as tecnicos from TERMO_ABERTURA " +
-                "join EMPRESA_CONSTRUCAO on EMPRESA_CONSTRUCAO.id = TERMO_ABERTURA.empresa_construcao " +
-                "join OBRA on OBRA.id = TERMO_ABERTURA.oId where TERMO_ABERTURA.oId = :id"
+                "EMPRESA_CONSTRUCAO.numero as company_num, TERMO_ABERTURA.predio, ARRAY(select CONCAT(nif, ';', " +
+                "username, ';', MEMBRO.role, ';', associacao_nome, ';', associacao_numero) from MEMBRO join " +
+                "UTILIZADOR on uId = UTILIZADOR.id where MEMBRO.oId = :id and MEMBRO.role != 'ADMIN' and " +
+                "MEMBRO.role != 'MEMBRO' and MEMBRO.role != 'ESPECTADOR') as tecnicos from TERMO_ABERTURA join " +
+                "EMPRESA_CONSTRUCAO on EMPRESA_CONSTRUCAO.id = TERMO_ABERTURA.empresa_construcao join OBRA on " +
+                "OBRA.id = TERMO_ABERTURA.oId where TERMO_ABERTURA.oId = :id"
     )
-        .bind("id", workId)
+        .bind("id", workId.toString())
         .mapTo(OpeningTerm::class.java)
         .single()
 
@@ -193,34 +195,13 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         .singleOrNull()
 
     override fun acceptInvite(inv: InviteResponseModel, user: GetUserModel) {
-        val role = if (inv.role != "ESPECTADOR" && inv.role != "MEMBRO") "TECNICO" else inv.role
         handle.createUpdate(
             "insert into MEMBRO(uId, oId, role) values(:uId, :oId, :role)"
         )
             .bind("uId", user.id)
             .bind("oId", inv.workId.toString())
-            .bind("role", role)
+            .bind("role", inv.role)
             .execute()
-        if (role == "TECNICO") {
-            val termo = handle.createQuery("select id from TERMO_ABERTURA where oId = :oId")
-                .bind("oId", inv.workId.toString())
-                .mapTo(Int::class.java)
-                .single()
-
-            handle.createUpdate(
-                "insert into TECNICO(nif, tId, oId, nome, tipo, associacao, numero) " +
-                        "values(:nif, :tId, :oId, :nome, :tipo, :associacao, :numero)"
-            )
-                .bind("nif", user.nif)
-                .bind("tId", termo)
-                .bind("oId", inv.workId.toString())
-                .bind("nome", user.username)
-                .bind("tipo", inv.role)
-                .bind("associacao", inv.association?.name)
-                .bind("numero", inv.association?.number)
-                .execute()
-        }
-
         handle.createUpdate("delete from CONVITE where id = :id")
             .bind("id", inv.id.toString())
             .execute()

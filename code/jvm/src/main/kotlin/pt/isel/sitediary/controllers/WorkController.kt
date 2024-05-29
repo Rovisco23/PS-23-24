@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
+import pt.isel.sitediary.domainmodel.work.OpeningTerm
 import pt.isel.sitediary.domainmodel.work.Work
 import pt.isel.sitediary.model.InviteResponseModel
 import pt.isel.sitediary.model.ListOfWorksOutputModel
@@ -165,14 +166,29 @@ class WorkController(private val service: WorkService) {
     }
 
     @GetMapping(Paths.Work.GET_OPENING_TERM)
-    fun getOpeningTerm(@PathVariable work: UUID, @Parameter(hidden = true) user: AuthenticatedUser)
+    @Operation(summary = "Get opening term of a specific work", description = "Used to fetch the opening term of a work")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "Opening term received successfully",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = OpeningTerm::class)
+                    )
+                ]
+            )
+        ]
+    )
+    fun getOpeningTerm(@PathVariable id: UUID, @Parameter(hidden = true) user: AuthenticatedUser)
             : ResponseEntity<*> {
-        val res = service.getOpeningTerm(work, user.user.id)
+        val res = service.getOpeningTerm(id, user.user.id)
         return handleResponse(res) {
             ResponseEntity.ok(it)
         }
     }
 
+    @PostMapping(Paths.Work.FINISH_WORK)
     fun finishWork(@RequestParam work: UUID, @Parameter(hidden = true) user: AuthenticatedUser)
             : ResponseEntity<*> {
         service.finishWork(work, user.user.id)

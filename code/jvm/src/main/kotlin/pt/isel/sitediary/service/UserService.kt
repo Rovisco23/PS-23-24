@@ -53,14 +53,14 @@ class UserService(
         }
     }
 
-    fun login(user: String, password: String): LoginResult {
-        if (user.isBlank() || password.isBlank()) {
+    fun login(username: String, password: String): LoginResult {
+        if (username.isBlank() || password.isBlank()) {
             failure(Errors.invalidLoginParamCombination)
         }
         return transactionManager.run {
             val uRep = it.usersRepository
             val tRep = it.tokenRepository
-            val userId = uRep.login(user, password)
+            val userId = uRep.login(username, password)
             if (userId == null) {
                 failure(Errors.invalidLoginParamCombination)
             } else {
@@ -73,15 +73,16 @@ class UserService(
                     lastUsedAt = now
                 )
                 tRep.createToken(newToken, usersDomain.maxNumberOfTokensPerUser)
-                val username = uRep.getUserById(userId)
-                if (username == null) {
+                val user = uRep.getUserById(userId)
+                if (user == null) {
                     failure(Errors.userNotFound)
                 } else {
                     success(
                         TokenExternalInfo(
                             tokenValue = tokenValue,
                             userId = userId,
-                            username = username.username,
+                            username = user.username,
+                            role = user.role,
                             tokenExpiration = usersDomain.getTokenExpiration(newToken)
                         )
                     )

@@ -17,7 +17,9 @@ data class SignUpInputModel(
     val nif: Int,
     val phone: String?,
     val parish: String,
-    val county: String
+    val county: String,
+    val association: String,
+    val associationNum: Int
 )
 
 data class LoginInputModel(
@@ -70,7 +72,7 @@ data class UserAndTokenModel(
         )
 }
 
-data class LoginOutputModel(val userId: Int, val username: String, val token: String)
+data class LoginOutputModel(val userId: Int, val username: String, val token: String, val role: String)
 
 data class TokenModel(val token: String)
 

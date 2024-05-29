@@ -13,5 +13,6 @@ data class TokenExternalInfo(
     val tokenValue: String,
     val userId: Int,
     val username: String,
+    val role: String,
     val tokenExpiration: Instant
 )

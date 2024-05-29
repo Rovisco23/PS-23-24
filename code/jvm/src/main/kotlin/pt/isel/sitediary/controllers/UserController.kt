@@ -2,8 +2,6 @@ package pt.isel.sitediary.controllers
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
-import io.swagger.v3.oas.annotations.StringToClassMapItem
-import io.swagger.v3.oas.annotations.enums.ParameterIn
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
@@ -93,7 +90,8 @@ class UserController(private val service: UserService) {
             val tokenValue = LoginOutputModel(
                 userId = it.userId,
                 username = it.username,
-                token = it.tokenValue
+                token = it.tokenValue,
+                role = it.role
             )
             val cookieToken = ResponseCookie
                 .from("token", tokenValue.token)
@@ -248,23 +246,7 @@ class UserController(private val service: UserService) {
     @PutMapping(Paths.User.PROFILE_PICTURE, consumes = ["multipart/form-data"])
     @Operation(
         summary = "Change profile picture",
-        description = "Operation used to change the profile picture of a user",
-        /*requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Profile picture to be uploaded",
-            required = true,
-            content = [
-                Content(
-                    mediaType = "multipart/form-data",
-                    schema = Schema(
-                        name = "file",
-                        type = "string",
-                        format = "binary",
-                        description = "Profile picture to be uploaded",
-                        implementation = MultipartFile::class
-                    )
-                )
-            ]
-        )*/
+        description = "Operation used to change the profile picture of a user"
     )
     fun changeProfilePicture(
         @RequestParam("file") file: MultipartFile?,

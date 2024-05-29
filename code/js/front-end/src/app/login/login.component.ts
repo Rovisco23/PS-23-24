@@ -33,9 +33,11 @@ export class LoginComponent {
       const token = res.token
       const userId = res.userId
       const bytes = res.pfp
+      const role = res.role
 
       localStorage.setItem('userId', userId)
       localStorage.setItem('token', token)
+      localStorage.setItem('role', role)
       if (bytes) {
         localStorage.setItem('pfp', window.btoa(bytes))
       }
