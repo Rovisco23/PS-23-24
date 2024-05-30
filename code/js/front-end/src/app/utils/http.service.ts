@@ -78,7 +78,10 @@ export class HttpService {
     return this.http.post<any>('http://localhost:8080/api/work', work, { headers: headers })
   }
 
-  createLogEntry(logEntry: LogEntryInputModel) {
+  createLogEntry(logEntry: LogEntryInputModel): Observable<any> {
+    logEntry.file.forEach((value, key) => {
+      console.log(key + " " + value)
+    })
     const headers = this.getTokenHeader()
     return this.http.post<any>('http://localhost:8080/api/logs', logEntry, { headers: headers })
   }

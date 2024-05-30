@@ -1,4 +1,3 @@
---drop table if exists TECNICO;
 drop table if exists TERMO_FECHO;
 drop table if exists TERMO_ABERTURA;
 drop table if exists EMPRESA_CONSTRUCAO;
@@ -8,10 +7,10 @@ drop table if exists IMAGEM;
 drop table if exists REGISTO;
 drop table if exists MEMBRO;
 drop table if exists CONVITE;
+drop table if exists IMAGEM_OBRA;
 drop table if exists OBRA;
 drop table if exists SESSAO;
 drop table if exists PROFILE_PICTURE;
-drop table if exists IMAGEM_OBRA;
 drop table if exists PENDENTE;
 drop table if exists UTILIZADOR;
 --drop table if exists LOCALIDADE;

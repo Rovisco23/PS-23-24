@@ -1,6 +1,6 @@
 <main class="main-container" *ngIf="showLayout">
   <mat-toolbar class="top-bar">
-    <button (click)="drawer.toggle()" mat-icon-button class="side-bar-button">
+    <button *ngIf="checkAdminRole()" (click)="toggleDrawer()" mat-icon-button class="side-bar-button">
       <mat-icon>menu</mat-icon>
     </button>
     <a [routerLink]="['/work']">
@@ -8,6 +8,13 @@
       <span class="logo-description">Site Diary</span>
     </a>
     <div class="profile">
+      <button class="notifications" routerLink="invites">
+        <mat-icon *ngIf="notification > 0" aria-hidden="false" aria-label="Example home icon" fontIcon="notifications"
+                  [matBadge]="notification" matBadgeColor="warn">
+        </mat-icon>
+        <mat-icon *ngIf="notification === 0" aria-hidden="false" aria-label="Example home icon" fontIcon="notifications">
+        </mat-icon>
+      </button>
       <button (click)="drawerProfile.toggle()" class="profile-button">
         <img src="{{src}}" class="profile-image" alt="profile image" [width]="50" [height]="50">
       </button>
@@ -15,7 +22,7 @@
   </mat-toolbar>
   <section class="container">
     <mat-drawer-container class="full-height" hasBackdrop="false">
-      <mat-drawer #drawer class="side-bar" mode="side">
+      <mat-drawer *ngIf="checkAdminRole()" #drawer class="side-bar" mode="side">
         <button
           class="side-option-button"
           routerLinkActive="side-option-active"
@@ -37,11 +44,6 @@
           <button
             class="side-option-button"
             routerLinkActive="side-option-active"
-            routerLink="invites">Invites
-          </button>
-          <button
-            class="side-option-button"
-            routerLinkActive="side-option-active"
             routerLink="Logout"
             (click)="logout()">Logout
           </button>
@@ -53,5 +55,4 @@
     </mat-drawer-container>
   </section>
 </main>
-  <router-outlet *ngIf="!showLayout"></router-outlet>
-
+<router-outlet *ngIf="!showLayout"></router-outlet>

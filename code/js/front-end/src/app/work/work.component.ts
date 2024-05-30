@@ -4,6 +4,10 @@ import {CommonModule} from "@angular/common";
 import {HttpService} from '../utils/http.service';
 import {Classes} from "../utils/classes";
 import {HttpClientModule} from "@angular/common/http";
+import {Router, RouterLink} from "@angular/router";
+import {MatIcon} from "@angular/material/icon";
+import {MatFabButton} from "@angular/material/button";
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-work',
@@ -11,7 +15,11 @@ import {HttpClientModule} from "@angular/common/http";
   imports: [
     HttpClientModule,
     CommonModule,
-    WorkListingsComponent
+    WorkListingsComponent,
+    RouterLink,
+    MatIcon,
+    MatFabButton,
+    FormsModule
   ],
   providers: [HttpService],
   templateUrl: './work.component.html',
@@ -20,9 +28,10 @@ import {HttpClientModule} from "@angular/common/http";
 export class WorkComponent {
   workListingsList: Classes[] = [];
   filteredWorkList: Classes[] = [];
+  inputValue: string = '';
   httpService: HttpService = inject(HttpService);
 
-  constructor() {
+  constructor(private router: Router) {
     this.httpService.getWorkListings().subscribe(res => {
       this.workListingsList = res;
       this.filteredWorkList = this.workListingsList.slice(0, 10);
@@ -38,5 +47,9 @@ export class WorkComponent {
     this.filteredWorkList = this.workListingsList.filter(
       workListing => workListing?.name.toLowerCase().includes(text.toLowerCase())
     );
+  }
+
+  createWork() {
+    this.router.navigate(['/create-work']);
   }
 }

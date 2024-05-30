@@ -68,9 +68,27 @@
 }
 
 .profile {
-  display: flex; /* Enable flexbox for profile */
-  align-items: center; /* Align items vertically */
+  display: flex;
+  align-items: center;
 }
+
+.notifications {
+  background-color: transparent;
+  color: #FF7A00;
+  border: none;
+  margin-right: 10px;
+}
+
+.badge {
+  background-color: red;
+  color: #ffffff;
+}
+
+.empty-badge {
+  background-color: transparent;
+  color: transparent;
+}
+
 
 .profile-button {
   background-color: transparent; /* Set button background to transparent */

@@ -1,27 +1,15 @@
-<!-- app.component.html or any other component's HTML file -->
-<!--
-<app-topbar></app-topbar>
-<div class="content">
-  <div class="sidebar">
-    <app-sidebar></app-sidebar>
+<section class="header">
+  <h2>Obras</h2>
+  <div class="input-button-container">
+    <input type="text" placeholder="Procurar Obra pelo nome" [(ngModel)]="inputValue" (ngModelChange)="filterResults(inputValue)">
+    <button mat-fab (click)="createWork()" class="create-work-button">
+      <mat-icon>add</mat-icon>
+    </button>
   </div>
-  <div class="main-content">
-    <h2>Content Area</h2>
-    <p>This is the content area. You can add your content here.</p>
-  </div>
-</div>
--->
-<body>
-  <section>
-    <form>
-      <input type="text" placeholder="Search by name" #filter>
-      <button class="primary" type="button" (click)="filterResults(filter.value)">Search</button>
-    </form>
-  </section>
-  <section class="results">
-    <app-work-listings
-      *ngFor="let workListing of filteredWorkList"
-      [workListing]="workListing">
-    </app-work-listings>
-  </section>
-</body>
+</section>
+<section class="results">
+  <app-work-listings
+    *ngFor="let workListing of filteredWorkList"
+    [workListing]="workListing">
+  </app-work-listings>
+</section>

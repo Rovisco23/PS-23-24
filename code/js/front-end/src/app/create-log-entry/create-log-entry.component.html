@@ -14,15 +14,14 @@
     <button mat-flat-button color="accent" class="button" type="submit">Insert LogEntry</button>
   </form>
   <br>
-  <!--<input type="file" (change)="onFileUpload($event)" multiple>
-  <div class="file-container">
-    <mat-list>
-      <mat-list-item *ngFor="let file of uploadedFiles">
-        <div matListItemTitle>File 1</div>
-        <button mat-icon-button matListItemRipple (click)="removeFile(file)">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </mat-list-item>
-    </mat-list>
-  </div>-->
+  <input type="file" (change)="onFileUpload($event)" #fileInput style="display:none">
+  <button (click)="fileInput.click()">Adicionar Ficheiro</button>
+  <input type="file" (change)="onImageUpload($event)" #imageInput style="display:none">
+  <button (click)="imageInput.click()">Adicionar Imagem</button>
+  <ul>
+    <li *ngFor="let entry of filesNames.entries()">
+      {{ entry[0] }}: {{ entry[1] }}
+      <button (click)="onRemoveFile(entry[0])">Remover</button>
+    </li>
+  </ul>
 </div>

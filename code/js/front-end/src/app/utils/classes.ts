@@ -50,7 +50,8 @@ export interface LogEntrySimplified {
 export interface LogEntryInputModel {
   workId: string,
   title: string,
-  description: string
+  description: string,
+  file: FormData
 }
 
 export interface InviteSimplified {
