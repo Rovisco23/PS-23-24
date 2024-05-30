@@ -4,6 +4,7 @@ import kotlinx.datetime.Instant
 import pt.isel.sitediary.domainmodel.authentication.Token
 import pt.isel.sitediary.domainmodel.authentication.TokenValidationInfo
 import pt.isel.sitediary.domainmodel.user.User
+import pt.isel.sitediary.domainmodel.work.Association
 import pt.isel.sitediary.domainmodel.work.Location
 
 
@@ -45,6 +46,7 @@ data class GetUserModel(
     val firstName: String,
     val lastName: String,
     val role: String,
+    val association: Association,
     val location: Location
 )
 

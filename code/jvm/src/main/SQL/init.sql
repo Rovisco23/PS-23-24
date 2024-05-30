@@ -18,7 +18,7 @@ insert into utilizador(email, role, username, password, nome, apelido, nif, tele
 COPY LOCALIDADE (distrito, concelho, freguesia)
     FROM 'E:\Documentos\Universidade\Projeto\PS-23-24\docs\localidades.csv' DELIMITER ';' CSV HEADER;
 
-insert into membro(oid, uid, role) values ('39fd4462-57f7-444e-ba61-e6e8fcd8d2ec', 5, 'COORDENADOR');
+insert into membro(oid, uid, role) values ('39fd4462-57f7-444e-ba61-e6e8fcd8d2ec', 6, 'DIRETOR');
 
 insert into registo(oid, titulo,texto, estado, creation_date, last_modification_date, author)
     values ('fc278a7c-97d2-4e2c-aa2b-2adc3e8736f5','O andaime não se encontrava corretamente instalado','No dia x observei que o andaime estava mal montado','FINISHED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1),

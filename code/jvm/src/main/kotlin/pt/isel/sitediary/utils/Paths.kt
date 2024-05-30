@@ -22,6 +22,7 @@ object Paths {
         const val GET_INVITE_LIST = "$PREFIX/invite"
         const val GET_INVITE = "$PREFIX/invite/{id}"
         const val FINISH_WORK = "$PREFIX/finish-work"
+        const val GET_IMAGE = "$PREFIX/work-image/{id}"
     }
 
     object Log {

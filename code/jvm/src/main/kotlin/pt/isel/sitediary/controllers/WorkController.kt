@@ -7,16 +7,22 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.core.io.ByteArrayResource
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.multipart.MultipartFile
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
 import pt.isel.sitediary.domainmodel.work.OpeningTerm
 import pt.isel.sitediary.domainmodel.work.Work
+import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.InviteResponseModel
 import pt.isel.sitediary.model.ListOfWorksOutputModel
 import pt.isel.sitediary.model.MemberInputModel
@@ -166,7 +172,10 @@ class WorkController(private val service: WorkService) {
     }
 
     @GetMapping(Paths.Work.GET_OPENING_TERM)
-    @Operation(summary = "Get opening term of a specific work", description = "Used to fetch the opening term of a work")
+    @Operation(
+        summary = "Get opening term of a specific work",
+        description = "Used to fetch the opening term of a work"
+    )
     @ApiResponses(
         value = [
             ApiResponse(
@@ -189,10 +198,58 @@ class WorkController(private val service: WorkService) {
     }
 
     @PostMapping(Paths.Work.FINISH_WORK)
+    @Operation(summary = "Finish Work", description = "Concludes the Work and creates a closing term for that work")
     fun finishWork(@RequestParam work: UUID, @Parameter(hidden = true) user: AuthenticatedUser)
             : ResponseEntity<*> {
-        service.finishWork(work, user.user.id)
-        return ResponseEntity.ok("Work finished successfully")
+        val res = service.finishWork(work, user.user.id)
+        return handleResponse(res) {
+            ResponseEntity.ok(it)
+        }
     }
 
+    @GetMapping(Paths.Work.GET_IMAGE)
+    @Operation(summary = "Get Work Featured Image", description = "Gets the featured image of a work")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "Successful featured image retrieval",
+                content = [
+                    Content(schema = Schema(implementation = FileModel::class))
+                ]
+            )
+        ]
+    )
+    fun getWorkImage(@PathVariable id: UUID, @Parameter(hidden = true) user: AuthenticatedUser)
+            : ResponseEntity<*> {
+        val res = service.getWorkImage(id, user.user.id)
+        return handleResponse(res) {
+            if (it == null) ResponseEntity.ok().body(null)
+            else ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "Attachment;filename=${it.filename}")
+                .contentType(MediaType.parseMediaType(it.contentType))
+                .body(ByteArrayResource(it.file))
+        }
+    }
+
+    @PutMapping(Paths.Work.GET_IMAGE, consumes = ["multipart/form-data"])
+    @Operation(
+        summary = "Change work featured image",
+        description = "Operation used to change the featured image of a work"
+    )
+    fun changeWorkImage(
+        @PathVariable id: UUID,
+        @RequestParam("file") file: MultipartFile?,
+        @Parameter(hidden = true) user: AuthenticatedUser
+    ): ResponseEntity<*> {
+        val featuredImage = if (file == null) null else
+            FileModel(
+                file.bytes,
+                file.originalFilename!!,
+                file.contentType!!
+            )
+        val res = service.changeWorkImage(id, featuredImage, user.user.id)
+        return handleResponse(res) {
+            ResponseEntity.ok().header("Location", "/work/${id}").body(Unit)
+        }
+    }
 }

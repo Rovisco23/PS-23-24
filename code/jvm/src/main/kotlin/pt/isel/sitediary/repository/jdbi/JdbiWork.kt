@@ -8,6 +8,8 @@ import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.domainmodel.work.OpeningTerm
 import pt.isel.sitediary.domainmodel.work.Work
 import pt.isel.sitediary.domainmodel.work.WorkSimplified
+import pt.isel.sitediary.domainmodel.work.WorkState
+import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.GetUserModel
 import pt.isel.sitediary.model.InviteResponseModel
 import pt.isel.sitediary.model.OpeningTermInputModel
@@ -231,4 +233,61 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         .bind("skip", skip)
         .mapTo(WorkSimplified::class.java)
         .list()
+
+    override fun getWorkImage(workId: UUID) = handle.createQuery(
+        "select img, name, type from IMAGEM_OBRA where work_id = :id"
+    )
+        .bind("id", workId.toString())
+        .mapTo(FileModel::class.java)
+        .singleOrNull()
+
+    override fun checkWorkImageExists(workId: UUID) = handle.createQuery(
+        "select work_id from IMAGEM_OBRA where work_id = :id"
+    )
+        .bind("id", workId.toString())
+        .mapTo(UUID::class.java)
+        .singleOrNull()
+
+    override fun insertWorkImage(workId: UUID, featuredImage: FileModel) {
+        handle.createUpdate("insert into IMAGEM_OBRA(work_id, name, type, img) values (:id, :name, :type, :img)")
+            .bind("id", workId.toString())
+            .bind("name", featuredImage.filename)
+            .bind("type", featuredImage.contentType)
+            .bind("img", featuredImage.file)
+            .execute()
+    }
+
+    override fun changeWorkImage(workId: UUID, featuredImage: FileModel) {
+        handle.createUpdate("update IMAGEM_OBRA set name = :name, type = :type, img = :img where work_id = :id")
+            .bind("id", workId.toString())
+            .bind("name", featuredImage.filename)
+            .bind("type", featuredImage.contentType)
+            .bind("img", featuredImage.file)
+            .execute()
+    }
+
+    override fun removeWorkImage(workId: UUID) {
+        handle.createUpdate("delete from IMAGEM_OBRA where work_id = :id")
+            .bind("id", workId.toString())
+            .execute()
+    }
+
+    override fun finishWork(workId: UUID, fiscalId: Int, directorId: Int) {
+        val tId = handle.createQuery("select id from TERMO_ABERTURA where oId = :id")
+            .bind("id", workId.toString())
+            .mapTo(Int::class.java)
+            .single()
+        handle.createUpdate("insert into TERMO_FECHO(oId, data_conclusao, abertura, fiscalização, diretor) " +
+                "values (:id, :date, :tId, :fiscalId, :directorId)")
+            .bind("id", workId.toString())
+            .bind("date", Timestamp.valueOf(LocalDateTime.now()))
+            .bind("tId", tId)
+            .bind("fiscalId", fiscalId)
+            .bind("directorId", directorId)
+            .execute()
+        handle.createUpdate("update OBRA set estado = :state where id = :id")
+            .bind("id", workId.toString())
+            .bind("state", WorkState.FINISHED.toString())
+            .execute()
+    }
 }

@@ -2,6 +2,7 @@ package pt.isel.sitediary.repository
 
 import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.work.*
+import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.GetUserModel
 import pt.isel.sitediary.model.InviteResponseModel
 import pt.isel.sitediary.model.OpeningTermInputModel
@@ -20,4 +21,10 @@ interface WorkRepository {
     fun declineInvite(id: UUID)
     fun getWorkListAdmin(skip: Int): List<WorkSimplified>
     fun getWorkListCouncil(skip: Int, location: Location): List<WorkSimplified>
+    fun getWorkImage(workId: UUID): FileModel?
+    fun checkWorkImageExists(workId: UUID): UUID?
+    fun insertWorkImage(workId: UUID, featuredImage: FileModel)
+    fun changeWorkImage(workId: UUID, featuredImage: FileModel)
+    fun removeWorkImage(workId: UUID)
+    fun finishWork(workId: UUID, fiscalId: Int, directorId: Int)
 }

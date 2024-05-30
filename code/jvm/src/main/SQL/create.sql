@@ -10,7 +10,8 @@ drop table if exists MEMBRO;
 drop table if exists CONVITE;
 drop table if exists OBRA;
 drop table if exists SESSAO;
-drop table if exists profile_picture;
+drop table if exists PROFILE_PICTURE;
+drop table if exists IMAGEM_OBRA;
 drop table if exists PENDENTE;
 drop table if exists UTILIZADOR;
 --drop table if exists LOCALIDADE;
@@ -50,7 +51,6 @@ create table SESSAO
 create table OBRA
 (
     id          varchar(255),
-    featuredImg bytea,
     nome        varchar(50),
     tipo        varchar(50),
     descricao   varchar(500),
@@ -76,7 +76,6 @@ create table MEMBRO
     primary key (uId, oId),
     constraint UserId foreign key (uId) references UTILIZADOR (id),
     constraint ObraId foreign key (oId) references OBRA (id),
---    constraint Role CHECK (role IN ('ADMIN', 'MEMBRO', 'ESPECTADOR', 'TECNICO'))
     constraint MEMBER_ROLE CHECK (role IN ('ADMIN', 'MEMBRO', 'ESPECTADOR', 'FISCALIZAÇÃO', 'COORDENADOR',
                                            'ARQUITETURA', 'ESTABILIDADE', 'ELETRICIDADE', 'GÁS', 'CANALIZAÇÃO',
                                            'TELECOMUNICAÇÕES', 'TERMICO', 'ACUSTICO',
@@ -160,19 +159,18 @@ create table TERMO_FECHO
 (
     id           serial,
     oId          varchar(255),
-    --procedimento varchar(255),
-    --numero       integer,
-    inicio       timestamp,
-    conclusao    timestamp,
+    data_conclusao    timestamp,
     abertura     integer,
-    fiscalização varchar(50),
-    diretor      varchar(50),
+    fiscalização integer,
+    diretor      integer,
     primary key (id, oId),
     constraint ObraId foreign key (oId) references OBRA (id),
-    constraint TermoAberturaId foreign key (abertura, oId) references TERMO_ABERTURA (id, oId)
+    constraint TermoAberturaId foreign key (abertura, oId) references TERMO_ABERTURA (id, oId),
+    constraint FiscalizacaoId foreign key (fiscalização, oId) references MEMBRO (uId, oId),
+    constraint DiretorId foreign key (diretor, oId) references MEMBRO (uId, oId)
 );
 
-create table profile_picture
+create table PROFILE_PICTURE
 (
     id      serial,
     user_id integer,
@@ -181,6 +179,17 @@ create table profile_picture
     img     bytea,
     primary key (id),
     constraint UserId foreign key (user_id) references UTILIZADOR (id)
+);
+
+create table IMAGEM_OBRA
+(
+    id      serial,
+    work_id varchar(255),
+    name    varchar(255),
+    type    varchar(255),
+    img     bytea,
+    primary key (id),
+    constraint WorkId foreign key (work_id) references OBRA (id)
 );
 
 create table CONVITE

@@ -10,6 +10,7 @@ import pt.isel.sitediary.domainmodel.work.Invite
 import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.domainmodel.work.Work
 import pt.isel.sitediary.domainmodel.work.WorkState.IN_PROGRESS
+import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.InviteResponseModel
 import pt.isel.sitediary.model.MemberInputModel
 import pt.isel.sitediary.model.OpeningTermInputModel
@@ -175,12 +176,47 @@ class WorkService(
             failure(Errors.workNotFound)
         } else if (!work.members.checkAdmin(userId)) {
             failure(Errors.notAdmin)
+        } else if (work.state != IN_PROGRESS) {
+            failure(Errors.workAlreadyFinished)
         } else {
-            TODO(
-                "Falar com os orientadores sobre como seria a melhor abordagem para finalizar uma obra " +
-                        "seguindo as informações neste site: https://www.imovel.pt/news/imobiliario/livro-de-obra"
-            )
-            //workRep.finishWork(workId)
+            val fiscalId = work.members.firstOrNull { m -> m.role == "FISCALIZAÇÃO" }?.id
+            val directorId = work.members.firstOrNull { m -> m.role == "DIRETOR" }?.id
+            if (fiscalId == null || directorId == null) {
+                failure(Errors.membersMissing)
+            } else {
+                workRep.finishWork(workId, fiscalId, directorId)
+                success(Unit)
+            }
+        }
+    }
+
+    fun getWorkImage(workId: UUID, userId: Int) = transactionManager.run {
+        val workRep = it.workRepository
+        val work = workRep.getById(workId)
+        if (work == null) {
+            failure(Errors.workNotFound)
+        } else if (!work.members.containsMemberById(userId)) {
+            failure(Errors.notMember)
+        } else {
+            val file = workRep.getWorkImage(workId)
+            success(file)
+        }
+    }
+
+    fun changeWorkImage(workId: UUID, featuredImage: FileModel?, userId: Int) = transactionManager.run {
+        val workRep = it.workRepository
+        val work = workRep.getById(workId)
+        if (work == null) {
+            failure(Errors.workNotFound)
+        } else if (!work.members.containsMemberById(userId)) {
+            failure(Errors.notMember)
+        } else {
+            if (workRep.checkWorkImageExists(workId) == null && featuredImage != null) {
+                workRep.insertWorkImage(workId, featuredImage)
+            } else {
+                if (featuredImage != null) workRep.changeWorkImage(workId, featuredImage) else workRep.removeWorkImage(workId)
+            }
+            success(Unit)
         }
     }
 }
