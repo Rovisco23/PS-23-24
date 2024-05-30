@@ -40,6 +40,5 @@ data class InviteResponseModel(
     val id: UUID,
     val workId: UUID,
     val accepted: Boolean,
-    val role: String,
-    val association: Association?
+    val role: String
 )

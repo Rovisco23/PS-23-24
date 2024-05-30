@@ -2,10 +2,10 @@
 <div class="container">
   <div class="left">
     <img src="assets/logo.png" alt="" class="logo">
-    <h1 class="title">Site Diary</h1>
+    <h1 class="title">Livro de Obra</h1>
   </div>
   <div class="right">
-    <h1 class="page-title">Sign Up</h1>
+    <h1 class="page-title">Registar</h1>
     <form (ngSubmit)="signUp()">
 
       <div class="input">
@@ -18,7 +18,7 @@
       </div>
       <div class="input">
         <div>
-          <label for="username">Username</label>
+          <label for="username">Nome de Utilizador</label>
         </div>
         <div>
           <input type="text" id="username" name="username" [(ngModel)]="username" required>
@@ -26,7 +26,7 @@
       </div>
       <div class="input">
         <div>
-          <label for="password">Password</label>
+          <label for="password">Palavra Passe</label>
         </div>
         <div>
           <input type="password" id="password" name="password" [(ngModel)]="password" required>
@@ -34,7 +34,7 @@
       </div>
       <div class="input">
         <div>
-          <label for="firstName">First Name</label>
+          <label for="firstName">Nome Próprio</label>
         </div>
         <div>
           <input type="text" id="firstName" name="firstName" [(ngModel)]="firstName" required>
@@ -42,7 +42,7 @@
       </div>
       <div class="input">
         <div>
-          <label for="lastName">Last Name</label>
+          <label for="lastName">Apelido</label>
         </div>
         <div>
           <input type="text" id="lastName" name="lastName" [(ngModel)]="lastName" required>
@@ -58,7 +58,7 @@
       </div>
       <div class="input">
         <div>
-          <label for="phone">Phone</label>
+          <label for="phone">Número de Telefone</label>
         </div>
         <div>
           <input type="text" id="phone" name="phone" [(ngModel)]="phone">
@@ -66,7 +66,7 @@
       </div>
       <div class="input">
         <div>
-          <label for="association-name">Association Name</label>
+          <label for="association-name">Associação</label>
         </div>
         <div>
           <input type="text" id="association-name" name="association-name" [(ngModel)]="association_name">
@@ -75,7 +75,7 @@
 
       <div class="input">
         <div>
-          <label for="association-num">Association Number</label>
+          <label for="association-num">Número de Associado</label>
         </div>
         <div>
           <input type="text" id="association-num" name="association-num" [(ngModel)]="association_num">
@@ -83,7 +83,7 @@
       </div>
       <div class="input">
         <div>
-          <label>County</label>
+          <label>Concelho</label>
         </div>
         <div>
           <select class="selector" name="county" [(ngModel)]="county">
@@ -95,7 +95,7 @@
       </div>
       <div class="input">
         <div>
-          <label>Parish</label>
+          <label>Freguesia</label>
         </div>
         <div>
           <select class="selector" name="Parish" [(ngModel)]="parish" (change)="updateLocation()">
@@ -112,11 +112,11 @@
         </div>
       </div>
       <div >
-        <button mat-stroked-button class="button" type="submit">Sign Up</button>
+        <button mat-stroked-button class="button" type="submit">Registar</button>
       </div>
     </form>
     <div>
-      <p class="text">Already have an account? <a routerLink="/login">Login here.</a></p>
+      <p class="text">Já tens conta? <a routerLink="/login">Inicia sessão aqui.</a></p>
     </div>
   </div>
 </div>

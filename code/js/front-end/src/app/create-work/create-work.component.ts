@@ -7,6 +7,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatButton} from "@angular/material/button";
 import {MatFormField, MatOption, MatSelect} from "@angular/material/select";
 import {CommonModule, NgForOf, NgIf} from "@angular/common";
+import {MatIcon} from "@angular/material/icon";
 
 @Component({
   selector: 'app-create-work',
@@ -20,7 +21,8 @@ import {CommonModule, NgForOf, NgIf} from "@angular/common";
     MatOption,
     NgForOf,
     NgIf,
-    MatFormField
+    MatFormField,
+    MatIcon
   ],
   templateUrl: './create-work.component.html',
   styleUrl: './create-work.component.css'
@@ -109,5 +111,9 @@ export class CreateWorkComponent {
       console.log("Work Created!");
       this.router.navigate(['/work']);
     });
+  }
+
+  onBackCall() {
+    this.router.navigate(['/work']);
   }
 }

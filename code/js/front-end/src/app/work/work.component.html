@@ -1,7 +1,7 @@
 <section class="header">
   <h2>Obras</h2>
   <div class="input-button-container">
-    <input type="text" placeholder="Procurar Obra pelo nome" [(ngModel)]="inputValue" (ngModelChange)="filterResults(inputValue)">
+    <input type="text" placeholder="Procurar Obra" [(ngModel)]="inputValue" (ngModelChange)="filterResults(inputValue)">
     <button mat-fab (click)="createWork()" class="create-work-button">
       <mat-icon>add</mat-icon>
     </button>

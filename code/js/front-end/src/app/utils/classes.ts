@@ -119,7 +119,6 @@ export interface AnswerInvite {
   workId: string | null;
   accepted: boolean;
   role: string;
-  association: Association | null;
 }
 
 export interface Association {

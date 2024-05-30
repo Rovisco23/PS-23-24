@@ -10,25 +10,9 @@
       <mat-card-content>
         <h2 class="invite-text">O administrador {{ invite?.admin }} convidou-te para participares nesta obra! </h2>
         <h3 class="invite-text">Role: {{ invite?.role }}</h3>
-        <div class="association-section" *ngIf="tecnico">
-          <div>
-            <h3 class="invite-text">Associação</h3>
-          </div>
-          <div class="association-forms">
-            <mat-form-field  class="form-association">
-              <input matInput placeholder="Nome da Associação" [(ngModel)]="associationName">
-            </mat-form-field>
-            <mat-form-field class="form-association">
-              <input matInput placeholder="Número da Associação" [(ngModel)]="associationNumber">
-            </mat-form-field>
-          </div>
-        </div>
       </mat-card-content>
       <mat-card-actions class="centered-actions">
-        <button mat-raised-button class="action-button" color="primary"
-                [disabled]="(!associationName || !checkIsNumber(associationNumber)) && tecnico"
-                (click)="onAcceptCall()">Aceitar
-        </button>
+        <button mat-raised-button class="action-button" color="primary" (click)="onAcceptCall()">Aceitar</button>
         <button mat-raised-button class="action-button" color="warn" (click)="onRefuseCall()">Recusar</button>
       </mat-card-actions>
     </mat-card>

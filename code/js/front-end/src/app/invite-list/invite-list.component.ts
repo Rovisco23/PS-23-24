@@ -60,4 +60,8 @@ export class InviteListComponent {
   onInviteClick(id: string) {
     this.router.navigate([`/invites/${id}`]);
   }
+
+  onBackCall(){
+    console.log("Back Not Implemented Yet")
+  }
 }

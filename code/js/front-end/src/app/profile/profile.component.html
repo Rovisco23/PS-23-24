@@ -23,6 +23,6 @@
   <div>
     <p>{{ user?.location?.parish }}, {{ user?.location?.county }}, {{ user?.location?.district }}</p>
   </div>
-  <button *ngIf="isOwner()" (click)="editCall()">Edit Profile</button>
+  <button *ngIf="isOwner()" (click)="editCall()">Editar Perfil</button>
 </body>
 <router-outlet *ngIf="edit"></router-outlet>

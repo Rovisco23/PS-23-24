@@ -5,16 +5,18 @@ import {User} from "../utils/classes";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatButton} from "@angular/material/button";
 import {NgIf} from "@angular/common";
+import {MatIcon} from "@angular/material/icon";
 
 @Component({
   selector: 'app-edit-profile',
   standalone: true,
-  imports: [
-    FormsModule,
-    MatButton,
-    ReactiveFormsModule,
-    NgIf
-  ],
+    imports: [
+        FormsModule,
+        MatButton,
+        ReactiveFormsModule,
+        NgIf,
+        MatIcon
+    ],
   templateUrl: './edit-profile.component.html',
   styleUrl: './edit-profile.component.css'
 })
@@ -38,5 +40,9 @@ export class EditProfileComponent {
     } else {
       console.error('User data is not available');
     }
+  }
+
+  onBackCall(){
+    this.router.navigate(['/profile']);
   }
 }

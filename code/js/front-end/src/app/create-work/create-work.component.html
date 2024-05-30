@@ -1,7 +1,13 @@
+<div>
+  <button (click)="onBackCall()" class="small-button">
+    <mat-icon class="small-icon">arrow_back</mat-icon>
+  </button>
+  <h2>Criar Obra</h2>
+</div>
 <form (ngSubmit)="create()">
   <div class="input">
     <div>
-      <label for="name">Name </label>
+      <label for="name">Nome da Obra </label>
     </div>
     <div>
       <input type="text" id="name" name="name" [(ngModel)]="work.name" required>
@@ -9,7 +15,7 @@
   </div>
   <div class="input">
     <div>
-      <label>Work Type </label>
+      <label>Tipo da Obra</label>
     </div>
     <div>
       <select name="Type" [(ngModel)]="work.type">
@@ -21,7 +27,7 @@
   </div>
   <div class="input">
     <div>
-      <label for="description">Description</label>
+      <label for="description">Descrição</label>
     </div>
     <div>
       <input type="text" id="description" name="description" [(ngModel)]="work.description" required>
@@ -29,7 +35,7 @@
   </div>
   <div class="input">
     <div>
-      <label for="holder">Holder</label>
+      <label for="holder">Titular da Licença</label>
     </div>
     <div>
       <input type="text" id="holder" name="holder" [(ngModel)]="work.holder" required>
@@ -37,7 +43,7 @@
   </div>
   <div class="input">
     <div>
-      <label for="director">Director</label>
+      <label for="director">Diretor</label>
     </div>
     <div>
       <input type="text" id="director" name="director" [(ngModel)]="work.director" required>
@@ -45,7 +51,7 @@
   </div>
   <div class="input">
     <div>
-      <label for="company">Company</label>
+      <label for="company">Empresa</label>
     </div>
     <div>
       <input type="text" id="company" name="company" [(ngModel)]="work.company.name" required>
@@ -54,7 +60,7 @@
   </div>
   <div class="input">
     <div>
-      <label for="building">Building</label>
+      <label for="building">Prédio</label>
     </div>
     <div>
       <input type="text" id="building" name="building" [(ngModel)]="work.building" required>
@@ -62,7 +68,7 @@
   </div>
   <div class="input">
     <div>
-      <label>Select District </label>
+      <label>Selecionar Distrito</label>
     </div>
     <div>
       <select class="selector" name="district" [(ngModel)]="work.address.location.district">
@@ -74,7 +80,7 @@
   </div>
   <div class="input">
     <div>
-      <label>Select County </label>
+      <label>Selecionar Concelho</label>
     </div>
     <div>
       <select class="selector" name="county" [(ngModel)]="work.address.location.county" (change)="updateLocation(true)">
@@ -86,7 +92,7 @@
   </div>
   <div class="input">
     <div>
-      <label>Parish</label>
+      <label>Selecionar Freguesia</label>
     </div>
     <div>
       <select class="selector" name="Parish" [(ngModel)]="work.address.location.parish" (change)="updateLocation(false)">
@@ -98,12 +104,12 @@
   </div>
   <div class="input">
     <div>
-      <label for="street">Street</label>
+      <label for="street">Rua</label>
     </div>
     <div>
       <input type="text" id="street" name="street" [(ngModel)]="work.address.street" required>
       <input type="text" id="zipCode" name="zipCode" [(ngModel)]="work.address.postalCode" required>
     </div>
   </div>
-  <button class="button" type="submit">Submit</button>
+  <button class="button" type="submit">Criar</button>
 </form>

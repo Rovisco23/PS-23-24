@@ -65,7 +65,7 @@ export class WorkInviteComponent {
   invites: Invite[] = [];
   email: string | null = this.emailFormControl.value;
   role: string | null = this.roles.value;
-  displayedColumns: string[] = ['position', 'email', 'role', 'delete'];
+  displayedColumns: string[] = ['email', 'role', 'delete'];
   httpService = inject(HttpService)
 
   constructor(private router: Router) {

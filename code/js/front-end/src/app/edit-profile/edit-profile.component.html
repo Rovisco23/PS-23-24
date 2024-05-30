@@ -1,7 +1,14 @@
+<div>
+  <button (click)="onBackCall()" class="small-button">
+    <mat-icon class="small-icon">arrow_back</mat-icon>
+  </button>
+  <h2>Editar Perfil</h2>
+</div>
+
 <form (ngSubmit)="edit()">
   <div class="input">
     <div>
-      <label for="username">Username</label>
+      <label for="username">Nome de Utilizador</label>
     </div>
     <div>
       <input *ngIf="user" type="text" id="username" name="username" [(ngModel)]="user.username" required>
@@ -9,7 +16,7 @@
   </div>
   <div class="input">
     <div>
-      <label for="firstName">First Name</label>
+      <label for="firstName">Nome Próprio</label>
     </div>
     <div>
       <input *ngIf="user" type="firstName" id="firstName" name="firstName" [(ngModel)]="user.firstName" required>
@@ -17,7 +24,7 @@
   </div>
   <div class="input">
     <div>
-      <label for="lastName">Last Name</label>
+      <label for="lastName">Apelido</label>
     </div>
     <div>
       <input *ngIf="user" type="text" id="lastName" name="lastName" [(ngModel)]="user.lastName" required>
@@ -25,7 +32,7 @@
   </div>
   <div class="input">
     <div>
-      <label for="phone">Phone</label>
+      <label for="phone">Número de Telefóne</label>
     </div>
     <div>
       <input *ngIf="user" type="text" id="phone" name="phone" [(ngModel)]="user.phone">
@@ -33,19 +40,19 @@
   </div>
   <div class="input">
     <div>
-      <label for="parish">Parish</label>
-    </div>
-    <div>
-      <input *ngIf="user" type="text" id="parish" name="parish" [(ngModel)]="user.location.parish">
-    </div>
-  </div>
-  <div class="input">
-    <div>
-      <label for="county">Parish</label>
+      <label for="county">Concelho</label>
     </div>
     <div>
       <input *ngIf="user" type="text" id="county" name="county" [(ngModel)]="user.location.county">
     </div>
   </div>
-    <button mat-stroked-button class="button" type="submit">Submit</button>
+  <div class="input">
+    <div>
+      <label for="parish">Freguesia</label>
+    </div>
+    <div>
+      <input *ngIf="user" type="text" id="parish" name="parish" [(ngModel)]="user.location.parish">
+    </div>
+  </div>
+    <button mat-stroked-button class="button" type="submit">Editar</button>
 </form>

@@ -21,7 +21,7 @@
       <mat-tab label="Registos">
         <div class="log-top-bar">
           <form>
-            <input type="text" placeholder="Search log by name" #filter>
+            <input type="text" placeholder="Procurar registo" #filter>
             <button class="primary" type="button" (click)="filterResults(filter.value)">Search</button>
           </form>
           <button mat-fab color="primary" aria-label="Example icon button with a delete icon" class="log-button" (click)="createNewEntry()">

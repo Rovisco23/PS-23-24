@@ -37,9 +37,6 @@ import {NgIf} from "@angular/common";
 export class InviteDetailsComponent {
 
   invite: InviteSimplified | undefined;
-  tecnico: boolean = false;
-  associationName = '';
-  associationNumber: string = '';
 
   httpService = inject(HttpService);
 
@@ -47,7 +44,6 @@ export class InviteDetailsComponent {
     const inviteId =  String(this.route.snapshot.params['id']);
     this.httpService.getInvite(inviteId).subscribe((invite: InviteSimplified) => {
       this.invite = invite;
-      this.tecnico = this.invite.role !== 'MEMBRO' && this.invite.role !== 'VIEWER';
       this.invite.role = Role.composeRole(invite.role);
     });
   }
@@ -64,16 +60,11 @@ export class InviteDetailsComponent {
 
   onAcceptCall() {
     if (this.invite === undefined) return;
-    const association: Association = {
-      name: this.associationName,
-      number: Number(this.associationNumber)
-    }
     const accept: AnswerInvite = {
       id: String(this.route.snapshot.params['id']),
       workId: this.invite?.workId,
       accepted: true,
-      role: Role.decomposeRole(this.invite.role),
-      association: association
+      role: Role.decomposeRole(this.invite.role)
     };
     this.httpService.answerInvite(accept).subscribe(() => {
       this.router.navigate([`/work-details/${this.invite?.workId}`]);
@@ -86,8 +77,7 @@ export class InviteDetailsComponent {
       id: String(this.route.snapshot.params['id']),
       workId: this.invite?.workId,
       accepted: false,
-      role: Role.decomposeRole(this.invite.role),
-      association: null
+      role: Role.decomposeRole(this.invite.role)
     };
     this.httpService.answerInvite(refuse).subscribe(() => {
       this.router.navigate(['/work']);

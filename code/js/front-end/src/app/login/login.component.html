@@ -2,14 +2,14 @@
 <div class="container">
   <div class="left">
     <img src="assets/logo.png" alt="" class="logo">
-    <h1 class="title">Site Diary</h1>
+    <h1 class="title">Livro de obra</h1>
   </div>
   <div class="right">
-    <h1 class="page-title">Login</h1>
+    <h1 class="page-title">Iniciar Sessão</h1>
     <form (ngSubmit)="login()">
         <div class="input">
           <div>
-            <label for="username">Username</label>
+            <label for="username">Nome de Utilizador</label>
           </div>
           <div>
             <input type="text" id="username" name="username" [(ngModel)]="username" required>
@@ -17,7 +17,7 @@
         </div>
         <div class="input">
           <div>
-            <label for="password">Password</label>
+            <label for="password">Palavra Passe</label>
           </div>
           <div>
             <input type="password" id="password" name="password" [(ngModel)]="password" required>
@@ -28,7 +28,7 @@
       </div>
     </form>
     <div>
-      <p class="text">Don't have an account? <a routerLink="/signup">Register here.</a></p>
+      <p class="text">Não tens conta? <a routerLink="/signup">Regista-te aqui.</a></p>
     </div>
   </div>
 </div>

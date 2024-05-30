@@ -1,6 +1,12 @@
 <div>
+  <button (click)="onBackCall()" class="small-button">
+    <mat-icon class="small-icon">arrow_back</mat-icon>
+  </button>
+  <h2>Criar Obra</h2>
+</div>
+<div>
   <form>
-    <input type="text" placeholder="Search log by name" #filter>
+    <input type="text" placeholder="Procurar Convite" #filter>
     <button class="primary" type="button" (click)="filterInvites(filter.value)">Search</button>
   </form>
 </div>

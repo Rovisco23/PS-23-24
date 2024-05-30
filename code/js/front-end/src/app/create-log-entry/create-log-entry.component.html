@@ -1,17 +1,17 @@
 <div class="content">
-  <h3>Enter the details of the Log Entry</h3>
+  <h3>Insira os detalhes do registo.</h3>
   <form (ngSubmit)="onSubmit()" class="example-form">
     <mat-form-field>
-      <mat-label>Title of the log entry</mat-label>
+      <mat-label>Título</mat-label>
       <input matInput type="text" name="title" [(ngModel)]="logEntry.title">
     </mat-form-field>
     <br>
     <mat-form-field>
-      <mat-label>Leave a comment</mat-label>
+      <mat-label>Adicione uma descrição</mat-label>
       <textarea matInput [(ngModel)]="logEntry.description" name="description"  required></textarea>
     </mat-form-field>
     <br>
-    <button mat-flat-button color="accent" class="button" type="submit">Insert LogEntry</button>
+    <button mat-flat-button color="accent" class="button" type="submit">Submeter Registo</button>
   </form>
   <br>
   <input type="file" (change)="onFileUpload($event)" #fileInput style="display:none">
