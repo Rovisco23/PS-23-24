@@ -139,7 +139,7 @@ class WorkController(private val service: WorkService) {
         @RequestBody resp: InviteResponseModel,
         @Parameter(hidden = true) user: AuthenticatedUser
     ): ResponseEntity<*> {
-        val res = service.inviteResponse(resp, user.user.id)
+        val res = service.inviteResponse(resp, user.user)
         return handleResponse(res) {
             ResponseEntity.status(200).body(it)
         }

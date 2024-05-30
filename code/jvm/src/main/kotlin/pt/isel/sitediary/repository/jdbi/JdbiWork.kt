@@ -10,7 +10,6 @@ import pt.isel.sitediary.domainmodel.work.Work
 import pt.isel.sitediary.domainmodel.work.WorkSimplified
 import pt.isel.sitediary.domainmodel.work.WorkState
 import pt.isel.sitediary.model.FileModel
-import pt.isel.sitediary.model.GetUserModel
 import pt.isel.sitediary.model.InviteResponseModel
 import pt.isel.sitediary.model.OpeningTermInputModel
 import pt.isel.sitediary.repository.WorkRepository
@@ -196,7 +195,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         .mapTo(InviteSimplified::class.java)
         .singleOrNull()
 
-    override fun acceptInvite(inv: InviteResponseModel, user: GetUserModel) {
+    override fun acceptInvite(inv: InviteResponseModel, user: User) {
         handle.createUpdate(
             "insert into MEMBRO(uId, oId, role) values(:uId, :oId, :role)"
         )

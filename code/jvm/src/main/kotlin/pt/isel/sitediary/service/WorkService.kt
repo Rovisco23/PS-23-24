@@ -97,7 +97,11 @@ class WorkService(
             val list = mutableListOf<Invite>()
             for (m in members) {
                 val invUser = it.usersRepository.getUserByEmail(m.email)
-                if (!it.workRepository.checkInvite(workId, m.email) && work.members.find { mem -> mem.id == invUser?.id } == null) {
+                if (!it.workRepository.checkInvite(
+                        workId,
+                        m.email
+                    ) && work.members.find { mem -> mem.id == invUser?.id } == null
+                ) {
                     val invite = Invite(UUID.randomUUID(), m.email, m.role, workId)
                     list.add(invite)
                 }
@@ -135,22 +139,17 @@ class WorkService(
         }
     }
 
-    fun inviteResponse(response: InviteResponseModel, userId: Int) = transactionManager.run {
-        val user = it.usersRepository.getUserById(userId)
-        if (user == null) {
-            failure(Errors.userNotFound)
+    fun inviteResponse(response: InviteResponseModel, user: User) = transactionManager.run {
+        val invite = it.workRepository.getInvite(response.id, user.email)
+        if (invite == null) {
+            failure(Errors.inviteNotFound)
         } else {
-            val invite = it.workRepository.getInvite(response.id, user.email)
-            if (invite == null) {
-                failure(Errors.inviteNotFound)
+            if (response.accepted) {
+                it.workRepository.acceptInvite(response, user)
+                success(mapOf("message" to "Invite accepted"))
             } else {
-                if (response.accepted) {
-                    it.workRepository.acceptInvite(response, user)
-                    success(mapOf("message" to "Invite accepted"))
-                } else {
-                    it.workRepository.declineInvite(response.id)
-                    success(mapOf("message" to "Invite declined"))
-                }
+                it.workRepository.declineInvite(response.id)
+                success(mapOf("message" to "Invite declined"))
             }
         }
     }
@@ -214,7 +213,9 @@ class WorkService(
             if (workRep.checkWorkImageExists(workId) == null && featuredImage != null) {
                 workRep.insertWorkImage(workId, featuredImage)
             } else {
-                if (featuredImage != null) workRep.changeWorkImage(workId, featuredImage) else workRep.removeWorkImage(workId)
+                if (featuredImage != null) workRep.changeWorkImage(workId, featuredImage) else workRep.removeWorkImage(
+                    workId
+                )
             }
             success(Unit)
         }

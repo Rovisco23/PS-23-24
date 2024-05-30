@@ -1,5 +1,6 @@
 package pt.isel.sitediary.domainmodel.user
 
+import pt.isel.sitediary.domainmodel.work.Association
 import pt.isel.sitediary.domainmodel.work.Location
 
 data class User(
@@ -10,7 +11,8 @@ data class User(
     val email: String,
     val phone: String?,
     val role: String,
-    val location: Location
+    val location: Location,
+    val association: Association
 ) {
     fun toMember() = Member(
         id = id,
