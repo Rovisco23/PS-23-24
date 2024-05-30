@@ -114,7 +114,7 @@ class JdbiUser(private val handle: Handle) : UserRepository {
     override fun insertProfilePicture(id: Int, picture: FileModel) {
         handle.createUpdate("insert into profile_picture(user_id, name, type, img) values (:id, :name, :type, :img)")
             .bind("id", id)
-            .bind("name", picture.filename)
+            .bind("name", picture.fileName)
             .bind("type", picture.contentType)
             .bind("img", picture.file)
             .execute()
@@ -123,7 +123,7 @@ class JdbiUser(private val handle: Handle) : UserRepository {
     override fun changeProfilePicture(id: Int, picture: FileModel) {
         handle.createUpdate("update profile_picture set name = :name, type = :type, img = :img where user_id = :id")
             .bind("id", id)
-            .bind("name", picture.filename)
+            .bind("name", picture.fileName)
             .bind("type", picture.contentType)
             .bind("img", picture.file)
             .execute()

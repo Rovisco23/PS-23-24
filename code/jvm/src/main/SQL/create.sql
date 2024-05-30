@@ -49,16 +49,16 @@ create table SESSAO
 
 create table OBRA
 (
-    id          varchar(255),
-    nome        varchar(50),
-    tipo        varchar(50),
-    descricao   varchar(500),
-    estado      varchar(50),
-    freguesia   varchar(255),
-    concelho    varchar(255),
-    distrito    varchar(255),
-    rua         varchar(255),
-    cPostal     varchar(8),
+    id        varchar(255),
+    nome      varchar(50),
+    tipo      varchar(50),
+    descricao varchar(500),
+    estado    varchar(50),
+    freguesia varchar(255),
+    concelho  varchar(255),
+    distrito  varchar(255),
+    rua       varchar(255),
+    cPostal   varchar(8),
     primary key (id),
     constraint cPostal_format check (cPostal LIKE '%-%'),
     constraint Tipo CHECK (tipo IN
@@ -99,14 +99,15 @@ create table REGISTO
 
 create table IMAGEM
 (
-    id                 serial,
-    oId                varchar(255),
-    rId                integer,
-    name               varchar(255),
-    upload_date        date,
-    content            bytea,
-    compressed_content bytea,
+    id          serial,
+    oId         varchar(255),
+    rId         integer,
+    name        varchar(255),
+    type        varchar(255),
+    file        bytea,
+    upload_date date,
     primary key (id, oId, rId),
+    constraint ObraId foreign key (oId) references OBRA (id),
     constraint RegistoId foreign key (rId, oId) references REGISTO (id, oId)
 );
 
@@ -116,9 +117,11 @@ create table DOCUMENTO
     oId         varchar(255),
     rId         integer,
     name        varchar(255),
-    upload_date date,
+    type        varchar(255),
     file        bytea,
+    upload_date date,
     primary key (id, oId, rId),
+    constraint ObraId foreign key (oId) references OBRA (id),
     constraint RegistoId foreign key (rId, oId) references REGISTO (id, oId)
 );
 
@@ -156,12 +159,12 @@ create table TERMO_ABERTURA
 
 create table TERMO_FECHO
 (
-    id           serial,
-    oId          varchar(255),
-    data_conclusao    timestamp,
-    abertura     integer,
-    fiscalização integer,
-    diretor      integer,
+    id             serial,
+    oId            varchar(255),
+    data_conclusao timestamp,
+    abertura       integer,
+    fiscalização   integer,
+    diretor        integer,
     primary key (id, oId),
     constraint ObraId foreign key (oId) references OBRA (id),
     constraint TermoAberturaId foreign key (abertura, oId) references TERMO_ABERTURA (id, oId),

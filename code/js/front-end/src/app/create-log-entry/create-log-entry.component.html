@@ -3,12 +3,12 @@
   <form (ngSubmit)="onSubmit()" class="example-form">
     <mat-form-field>
       <mat-label>Título</mat-label>
-      <input matInput type="text" name="title" [(ngModel)]="logEntry.title">
+      <input matInput type="text" name="title" [(ngModel)]="title">
     </mat-form-field>
     <br>
     <mat-form-field>
       <mat-label>Adicione uma descrição</mat-label>
-      <textarea matInput [(ngModel)]="logEntry.description" name="description"  required></textarea>
+      <textarea matInput [(ngModel)]="description" name="description"  required></textarea>
     </mat-form-field>
     <br>
     <button mat-flat-button color="accent" class="button" type="submit">Submeter Registo</button>
@@ -16,11 +16,9 @@
   <br>
   <input type="file" (change)="onFileUpload($event)" #fileInput style="display:none">
   <button (click)="fileInput.click()">Adicionar Ficheiro</button>
-  <input type="file" (change)="onImageUpload($event)" #imageInput style="display:none">
-  <button (click)="imageInput.click()">Adicionar Imagem</button>
   <ul>
-    <li *ngFor="let entry of filesNames.entries()">
-      {{ entry[0] }}: {{ entry[1] }}
+    <li *ngFor="let entry of files.entries()">
+      {{ entry[0] }}
       <button (click)="onRemoveFile(entry[0])">Remover</button>
     </li>
   </ul>

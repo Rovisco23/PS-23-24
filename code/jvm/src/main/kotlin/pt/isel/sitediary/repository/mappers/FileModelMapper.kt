@@ -9,7 +9,7 @@ class FileModelMapper : RowMapper<FileModel> {
     override fun map(rs: ResultSet?, ctx: StatementContext?): FileModel? = if (rs != null) {
         FileModel(
             file = rs.getBytes("img"),
-            filename = rs.getString("name"),
+            fileName = rs.getString("name"),
             contentType = rs.getString("type")
         )
     } else null

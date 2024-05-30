@@ -10,10 +10,12 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.multipart.MultipartFile
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
 import pt.isel.sitediary.domainmodel.work.LogEntry
+import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.LogInputModel
 import pt.isel.sitediary.model.LogOutputModel
 import pt.isel.sitediary.service.LogService
@@ -26,7 +28,7 @@ import java.net.URI
 @Tag(name = "Log", description = "Operations related the Logs.")
 class LogController(private val service: LogService) {
 
-    @PostMapping(Paths.Log.GET_ALL_LOGS)
+    @PostMapping(Paths.Log.GET_ALL_LOGS, consumes = ["multipart/form-data"])
     @Operation(summary = "Create Log", description = "Used to create a log for a specific work.")
     @ApiResponses(
         value = [
@@ -48,10 +50,18 @@ class LogController(private val service: LogService) {
         ]
     )
     fun createLog(
-        @RequestBody log: LogInputModel,
+        @RequestPart("log") log: LogInputModel,
+        @RequestPart("files", required = false) files: List<MultipartFile>?,
         @Parameter(hidden = true) user: AuthenticatedUser
     ): ResponseEntity<*> {
-        val res = service.createLog(log, user.user.id)
+        val listOfFiles = files?.map {
+            FileModel(
+                fileName = it.originalFilename!!,
+                contentType = it.contentType!!,
+                file = it.bytes
+            )
+        }
+        val res = service.createLog(log, listOfFiles, user.user.id)
         return handleResponse(res) {
             ResponseEntity.created(URI.create("/logs")).body(it)
         }

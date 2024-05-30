@@ -250,7 +250,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
     override fun insertWorkImage(workId: UUID, featuredImage: FileModel) {
         handle.createUpdate("insert into IMAGEM_OBRA(work_id, name, type, img) values (:id, :name, :type, :img)")
             .bind("id", workId.toString())
-            .bind("name", featuredImage.filename)
+            .bind("name", featuredImage.fileName)
             .bind("type", featuredImage.contentType)
             .bind("img", featuredImage.file)
             .execute()
@@ -259,7 +259,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
     override fun changeWorkImage(workId: UUID, featuredImage: FileModel) {
         handle.createUpdate("update IMAGEM_OBRA set name = :name, type = :type, img = :img where work_id = :id")
             .bind("id", workId.toString())
-            .bind("name", featuredImage.filename)
+            .bind("name", featuredImage.fileName)
             .bind("type", featuredImage.contentType)
             .bind("img", featuredImage.file)
             .execute()

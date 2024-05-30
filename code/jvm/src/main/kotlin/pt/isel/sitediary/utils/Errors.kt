@@ -9,6 +9,8 @@ class Errors(val status: Int, val reason: String) {
             .header("Content-Type", "application/problem+json")
             .body<Any>(error.reason)
 
+        val workFinished = Errors(400, "Não é possível registar uma observação numa obra terminada.")
+        val notTechnician = Errors(401, "Não pode criar uma observação se não for um Técnico.")
         val membersMissing = Errors(400, "É necessário ter pelo menos um Fiscal e um Diretor de Obra.")
 
         val workAlreadyFinished = Errors(400, "Work is already finished.")

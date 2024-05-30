@@ -1,14 +1,15 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {AnswerInvite, Classes, InputWork, LogEntryInputModel, User} from "./classes";
+import {AnswerInvite, Classes, InputWork, User} from "./classes";
 
 @Injectable({
   providedIn: 'root',
 })
 export class HttpService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   workListingsList: Classes[] = [];
 
@@ -18,19 +19,19 @@ export class HttpService {
   }
 
   login(user: string, password: string): Observable<any> {
-    return this.http.post<any>('http://localhost:8080/api/login', { user, password })
+    return this.http.post<any>('http://localhost:8080/api/login', {user, password})
   }
 
   logout(token: string): Observable<any> {
-    return this.http.post<any>('http://localhost:8080/api/logout', { token })
+    return this.http.post<any>('http://localhost:8080/api/logout', {token})
   }
 
   signup(email: string, username: string, password: string, firstName: string, lastName: string, nif: number,
          phone: string, parish: string, county: string, role: string, associationName: string, associationNum: number)
     : Observable<any> {
     return this.http.post<any>('http://localhost:8080/api/signup', {
-        email, username, password, firstName, lastName, nif, phone, parish, county, role, associationName, associationNum
-      })
+      email, username, password, firstName, lastName, nif, phone, parish, county, role, associationName, associationNum
+    })
   }
 
   checkToken(): Observable<any> {
@@ -39,7 +40,7 @@ export class HttpService {
 
   getWorkListings(): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.get<Classes[]>('http://localhost:8080/api/work?skip=0', { headers: headers })
+    return this.http.get<Classes[]>('http://localhost:8080/api/work?skip=0', {headers: headers})
   }
 
   nextPage(offset: number): Classes[] {
@@ -52,7 +53,7 @@ export class HttpService {
 
   getWorkById(id: string): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.get<Classes>(`http://localhost:8080/api/work/${id}`, { headers: headers })
+    return this.http.get<Classes>(`http://localhost:8080/api/work/${id}`, {headers: headers})
   }
 
   getProfile(id: string): Observable<any> {
@@ -70,20 +71,17 @@ export class HttpService {
       phone: user.phone,
       parish: user.location.parish,
       county: user.location.county
-    }, { headers: headers });
+    }, {headers: headers});
   }
 
   createWork(work: InputWork): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.post<any>('http://localhost:8080/api/work', work, { headers: headers })
+    return this.http.post<any>('http://localhost:8080/api/work', work, {headers: headers})
   }
 
-  createLogEntry(logEntry: LogEntryInputModel): Observable<any> {
-    logEntry.file.forEach((value, key) => {
-      console.log(key + " " + value)
-    })
+  createLogEntry(logEntry: FormData): Observable<any> {
     const headers = this.getTokenHeader()
-    return this.http.post<any>('http://localhost:8080/api/logs', logEntry, { headers: headers })
+    return this.http.post<any>('http://localhost:8080/api/logs', logEntry, {headers: headers})
   }
 
   getProfilePicture() {
@@ -96,21 +94,21 @@ export class HttpService {
 
   inviteMembers(workId: string, invites: any): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.post<any>(`http://localhost:8080/api/work/${workId}`, invites, { headers: headers })
+    return this.http.post<any>(`http://localhost:8080/api/work/${workId}`, invites, {headers: headers})
   }
 
   getInviteList(): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.get<any>('http://localhost:8080/api/invite', { headers: headers })
+    return this.http.get<any>('http://localhost:8080/api/invite', {headers: headers})
   }
 
   getInvite(id: string): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.get<any>(`http://localhost:8080/api/invite/${id}`, { headers: headers })
+    return this.http.get<any>(`http://localhost:8080/api/invite/${id}`, {headers: headers})
   }
 
   answerInvite(answer: AnswerInvite): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.post<any>('http://localhost:8080/api/invite', answer,{ headers: headers })
+    return this.http.post<any>('http://localhost:8080/api/invite', answer, {headers: headers})
   }
 }

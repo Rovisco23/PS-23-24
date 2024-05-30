@@ -281,7 +281,7 @@ class UserController(private val service: UserService) {
         return handleResponse(res) {
             if (it == null) ResponseEntity.ok().body(null)
             else ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "Attachment;filename=${it.filename}")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "Attachment;filename=${it.fileName}")
                 .contentType(MediaType.parseMediaType(it.contentType))
                 .body(ByteArrayResource(it.file))
         }

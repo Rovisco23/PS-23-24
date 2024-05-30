@@ -83,4 +83,4 @@ data class SessionInputModel(val userId: Int, val token: String)
 
 data class SessionValidation(val valid: Boolean)
 
-data class FileModel(val file: ByteArray, val filename: String, val contentType: String)
+data class FileModel(val file: ByteArray, val fileName: String, val contentType: String)

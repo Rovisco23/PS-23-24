@@ -1,6 +1,5 @@
 package pt.isel.sitediary.model
 
-import org.springframework.web.multipart.MultipartFile
 import pt.isel.sitediary.domainmodel.work.Author
 import java.util.*
 
@@ -8,8 +7,7 @@ data class LogInputModel(
     val workId: UUID,
     //image or document
     val title: String,
-    val description: String,
-    val file: MultipartFile?
+    val description: String
 )
 
 data class LogOutputModel(
