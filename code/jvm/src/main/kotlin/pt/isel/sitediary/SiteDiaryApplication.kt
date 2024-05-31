@@ -51,6 +51,7 @@ class CorsConfiguration : WebMvcConfigurer {
 			.allowedOrigins("http://localhost:4200") // Adjust this to your Angular app's domain
 			.allowedMethods("GET", "POST", "PUT", "DELETE")
 			.allowedHeaders("*")
+			.exposedHeaders("Location")
 	}
 }
 

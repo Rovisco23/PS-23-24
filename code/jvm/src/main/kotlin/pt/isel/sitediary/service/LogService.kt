@@ -18,7 +18,7 @@ import java.sql.Timestamp
 import java.time.Duration
 import java.util.*
 
-typealias CreateLogResult = Result<Errors, Unit>
+typealias CreateLogResult = Result<Errors, Int>
 typealias GetLogResult = Result<Errors, LogEntry>
 typealias GetLogFilesResult = Result<Errors, List<FileModel>?>
 
@@ -38,14 +38,14 @@ class LogService(
         } else if (work.state == WorkState.FINISHED) {
             failure(Errors.workFinished)
         } else {
-            if (files != null) {
+            val logId = if (files != null) {
                 val docs = files.filter { f -> f.fileName.endsWith(".pdf") }
                 val images = files.filter { f -> f.contentType.startsWith("image") }
                 it.logRepository.createLog(log, Timestamp.from(clock.now().toJavaInstant()), userId, images, docs)
             } else {
                 it.logRepository.createLog(log, Timestamp.from(clock.now().toJavaInstant()), userId, null, null)
             }
-            success(Unit)
+            success(logId)
         }
     }
 
@@ -104,7 +104,8 @@ class LogService(
         }
 
     private fun checkIfEditTimeElapsed(createdAt: Date): Boolean {
-        val elapsedTime = Duration.between(createdAt.toInstant(), clock.now().toJavaInstant())
-        return elapsedTime.toMillis() >= Duration.ofHours(1).toMillis()
+        val elapsedTime = Duration.between(createdAt.toInstant(), clock.now().toJavaInstant()).toMillis()
+        val hour = Duration.ofHours(1).toMillis()
+        return elapsedTime >= hour
     }
 }

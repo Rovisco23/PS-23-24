@@ -52,11 +52,20 @@ export interface LogEntrySimplified {
   createdAt: string
 }
 
-export interface LogEntryInputModel {
+export interface LogEntry {
   workId: string,
   title: string,
-  description: string,
-  file: FormData
+  content: string,
+  state: string,
+  createdAt: string,
+  modifiedAt: string,
+  author: Author
+}
+
+export interface LogEditableEntry {
+  workId: string,
+  title: string,
+  content: string
 }
 
 export interface InviteSimplified {

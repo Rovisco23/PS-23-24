@@ -17,11 +17,11 @@ data class LogCredentialsModel(
 )
 
 data class LogOutputModel(
-    val id: Int,
+    val workId: UUID,
     val author: Author,
     val title: String,
     val content: String,
     val state: String,
     val createdAt: Date,
-    val lastModifiedAt: Date?
+    val modifiedAt: Date?
 )

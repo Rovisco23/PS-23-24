@@ -17,6 +17,7 @@ import {
   MatHeaderRowDef, MatRow, MatRowDef,
   MatTable
 } from "@angular/material/table";
+import {HttpResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-create-log-entry',
@@ -71,8 +72,9 @@ export class CreateLogEntryComponent {
     this.files.forEach((file) => {
       this.form.append('files', file)
     })
-    this.httpService.createLogEntry(this.form).subscribe(() => {
-      this.router.navigate([`/work/${this.workId}`])
+    this.httpService.createLogEntry(this.form).subscribe((response: HttpResponse<any>) => {
+      const headers = response.headers.get("Location")!!
+      this.router.navigate([headers])
     })
   }
 

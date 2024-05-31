@@ -16,7 +16,7 @@ class JdbiLog(private val handle: Handle) : LogRepository {
         author: Int,
         images: List<FileModel>?,
         docs: List<FileModel>?
-    ) {
+    ): Int {
         val rId = handle.createUpdate(
             "insert into registo(oId, titulo, texto, estado, creation_date, author)" +
                     "values (:workId, :title, :description, :state, :createdAt, :author)"
@@ -32,6 +32,7 @@ class JdbiLog(private val handle: Handle) : LogRepository {
             .one()
         images?.forEach { img -> inputImagesToLog(rId, log.workId, img, createdAt) }
         docs?.forEach { doc -> inputDocsToLog(rId, log.workId, doc, createdAt) }
+        return rId
     }
 
     override fun getById(id: Int): LogEntry? = handle.createQuery(

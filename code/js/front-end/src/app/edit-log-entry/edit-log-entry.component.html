@@ -1,0 +1,19 @@
+<div>
+  <button (click)="onBackCall()" class="small-button">
+    <mat-icon class="small-icon">arrow_back</mat-icon>
+  </button>
+  <h2>Editar Ocorrência</h2>
+</div>
+<form (ngSubmit)="edit()">
+  <mat-form-field>
+    <mat-label>Título</mat-label>
+    <input matInput type="text" name="title" [(ngModel)]="log.title">
+  </mat-form-field>
+  <br>
+  <mat-form-field>
+    <mat-label>Ocorrência</mat-label>
+    <textarea matInput *ngIf="log" [(ngModel)]="log.content" name="description" required></textarea>
+  </mat-form-field>
+  <br>
+  <button mat-stroked-button class="button" type="submit">Editar</button>
+</form>

@@ -31,6 +31,7 @@ export class EditProfileComponent {
       this.user = user;
     });
   }
+
   edit(){
     if (this.user) {
       this.httpService.editProfile(this.user).subscribe(() => {

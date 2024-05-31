@@ -73,7 +73,7 @@ class LogController(private val service: LogService) {
         }
         val res = service.createLog(log, listOfFiles, user.user.id)
         return handleResponse(res) {
-            ResponseEntity.created(URI.create("/logs")).body(it)
+            ResponseEntity.created(URI.create("/log-entry/$it")).body(Unit)
         }
     }
 
@@ -102,12 +102,12 @@ class LogController(private val service: LogService) {
         val res = service.getLog(id, user.user.id)
         return handleResponse(res) {
             val log = LogOutputModel(
-                id = it.id,
+                workId = it.workId,
                 title = it.title,
                 content = it.content,
                 state = it.state,
                 createdAt = it.createdAt,
-                lastModifiedAt = it.lastModifiedAt,
+                modifiedAt = it.lastModifiedAt,
                 author = it.author
             )
             ResponseEntity.ok(log)
