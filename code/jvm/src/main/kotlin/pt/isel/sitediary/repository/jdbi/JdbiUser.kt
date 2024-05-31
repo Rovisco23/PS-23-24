@@ -112,7 +112,7 @@ class JdbiUser(private val handle: Handle) : UserRepository {
         .singleOrNull()?.userAndToken
 
     override fun insertProfilePicture(id: Int, picture: FileModel) {
-        handle.createUpdate("insert into profile_picture(user_id, name, type, img) values (:id, :name, :type, :img)")
+        handle.createUpdate("insert into profile_picture(user_id, name, type, file) values (:id, :name, :type, :img)")
             .bind("id", id)
             .bind("name", picture.fileName)
             .bind("type", picture.contentType)
@@ -121,7 +121,7 @@ class JdbiUser(private val handle: Handle) : UserRepository {
     }
 
     override fun changeProfilePicture(id: Int, picture: FileModel) {
-        handle.createUpdate("update profile_picture set name = :name, type = :type, img = :img where user_id = :id")
+        handle.createUpdate("update profile_picture set name = :name, type = :type, file = :img where user_id = :id")
             .bind("id", id)
             .bind("name", picture.fileName)
             .bind("type", picture.contentType)
@@ -143,7 +143,7 @@ class JdbiUser(private val handle: Handle) : UserRepository {
     }
 
     override fun getProfilePicture(id: Int): FileModel? = handle.createQuery(
-        "select img, name, type from profile_picture where user_id = :id"
+        "select file, name, type from profile_picture where user_id = :id"
     )
         .bind("id", id)
         .mapTo(FileModel::class.java)

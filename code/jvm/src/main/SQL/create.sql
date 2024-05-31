@@ -178,7 +178,7 @@ create table PROFILE_PICTURE
     user_id integer,
     name    varchar(255),
     type    varchar(255),
-    img     bytea,
+    file     bytea,
     primary key (id),
     constraint UserId foreign key (user_id) references UTILIZADOR (id)
 );
@@ -189,7 +189,7 @@ create table IMAGEM_OBRA
     work_id varchar(255),
     name    varchar(255),
     type    varchar(255),
-    img     bytea,
+    file     bytea,
     primary key (id),
     constraint WorkId foreign key (work_id) references OBRA (id)
 );

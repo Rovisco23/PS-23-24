@@ -8,7 +8,7 @@ import java.sql.ResultSet
 class FileModelMapper : RowMapper<FileModel> {
     override fun map(rs: ResultSet?, ctx: StatementContext?): FileModel? = if (rs != null) {
         FileModel(
-            file = rs.getBytes("img"),
+            file = rs.getBytes("file"),
             fileName = rs.getString("name"),
             contentType = rs.getString("type")
         )

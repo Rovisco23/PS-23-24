@@ -8,7 +8,7 @@ import pt.isel.sitediary.domainmodel.user.containsMemberById
 import pt.isel.sitediary.domainmodel.work.Address
 import pt.isel.sitediary.domainmodel.work.Invite
 import pt.isel.sitediary.domainmodel.work.Location
-import pt.isel.sitediary.domainmodel.work.Work
+import pt.isel.sitediary.domainmodel.work.WorkInput
 import pt.isel.sitediary.domainmodel.work.WorkState.IN_PROGRESS
 import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.InviteResponseModel
@@ -40,7 +40,7 @@ class WorkService(
             if (location == null) {
                 failure(Errors.invalidLocation)
             } else {
-                val work = Work(
+                val work = WorkInput(
                     id = UUID.randomUUID(),
                     name = openingTerm.name,
                     description = openingTerm.description ?: "",

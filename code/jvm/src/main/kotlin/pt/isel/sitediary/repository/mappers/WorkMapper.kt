@@ -5,6 +5,7 @@ import org.jdbi.v3.core.statement.StatementContext
 import pt.isel.sitediary.domainmodel.user.Member
 import pt.isel.sitediary.domainmodel.work.Address
 import pt.isel.sitediary.domainmodel.work.Author
+import pt.isel.sitediary.domainmodel.work.ConstructionCompany
 import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.domainmodel.work.LogEntrySimplified
 import pt.isel.sitediary.domainmodel.work.Work
@@ -23,6 +24,11 @@ class WorkMapper : RowMapper<Work> {
             description = rs.getString("descricao"),
             type = WorkType.fromString(rs.getString("tipo")) ?: WorkType.RESIDENCIAL,
             state = WorkState.fromString(rs.getString("estado")) ?: WorkState.IN_PROGRESS,
+            licenseHolder = rs.getString("titular_licenca"),
+            company = ConstructionCompany(
+                name = rs.getString("company_name"),
+                num = rs.getInt("company_num")
+            ),
             address = Address(
                 location = Location(
                     rs.getString("distrito"),
@@ -32,6 +38,7 @@ class WorkMapper : RowMapper<Work> {
                 rs.getString("rua"),
                 rs.getString("cpostal")
             ),
+            building = rs.getString("predio"),
             members = rs.getString("membros").removeSurrounding("{", "}").split(",")
                 .map {
                     val aux = it.split(";")
@@ -58,7 +65,9 @@ class WorkMapper : RowMapper<Work> {
                             createdAt = Date.valueOf(aux[6])
                         )
                     }
-            }
+            },
+            images = rs.getInt("imagens"),
+            docs = rs.getInt("documentos")
         )
     } else null
 }

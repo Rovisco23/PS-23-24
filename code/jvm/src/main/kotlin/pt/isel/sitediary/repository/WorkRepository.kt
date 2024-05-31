@@ -8,7 +8,7 @@ import pt.isel.sitediary.model.OpeningTermInputModel
 import java.util.*
 
 interface WorkRepository {
-    fun createWork(work: Work, openingTerm: OpeningTermInputModel, user: User)
+    fun createWork(work: WorkInput, openingTerm: OpeningTermInputModel, user: User)
     fun getById(id: UUID): Work?
     fun getWorkList(skip: Int, userId: Int): List<WorkSimplified>
     fun getOpeningTerm(workId: UUID): OpeningTerm

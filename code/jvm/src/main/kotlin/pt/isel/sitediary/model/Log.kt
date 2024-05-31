@@ -10,6 +10,12 @@ data class LogInputModel(
     val description: String
 )
 
+data class LogCredentialsModel(
+    val logId: Int,
+    val workId: UUID,
+    val contentType: String
+)
+
 data class LogOutputModel(
     val id: Int,
     val author: Author,

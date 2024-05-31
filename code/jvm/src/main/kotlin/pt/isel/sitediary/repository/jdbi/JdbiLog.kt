@@ -51,7 +51,43 @@ class JdbiLog(private val handle: Handle) : LogRepository {
         .mapTo(Int::class.java)
         .single() == 1
 
-    private fun inputImagesToLog(rId: Int, workId: UUID, images: FileModel, createdAt: Timestamp) {
+    override fun getImages(logId: Int): List<FileModel>? = handle.createQuery(
+        "select name, type, file from IMAGEM where rId = :rId"
+    )
+        .bind("rId", logId)
+        .mapTo(FileModel::class.java)
+        .list()
+
+    override fun getDocs(logId: Int): List<FileModel>? = handle.createQuery(
+        "select name, type, file from DOCUMENTO where rId = :rId"
+    )
+        .bind("rId", logId)
+        .mapTo(FileModel::class.java)
+        .list()
+
+    override fun finish(logId: Int) {
+        handle.createUpdate(
+            "update REGISTO set estado = 'FINISHED' where id = :id"
+        )
+            .bind("id", logId)
+            .execute()
+    }
+
+    override fun editLog(logId: Int, logInfo: LogInputModel, modifiedAt: Timestamp, images: List<FileModel>?, docs: List<FileModel>?) {
+        handle.createUpdate(
+            "update REGISTO set titulo = :title, texto = :description, last_modification_date = :modDate " +
+                    "where id = :id"
+        )
+            .bind("title", logInfo.title)
+            .bind("description", logInfo.description)
+            .bind("modDate", Timestamp(System.currentTimeMillis()))
+            .bind("id", logId)
+            .execute()
+        images?.forEach { img -> inputImagesToLog(logId, logInfo.workId, img, modifiedAt) }
+        docs?.forEach { doc -> inputDocsToLog(logId, logInfo.workId, doc, modifiedAt) }
+    }
+
+    private fun inputImagesToLog(rId: Int, workId: UUID, images: FileModel, uploadDate: Timestamp) {
         handle.createUpdate(
             "insert into IMAGEM(rId, oId, name, type, file, upload_date) values " +
                     "(:rId, :oId, :name, :type, :file, :upload_date)"
@@ -61,11 +97,11 @@ class JdbiLog(private val handle: Handle) : LogRepository {
             .bind("name", images.fileName)
             .bind("type", images.contentType)
             .bind("file", images.file)
-            .bind("upload_date", createdAt)
+            .bind("upload_date", uploadDate)
             .execute()
     }
 
-    private fun inputDocsToLog(rId: Int, workId: UUID, doc: FileModel, createdAt: Timestamp) {
+    private fun inputDocsToLog(rId: Int, workId: UUID, doc: FileModel, uploadDate: Timestamp) {
         handle.createUpdate(
             "insert into DOCUMENTO(rId, oId, name, type, file, upload_date) values " +
                     "(:rId, :oId, :name, :type, :file, :upload_date)"
@@ -75,7 +111,7 @@ class JdbiLog(private val handle: Handle) : LogRepository {
             .bind("name", doc.fileName)
             .bind("type", doc.contentType)
             .bind("file", doc.file)
-            .bind("upload_date", createdAt)
+            .bind("upload_date", uploadDate)
             .execute()
     }
 }

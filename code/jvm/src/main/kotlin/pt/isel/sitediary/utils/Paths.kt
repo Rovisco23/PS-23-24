@@ -28,6 +28,8 @@ object Paths {
     object Log {
         const val GET_BY_ID = "$PREFIX/logs/{id}"
         const val GET_ALL_LOGS = "$PREFIX/logs"
+        const val GET_LOG_FILES = "$PREFIX/logs-files"
+        const val EDIT_LOG = "$PREFIX/logs/{id}"
     }
 
 }

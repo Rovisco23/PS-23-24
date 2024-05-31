@@ -18,7 +18,3 @@ COPY LOCALIDADE (distrito, concelho, freguesia)
     FROM 'E:\Documentos\Universidade\Projeto\PS-23-24\docs\localidades.csv' DELIMITER ';' CSV HEADER;
 
 insert into membro(oid, uid, role) values ('90e825a3-b088-4260-b3cf-44191759bcd6', 2, 'DIRETOR');
-
-insert into registo(oid, titulo,texto, estado, creation_date, last_modification_date, author)
-    values ('90e825a3-b088-4260-b3cf-44191759bcd6','O andaime não se encontrava corretamente instalado','No dia x observei que o andaime estava mal montado','FINISHED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1),
-           ('90e825a3-b088-4260-b3cf-44191759bcd6','Um dos tubos comprados encontra-se com defeito','Foi necessário comprar novos tubos aumentando a conta da obra por 50€','EDITÁVEL',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1 );

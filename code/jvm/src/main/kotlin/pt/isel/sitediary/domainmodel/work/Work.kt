@@ -12,9 +12,14 @@ data class Work(
     val description: String,
     val type: WorkType,
     val state: WorkState,
+    val licenseHolder: String,
+    val company: ConstructionCompany,
     val address: Address,
+    val building: String,
     val members: List<Member>,
-    val log: List<LogEntrySimplified>
+    val log: List<LogEntrySimplified>,
+    val images: Int,
+    val docs: Int
 ) {
     fun createInvites(invite: Invite) {
         val mail = SimpleEmail()
@@ -35,6 +40,17 @@ data class Work(
         mail.send()
     }
 }
+
+data class WorkInput (
+    val id: UUID,
+    val name: String,
+    val description: String,
+    val type: WorkType,
+    val state: WorkState,
+    val address: Address,
+    val members: List<Member>,
+    val log: List<LogEntrySimplified>
+)
 
 data class LogEntry(
     val id: Int,

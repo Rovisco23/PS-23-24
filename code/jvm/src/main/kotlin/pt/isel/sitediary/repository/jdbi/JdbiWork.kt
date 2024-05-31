@@ -7,6 +7,7 @@ import pt.isel.sitediary.domainmodel.work.InviteSimplified
 import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.domainmodel.work.OpeningTerm
 import pt.isel.sitediary.domainmodel.work.Work
+import pt.isel.sitediary.domainmodel.work.WorkInput
 import pt.isel.sitediary.domainmodel.work.WorkSimplified
 import pt.isel.sitediary.domainmodel.work.WorkState
 import pt.isel.sitediary.model.FileModel
@@ -18,7 +19,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 class JdbiWork(private val handle: Handle) : WorkRepository {
-    override fun createWork(work: Work, openingTerm: OpeningTermInputModel, user: User) {
+    override fun createWork(work: WorkInput, openingTerm: OpeningTermInputModel, user: User) {
         handle.createUpdate(
             "insert into OBRA(id, nome, tipo, descricao, estado, freguesia, concelho, distrito, rua, cpostal)" +
                     "values (:id, :nome, :tipo, :descricao, :estado, :freguesia, :concelho, :distrito, :rua, :cpostal)"
@@ -62,12 +63,17 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
     }
 
     override fun getById(id: UUID): Work? = handle.createQuery(
-        "select *, ARRAY(SELECT CONCAT(uId, ';', username, ';', MEMBRO.role) FROM MEMBRO " +
-                "join UTILIZADOR on uId = id WHERE oId = :id) as membros, ARRAY(" +
-                "SELECT CONCAT(REGISTO.id, ';', author, ';', UTILIZADOR.username, ';', MEMBRO.role, ';', " +
-                "titulo, ';', estado, ';', TO_CHAR(REGISTO.creation_date, 'YYYY-MM-DD')) FROM REGISTO " +
-                "join UTILIZADOR on author = UTILIZADOR.id join MEMBRO on uId = author where REGISTO.oId = :id) " +
-                "as log from OBRA where id = :id"
+        "select OBRA.id, OBRA.nome, OBRA.tipo, OBRA.descricao, OBRA.estado, OBRA.distrito, OBRA.concelho, " +
+                "OBRA.freguesia, OBRA.rua, OBRA.cpostal, ARRAY(SELECT CONCAT(uId, ';', username, ';', MEMBRO.role) " +
+                "FROM MEMBRO join UTILIZADOR on uId = id WHERE oId = :id) as membros, ARRAY(SELECT " +
+                "CONCAT(REGISTO.id, ';', author, ';', UTILIZADOR.username, ';', MEMBRO.role, ';', titulo, ';', " +
+                "estado, ';', TO_CHAR(REGISTO.creation_date, 'YYYY-MM-DD')) FROM REGISTO join UTILIZADOR on " +
+                "author = UTILIZADOR.id join MEMBRO on uId = author where REGISTO.oId = :id) as log, " +
+                "TERMO_ABERTURA.titular_licenca, TERMO_ABERTURA.predio, EMPRESA_CONSTRUCAO.nome as company_name, " +
+                "EMPRESA_CONSTRUCAO.numero as company_num, (SELECT COUNT(*) FROM IMAGEM WHERE oId = OBRA.id) " +
+                "AS imagens, (SELECT COUNT(*) FROM DOCUMENTO WHERE oId = OBRA.id) AS documentos from OBRA join " +
+                "TERMO_ABERTURA on TERMO_ABERTURA.oId = :id join EMPRESA_CONSTRUCAO on EMPRESA_CONSTRUCAO.id = " +
+                "TERMO_ABERTURA.empresa_construcao where OBRA.id = :id"
     )
         .bind("id", id.toString())
         .mapTo(Work::class.java)
@@ -234,7 +240,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         .list()
 
     override fun getWorkImage(workId: UUID) = handle.createQuery(
-        "select img, name, type from IMAGEM_OBRA where work_id = :id"
+        "select file, name, type from IMAGEM_OBRA where work_id = :id"
     )
         .bind("id", workId.toString())
         .mapTo(FileModel::class.java)
@@ -248,7 +254,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         .singleOrNull()
 
     override fun insertWorkImage(workId: UUID, featuredImage: FileModel) {
-        handle.createUpdate("insert into IMAGEM_OBRA(work_id, name, type, img) values (:id, :name, :type, :img)")
+        handle.createUpdate("insert into IMAGEM_OBRA(work_id, name, type, file) values (:id, :name, :type, :img)")
             .bind("id", workId.toString())
             .bind("name", featuredImage.fileName)
             .bind("type", featuredImage.contentType)
@@ -257,7 +263,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
     }
 
     override fun changeWorkImage(workId: UUID, featuredImage: FileModel) {
-        handle.createUpdate("update IMAGEM_OBRA set name = :name, type = :type, img = :img where work_id = :id")
+        handle.createUpdate("update IMAGEM_OBRA set name = :name, type = :type, file = :img where work_id = :id")
             .bind("id", workId.toString())
             .bind("name", featuredImage.fileName)
             .bind("type", featuredImage.contentType)
