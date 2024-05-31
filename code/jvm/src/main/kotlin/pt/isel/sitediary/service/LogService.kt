@@ -57,7 +57,11 @@ class LogService(
         } else if (!logRepository.checkUserAccess(log.workId, userId)) {
             failure(Errors.notMember)
         } else {
-            success(log)
+            if (log.state == "EDITÁVEL" && checkIfEditTimeElapsed(log.createdAt)) {
+                logRepository.finish(logId)
+                val aux = log.copy(state = "NÃO EDITÁVEL")
+                success(aux)
+            } else success(log)
         }
     }
 
@@ -101,7 +105,6 @@ class LogService(
 
     private fun checkIfEditTimeElapsed(createdAt: Date): Boolean {
         val elapsedTime = Duration.between(createdAt.toInstant(), clock.now().toJavaInstant()).toMillis()
-        val hour = Duration.ofHours(1).toMillis()
-        return elapsedTime >= hour
+        return elapsedTime >= Duration.ofHours(3).toMillis()
     }
 }

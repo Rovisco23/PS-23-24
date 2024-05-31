@@ -94,7 +94,7 @@ create table REGISTO
     primary key (id, oId),
     constraint ObraId foreign key (oId) references OBRA (id),
     constraint UserId foreign key (author) references UTILIZADOR (id),
-    constraint Estado CHECK (estado IN ('EDITÁVEL', 'FINISHED'))
+    constraint Estado CHECK (estado IN ('EDITÁVEL', 'NÃO EDITÁVEL'))
 );
 
 create table IMAGEM
