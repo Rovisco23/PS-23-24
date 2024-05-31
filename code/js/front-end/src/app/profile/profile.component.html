@@ -1,35 +1,51 @@
-
 <div class="header">
   <button (click)="onBackCall()" class="small-button">
     <mat-icon class="small-icon">arrow_back</mat-icon>
   </button>
-  <h2 class="title">Criar Registo</h2>
+  <h2 class="title">Perfil</h2>
 </div>
-<body  *ngIf="!edit">
-  <div>
-    <img src="{{localStorage.getItem('profilePicture')}}" alt="" class="profile-image">
+<div class="container" style="display: flex;justify-content: center">
+  <div class="left-section">
+    <div class="middle-section">
+      <div class="top-section">
+        <img src="{{profileSrc}}" alt="Profile Picture">
+        <h1>{{ user?.firstName }} {{ user?.lastName }}</h1>
+        <p>{{ user?.role }}</p>
+      </div>
+    </div>
+    <div class="edit">
+      <div class="edit-button" (click)="editCall()">
+        <span class="notification-text">Editar Perfil</span>
+        <span class="material-icons"> edit </span>
+      </div>
+    </div>
   </div>
-<div>
-  <p>{{ user?.username }}</p>
+  <div class="right-section">
+    <h2 class="details-title">Details</h2>
+    <div class="information">
+      <div>
+        <h3 class="details-sub-title">Contactos</h3>
+        <div class="details">
+          <span class="material-icons" style="margin-right: 5px;">email</span>
+          <span>{{ user?.email }}</span>
+        </div>
+        <div class="details" *ngIf="user?.phone">
+          <span class="material-icons" style="margin-right: 5px;">phone</span>
+          <span class="span-inline">
+           {{ user?.phone }} </span>
+        </div>
+      </div>
+      <div>
+        <h3 class="details-sub-title">Informação</h3>
+        <div class="details">
+          <span class="material-icons" style="margin-right: 5px;">apartment</span>
+          <span>{{user?.association?.name}} Número: {{user?.association?.number}}</span>
+        </div>
+        <div class="details">
+          <span class="material-icons" style="margin-right: 5px;">location_on</span>
+          <span>{{user?.location?.parish}}, {{user?.location?.county}}, {{user?.location?.district}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-  <div>
-    <p>{{ user?.email }}</p>
-  </div>
-  <div>
-    <p>{{ user?.phone }}</p>
-  </div>
-  <div>
-    <p>{{ user?.firstName }}</p>
-  </div>
-  <div>
-    <p>{{ user?.lastName }}</p>
-  </div>
-  <div>
-    <p>{{ user?.role }}</p>
-  </div>
-  <div>
-    <p>{{ user?.location?.parish }}, {{ user?.location?.county }}, {{ user?.location?.district }}</p>
-  </div>
-  <button *ngIf="isOwner()" (click)="editCall()">Editar Perfil</button>
-</body>
-<router-outlet *ngIf="edit"></router-outlet>

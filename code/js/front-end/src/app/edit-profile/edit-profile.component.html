@@ -1,58 +1,81 @@
-<div>
+<div class="header">
   <button (click)="onBackCall()" class="small-button">
     <mat-icon class="small-icon">arrow_back</mat-icon>
   </button>
-  <h2>Editar Perfil</h2>
+  <h2 class="title">Perfil</h2>
 </div>
-
-<form (ngSubmit)="edit()">
-  <div class="input">
-    <div>
-      <label for="username">Nome de Utilizador</label>
+<div class="container" style="display: flex;justify-content: center">
+  <div class="left-section">
+    <div class="middle-section">
+      <div class="top-section">
+        <input type="file" (change)="onImageChange($event)" #fileInput style="display:none">
+        <button type="button" class="change-picture" (click)="fileInput.click()">
+          <img src="{{ newSrc ?? editSrc }}" alt="Profile Picture">
+        </button>
+        <div>
+          <div class="edit">
+            <div class="edit-button" (click)="onRemovePicture()">
+              <span class="notification-text">Remover</span>
+            </div>
+          </div>
+          <div class="edit">
+            <div class="edit-button" (click)="onSubmitPicture()">
+              <span class="notification-text">Submeter</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p>Nome</p>
+          <input *ngIf="user" placeholder="Nome Próprio" [(ngModel)]="user.firstName" required>
+          <input *ngIf="user" placeholder="Apelido" [(ngModel)]="user.lastName" required>
+        </div>
+        <div>
+          <p>Nome de Utilizador</p>
+          <input *ngIf="user" placeholder="Nome de Utilizador" [(ngModel)]="user.username" required>
+        </div>
+      </div>
     </div>
-    <div>
-      <input *ngIf="user" type="text" id="username" name="username" [(ngModel)]="user.username" required>
-    </div>
-  </div>
-  <div class="input">
-    <div>
-      <label for="firstName">Nome Próprio</label>
-    </div>
-    <div>
-      <input *ngIf="user" type="firstName" id="firstName" name="firstName" [(ngModel)]="user.firstName" required>
-    </div>
-  </div>
-  <div class="input">
-    <div>
-      <label for="lastName">Apelido</label>
-    </div>
-    <div>
-      <input *ngIf="user" type="text" id="lastName" name="lastName" [(ngModel)]="user.lastName" required>
-    </div>
-  </div>
-  <div class="input">
-    <div>
-      <label for="phone">Número de Telefóne</label>
-    </div>
-    <div>
-      <input *ngIf="user" type="text" id="phone" name="phone" [(ngModel)]="user.phone">
-    </div>
-  </div>
-  <div class="input">
-    <div>
-      <label for="county">Concelho</label>
-    </div>
-    <div>
-      <input *ngIf="user" type="text" id="county" name="county" [(ngModel)]="user.location.county">
+    <div class="edit">
+      <div class="edit-button" (click)="onSubmitEdit()">
+        <span class="notification-text">Submeter Edição</span>
+      </div>
     </div>
   </div>
-  <div class="input">
-    <div>
-      <label for="parish">Freguesia</label>
-    </div>
-    <div>
-      <input *ngIf="user" type="text" id="parish" name="parish" [(ngModel)]="user.location.parish">
+  <div class="right-section">
+    <div class="information">
+      <div>
+        <h3 class="details-sub-title">Contactos</h3>
+        <div>
+          <p>Email</p>
+          <input *ngIf="user" placeholder="Email" [(ngModel)]="user.email" required>
+        </div>
+        <div>
+          <p>Telefone</p>
+          <input *ngIf="user" placeholder="Número de telefone" [(ngModel)]="user.email">
+        </div>
+      </div>
+      <div>
+        <h3 class="details-sub-title">Informação</h3>
+        <div>
+          <p>Associação</p>
+          <input *ngIf="user" placeholder="Nome da associação" [(ngModel)]="user.association.name" required>
+          <input *ngIf="user" style="margin-left: 10px" placeholder="Número de associado" [(ngModel)]="user.association.number"
+                 required>
+        </div>
+        <div class="input">
+          <p>Localidade</p>
+          <select *ngIf="user" class="selector" name="county" [(ngModel)]="user.location.county">
+            <ng-container *ngFor="let concelho of counties">
+              <option [value]="concelho">{{ concelho }}</option>
+            </ng-container>
+          </select>
+          <select *ngIf="user" class="selector" name="Parish" [(ngModel)]="user.location.parish" (change)="updateLocation()">
+            <ng-container *ngFor="let freguesia of parishes">
+              <option [value]="freguesia">{{ freguesia }}</option>
+            </ng-container>
+          </select>
+        </div>
+      </div>
     </div>
   </div>
-    <button mat-stroked-button class="button" type="submit">Editar</button>
-</form>
+</div>

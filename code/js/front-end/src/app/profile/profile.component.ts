@@ -23,6 +23,7 @@ export class ProfileComponent {
   httpService = inject(HttpService);
   user: User | undefined;
   edit: boolean = false;
+  profileSrc = '';
 
   constructor(private router: Router, private route: ActivatedRoute, private previousUrl: PreviousUrlService) {
     this.loadUser();
@@ -32,6 +33,14 @@ export class ProfileComponent {
         this.loadUser()
       }
     });
+    this.httpService.getProfilePicture().subscribe((data) => {
+      if (data.size === 0) {
+        this.profileSrc = './assets/profile.png'
+      } else {
+        localStorage.setItem('profilePicture', URL.createObjectURL(data))
+        this.profileSrc = URL.createObjectURL(data)
+      }
+    })
   }
 
   loadUser() {

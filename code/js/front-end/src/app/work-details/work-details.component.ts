@@ -12,7 +12,6 @@ import {MatButton, MatFabButton} from "@angular/material/button";
 import {MatLabel} from "@angular/material/form-field";
 import {FormsModule} from "@angular/forms";
 import {MatBadge} from "@angular/material/badge";
-import {PreviousUrlService} from "../previous-url/previous-url.component";
 
 @Component({
   selector: 'app-work-details',
@@ -51,7 +50,7 @@ export class WorkDetailsComponent {
   workSrc = ''
   searchLogValue = '';
 
-  constructor(private router: Router, private previousUrl: PreviousUrlService) {
+  constructor(private router: Router) {
     const workListingId =  String(this.route.snapshot.params['id']);
     this.httpService.getWorkById(workListingId).subscribe((work: Work) => {
       this.work = work;
@@ -97,8 +96,7 @@ export class WorkDetailsComponent {
   }
 
   onBackCall() {
-    const prevUrl = this.previousUrl.getPreviousUrl()
-    this.router.navigate([prevUrl ?? '/work'])
+    this.router.navigate(['/work'])
   }
 
   closeWork(){

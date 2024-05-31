@@ -1,11 +1,16 @@
 
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 .small-button {
   width: 2%;
   height: auto;
   margin: 10px;
   background-color: white;
   border: none;
-  vertical-align: center;
 }
 
 .small-icon {

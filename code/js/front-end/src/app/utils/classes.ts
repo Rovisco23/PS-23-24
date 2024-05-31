@@ -95,7 +95,8 @@ export interface User {
   firstName: String,
   lastName: String,
   role: String,
-  location: Location
+  location: Location,
+  association: Association
 }
 
 export interface InputWork {

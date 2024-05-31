@@ -1,3 +1,9 @@
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  height: 7%;
+}
 
 .small-button {
   width: 2%;
@@ -5,23 +11,129 @@
   margin: 10px;
   background-color: white;
   border: none;
-  vertical-align: center;
 }
 
 .small-icon {
   font-size: 200%;
 }
 
-body {
+.left-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #11113D;
+  padding: 20px;
+  text-align: center;
+  width: 20%;
+  height: 70%;
+  border: 2px solid #FF7A00;
+}
+
+.left-section img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px solid #FF7A00;
+}
+
+.right-section {
+  background-color: #11113D;
+  padding: 20px;
+  width: 40%;
+  height: 70%;
+  color: #FF7A00;
+  border: 2px solid #FF7A00;
+}
+
+.right-section h1 {
+  margin: 0;
+}
+
+.container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Ensure the body takes the full height of the viewport */
-  margin: 0; /* Remove default margin */
-  flex-direction: column; /* Ensure content is arranged in a column */
+  height: 100%;
+  width: 80%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-.profile-image {
-  max-width: 100px;
-  height: auto;
+.middle-section {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  color: #FF7A00;
+}
+
+.top-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.edit {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #11113D;
+  border-radius: 5px;
+  border: 2px solid #FF7A00;
+  color: #FF7A00;
+  margin: 5px;
+  height: 2%;
+  user-select: none;
+}
+
+.edit-button {
+  display: flex;
+  align-items: center;
+}
+
+.details-title {
+  color: #FF7A00;
+  font-weight: bold;
+  text-align: center;
+}
+
+.material-icons {
+  display: inline;
+  vertical-align: middle;
+}
+
+.span-inline {
+  display: inline;
+}
+
+.details {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.details span:first-child {
+  margin-right: 5px;
+}
+
+.information {
+  display: flex;
+  margin-top: 70px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.information div {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.details-sub-title {
+  color: #FF7A00;
+  font-weight: bold;
+  margin-bottom: 10px;
 }

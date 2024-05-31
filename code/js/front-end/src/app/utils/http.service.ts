@@ -112,6 +112,11 @@ export class HttpService {
     return this.http.post<any>('http://localhost:8080/api/invite', answer, {headers: headers})
   }
 
+  changeProfilePicture(form: FormData) {
+    const headers = this.getTokenHeader();
+    return this.http.put<any>('http://localhost:8080/api/profile-picture', form, {headers: headers})
+  }
+
   getWorkImage(workId: string): Observable<any> {
     const headers = this.getTokenHeader();
     return this.http.get<any>(`http://localhost:8080/api/work-image/${workId}`, {

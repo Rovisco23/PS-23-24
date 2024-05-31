@@ -162,18 +162,22 @@
         </div>
       </mat-tab>
       <mat-tab label="Equipa">
-        <div class="members-container">
-          <mat-card *ngFor="let member of work?.members" class="member-card" (click)="onMemberClick(member.id)">
-            <img mat-card-image src="/assets/profile.png" alt="{{ member.name }}" class="member-profile">
-            <mat-card-header>
-              <mat-card-title>{{ member.name }}</mat-card-title>
-              <mat-card-subtitle>{{ member.role }}</mat-card-subtitle>
-            </mat-card-header>
-          </mat-card>
+        <div class="log-top-bar">
+          <button mat-fab color="primary" aria-label="Example icon button with a delete icon" class="log-button"
+                  (click)="createNewEntry()">
+            <mat-icon>add</mat-icon>
+          </button>
         </div>
-        <button *ngIf="admin" mat-fab color="primary" class="invite-button" (click)="onInviteClick()">
-          <mat-icon>add</mat-icon>
-        </button>
+        <mat-divider></mat-divider>
+        <div>
+          <mat-list *ngFor="let entry of work?.members">
+            <mat-list-item (click)="onMemberClick(entry.id)">
+              <div matListItemTitle>{{ entry.name }}</div>
+              <div matListItemLine>Role:  {{entry.role}}</div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+          </mat-list>
+        </div>
       </mat-tab>
     </mat-tab-group>
   </div>

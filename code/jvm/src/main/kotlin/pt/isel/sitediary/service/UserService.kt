@@ -131,12 +131,12 @@ class UserService(
         }
     }
 
-    fun editProfile(userId: Int, editUser: EditProfileInputModel): UserEditResult = transactionManager.run {
+    fun editProfile(user: User, editUser: EditProfileInputModel): UserEditResult = transactionManager.run {
         val rep = it.usersRepository
-        val u = rep.getUserById(userId)
+        val u = rep.getUserById(user.id)
         if (u == null) {
             failure(Errors.userNotFound)
-        } else if (rep.checkUsernameTaken(editUser.username) != null) {
+        } else if (user.username != editUser.username && rep.checkUsernameTaken(editUser.username) != null) {
             failure(Errors.usernameAlreadyInUse)
         } else if (!checkPhoneNumberFormat(editUser.phone)) {
             failure(Errors.invalidPhoneNumber)

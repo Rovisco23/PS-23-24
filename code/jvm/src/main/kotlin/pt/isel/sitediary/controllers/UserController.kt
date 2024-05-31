@@ -239,7 +239,7 @@ class UserController(private val service: UserService) {
     )
     fun editProfile(@RequestBody u: EditProfileInputModel, @Parameter(hidden = true) user: AuthenticatedUser)
             : ResponseEntity<Unit> {
-        service.editProfile(userId = user.user.id, editUser = u)
+        service.editProfile(user = user.user, editUser = u)
         return ResponseEntity.ok(Unit)
     }
 
