@@ -8,6 +8,7 @@ import {Router, RouterLink} from "@angular/router";
 import {MatIcon} from "@angular/material/icon";
 import {MatFabButton} from "@angular/material/button";
 import {FormsModule} from "@angular/forms";
+import {PreviousUrlService} from "../previous-url/previous-url.component";
 
 @Component({
   selector: 'app-work',
@@ -31,7 +32,7 @@ export class WorkComponent {
   inputValue: string = '';
   httpService: HttpService = inject(HttpService);
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private previousUrl: PreviousUrlService) {
     this.httpService.getWorkListings().subscribe(res => {
       this.workListingsList = res;
       this.filteredWorkList = this.workListingsList.slice(0, 10);
@@ -43,13 +44,14 @@ export class WorkComponent {
       this.filteredWorkList = this.workListingsList;
       return;
     }
-
     this.filteredWorkList = this.workListingsList.filter(
       workListing => workListing?.name.toLowerCase().includes(text.toLowerCase())
     );
   }
 
   createWork() {
+    const currentUrl = this.router.url;
+    this.previousUrl.setPreviousUrl(currentUrl);
     this.router.navigate(['/create-work']);
   }
 }

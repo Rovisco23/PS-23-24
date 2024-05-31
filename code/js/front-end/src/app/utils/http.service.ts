@@ -111,4 +111,9 @@ export class HttpService {
     const headers = this.getTokenHeader();
     return this.http.post<any>('http://localhost:8080/api/invite', answer, {headers: headers})
   }
+
+  getWorkImage(workId: string ): Observable<any> {
+      const headers = this.getTokenHeader();
+      return this.http.get<any>(`http://localhost:8080/api/work-image/${workId}`, {headers: headers, responseType: 'blob' as 'json'})
+  }
 }

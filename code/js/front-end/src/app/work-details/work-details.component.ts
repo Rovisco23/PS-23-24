@@ -9,6 +9,10 @@ import {MatCardModule} from "@angular/material/card";
 import {MatListModule} from "@angular/material/list";
 import {MatIcon} from "@angular/material/icon";
 import {MatButton, MatFabButton} from "@angular/material/button";
+import {MatLabel} from "@angular/material/form-field";
+import {FormsModule} from "@angular/forms";
+import {MatBadge} from "@angular/material/badge";
+import {PreviousUrlService} from "../previous-url/previous-url.component";
 
 @Component({
   selector: 'app-work-details',
@@ -26,7 +30,10 @@ import {MatButton, MatFabButton} from "@angular/material/button";
     MatIcon,
     MatFabButton,
     NgIf,
-    MatButton
+    MatButton,
+    MatLabel,
+    FormsModule,
+    MatBadge
   ],
   providers: [HttpService],
   templateUrl: './work-details.component.html',
@@ -37,18 +44,34 @@ export class WorkDetailsComponent {
   httpService = inject(HttpService);
   work : Work | undefined;
   admin : boolean | undefined;
+  fiscal: string | undefined;
+  diretor: string | undefined;
+  coordenador: string | undefined;
   filteredLogList: LogEntrySimplified[] = [];
-  constructor(private router: Router) {
+  workSrc = ''
+  searchLogValue = '';
+
+  constructor(private router: Router, private previousUrl: PreviousUrlService) {
     const workListingId =  String(this.route.snapshot.params['id']);
     this.httpService.getWorkById(workListingId).subscribe((work: Work) => {
       this.work = work;
       this.filteredLogList = work.log;
+      this.fiscal = work.members.find(member => member.role === 'FISCALIZAÇÃO')?.name
+      this.diretor = work.members.find(member => member.role === 'DIRETOR')?.name
+      this.coordenador = work.members.find(member => member.role === 'COORDENADOR')?.name
       this.admin = this.work.members.find(member => member.role === 'ADMIN')?.id === Number(localStorage.getItem('userId'));
     });
+    this.httpService.getWorkImage(workListingId).subscribe((data) => {
+      if (data.size === 0) {
+        this.workSrc = './assets/work.png'
+      } else {
+        this.workSrc = URL.createObjectURL(data)
+      }
+    })
   }
 
   onInviteClick() {
-    this.router.navigate(['/invite-members'], {state: {workId: this.work?.id}})
+    this.router.navigate(['/invite-members'], {state: {workName: this.work?.name}})
   }
 
   createNewEntry() {
@@ -68,10 +91,14 @@ export class WorkDetailsComponent {
       this.filteredLogList = this.work!!.log;
       return;
     }
-
     this.filteredLogList = this.work!!.log.filter(
       entry => entry.title.toLowerCase().includes(text.toLowerCase())
     );
+  }
+
+  onBackCall() {
+    const prevUrl = this.previousUrl.getPreviousUrl()
+    this.router.navigate([prevUrl ?? '/work'])
   }
 
   closeWork(){

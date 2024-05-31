@@ -34,9 +34,14 @@ export interface Work {
   description: string;
   address: Address;
   type: string;
+  licenseHolder: string;
   state: string;
+  company: Company;
+  building: string;
   members: Member[];
   log: LogEntrySimplified[];
+  images: number;
+  docs: number;
 }
 
 export interface LogEntrySimplified {
@@ -132,8 +137,6 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 }
-
-
 
 export class Role {
 

@@ -8,6 +8,7 @@ import {MatButton} from "@angular/material/button";
 import {MatFormField, MatOption, MatSelect} from "@angular/material/select";
 import {CommonModule, NgForOf, NgIf} from "@angular/common";
 import {MatIcon} from "@angular/material/icon";
+import {PreviousUrlService} from "../previous-url/previous-url.component";
 
 @Component({
   selector: 'app-create-work',
@@ -38,7 +39,7 @@ export class CreateWorkComponent {
   parishes: string[] = [];
   districts: string[] = [];
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private previousUrl: PreviousUrlService) {
     this.work = {
       name: '',
       type: '',
@@ -114,6 +115,7 @@ export class CreateWorkComponent {
   }
 
   onBackCall() {
-    this.router.navigate(['/work']);
+    const prevUrl =this.previousUrl.getPreviousUrl();
+    this.router.navigate([prevUrl]);
   }
 }

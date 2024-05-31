@@ -10,6 +10,7 @@ import {filter} from 'rxjs/operators';
 import {HttpService} from "./utils/http.service";
 import {HttpClientModule} from "@angular/common/http";
 import {MatBadge} from "@angular/material/badge";
+import {PreviousUrlService} from "./previous-url/previous-url.component";
 
 @Component({
   selector: 'app-root',
@@ -51,7 +52,7 @@ export class AppComponent {
     })
   }
 
-  constructor(private router: Router, private httpService: HttpService) {
+  constructor(private router: Router, private httpService: HttpService, private previousUrl: PreviousUrlService) {
     this.router.events
       .pipe(filter((events) => events instanceof NavigationEnd))
       .subscribe((event: any) => {
@@ -80,5 +81,11 @@ export class AppComponent {
 
   checkAdminRole() {
     return localStorage.getItem('role') === 'ADMIN'
+  }
+
+  onProfileCall() {
+    const currUrl = this.router.url;
+    this.previousUrl.setPreviousUrl(currUrl);
+    this.router.navigate(['/profile']);
   }
 }

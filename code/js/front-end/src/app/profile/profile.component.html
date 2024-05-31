@@ -1,3 +1,10 @@
+
+<div class="header">
+  <button (click)="onBackCall()" class="small-button">
+    <mat-icon class="small-icon">arrow_back</mat-icon>
+  </button>
+  <h2 class="title">Criar Registo</h2>
+</div>
 <body  *ngIf="!edit">
   <div>
     <img src="{{localStorage.getItem('profilePicture')}}" alt="" class="profile-image">

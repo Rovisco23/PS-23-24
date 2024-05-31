@@ -5,9 +5,18 @@ import {FormsModule} from '@angular/forms';
 import {CommonModule, NgOptimizedImage} from "@angular/common";
 import {MatList, MatListItem, MatListItemMeta, MatListItemTitle} from "@angular/material/list";
 import {MatIcon} from "@angular/material/icon";
-import {MatButton} from "@angular/material/button";
+import {MatButton, MatFabButton} from "@angular/material/button";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpService} from "../utils/http.service";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef, MatHeaderRow,
+  MatHeaderRowDef, MatRow, MatRowDef,
+  MatTable
+} from "@angular/material/table";
 
 @Component({
   selector: 'app-create-log-entry',
@@ -23,7 +32,18 @@ import {HttpService} from "../utils/http.service";
     MatListItem,
     MatListItemTitle,
     MatListItemMeta,
-    MatButton
+    MatButton,
+    MatCellDef,
+    MatColumnDef,
+    MatTable,
+    MatFabButton,
+    MatHeaderCellDef,
+    MatCell,
+    MatHeaderCell,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRow,
+    MatRowDef
   ],
   templateUrl: './create-log-entry.component.html',
   styleUrl: './create-log-entry.component.css'
@@ -36,6 +56,7 @@ export class CreateLogEntryComponent {
   title: string = ''
   description: string = ''
   files: Map<string, File> = new Map<string, File>();
+  displayedColumns: string[] = ['files', 'delete'];
 
   constructor(private router: Router) {
   }
@@ -55,6 +76,13 @@ export class CreateLogEntryComponent {
     })
   }
 
+  filesArray() {
+    return Array.from(this.files.entries()).map(([key, file]) => ({
+      key,
+      email: file.name,
+    }));
+  }
+
   onFileUpload(event: any) {
     if (event.target.files.length > 0) {
       const file: File = event.target.files[0];
@@ -64,5 +92,9 @@ export class CreateLogEntryComponent {
 
   onRemoveFile(key: string) {
     this.files.delete(key);
+  }
+
+  onBackCall() {
+    this.router.navigate([`/work-details/${this.workId}`])
   }
 }

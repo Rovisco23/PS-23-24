@@ -1,30 +1,64 @@
 <div class="main-container">
   <div class="sidebar">
-      <div>
-        <img src="/assets/work.png" alt="work image" class="work-image">
-        <h1>{{ work?.name }}</h1>
-      </div>
-      <div>
-        <p>Tipo de Obra: {{ work?.type }}</p>
-      </div>
-      <div class="location-container">
-        <img src="/assets/location-pin.svg" alt="location logo" class="location-image">
-        <div class="location-details">
-          <p>{{ work?.address?.street }}, {{ work?.address?.postalCode }}</p>
-          <p>{{ work?.address?.location?.parish }}, {{ work?.address?.location?.county }}, {{ work?.address?.location?.district }}</p>
-        </div>
-      </div>
-      <button mat-flat-button (click)="closeWork()" class="close-button">Fechar Obra</button>
+    <div class="sidebar-header">
+      <button (click)="onBackCall()" class="small-button">
+        <mat-icon class="small-icon">arrow_back</mat-icon>
+      </button>
+      <span class="sidebar-title">{{ work?.name }}</span>
     </div>
+    <div class="sidebar-content">
+      <div class="image-container">
+        <img src="{{workSrc}}" class="work-image" alt="Work Image">
+      </div>
+      <ul class="sidebar-menu">
+        <li class="sidebar-menu-item">
+          <a class="sidebar-menu-link" (click)="tabGroup.selectedIndex=1">
+            <div class="sidebar-menu-icon">
+            <span class="material-icons">
+              info
+            </span>
+            </div>
+            <div class="sidebar-menu-text">
+              Visão Geral
+            </div>
+          </a>
+        </li>
+        <li class="sidebar-menu-item">
+          <a class="sidebar-menu-link" (click)="tabGroup.selectedIndex=0">
+            <div class="sidebar-menu-icon">
+            <span class="material-icons">
+              error_outline
+            </span>
+            </div>
+            <div class="sidebar-menu-text">
+              Registos de Ocorrências
+              <span class="sidebar-menu-badge">{{ work?.log?.length }}</span>
+            </div>
+          </a>
+        </li>
+        <li class="sidebar-menu-item">
+          <a class="sidebar-menu-link" (click)="tabGroup.selectedIndex=2">
+            <div class="sidebar-menu-icon">
+            <span class="material-icons">
+              groups
+            </span>
+            </div>
+            <div class="sidebar-menu-text">
+              Equipa
+              <span class="sidebar-menu-badge">{{ work?.members?.length }}</span>
+            </div>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
   <div class="content">
-    <mat-tab-group>
+    <mat-tab-group #tabGroup>
       <mat-tab label="Registos">
         <div class="log-top-bar">
-          <form>
-            <input type="text" placeholder="Procurar registo" #filter>
-            <button class="primary" type="button" (click)="filterResults(filter.value)">Search</button>
-          </form>
-          <button mat-fab color="primary" aria-label="Example icon button with a delete icon" class="log-button" (click)="createNewEntry()">
+          <input type="text" class="search-input" placeholder="Procurar Registo" [(ngModel)]="searchLogValue" (ngModelChange)="filterResults(searchLogValue)">
+          <button mat-fab color="primary" aria-label="Example icon button with a delete icon" class="log-button"
+                  (click)="createNewEntry()">
             <mat-icon>add</mat-icon>
           </button>
         </div>
@@ -40,16 +74,92 @@
         </div>
       </mat-tab>
       <mat-tab label="Geral">
-        <h2 class="work-heading">{{ work?.name }}</h2>
-        <p class="work-type">Tipo: {{ work?.type }}</p>
-        <p class="work-state">Estado: {{ work?.state }}</p>
-        <p class="work-description">Descrição: {{ work?.description }}</p>
-        <p class="work-address">Morada: {{ work?.address?.street }}, {{ work?.address?.postalCode }}</p>
-        <p class="work-location">
-          Distrito: {{ work?.address?.location?.district }}<br>
-          Concelho: {{ work?.address?.location?.county }}<br>
-          Freguesia: {{ work?.address?.location?.parish }}
-        </p>
+        <div class="general-tab-content">
+          <div class="work-values">
+            <div class="notification">
+              <div class="notification-content">
+                <span class="notification-number">{{ work?.log?.length }}</span>
+                <span class="notification-text">Ocorrências</span>
+              </div>
+              <div class="notification-icon">
+                <span class="material-icons"> error_outline </span>
+              </div>
+            </div>
+            <div class="notification">
+              <div class="notification-content">
+                <span class="notification-number">{{ work?.images }}</span>
+                <span class="notification-text">Imagens</span>
+              </div>
+              <div class="notification-icon">
+                <span class="material-icons"> image </span>
+              </div>
+            </div>
+            <div class="notification">
+              <div class="notification-content">
+                <span class="notification-number">{{ work?.docs }}</span>
+                <span class="notification-text">Documentos</span>
+              </div>
+              <div class="notification-icon">
+                <span class="material-icons"> sticky_note_2 </span>
+              </div>
+            </div>
+          </div>
+          <div class="container">
+            <div class="row">
+              <div class="col-md-6">
+                <table>
+                  <tr>
+                    <td><strong>Estado</strong></td>
+                    <td>{{ work?.state }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Tipo de Obra</strong></td>
+                    <td>{{ work?.type }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Localização</strong></td>
+                    <td>{{ work?.address?.street }} {{ work?.address?.postalCode }}
+                      , {{ work?.address?.location?.parish }}, {{ work?.address?.location?.county }}
+                      , {{ work?.address?.location?.district }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Titular da Licença</strong></td>
+                    <td>{{ work?.licenseHolder }}</td>
+                  </tr>
+                  <tr *ngIf="fiscal">
+                    <td><strong>Responsável de Fiscalização</strong></td>
+                    <td>{{ fiscal }}</td>
+                  </tr>
+                  <tr *ngIf="diretor">
+                    <td><strong>Diretor da Obra</strong></td>
+                    <td>{{ diretor }}</td>
+                  </tr>
+                  <tr *ngIf="coordenador">
+                    <td><strong>Coordenador da Obra</strong></td>
+                    <td>{{ coordenador }}</td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-md-6">
+                <table>
+                  <tr>
+                    <td><strong>Descrição</strong></td>
+                    <td>{{ work?.description }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Empresa de Construção</strong></td>
+                    <td>{{ work?.company?.name }} - Número: {{ work?.company?.num }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Prédio</strong></td>
+                    <td>{{ work?.building }}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
       </mat-tab>
       <mat-tab label="Equipa">
         <div class="members-container">
