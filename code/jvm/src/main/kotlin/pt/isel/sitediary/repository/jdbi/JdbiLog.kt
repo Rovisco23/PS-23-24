@@ -71,7 +71,7 @@ class JdbiLog(private val handle: Handle) : LogRepository {
 
     override fun finish(logId: Int) {
         handle.createUpdate(
-            "update REGISTO set estado = 'FINISHED' where id = :id"
+            "update REGISTO set estado = 'NÃO EDITÁVEL' where id = :id"
         )
             .bind("id", logId)
             .execute()
