@@ -55,7 +55,7 @@ data class UserAndTokenModel(
     val username: String,
     val nif: Int,
     val email: String,
-    val phone: String?,
+    val phone: String,
     val role: String,
     val location: Location,
     val association: Association,

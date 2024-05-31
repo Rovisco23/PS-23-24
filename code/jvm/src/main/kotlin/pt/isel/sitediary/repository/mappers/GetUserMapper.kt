@@ -15,7 +15,7 @@ class GetUserMapper : RowMapper<GetUserModel> {
             username = rs.getString("username"),
             nif = rs.getInt("nif"),
             email = rs.getString("email"),
-            phone = rs.getString("telefone"),
+            phone = rs.getString("telefone") ?: "",
             firstName = rs.getString("nome"),
             lastName = rs.getString("apelido"),
             role = rs.getString("role"),

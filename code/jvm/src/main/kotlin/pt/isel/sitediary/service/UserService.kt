@@ -133,10 +133,7 @@ class UserService(
 
     fun editProfile(user: User, editUser: EditProfileInputModel): UserEditResult = transactionManager.run {
         val rep = it.usersRepository
-        val u = rep.getUserById(user.id)
-        if (u == null) {
-            failure(Errors.userNotFound)
-        } else if (user.username != editUser.username && rep.checkUsernameTaken(editUser.username) != null) {
+        if (user.username != editUser.username && rep.checkUsernameTaken(editUser.username) != null) {
             failure(Errors.usernameAlreadyInUse)
         } else if (!checkPhoneNumberFormat(editUser.phone)) {
             failure(Errors.invalidPhoneNumber)
@@ -145,12 +142,17 @@ class UserService(
             if (location == null) {
                 failure(Errors.invalidLocation)
             } else {
-                val updatedUser = u.copy(
-                    username = editUser.username,
-                    firstName = editUser.firstName,
-                    lastName = editUser.lastName,
-                    phone = editUser.phone,
-                    location = location
+                val updatedUser = GetUserModel(
+                    user.id,
+                    editUser.username,
+                    user.nif,
+                    user.email,
+                    editUser.phone,
+                    editUser.firstName,
+                    editUser.lastName,
+                    user.role,
+                    user.association,
+                    location
                 )
                 rep.editProfile(updatedUser)
                 success(updatedUser)
@@ -216,12 +218,12 @@ class UserService(
             }
         }
     }
-}
 
-fun checkPhoneNumberFormat(phone: String?): Boolean {
-    if (phone.isNullOrBlank()) {
+    fun checkPhoneNumberFormat(phone: String?): Boolean {
+        if (phone.isNullOrBlank()) {
+            return true
+        }
+        if (phone.length > 9 || phone.toIntOrNull() == null) return false
         return true
     }
-    if (phone.length > 9 || phone.toIntOrNull() == null) return false
-    return true
 }
