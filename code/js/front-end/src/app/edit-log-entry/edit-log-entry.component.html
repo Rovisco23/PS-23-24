@@ -4,16 +4,46 @@
   </button>
   <h2>Editar Ocorrência</h2>
 </div>
-<form (ngSubmit)="edit()">
-  <mat-form-field>
-    <mat-label>Título</mat-label>
-    <input matInput type="text" name="title" [(ngModel)]="log.title">
-  </mat-form-field>
-  <br>
-  <mat-form-field>
-    <mat-label>Ocorrência</mat-label>
-    <textarea matInput *ngIf="log" [(ngModel)]="log.content" name="description" required></textarea>
-  </mat-form-field>
-  <br>
-  <button mat-stroked-button class="button" type="submit">Editar</button>
-</form>
+
+<div class="content">
+  <div class="left-section">
+    <form (ngSubmit)="edit()">
+      <mat-form-field>
+        <mat-label>Título</mat-label>
+        <input matInput type="text" name="title" [(ngModel)]="log.title">
+      </mat-form-field>
+      <br>
+      <mat-form-field>
+        <mat-label>Ocorrência</mat-label>
+        <textarea matInput *ngIf="log" [(ngModel)]="log.content" name="description" required></textarea>
+      </mat-form-field>
+      <br>
+      <input type="file" (change)="onFileUpload($event)" #fileInput style="display:none">
+      <button type="button" class="add-button" (click)="fileInput.click()">Adicionar Ficheiro</button>
+      <button mat-stroked-button class="button" type="submit">Editar</button>
+    </form>
+  </div>
+  <div class="right-section">
+    <h3 style="text-align: center">Ficheiros Adicionados</h3>
+    <div class="table-container">
+      <table mat-table [dataSource]="filesArray()" class="table">
+        <ng-container matColumnDef="files">
+          <th mat-header-cell *matHeaderCellDef> Email</th>
+          <td mat-cell *matCellDef="let element"> {{ element.fileName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef> Remover</th>
+          <td mat-cell *matCellDef="let element">
+            <button class="remove-button" mat-fab (click)="onRemoveFile(element.key)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </div>
+</div>

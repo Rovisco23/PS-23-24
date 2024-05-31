@@ -4,10 +4,14 @@
   </button>
   <h2>Ocorrência</h2>
 </div>
-<p>Autor: {{log?.author?.name}}</p>
-<p>Title: {{log?.title}}  |  Estado: {{log?.state}}</p>
-<p>Observação: {{log?.content}}</p>
-<p>Criado no dia: {{log?.createdAt}}</p>
-<p>Modificado no dia: {{log?.modifiedAt}}</p>
 
+<p>Autor: {{ log?.author?.name }}</p>
+<p>Title: {{ log?.title }}  | Estado: {{ log?.state }}</p>
+<p>Observação: {{ log?.content }}</p>
+<p>Criado no dia: {{ log?.createdAt }}</p>
+<p>Modificado no dia: {{ log?.modifiedAt }}</p>
 <button *ngIf="isEditable()" (click)="editCall()">Editar Log</button>
+<br>
+<button *ngIf="files" (click)="downloadFiles()">Download Log Files</button>
+
+

@@ -5,9 +5,18 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {PreviousUrlService} from "../previous-url/previous-url.component";
 import {MatIcon} from "@angular/material/icon";
 import {FormsModule} from "@angular/forms";
-import {MatButton} from "@angular/material/button";
+import {MatButton, MatFabButton} from "@angular/material/button";
 import {NgIf} from "@angular/common";
 import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell, MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow, MatRowDef, MatTable
+} from "@angular/material/table";
 
 @Component({
   selector: 'app-edit-log-entry',
@@ -19,7 +28,18 @@ import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
     NgIf,
     MatInput,
     MatFormField,
-    MatLabel
+    MatLabel,
+    MatCell,
+    MatCellDef,
+    MatColumnDef,
+    MatFabButton,
+    MatHeaderCell,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatRow,
+    MatRowDef,
+    MatTable,
+    MatHeaderCellDef
   ],
   templateUrl: './edit-log-entry.component.html',
   styleUrl: './edit-log-entry.component.css'
@@ -30,6 +50,8 @@ export class EditLogEntryComponent {
   form: FormData = new FormData()
   log: LogEditableEntry = {workId: '', title: '', content: ''}
   logId: string = ''
+  files: Map<string, File> = new Map<string, File>();
+  displayedColumns: string[] = ['files', 'delete'];
 
   constructor(private router: Router, private previousUrl: PreviousUrlService) {
     this.logId = String(this.route.snapshot.params['id']);
@@ -47,10 +69,31 @@ export class EditLogEntryComponent {
         description: this.log.content,
         workId: this.log.workId
       })], {type: 'application/json'}))
+      this.files.forEach((file) => {
+        this.form.append('files', file)
+      })
       this.httpService.editLog(this.form, this.logId).subscribe(() => {
         this.router.navigate([`/log-entry/${this.logId}`])
       });
     }
+  }
+
+  onFileUpload(event: any) {
+    if (event.target.files.length > 0) {
+      const file: File = event.target.files[0];
+      this.files.set(file.name, file);
+    }
+  }
+
+  filesArray() {
+    return Array.from(this.files.entries()).map(([key, file]) => ({
+      key,
+      fileName: file.name,
+    }));
+  }
+
+  onRemoveFile(key: string) {
+    this.files.delete(key);
   }
 
   onBackCall() {

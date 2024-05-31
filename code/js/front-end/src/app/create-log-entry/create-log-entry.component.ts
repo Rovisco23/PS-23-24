@@ -81,7 +81,7 @@ export class CreateLogEntryComponent {
   filesArray() {
     return Array.from(this.files.entries()).map(([key, file]) => ({
       key,
-      email: file.name,
+      fileName: file.name,
     }));
   }
 

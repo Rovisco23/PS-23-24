@@ -114,26 +114,6 @@ class LogController(private val service: LogService) {
         }
     }
 
-    @PostMapping(Paths.Log.GET_LOG_FILES)
-    @Operation(summary = "Get Log Files", description = "Used to get the image or document files of a log")
-    fun getLogFiles(
-        @RequestBody log: LogCredentialsModel,
-        @Parameter(hidden = true) user: AuthenticatedUser
-    ): ResponseEntity<*> {
-        val res = service.getLogFiles(log, user.user.id)
-        return handleResponse(res) {
-            if (it == null) ResponseEntity.ok().body(null)
-            else {
-                val zipBytes = makeZip(it)
-                val zipFileName = "files.zip"
-                ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=$zipFileName")
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                    .body(ByteArrayResource(zipBytes))
-            }
-        }
-    }
-
     @PutMapping(Paths.Log.EDIT_LOG, consumes = ["multipart/form-data"])
     @Operation(
         summary = "Edit the content of the Log",
@@ -155,6 +135,26 @@ class LogController(private val service: LogService) {
         val res = service.editLog(id, log, listOfFiles, user.user.id)
         return handleResponse(res) {
             ResponseEntity.ok().header("Location", "/log-entry/$id").body(Unit)
+        }
+    }
+
+    @PostMapping(Paths.Log.GET_LOG_FILES)
+    @Operation(summary = "Get Log Files", description = "Used to get the image or document files of a log")
+    fun getLogFiles(
+        @RequestBody log: LogCredentialsModel,
+        @Parameter(hidden = true) user: AuthenticatedUser
+    ): ResponseEntity<*> {
+        val res = service.getLogFiles(log, user.user.id)
+        return handleResponse(res) {
+            if (it == null) ResponseEntity.ok().body(null)
+            else {
+                val zipBytes = makeZip(it)
+                val zipFileName = "files.zip"
+                ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=$zipFileName")
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(ByteArrayResource(zipBytes))
+            }
         }
     }
 

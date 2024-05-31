@@ -69,11 +69,7 @@ class LogService(
         } else if (!logRepository.checkUserAccess(logEntry.workId, userId)) {
             failure(Errors.notMember)
         } else {
-            if (log.contentType != "images" && log.contentType != "docs") {
-                failure(Errors.internalError)
-            }
-            val files = if (log.contentType == "images") logRepository.getImages(log.logId)
-            else logRepository.getDocs(log.logId)
+            val files = logRepository.getFiles(log.logId)
             success(files)
         }
     }

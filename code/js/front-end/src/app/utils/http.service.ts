@@ -112,9 +112,12 @@ export class HttpService {
     return this.http.post<any>('http://localhost:8080/api/invite', answer, {headers: headers})
   }
 
-  getWorkImage(workId: string ): Observable<any> {
-      const headers = this.getTokenHeader();
-      return this.http.get<any>(`http://localhost:8080/api/work-image/${workId}`, {headers: headers, responseType: 'blob' as 'json'})
+  getWorkImage(workId: string): Observable<any> {
+    const headers = this.getTokenHeader();
+    return this.http.get<any>(`http://localhost:8080/api/work-image/${workId}`, {
+      headers: headers,
+      responseType: 'blob' as 'json'
+    })
   }
 
   getLogById(logId: string): Observable<any> {
@@ -125,5 +128,19 @@ export class HttpService {
   editLog(log: FormData, logId: string): Observable<any> {
     const headers = this.getTokenHeader();
     return this.http.put<any>(`http://localhost:8080/api/logs/${logId}`, log, {headers: headers, observe: 'response'})
+  }
+
+  getFiles(logId: string, workId: string) {
+    const headers = this.getTokenHeader();
+    return this.http.post<any>('http://localhost:8080/api/logs-files',
+      {
+        logId: logId,
+        workId: workId
+      },
+      {
+        headers: headers,
+        responseType: 'blob' as 'json'
+      }
+    )
   }
 }

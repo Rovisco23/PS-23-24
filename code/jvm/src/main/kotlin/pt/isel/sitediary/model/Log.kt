@@ -12,8 +12,7 @@ data class LogInputModel(
 
 data class LogCredentialsModel(
     val logId: Int,
-    val workId: UUID,
-    val contentType: String
+    val workId: UUID
 )
 
 data class LogOutputModel(

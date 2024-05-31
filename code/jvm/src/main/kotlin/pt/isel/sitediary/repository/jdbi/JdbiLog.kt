@@ -52,19 +52,22 @@ class JdbiLog(private val handle: Handle) : LogRepository {
         .mapTo(Int::class.java)
         .single() == 1
 
-    override fun getImages(logId: Int): List<FileModel>? = handle.createQuery(
-        "select name, type, file from IMAGEM where rId = :rId"
-    )
-        .bind("rId", logId)
-        .mapTo(FileModel::class.java)
-        .list()
-
-    override fun getDocs(logId: Int): List<FileModel>? = handle.createQuery(
-        "select name, type, file from DOCUMENTO where rId = :rId"
-    )
-        .bind("rId", logId)
-        .mapTo(FileModel::class.java)
-        .list()
+    override fun getFiles(logId: Int): List<FileModel>? {
+        val images = handle.createQuery(
+            "select name, type, file from IMAGEM where rId = :rId"
+        )
+            .bind("rId", logId)
+            .mapTo(FileModel::class.java)
+            .list()
+        val docs = handle.createQuery(
+            "select name, type, file from DOCUMENTO where rId = :rId"
+        )
+            .bind("rId", logId)
+            .mapTo(FileModel::class.java)
+            .list()
+        val files = listOf(images, docs).flatten()
+        return files.ifEmpty { null }
+    }
 
     override fun finish(logId: Int) {
         handle.createUpdate(
