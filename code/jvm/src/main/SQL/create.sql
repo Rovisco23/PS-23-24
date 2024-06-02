@@ -34,7 +34,6 @@ create table UTILIZADOR
     primary key (id),
     constraint Role_Format check (ROLE IN ('OPERÁRIO', 'CÂMARA', 'ADMIN')),
     constraint Email_Format check (email like '%@%.%')
-    --constraint Telefone_Format check (telefone not like '%[^0-9]%') -- This may work
 );
 
 create table SESSAO
@@ -54,6 +53,7 @@ create table OBRA
     tipo      varchar(50),
     descricao varchar(500),
     estado    varchar(50),
+    data_conclusao timestamp,
     freguesia varchar(255),
     concelho  varchar(255),
     distrito  varchar(255),
@@ -157,20 +157,20 @@ create table TERMO_ABERTURA
     constraint CamaraId foreign key (camara) references localidade (id)
 );
 
-create table TERMO_FECHO
-(
-    id             serial,
-    oId            varchar(255),
-    data_conclusao timestamp,
-    abertura       integer,
-    fiscalização   integer,
-    diretor        integer,
-    primary key (id, oId),
-    constraint ObraId foreign key (oId) references OBRA (id),
-    constraint TermoAberturaId foreign key (abertura, oId) references TERMO_ABERTURA (id, oId),
-    constraint FiscalizacaoId foreign key (fiscalização, oId) references MEMBRO (uId, oId),
-    constraint DiretorId foreign key (diretor, oId) references MEMBRO (uId, oId)
-);
+--create table TERMO_FECHO
+--(
+--    id             serial,
+--    oId            varchar(255),
+--    data_conclusao timestamp,
+--    abertura       integer,
+--    fiscalização   integer,
+--    diretor        integer,
+--    primary key (id, oId),
+--    constraint ObraId foreign key (oId) references OBRA (id),
+--    constraint TermoAberturaId foreign key (abertura, oId) references TERMO_ABERTURA (id, oId),
+--    constraint FiscalizacaoId foreign key (fiscalização, oId) references MEMBRO (uId, oId),
+--    constraint DiretorId foreign key (diretor, oId) references MEMBRO (uId, oId)
+--);
 
 create table PROFILE_PICTURE
 (

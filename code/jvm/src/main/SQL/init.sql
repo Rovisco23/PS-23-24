@@ -1,4 +1,3 @@
-delete from TERMO_FECHO;
 delete from TERMO_ABERTURA;
 delete from DOCUMENTO;
 delete from IMAGEM;
@@ -11,7 +10,7 @@ delete from LOCALIDADE;
 
 insert into utilizador(email, role, username, password, nome, apelido, nif, telefone, freguesia, concelho, distrito, associacao_nome, associacao_numero) values
     ('ricardorovisco23@gmail.com', 'ADMIN', 'Rovisco23', '12345', 'Ricardo', 'Rovisco', 234565432, NULL, 'Santa Clara', 'Lisboa', 'Lisboa', 'Site Diary Team', 1),
-    ('joaomota15@gmail.com', 'ADMIN', 'JMota15', '12345', 'João', 'Mota', 123454332, '917709988', 'Margem', 'Sul', 'Nárnia', 'Site Diary Team', 2);
+    ('a49508@alunos.isel.pt', 'ADMIN', 'JMota15', '12345', 'João', 'Mota', 266573150, '910937960', 'União das freguesias de Charneca de Caparica e Sobreda', 'Almada', 'Setúbal', 'Site Diary Team', 2);
 
 -- Alterar local do ficheiro conforme necessário
 COPY LOCALIDADE (distrito, concelho, freguesia)

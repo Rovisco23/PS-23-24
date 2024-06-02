@@ -278,21 +278,10 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
     }
 
     override fun finishWork(workId: UUID, fiscalId: Int, directorId: Int) {
-        val tId = handle.createQuery("select id from TERMO_ABERTURA where oId = :id")
-            .bind("id", workId.toString())
-            .mapTo(Int::class.java)
-            .single()
-        handle.createUpdate("insert into TERMO_FECHO(oId, data_conclusao, abertura, fiscalização, diretor) " +
-                "values (:id, :date, :tId, :fiscalId, :directorId)")
-            .bind("id", workId.toString())
-            .bind("date", Timestamp.valueOf(LocalDateTime.now()))
-            .bind("tId", tId)
-            .bind("fiscalId", fiscalId)
-            .bind("directorId", directorId)
-            .execute()
-        handle.createUpdate("update OBRA set estado = :state where id = :id")
+        handle.createUpdate("update OBRA set estado = :state, data_conclusao = :date where id = :id")
             .bind("id", workId.toString())
             .bind("state", WorkState.FINISHED.toString())
+            .bind("date", Timestamp.valueOf(LocalDateTime.now()))
             .execute()
     }
 }

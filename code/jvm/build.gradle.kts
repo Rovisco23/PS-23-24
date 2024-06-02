@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "pt.isel"
-version = "0.0.1-SNAPSHOT"
+version = "1.0.0-BETA"
 
 java {
 	sourceCompatibility = JavaVersion.VERSION_17

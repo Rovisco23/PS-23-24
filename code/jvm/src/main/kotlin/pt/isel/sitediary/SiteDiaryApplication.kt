@@ -18,6 +18,7 @@ import kotlin.time.Duration.Companion.hours
 class SiteDiaryApplication {
 
 	private val databaseURL = ""
+		//"postgres://admin:CqV3Y4ZMLsyU9MFmuJploD9YKwqmeevH@dpg-cpe89p7109ks73ercrr0-a.frankfurt-postgres.render.com/sitediary"
 
 	@Bean
 	fun jdbi(): Jdbi {
@@ -45,7 +46,6 @@ class SiteDiaryApplication {
 
 @Configuration
 class CorsConfiguration : WebMvcConfigurer {
-
 	override fun addCorsMappings(registry: CorsRegistry) {
 		registry.addMapping("/**")
 			.allowedOrigins("http://localhost:4200") // Adjust this to your Angular app's domain
