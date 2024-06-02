@@ -18,7 +18,6 @@ import kotlin.time.Duration.Companion.hours
 class SiteDiaryApplication {
 
 	private val databaseURL = ""
-		//"postgres://admin:CqV3Y4ZMLsyU9MFmuJploD9YKwqmeevH@dpg-cpe89p7109ks73ercrr0-a.frankfurt-postgres.render.com/sitediary"
 
 	@Bean
 	fun jdbi(): Jdbi {
