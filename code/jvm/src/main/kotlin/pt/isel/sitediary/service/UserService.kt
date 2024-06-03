@@ -7,13 +7,16 @@ import pt.isel.sitediary.domainmodel.authentication.TokenExternalInfo
 import pt.isel.sitediary.domainmodel.authentication.UsersDomain
 import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.model.EditProfileInputModel
-import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.GetUserModel
+import pt.isel.sitediary.model.PendingInputModel
 import pt.isel.sitediary.model.SessionValidation
 import pt.isel.sitediary.model.SignUpInputModel
 import pt.isel.sitediary.repository.transaction.TransactionManager
-import pt.isel.sitediary.utils.*
+import pt.isel.sitediary.utils.Errors
+import pt.isel.sitediary.utils.Result
+import pt.isel.sitediary.utils.failure
+import pt.isel.sitediary.utils.success
 
 typealias UserCreationResult = Result<Errors, Unit>
 typealias LoginResult = Result<Errors, TokenExternalInfo>
@@ -30,15 +33,28 @@ class UserService(
 ) {
     fun createUser(user: SignUpInputModel): UserCreationResult = transactionManager.run {
         val rep = it.usersRepository
-        if (rep.checkUsernameTaken(user.username) != null) {
+        if (rep.checkUsernameTaken(user.username) != null) { // username == null
             failure(Errors.usernameAlreadyInUse)
-        } else if (rep.checkEmailInUse(user.email)) {
-            failure(Errors.emailAlreadyInUse)
         } else if (user.role != "OPERÁRIO" && user.role != "CÂMARA") {
             failure(Errors.invalidRole)
         } else if (!checkPhoneNumberFormat(user.phone)) {
             failure(Errors.invalidPhoneNumber)
         } else {
+            val location = it.addressRepository.getLocation(user.parish, user.county)
+            if (location == null) {
+                failure(Errors.invalidLocation)
+            } else if (rep.checkEmailInUse(user.email)) { // email != null
+                rep.updateDummyUser(user, location, user.role != "OPERÁRIO")
+                success(Unit)
+            } else {
+                rep.createUser(user, location, user.role != "OPERÁRIO")
+                success(Unit)
+            }
+        }
+    }
+
+    /*
+    * else if (rep.checkEmailInUse(user.email)) { // email != null
             val l = it.addressRepository.getLocation(user.parish, user.county)
             if (l == null) {
                 failure(Errors.invalidLocation)
@@ -50,8 +66,8 @@ class UserService(
                 }
                 success(Unit)
             }
-        }
-    }
+        }*/
+
 
     fun login(username: String, password: String): LoginResult {
         if (username.isBlank() || password.isBlank()) {
@@ -204,22 +220,46 @@ class UserService(
         }
     }
 
-    fun acceptCouncil(userId: Int, authUser: User) = transactionManager.run {
-        val rep = it.usersRepository
+    fun answerPendingCouncil(pendingInput: PendingInputModel, authUser: User) = transactionManager.run {
+        val userRep = it.usersRepository
         if (authUser.role != "ADMIN") {
             failure(Errors.forbidden)
         } else {
-            val user = rep.getUserById(userId)
+            val user = userRep.getUserById(pendingInput.userId)
             if (user == null) {
                 failure(Errors.userNotFound)
             } else {
-                rep.acceptCouncil(userId)
-                success(user)
+                if (pendingInput.accepted) {
+                    userRep.acceptCouncil(pendingInput.userId)
+                    success(Unit)
+                } else {
+                    userRep.declineCouncil(pendingInput.userId)
+                    success(Unit)
+                }
             }
         }
     }
 
-    fun checkPhoneNumberFormat(phone: String?): Boolean {
+    fun getAllPendingCouncils(user: User) = transactionManager.run { //: List<PendingCouncils>
+        val rep = it.usersRepository
+        if (user.role != "ADMIN") {
+            failure(Errors.forbidden)
+        } else {
+            val list = rep.getAllPendingCouncils()
+            success(list)
+        }
+    }
+
+    fun getAllUsers(user: User) = transactionManager.run {
+        if (user.role != "ADMIN") {
+            failure(Errors.forbidden)
+        } else {
+            val users = it.usersRepository.getAllUsers()
+            success(users)
+        }
+    }
+
+    private fun checkPhoneNumberFormat(phone: String?): Boolean {
         if (phone.isNullOrBlank()) {
             return true
         }

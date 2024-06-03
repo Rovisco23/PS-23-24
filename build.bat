@@ -6,4 +6,3 @@ cd ../js/front-end
 echo Building FrontEnd
 call npm install
 echo Done Building!
-pause

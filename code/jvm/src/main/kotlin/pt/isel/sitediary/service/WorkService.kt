@@ -3,15 +3,14 @@ package pt.isel.sitediary.service
 import kotlinx.datetime.Clock
 import org.springframework.stereotype.Component
 import pt.isel.sitediary.domainmodel.user.User
-import pt.isel.sitediary.domainmodel.user.checkAdmin
+import pt.isel.sitediary.domainmodel.user.checkOwner
 import pt.isel.sitediary.domainmodel.user.containsMemberById
 import pt.isel.sitediary.domainmodel.work.Address
-import pt.isel.sitediary.domainmodel.work.Invite
 import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.domainmodel.work.WorkInput
 import pt.isel.sitediary.domainmodel.work.WorkState.IN_PROGRESS
 import pt.isel.sitediary.model.FileModel
-import pt.isel.sitediary.model.InviteResponseModel
+import pt.isel.sitediary.model.InviteInputModel
 import pt.isel.sitediary.model.MemberInputModel
 import pt.isel.sitediary.model.OpeningTermInputModel
 import pt.isel.sitediary.repository.transaction.TransactionManager
@@ -85,32 +84,27 @@ class WorkService(
     }
 
     fun inviteMembers(members: List<MemberInputModel>, workId: UUID, userId: Int) = transactionManager.run {
-        val user = it.usersRepository.getUserById(userId)
-        val work = it.workRepository.getById(workId)
+        val userRep = it.usersRepository
+        val workRep = it.workRepository
+        val user = userRep.getUserById(userId)
+        val work = workRep.getById(workId)
         if (user == null) {
             failure(Errors.userNotFound)
         } else if (work == null) {
             failure(Errors.workNotFound)
-        } else if (!work.members.checkAdmin(userId)) {
+        } else if (!work.members.checkOwner(userId)) {
             failure(Errors.notAdmin)
         } else {
-            val list = mutableListOf<Invite>()
-            for (m in members) {
-                val invUser = it.usersRepository.getUserByEmail(m.email)
-                if (!it.workRepository.checkInvite(
-                        workId,
-                        m.email
-                    ) && work.members.find { mem -> mem.id == invUser?.id } == null
-                ) {
-                    val invite = Invite(UUID.randomUUID(), m.email, m.role, workId)
-                    list.add(invite)
+            members.forEach { m ->
+                val id = userRep.getUserByEmail(m.email)?.id
+                if (id != null) {
+                    workRep.inviteMember(id, m.role, workId)
+                } else {
+                    val dummyId = userRep.createDummyUser(m.email)
+                    workRep.inviteMember(dummyId, m.role, workId)
                 }
             }
-            if (list.isNotEmpty()) {
-                it.workRepository.inviteMembers(list)
-                list.forEach { i -> work.createInvites(i) }
-            }
-            success(mapOf("message" to "Invites sent successfully"))
+            success(Unit)
         }
     }
 
@@ -120,17 +114,17 @@ class WorkService(
         if (user == null) {
             failure(Errors.userNotFound)
         } else {
-            val invites = it.workRepository.getInviteList(user.email)
+            val invites = it.workRepository.getInviteList(userId)
             success(invites)
         }
     }
 
-    fun getInvite(invId: UUID, userId: Int) = transactionManager.run {
+    fun getInvite(workId: UUID, userId: Int) = transactionManager.run {
         val user = it.usersRepository.getUserById(userId)
         if (user == null) {
             failure(Errors.userNotFound)
         } else {
-            val invite = it.workRepository.getInvite(invId, user.email)
+            val invite = it.workRepository.getInvite(workId, userId)
             if (invite == null) {
                 failure(Errors.inviteNotFound)
             } else {
@@ -139,17 +133,18 @@ class WorkService(
         }
     }
 
-    fun inviteResponse(response: InviteResponseModel, user: User) = transactionManager.run {
-        val invite = it.workRepository.getInvite(response.id, user.email)
+    fun answerInvite(inviteInput: InviteInputModel, user: User) = transactionManager.run {
+        val workRep = it.workRepository
+        val invite = workRep.getInvite(inviteInput.workId, user.id)
         if (invite == null) {
             failure(Errors.inviteNotFound)
         } else {
-            if (response.accepted) {
-                it.workRepository.acceptInvite(response, user)
-                success(mapOf("message" to "Invite accepted"))
+            if (inviteInput.accepted) {
+                workRep.acceptInvite(invite, user)
+                success(Unit)
             } else {
-                it.workRepository.declineInvite(response.id)
-                success(mapOf("message" to "Invite declined"))
+                workRep.declineInvite(inviteInput.workId, user.id)
+                success(Unit)
             }
         }
     }
@@ -173,7 +168,7 @@ class WorkService(
         val work = workRep.getById(workId)
         if (work == null) {
             failure(Errors.workNotFound)
-        } else if (!work.members.checkAdmin(userId)) {
+        } else if (!work.members.checkOwner(userId)) {
             failure(Errors.notAdmin)
         } else if (work.state != IN_PROGRESS) {
             failure(Errors.workAlreadyFinished)

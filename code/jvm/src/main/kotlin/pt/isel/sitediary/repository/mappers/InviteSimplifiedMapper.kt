@@ -6,15 +6,14 @@ import pt.isel.sitediary.domainmodel.work.InviteSimplified
 import java.sql.ResultSet
 import java.util.*
 
-class InviteSimplifiedModel  : RowMapper<InviteSimplified> {
+class InviteSimplifiedMapper : RowMapper<InviteSimplified> {
 
     override fun map(rs: ResultSet?, ctx: StatementContext?): InviteSimplified? = if (rs != null) {
         InviteSimplified(
             UUID.fromString(rs.getString("id")),
-            UUID.fromString(rs.getString("workId")),
             rs.getString("workTitle"),
             rs.getString("role"),
-            rs.getString("admin")
+            rs.getString("owner")
         )
     } else null
 }

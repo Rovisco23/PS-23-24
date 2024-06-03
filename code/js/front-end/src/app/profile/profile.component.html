@@ -13,7 +13,7 @@
         <p>{{ user?.role }}</p>
       </div>
     </div>
-    <div class="edit">
+    <div *ngIf="isOwner()" class="edit">
       <div class="edit-button" (click)="editCall()">
         <span class="notification-text">Editar Perfil</span>
         <span class="material-icons"> edit </span>

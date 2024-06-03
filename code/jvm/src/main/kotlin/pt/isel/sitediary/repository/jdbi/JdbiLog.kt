@@ -45,10 +45,11 @@ class JdbiLog(private val handle: Handle) : LogRepository {
         .singleOrNull()
 
     override fun checkUserAccess(workId: UUID, userId: Int): Boolean = handle.createQuery(
-        "select count(*) from MEMBRO where oId = :oId and uId = :uId"
+        "select count(*) from MEMBRO where oId = :oId and uId = :uId and pendente = :pendente"
     )
         .bind("oId", workId.toString())
         .bind("uId", userId)
+        .bind("pendente", false)
         .mapTo(Int::class.java)
         .single() == 1
 

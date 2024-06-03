@@ -10,4 +10,4 @@ data class Member(
 
 fun List<Member>.containsMemberById(userId: Int) = this.any { it.id == userId }
 
-fun List<Member>.checkAdmin(userId: Int) = this.any { it.id == userId && it.role == "ADMIN"}
+fun List<Member>.checkOwner(userId: Int) = this.any { it.id == userId && it.role == "DONO"}

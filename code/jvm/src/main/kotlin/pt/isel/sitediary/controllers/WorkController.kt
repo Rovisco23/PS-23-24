@@ -23,7 +23,7 @@ import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
 import pt.isel.sitediary.domainmodel.work.OpeningTerm
 import pt.isel.sitediary.domainmodel.work.Work
 import pt.isel.sitediary.model.FileModel
-import pt.isel.sitediary.model.InviteResponseModel
+import pt.isel.sitediary.model.InviteInputModel
 import pt.isel.sitediary.model.ListOfWorksOutputModel
 import pt.isel.sitediary.model.MemberInputModel
 import pt.isel.sitediary.model.OpeningTermInputModel
@@ -92,7 +92,7 @@ class WorkController(private val service: WorkService) {
         }
     }
 
-    @PostMapping(Paths.Work.GET_BY_ID)
+    @PostMapping(Paths.Invite.GET_INVITE)
     @Operation(summary = "Invite Members", description = "Used to to invite users to a work")
     @ApiResponses(
         value = [
@@ -118,7 +118,7 @@ class WorkController(private val service: WorkService) {
         }
     }
 
-    @GetMapping(Paths.Work.GET_INVITE_LIST)
+    @GetMapping(Paths.Invite.GET_INVITE_LIST)
     fun getInviteList(@Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
         val res = service.getInviteList(user.user.id)
         return handleResponse(res) {
@@ -126,7 +126,7 @@ class WorkController(private val service: WorkService) {
         }
     }
 
-    @GetMapping(Paths.Work.GET_INVITE)
+    @GetMapping(Paths.Invite.GET_INVITE)
     fun getInvite(@PathVariable id: UUID, @Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
         val res = service.getInvite(id, user.user.id)
         return handleResponse(res) {
@@ -134,12 +134,12 @@ class WorkController(private val service: WorkService) {
         }
     }
 
-    @PostMapping(Paths.Work.GET_INVITE_LIST)
+    @PutMapping(Paths.Invite.GET_INVITE_LIST)
     fun answerInvite(
-        @RequestBody resp: InviteResponseModel,
+        @RequestBody body: InviteInputModel,
         @Parameter(hidden = true) user: AuthenticatedUser
     ): ResponseEntity<*> {
-        val res = service.inviteResponse(resp, user.user)
+        val res = service.answerInvite(body, user.user)
         return handleResponse(res) {
             ResponseEntity.status(200).body(it)
         }

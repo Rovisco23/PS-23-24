@@ -1,16 +1,14 @@
 import {Component, ViewChild} from '@angular/core';
-import {NavigationEnd, Router, RouterModule} from '@angular/router';
+import {NavigationEnd, Router, RouterLink, RouterLinkActive, RouterModule} from '@angular/router';
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatDrawer, MatSidenavModule} from "@angular/material/sidenav";
 import {MatIconModule} from "@angular/material/icon";
-import {RouterLink, RouterLinkActive} from "@angular/router";
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {NgClass, NgIf, NgOptimizedImage} from "@angular/common";
 import {filter} from 'rxjs/operators';
 import {HttpService} from "./utils/http.service";
 import {HttpClientModule} from "@angular/common/http";
 import {MatBadge} from "@angular/material/badge";
-import {PreviousUrlService} from "./previous-url/previous-url.component";
 
 @Component({
   selector: 'app-root',
@@ -42,7 +40,7 @@ export class AppComponent {
   @ViewChild('drawer') drawer: MatDrawer | undefined;
 
   logout(): void {
-    this.httpService.logout(localStorage.getItem('token')?? '').subscribe(() => {
+    this.httpService.logout(localStorage.getItem('token') ?? '').subscribe(() => {
       console.log("Logout Done")
       localStorage.removeItem('userId');
       localStorage.removeItem('token');
@@ -52,7 +50,7 @@ export class AppComponent {
     })
   }
 
-  constructor(private router: Router, private httpService: HttpService, private previousUrl: PreviousUrlService) {
+  constructor(private router: Router, private httpService: HttpService) {
     this.router.events
       .pipe(filter((events) => events instanceof NavigationEnd))
       .subscribe((event: any) => {
@@ -84,8 +82,6 @@ export class AppComponent {
   }
 
   onProfileCall() {
-    const currUrl = this.router.url;
-    this.previousUrl.setPreviousUrl(currUrl);
     this.router.navigate(['/profile']);
   }
 }

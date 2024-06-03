@@ -1,8 +1,8 @@
-<div>
+<div class="header">
   <button (click)="onBackCall()" class="small-button">
     <mat-icon class="small-icon">arrow_back</mat-icon>
   </button>
-  <h2>Criar Obra</h2>
+  <h2 class="title">Introduza o Email e a Role das pessoas que pertende convidar</h2>
 </div>
 <div>
   <form>
@@ -11,9 +11,9 @@
   </form>
 </div>
 <mat-divider></mat-divider>
-<div >
+<div>
   <mat-list *ngFor="let entry of filteredInvites">
-    <mat-list-item (click)="onInviteClick(entry.id)">
+    <mat-list-item (click)="onInviteClick(entry.workId)">
       <div matListItemTitle>{{ entry.workTitle }}</div>
       <div matListItemLine>{{ entry.admin }} convidou-te para seres parte desta obra como {{entry.role}}</div>
     </mat-list-item>

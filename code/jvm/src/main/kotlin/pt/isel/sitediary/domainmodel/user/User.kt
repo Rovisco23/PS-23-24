@@ -5,7 +5,6 @@ import pt.isel.sitediary.domainmodel.work.Location
 
 data class User(
     val id: Int,
-    // profile_picture
     val username: String,
     val nif: Int,
     val email: String,

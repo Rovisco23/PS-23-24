@@ -1,0 +1,20 @@
+<div class="header">
+  <button (click)="onBackCall()" class="small-button">
+    <mat-icon class="small-icon">arrow_back</mat-icon>
+  </button>
+  <h2 class="title">Lista de todos os Utilizadores da aplicação</h2>
+</div>
+<div>
+  <input type="text" class="search-input" placeholder="Procurar Registo" [(ngModel)]="value"
+         (ngModelChange)="filterUsers(value)">
+</div>
+<mat-divider></mat-divider>
+<div>
+  <mat-list *ngFor="let item of filteredUsersList">
+    <mat-list-item>
+      <div matListItemTitle style="font-weight: bold" (click)="onUserClick(item.id)">{{ item.username }} - {{item.firstName}} {{item.lastName}}</div>
+      <div matListItemLine style="font-weight: bold">Email: {{item.email}} | NIF: {{ item.nif }} | Association: {{ item.association.name }} - {{ item.association.number }}</div>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+  </mat-list>
+</div>

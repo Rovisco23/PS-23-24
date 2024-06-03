@@ -18,7 +18,8 @@ fun Jdbi.configureWithAppRequirements(): Jdbi {
     registerRowMapper(OpeningTermMapper())
     registerRowMapper(FileModelMapper())
     registerRowMapper(InviteMapper())
-    registerRowMapper(InviteSimplifiedModel())
+    registerRowMapper(InviteSimplifiedMapper())
+    registerRowMapper(PendingCouncilsMapper())
 
     return this
 }

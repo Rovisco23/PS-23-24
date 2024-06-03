@@ -84,3 +84,11 @@ data class SessionInputModel(val userId: Int, val token: String)
 data class SessionValidation(val valid: Boolean)
 
 data class FileModel(val file: ByteArray, val fileName: String, val contentType: String)
+
+data class PendingCouncils(
+    val id: Int,
+    val email: String,
+    val nif: Int,
+    val location: Location,
+    val association: Association
+)

@@ -1,28 +1,25 @@
-drop table if exists TERMO_FECHO;
-drop table if exists TERMO_ABERTURA;
-drop table if exists EMPRESA_CONSTRUCAO;
-drop table if exists CAMARA_MUNICIPAL;
+drop table if exists INTERVENIENTE;
 drop table if exists DOCUMENTO;
 drop table if exists IMAGEM;
+drop table if exists IMAGEM_OBRA;
+drop table if exists TERMO_ABERTURA;
+drop table if exists EMPRESA_CONSTRUCAO;
 drop table if exists REGISTO;
 drop table if exists MEMBRO;
-drop table if exists CONVITE;
-drop table if exists IMAGEM_OBRA;
 drop table if exists OBRA;
 drop table if exists SESSAO;
 drop table if exists PROFILE_PICTURE;
-drop table if exists PENDENTE;
 drop table if exists UTILIZADOR;
 --drop table if exists LOCALIDADE;
 
 create table UTILIZADOR
 (
     id                serial,
-    email             varchar(255) unique,
+    email             varchar(255) unique not null,
     username          varchar(255) unique,
     nif               integer unique,
     role              varchar(8),
-    password          varchar(255),
+    password          varchar(15),
     nome              varchar(50),
     apelido           varchar(50),
     associacao_nome   varchar(255),
@@ -31,6 +28,7 @@ create table UTILIZADOR
     freguesia         varchar(255),
     concelho          varchar(255),
     distrito          varchar(255),
+    pendente          boolean not null,
     primary key (id),
     constraint Role_Format check (ROLE IN ('OPERÁRIO', 'CÂMARA', 'ADMIN')),
     constraint Email_Format check (email like '%@%.%')
@@ -48,17 +46,17 @@ create table SESSAO
 
 create table OBRA
 (
-    id        varchar(255),
-    nome      varchar(50),
-    tipo      varchar(50),
-    descricao varchar(500),
-    estado    varchar(50),
+    id             varchar(255),
+    nome           varchar(50)  not null,
+    tipo           varchar(50)  not null,
+    descricao      varchar(500) not null,
+    estado         varchar(50)  not null,
     data_conclusao timestamp,
-    freguesia varchar(255),
-    concelho  varchar(255),
-    distrito  varchar(255),
-    rua       varchar(255),
-    cPostal   varchar(8),
+    freguesia      varchar(255) not null,
+    concelho       varchar(255) not null,
+    distrito       varchar(255) not null,
+    rua            varchar(255) not null,
+    cPostal        varchar(8)   not null,
     primary key (id),
     constraint cPostal_format check (cPostal LIKE '%-%'),
     constraint Tipo CHECK (tipo IN
@@ -69,13 +67,14 @@ create table OBRA
 
 create table MEMBRO
 (
-    uId  integer,
-    oId  varchar(255),
-    role varchar(255),
+    uId      integer,
+    oId      varchar(255),
+    role     varchar(255) not null,
+    pendente boolean      not null default false,
     primary key (uId, oId),
     constraint UserId foreign key (uId) references UTILIZADOR (id),
     constraint ObraId foreign key (oId) references OBRA (id),
-    constraint MEMBER_ROLE CHECK (role IN ('ADMIN', 'MEMBRO', 'ESPECTADOR', 'FISCALIZAÇÃO', 'COORDENADOR',
+    constraint MEMBER_ROLE CHECK (role IN ('DONO', 'MEMBRO', 'ESPECTADOR', 'FISCALIZAÇÃO', 'COORDENADOR',
                                            'ARQUITETURA', 'ESTABILIDADE', 'ELETRICIDADE', 'GÁS', 'CANALIZAÇÃO',
                                            'TELECOMUNICAÇÕES', 'TERMICO', 'ACUSTICO',
                                            'TRANSPORTES', 'DIRETOR'))
@@ -85,10 +84,10 @@ create table REGISTO
 (
     id                     serial,
     oId                    varchar(255),
-    titulo                 varchar(255),
-    texto                  varchar(2500),
-    estado                 varchar(50),
-    creation_date          timestamp,
+    titulo                 varchar(255)  not null,
+    texto                  varchar(2500) not null,
+    estado                 varchar(50)   not null,
+    creation_date          timestamp     not null,
     last_modification_date timestamp,
     author                 integer,
     primary key (id, oId),
@@ -102,10 +101,10 @@ create table IMAGEM
     id          serial,
     oId         varchar(255),
     rId         integer,
-    name        varchar(255),
-    type        varchar(255),
-    file        bytea,
-    upload_date date,
+    name        varchar(255) not null,
+    type        varchar(255) not null,
+    file        bytea        not null,
+    upload_date timestamp    not null,
     primary key (id, oId, rId),
     constraint ObraId foreign key (oId) references OBRA (id),
     constraint RegistoId foreign key (rId, oId) references REGISTO (id, oId)
@@ -116,10 +115,10 @@ create table DOCUMENTO
     id          serial,
     oId         varchar(255),
     rId         integer,
-    name        varchar(255),
-    type        varchar(255),
-    file        bytea,
-    upload_date date,
+    name        varchar(255) not null,
+    type        varchar(255) not null,
+    file        bytea        not null,
+    upload_date timestamp    not null,
     primary key (id, oId, rId),
     constraint ObraId foreign key (oId) references OBRA (id),
     constraint RegistoId foreign key (rId, oId) references REGISTO (id, oId)
@@ -128,17 +127,17 @@ create table DOCUMENTO
 create table EMPRESA_CONSTRUCAO
 (
     id     serial,
-    nome   varchar(255),
-    numero integer,
+    nome   varchar(255) not null,
+    numero integer      not null,
     primary key (id)
 );
 
 --create table LOCALIDADE
 --(
 --    id        serial,
---    distrito  varchar(255),
---    concelho  varchar(255),
---    freguesia varchar(255),
+--    distrito  varchar(255) not null,
+--    concelho  varchar(255) not null,
+--    freguesia varchar(255) not null,
 --    primary key (id)
 --);
 
@@ -146,39 +145,42 @@ create table TERMO_ABERTURA
 (
     id                 serial,
     oId                varchar(255),
-    inicio             timestamp,
+    inicio             timestamp    not null,
     camara             integer,
-    titular_licenca    varchar(255),
+    titular_licenca    varchar(255) not null,
     empresa_construcao integer,
-    predio             varchar(255),
+    predio             varchar(255) not null,
     primary key (id, oId),
     constraint ObraId foreign key (oId) references OBRA (id),
     constraint EmpresaId foreign key (empresa_construcao) references EMPRESA_CONSTRUCAO (id),
     constraint CamaraId foreign key (camara) references localidade (id)
 );
 
---create table TERMO_FECHO
---(
---    id             serial,
---    oId            varchar(255),
---    data_conclusao timestamp,
---    abertura       integer,
---    fiscalização   integer,
---    diretor        integer,
---    primary key (id, oId),
---    constraint ObraId foreign key (oId) references OBRA (id),
---    constraint TermoAberturaId foreign key (abertura, oId) references TERMO_ABERTURA (id, oId),
---    constraint FiscalizacaoId foreign key (fiscalização, oId) references MEMBRO (uId, oId),
---    constraint DiretorId foreign key (diretor, oId) references MEMBRO (uId, oId)
---);
+create table INTERVENIENTE
+(
+    id         serial,
+    tId        integer,
+    oId		   varchar(255),
+    nome       varchar(255) not null,
+    role       varchar(255) not null,
+    associacao varchar(255) not null,
+    numero     integer      not null,
+    primary key (id, tId, oId),
+    constraint TermoId foreign key (tId, oId) references TERMO_ABERTURA (id, oId),
+    constraint ObraId foreign key (oId) references OBRA (id),
+    constraint RoleInterviniente CHECK (role IN
+                                        ('FISCALIZAÇÃO', 'COORDENADOR', 'ARQUITETURA', 'ESTABILIDADE', 'ELETRICIDADE',
+                                         'GÁS', 'CANALIZAÇÃO', 'TELECOMUNICAÇÕES', 'TERMICO', 'ACUSTICO', 'TRANSPORTES',
+                                         'DIRETOR'))
+);
 
 create table PROFILE_PICTURE
 (
     id      serial,
     user_id integer,
-    name    varchar(255),
-    type    varchar(255),
-    file     bytea,
+    name    varchar(255) not null,
+    type    varchar(255) not null,
+    file    bytea        not null,
     primary key (id),
     constraint UserId foreign key (user_id) references UTILIZADOR (id)
 );
@@ -187,32 +189,9 @@ create table IMAGEM_OBRA
 (
     id      serial,
     work_id varchar(255),
-    name    varchar(255),
-    type    varchar(255),
-    file     bytea,
+    name    varchar(255) not null,
+    type    varchar(255) not null,
+    file    bytea        not null,
     primary key (id),
     constraint WorkId foreign key (work_id) references OBRA (id)
 );
-
-create table CONVITE
-(
-    id    varchar(255),
-    email varchar(255),
-    role  varchar(50),
-    oId   varchar(255),
-    primary key (id, oId),
-    constraint ObraId foreign key (oId) references OBRA (id),
-    constraint Tipo CHECK (role IN ('MEMBRO', 'VIEWER', 'FISCALIZAÇÃO', 'COORDENADOR', 'ARQUITETURA', 'ESTABILIDADE',
-                                    'ELETRICIDADE', 'GÁS',
-                                    'CANALIZAÇÃO', 'TELECOMUNICAÇÕES', 'TERMICO', 'ACUSTICO', 'TRANSPORTES',
-                                    'DIRETOR')),
-    constraint Email_Format check (email like '%@%.%')
-);
-
-create table PENDENTE
-(
-    id  serial,
-    uId integer,
-    primary key (id),
-    constraint UserId foreign key (uId) references UTILIZADOR (id)
-)

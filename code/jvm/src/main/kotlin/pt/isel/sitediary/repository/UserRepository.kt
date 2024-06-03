@@ -6,10 +6,12 @@ import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.GetUserModel
+import pt.isel.sitediary.model.PendingCouncils
 import pt.isel.sitediary.model.SignUpInputModel
 
 interface UserRepository {
-    fun createUser(user:SignUpInputModel, location: Location): Int
+    fun createUser(user:SignUpInputModel, location: Location, pending: Boolean)
+    fun updateDummyUser(user:SignUpInputModel, location: Location, pending: Boolean)
     fun login(user: String, password: String): Int?
     fun getUserById(id: Int): GetUserModel?
     fun getUserByEmail(email: String): GetUserModel?
@@ -26,4 +28,8 @@ interface UserRepository {
     fun getProfilePicture(id: Int): FileModel?
     fun insertPending(id: Int, role: String)
     fun acceptCouncil(userId: Int)
+    fun createDummyUser(email: String): Int
+    fun getAllPendingCouncils(): List<PendingCouncils>
+    fun declineCouncil(userId: Int)
+    fun getAllUsers(): List<GetUserModel>
 }

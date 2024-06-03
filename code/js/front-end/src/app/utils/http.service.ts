@@ -94,7 +94,7 @@ export class HttpService {
 
   inviteMembers(workId: string, invites: any): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.post<any>(`http://localhost:8080/api/work/${workId}`, invites, {headers: headers})
+    return this.http.post<any>(`http://localhost:8080/api/invite/${workId}`, invites, {headers: headers})
   }
 
   getInviteList(): Observable<any> {
@@ -109,7 +109,7 @@ export class HttpService {
 
   answerInvite(answer: AnswerInvite): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.post<any>('http://localhost:8080/api/invite', answer, {headers: headers})
+    return this.http.put<any>('http://localhost:8080/api/invite', answer, {headers: headers})
   }
 
   changeProfilePicture(form: FormData) {
@@ -147,5 +147,20 @@ export class HttpService {
         responseType: 'blob' as 'json'
       }
     )
+  }
+
+  getPendingUsers() {
+    const headers = this.getTokenHeader();
+    return this.http.get<any>('http://localhost:8080/api/pending', {headers: headers})
+  }
+
+  answerPending(userId: number, accepted: boolean) {
+    const headers = this.getTokenHeader();
+    return this.http.put<any>('http://localhost:8080/api/pending', {userId, accepted}, {headers: headers})
+  }
+
+  getAllUsers() {
+    const headers = this.getTokenHeader();
+    return this.http.get<any>('http://localhost:8080/api/users', {headers: headers})
   }
 }

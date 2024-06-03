@@ -1,3 +1,22 @@
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  height: 7%;
+}
+
+.small-button {
+  width: 2%;
+  height: auto;
+  margin: 10px;
+  background-color: transparent;
+  border: none;
+}
+
+.small-icon {
+  font-size: 200%;
+}
+
 .container {
   height: calc(100vh - 100px);
   overflow-y: auto;

@@ -12,6 +12,7 @@ import {MatButton, MatFabButton} from "@angular/material/button";
 import {MatLabel} from "@angular/material/form-field";
 import {FormsModule} from "@angular/forms";
 import {MatBadge} from "@angular/material/badge";
+import {Location} from "@angular/common"
 
 @Component({
   selector: 'app-work-details',
@@ -41,17 +42,18 @@ import {MatBadge} from "@angular/material/badge";
 export class WorkDetailsComponent {
   route: ActivatedRoute = inject(ActivatedRoute);
   httpService = inject(HttpService);
-  work : Work | undefined;
-  admin : boolean | undefined;
+  work: Work | undefined;
+  admin: boolean | undefined;
   fiscal: string | undefined;
   diretor: string | undefined;
   coordenador: string | undefined;
   filteredLogList: LogEntrySimplified[] = [];
   workSrc = ''
   searchLogValue = '';
+  tabIndex = 0;
 
-  constructor(private router: Router) {
-    const workListingId =  String(this.route.snapshot.params['id']);
+  constructor(private router: Router, private location: Location) {
+    const workListingId = String(this.route.snapshot.params['id']);
     this.httpService.getWorkById(workListingId).subscribe((work: Work) => {
       this.work = work;
       this.filteredLogList = work.log;
@@ -69,8 +71,17 @@ export class WorkDetailsComponent {
     })
   }
 
+  changeTab(id: number) {
+    this.tabIndex = id
+  }
+
   onInviteClick() {
-    this.router.navigate(['/invite-members'], {state: {workName: this.work?.name}})
+    this.router.navigate(['/invite-members'], {
+      state: {
+        workName: this.work?.name,
+        workId: this.work?.id
+      }
+    })
   }
 
   createNewEntry() {
@@ -96,10 +107,10 @@ export class WorkDetailsComponent {
   }
 
   onBackCall() {
-    this.router.navigate(['/work'])
+    this.location.back()
   }
 
-  closeWork(){
+  closeWork() {
     console.log("Closing work");
   }
 }

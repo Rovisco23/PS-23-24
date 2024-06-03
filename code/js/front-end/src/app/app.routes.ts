@@ -13,6 +13,9 @@ import {AuthGuard} from "./utils/auth.guard";
 import {InviteListComponent} from "./invite-list/invite-list.component";
 import {InviteDetailsComponent} from "./invite-details/invite-details.component";
 import {EditLogEntryComponent} from "./edit-log-entry/edit-log-entry.component";
+import {PendingUsersComponent} from "./pending-users/pending-users.component";
+import {AdminGuard} from "./utils/admin.guard";
+import {ListUsersComponent} from "./list-users/list-users.component";
 
 export const routes: Routes = [
   {
@@ -20,24 +23,6 @@ export const routes: Routes = [
     component: WorkComponent,
     canActivate: [AuthGuard],
     title: 'Work Page'
-    /*children: [
-      {
-        path: 'create',
-        component: WorkCreateComponent
-      },
-      {
-        path: 'obras/:id',
-        component: WorkByIdComponent
-      },
-      {
-        path: 'edit/:id',
-        component: WorkEditComponent
-      },
-      {
-        path: 'delete/:id',
-        component: WorkDeleteComponent
-      }
-      ]*/
   },
   {
     path: 'work-details/:id',
@@ -107,6 +92,16 @@ export const routes: Routes = [
     path: 'invites/:id',
     component: InviteDetailsComponent,
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'pending-users',
+    component: PendingUsersComponent,
+    canActivate: [AuthGuard, AdminGuard]
+  },
+  {
+    path: 'users',
+    component: ListUsersComponent,
+    canActivate: [AuthGuard, AdminGuard]
   },
   {
     path: '**',

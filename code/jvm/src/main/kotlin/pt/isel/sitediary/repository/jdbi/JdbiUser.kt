@@ -7,33 +7,59 @@ import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.GetUserModel
+import pt.isel.sitediary.model.PendingCouncils
 import pt.isel.sitediary.model.SignUpInputModel
 import pt.isel.sitediary.model.UserAndTokenModel
 import pt.isel.sitediary.repository.UserRepository
 
 class JdbiUser(private val handle: Handle) : UserRepository {
-    override fun createUser(user: SignUpInputModel, location: Location): Int = handle.createUpdate(
-        "insert into utilizador(email, role, username, password, nome, apelido, nif, telefone, freguesia, " +
-                "concelho, distrito, associacao_nome, associacao_numero) values (:email, :role, :username, " +
-                ":password, :nome, :apelido, :nif, :telefone, :freguesia, :concelho, :distrito, :associacao_nome," +
-                " :associacao_numero)"
-    )
-        .bind("email", user.email)
-        .bind("role", "OPERÁRIO")
-        .bind("username", user.username)
-        .bind("password", user.password)
-        .bind("nome", user.firstName)
-        .bind("apelido", user.lastName)
-        .bind("nif", user.nif)
-        .bind("telefone", user.phone)
-        .bind("freguesia", location.parish)
-        .bind("concelho", location.county)
-        .bind("distrito", location.district)
-        .bind("associacao_nome", user.associationName)
-        .bind("associacao_numero", user.associationNum)
-        .executeAndReturnGeneratedKeys()
-        .mapTo(Int::class.java)
-        .one()
+    override fun createUser(user: SignUpInputModel, location: Location, pending: Boolean) {
+        handle.createUpdate(
+            "insert into utilizador(email, role, username, password, nome, apelido, nif, telefone, freguesia, " +
+                    "concelho, distrito, associacao_nome, associacao_numero, pendente) values (:email, :role, " +
+                    ":username, :password, :nome, :apelido, :nif, :telefone, :freguesia, :concelho, :distrito, " +
+                    ":associacao_nome, :associacao_numero, :pending)"
+        )
+            .bind("email", user.email)
+            .bind("role", "OPERÁRIO")
+            .bind("username", user.username)
+            .bind("password", user.password)
+            .bind("nome", user.firstName)
+            .bind("apelido", user.lastName)
+            .bind("nif", user.nif)
+            .bind("telefone", user.phone)
+            .bind("freguesia", location.parish)
+            .bind("concelho", location.county)
+            .bind("distrito", location.district)
+            .bind("associacao_nome", user.associationName)
+            .bind("associacao_numero", user.associationNum)
+            .bind("pending", pending)
+            .execute()
+    }
+
+    override fun updateDummyUser(user: SignUpInputModel, location: Location, pending: Boolean) {
+        handle.createUpdate(
+            "update Utilizador set role = :role, username = :username, password = :password, nome = :nome, " +
+                    "apelido = :apelido, nif = :nif, telefone = :telefone, freguesia = :freguesia, " +
+                    "concelho = :concelho, distrito = :distrito, associacao_nome = :associationName, " +
+                    "associacao_numero = :associationNum, pendente = :pending where email = :email"
+        )
+            .bind("role", "OPERÁRIO")
+            .bind("username", user.username)
+            .bind("password", user.password)
+            .bind("nome", user.firstName)
+            .bind("apelido", user.lastName)
+            .bind("nif", user.nif)
+            .bind("telefone", user.phone)
+            .bind("freguesia", location.parish)
+            .bind("concelho", location.county)
+            .bind("distrito", location.district)
+            .bind("associationName", user.associationName)
+            .bind("associationNum", user.associationNum)
+            .bind("pending", pending)
+            .bind("email", user.email)
+            .execute()
+    }
 
     override fun login(user: String, password: String): Int? = handle.createQuery(
         "select id from UTILIZADOR where (username = :username or email = :email) and password = :password"
@@ -156,14 +182,38 @@ class JdbiUser(private val handle: Handle) : UserRepository {
     }
 
     override fun acceptCouncil(userId: Int) {
-        handle.createUpdate("update utilizador set role = 'CÂMARA' where id = :id")
+        handle.createUpdate("update utilizador set role = 'CÂMARA', pendente = :pending where id = :id")
             .bind("id", userId)
-            .execute()
-        handle.createUpdate("delete from pendente where uId = :id")
-            .bind("id", userId)
+            .bind("pending", false)
             .execute()
         addCouncilToExistentWorks(userId)
     }
+
+    override fun declineCouncil(userId: Int) {
+        handle.createUpdate("update utilizador set pendente = :pending where id = :id")
+            .bind("id", userId)
+            .bind("pending", false)
+            .execute()
+    }
+
+    override fun getAllUsers(): List<GetUserModel> = handle.createQuery("select * from utilizador")
+        .mapTo(GetUserModel::class.java)
+        .list()
+
+    override fun createDummyUser(email: String): Int = handle.createUpdate(
+        "insert into utilizador(email) values (:email)"
+    )
+        .bind("email", email)
+        .executeAndReturnGeneratedKeys()
+        .mapTo(Int::class.java)
+        .one()
+
+    override fun getAllPendingCouncils(): List<PendingCouncils> = handle.createQuery(
+        "select id, email, nif, freguesia, concelho, distrito, associacao_nome, associacao_numero " +
+                "from utilizador where role = 'OPERÁRIO' and pendente = true"
+    )
+        .mapTo(PendingCouncils::class.java)
+        .list()
 
     private fun addCouncilToExistentWorks(councilId: Int) {
         val councilLocation = handle.createQuery("select distrito, concelho, freguesia from UTILIZADOR where id = :id")
@@ -177,9 +227,10 @@ class JdbiUser(private val handle: Handle) : UserRepository {
             .bind("district", councilLocation.district)
             .mapTo(String::class.java)
             .list()
-        val query = StringBuilder("insert into MEMBRO(uId, oId, role) values ")
+        if (workIds.isEmpty()) return
+        val query = StringBuilder("insert into MEMBRO(uId, oId, role, pendente) values ")
         workIds.forEach {
-            query.append("('${councilId}', '${it}', 'ESPECTADOR'), ")
+            query.append("('${councilId}', '${it}', 'ESPECTADOR', 'False'), ")
         }
         handle.createUpdate(query.toString().dropLast(2)).execute()
     }

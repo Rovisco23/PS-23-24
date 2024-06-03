@@ -16,7 +16,7 @@ import {MatError, MatFormField, MatLabel} from "@angular/material/form-field";
 import {FormControl, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatInput} from "@angular/material/input";
 import {MatOption, MatSelect} from "@angular/material/select";
-import {NgIf} from "@angular/common";
+import {NgIf, Location} from "@angular/common";
 import {HttpService} from "../utils/http.service";
 
 @Component({
@@ -68,7 +68,7 @@ export class WorkInviteComponent {
   displayedColumns: string[] = ['email', 'role', 'delete'];
   httpService = inject(HttpService)
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private location: Location) {
     this.workId = this.router.getCurrentNavigation()?.extras.state?.['workId'];
     this.emailFormControl.valueChanges.subscribe(value => {
       this.email = value;
@@ -106,5 +106,9 @@ export class WorkInviteComponent {
       this.httpService.inviteMembers(this.workId, this.invites).subscribe(() => {
         this.router.navigate([`/work-details/${this.workId}`]);
       });
+  }
+
+  onBackCall(){
+    this.location.back()
   }
 }

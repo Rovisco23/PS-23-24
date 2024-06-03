@@ -2,7 +2,7 @@ import {Component, inject} from '@angular/core';
 import {HttpService} from "../utils/http.service";
 import {Router} from "@angular/router";
 import {InviteSimplified, Role} from "../utils/classes";
-import {DatePipe, NgForOf} from "@angular/common";
+import {DatePipe, NgForOf, Location} from "@angular/common";
 import {MatDivider} from "@angular/material/divider";
 import {MatFabButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
@@ -33,7 +33,7 @@ export class InviteListComponent {
 
   httpService: HttpService = inject(HttpService);
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private location: Location) {
     this.httpService.getInviteList().subscribe(res => {
       this.invites = this.composeInvites(res);
       this.filteredInvites = this.invites;
@@ -62,6 +62,6 @@ export class InviteListComponent {
   }
 
   onBackCall(){
-    console.log("Back Not Implemented Yet")
+    this.location.back()
   }
 }

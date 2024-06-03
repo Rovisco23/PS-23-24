@@ -12,7 +12,8 @@
         <mat-icon *ngIf="notification > 0" aria-hidden="false" aria-label="Example home icon" fontIcon="notifications"
                   [matBadge]="notification" matBadgeColor="warn">
         </mat-icon>
-        <mat-icon *ngIf="notification === 0" aria-hidden="false" aria-label="Example home icon" fontIcon="notifications">
+        <mat-icon *ngIf="notification === 0" aria-hidden="false" aria-label="Example home icon"
+                  fontIcon="notifications">
         </mat-icon>
       </button>
       <button (click)="drawerProfile.toggle()" class="profile-button">
@@ -31,7 +32,12 @@
         <button
           class="side-option-button"
           routerLinkActive="side-option-active"
-          routerLink="create-work">Criar Obra
+          routerLink="users">Listar Utilizadores
+        </button>
+        <button
+          class="side-option-button"
+          routerLinkActive="side-option-active"
+          routerLink="pending-users">Utilizadores Pendentes
         </button>
       </mat-drawer>
       <mat-drawer #drawerProfile class="profile-drawer" mode="over" position="end">

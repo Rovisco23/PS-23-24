@@ -2,11 +2,10 @@ import {Component, inject} from '@angular/core';
 import {LogEditableEntry, LogEntry} from "../utils/classes";
 import {HttpService} from "../utils/http.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {PreviousUrlService} from "../previous-url/previous-url.component";
 import {MatIcon} from "@angular/material/icon";
 import {FormsModule} from "@angular/forms";
 import {MatButton, MatFabButton} from "@angular/material/button";
-import {NgIf} from "@angular/common";
+import {NgIf, Location} from "@angular/common";
 import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
 import {
   MatCell,
@@ -53,7 +52,7 @@ export class EditLogEntryComponent {
   files: Map<string, File> = new Map<string, File>();
   displayedColumns: string[] = ['files', 'delete'];
 
-  constructor(private router: Router, private previousUrl: PreviousUrlService) {
+  constructor(private router: Router, private location: Location) {
     this.logId = String(this.route.snapshot.params['id']);
     this.httpService.getLogById(this.logId).subscribe((log: LogEntry) => {
       this.log.title = log.title
@@ -97,7 +96,6 @@ export class EditLogEntryComponent {
   }
 
   onBackCall() {
-    const prevUrl = this.previousUrl.getPreviousUrl()
-    this.router.navigate([prevUrl ?? '/work']);
+    this.location.back()
   }
 }

@@ -81,7 +81,7 @@
 .small-button {
   width: 2%;
   height: auto;
-  background-color: #11113D;
+  background-color: transparent;
   color: white;
   border: none;
   margin-right: 20px;
@@ -138,7 +138,7 @@
   margin-right: 20px; /* Add space between icons */
 }
 
-.log-top-bar {
+.top-bar {
   display: flex;
   align-items: center; /* Align items vertically centered */
   justify-content: space-between; /* Distribute space between items */
@@ -270,3 +270,6 @@ strong {
   width: 30%; /* Adjust the width of the input */
 }
 
+.hidden {
+  display: none; /* Hide the element */
+}

@@ -11,7 +11,6 @@ import pt.isel.sitediary.domainmodel.work.WorkInput
 import pt.isel.sitediary.domainmodel.work.WorkSimplified
 import pt.isel.sitediary.domainmodel.work.WorkState
 import pt.isel.sitediary.model.FileModel
-import pt.isel.sitediary.model.InviteResponseModel
 import pt.isel.sitediary.model.OpeningTermInputModel
 import pt.isel.sitediary.repository.WorkRepository
 import java.sql.Timestamp
@@ -40,7 +39,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         )
             .bind("id_obra", work.id)
             .bind("id_utilizador", user.id)
-            .bind("role", "ADMIN")
+            .bind("role", "DONO")
             .execute()
         addCouncilAsMember(work.id, work.address.location)
         val companyId = getCompanyId(openingTerm.company.name, openingTerm.company.num)
@@ -65,27 +64,29 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
     override fun getById(id: UUID): Work? = handle.createQuery(
         "select OBRA.id, OBRA.nome, OBRA.tipo, OBRA.descricao, OBRA.estado, OBRA.distrito, OBRA.concelho, " +
                 "OBRA.freguesia, OBRA.rua, OBRA.cpostal, ARRAY(SELECT CONCAT(uId, ';', username, ';', MEMBRO.role) " +
-                "FROM MEMBRO join UTILIZADOR on uId = id WHERE oId = :id) as membros, ARRAY(SELECT " +
-                "CONCAT(REGISTO.id, ';', author, ';', UTILIZADOR.username, ';', MEMBRO.role, ';', titulo, ';', " +
-                "estado, ';', TO_CHAR(REGISTO.creation_date, 'YYYY-MM-DD')) FROM REGISTO join UTILIZADOR on " +
-                "author = UTILIZADOR.id join MEMBRO on uId = author where REGISTO.oId = :id) as log, " +
-                "TERMO_ABERTURA.titular_licenca, TERMO_ABERTURA.predio, EMPRESA_CONSTRUCAO.nome as company_name, " +
-                "EMPRESA_CONSTRUCAO.numero as company_num, (SELECT COUNT(*) FROM IMAGEM WHERE oId = OBRA.id) " +
-                "AS imagens, (SELECT COUNT(*) FROM DOCUMENTO WHERE oId = OBRA.id) AS documentos from OBRA join " +
-                "TERMO_ABERTURA on TERMO_ABERTURA.oId = :id join EMPRESA_CONSTRUCAO on EMPRESA_CONSTRUCAO.id = " +
-                "TERMO_ABERTURA.empresa_construcao where OBRA.id = :id"
+                "FROM MEMBRO join UTILIZADOR on uId = id WHERE oId = :id and MEMBRO.pendente = :pending) as membros, " +
+                "ARRAY(SELECT CONCAT(REGISTO.id, ';', author, ';', UTILIZADOR.username, ';', MEMBRO.role, ';', " +
+                "titulo, ';', estado, ';', TO_CHAR(REGISTO.creation_date, 'YYYY-MM-DD')) FROM REGISTO " +
+                "join UTILIZADOR on author = UTILIZADOR.id join MEMBRO on uId = author where REGISTO.oId = :id) " +
+                "as log, TERMO_ABERTURA.titular_licenca, TERMO_ABERTURA.predio, EMPRESA_CONSTRUCAO.nome " +
+                "as company_name, EMPRESA_CONSTRUCAO.numero as company_num, (SELECT COUNT(*) FROM IMAGEM " +
+                "WHERE oId = OBRA.id) as imagens, (SELECT COUNT(*) FROM DOCUMENTO WHERE oId = OBRA.id) AS documentos " +
+                "from OBRA join TERMO_ABERTURA on TERMO_ABERTURA.oId = :id join EMPRESA_CONSTRUCAO on " +
+                "EMPRESA_CONSTRUCAO.id = TERMO_ABERTURA.empresa_construcao where OBRA.id = :id"
     )
         .bind("id", id.toString())
+        .bind("pending", false)
         .mapTo(Work::class.java)
         .singleOrNull()
 
     override fun getWorkList(skip: Int, userId: Int): List<WorkSimplified> = handle.createQuery(
         "select OBRA.id, OBRA.nome, Obra.tipo, OBRA.descricao, OBRA.estado, OBRA.freguesia, OBRA.concelho, " +
-                "OBRA.distrito, OBRA.rua, OBRA.cpostal from MEMBRO join OBRA on id = oId where uId = :id" +
-                " OFFSET :skip LIMIT 6"
+                "OBRA.distrito, OBRA.rua, OBRA.cpostal from MEMBRO join OBRA on id = oId where uId = :id and " +
+                "MEMBRO.pendente = :pending OFFSET :skip LIMIT 6"
     )
         .bind("id", userId)
         .bind("skip", skip)
+        .bind("pending", false)
         .mapTo(WorkSimplified::class.java)
         .list()
 
@@ -156,14 +157,6 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         handle.createUpdate(query.toString().dropLast(2)).execute()
     }
 
-    override fun checkInvite(workId: UUID, email: String): Boolean = handle.createQuery(
-        "select count(*) from CONVITE where oId = :oId and email = :email"
-    )
-        .bind("oId", workId.toString())
-        .bind("email", email)
-        .mapTo(Int::class.java)
-        .single() == 1
-
     private fun addCouncilAsMember(workId: UUID, location: Location) {
         val councilId = handle.createQuery(
             "select id from UTILIZADOR where freguesia = :parish and " +
@@ -182,41 +175,75 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         }
     }
 
-    override fun getInviteList(email: String): List<InviteSimplified> = handle.createQuery(
-        "select c.id as id, o.id as workId, o.nome as workTitle, u.username as admin, c.role as role from CONVITE c " +
-                "join OBRA o on o.id = c.oId join MEMBRO m on o.id = m.oId join UTILIZADOR u on m.uId = u.id " +
-                "where c.email = :email and m.role = 'ADMIN'"
+    override fun getInviteList(userId: Int): List<InviteSimplified> = handle.createQuery(
+        "select Obra.id, Obra.nome as workTitle, Membro.role, (select Utilizador.username from Membro join " +
+                "Utilizador on Membro.uId = Utilizador.id where Membro.role = 'DONO') as owner from Obra " +
+                "join Membro on Obra.id = Membro.oId where uid = :uId and pendente = :pending"
     )
-        .bind("email", email)
+        .bind("uId", userId)
+        .bind("pending", true)
         .mapTo(InviteSimplified::class.java)
         .list()
 
-    override fun getInvite(id: UUID, email: String): InviteSimplified? = handle.createQuery(
-        "select c.id as id, o.id as workId, o.nome as workTitle, u.username as admin, c.role as role from CONVITE c " +
-                "join OBRA o on o.id = c.oId join MEMBRO m on o.id = m.oId join UTILIZADOR u on m.uId = u.id " +
-                "where c.id = :id and c.email = :email and m.role = 'ADMIN'"
+    override fun getInvite(workId: UUID, userId: Int): InviteSimplified? = handle.createQuery(
+        "select Obra.id, Obra.nome as workTitle, Membro.role, (select Utilizador.username from Membro join " +
+                "Utilizador on Membro.uId = Utilizador.id where Membro.oId = :oId and Membro.role = 'DONO') " +
+                "as owner from Obra join Membro on Obra.id = Membro.oId where uid = :uId"
     )
-        .bind("id", id.toString())
-        .bind("email", email)
+        .bind("oId", workId.toString())
+        .bind("uId", userId)
         .mapTo(InviteSimplified::class.java)
         .singleOrNull()
 
-    override fun acceptInvite(inv: InviteResponseModel, user: User) {
+    override fun acceptInvite(inv: InviteSimplified, user: User) {
         handle.createUpdate(
-            "insert into MEMBRO(uId, oId, role) values(:uId, :oId, :role)"
+            "update MEMBRO set pendente = :pendente where uId = :uId and oId = :oId"
         )
             .bind("uId", user.id)
             .bind("oId", inv.workId.toString())
+            .bind("pendente", false)
+            .execute()
+
+        val tId = handle.createQuery(
+            "select id from TERMO_ABERTURA where oId = :oId"
+        )
+            .bind("oId", inv.workId.toString())
+            .mapTo(Int::class.java)
+            .single()
+        val roleExists = handle.createQuery(
+            "select count(*)=0 from Interveniente where role=:role"
+        )
             .bind("role", inv.role)
-            .execute()
-        handle.createUpdate("delete from CONVITE where id = :id")
-            .bind("id", inv.id.toString())
-            .execute()
+            .mapTo(Boolean::class.java)
+            .single()
+        if (roleExists) {
+            val name = handle.createQuery(
+                "select CONCAT(nome,' ',apelido) as nome from UTILIZADOR where id = :uId"
+            )
+                .bind("uId", user.id)
+                .mapTo(String::class.java)
+                .single()
+
+            // Adicionar ao Interveniente
+            handle.createUpdate(
+                "insert into INTERVENIENTE(tId, oId, nome, role, associacao, numero) values(:tId, :oId, :nome, " +
+                        ":role, :association,:num)"
+            )
+                .bind("tId", tId)
+                .bind("oId", inv.workId.toString())
+                .bind("nome", name)
+                .bind("role", inv.role)
+                .bind("association", user.association.name)
+                .bind("num", user.association.number)
+                .execute()
+        }
+
     }
 
-    override fun declineInvite(id: UUID) {
-        handle.createUpdate("delete from CONVITE where id = :id")
-            .bind("id", id.toString())
+    override fun declineInvite(workId: UUID, userId: Int) {
+        handle.createUpdate("delete from MEMBRO where uId = :uId and oId = :oId")
+            .bind("uId", userId)
+            .bind("oId", workId.toString())
             .execute()
     }
 
@@ -282,6 +309,15 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
             .bind("id", workId.toString())
             .bind("state", WorkState.FINISHED.toString())
             .bind("date", Timestamp.valueOf(LocalDateTime.now()))
+            .execute()
+    }
+
+    override fun inviteMember(id: Int, role: String, workId: UUID) {
+        handle.createUpdate("insert into MEMBRO(uId, oId, role, pendente) values(:uId, :oId, :role, :pendente)")
+            .bind("uId", id)
+            .bind("oId", workId.toString())
+            .bind("role", role)
+            .bind("pendente", true)
             .execute()
     }
 }

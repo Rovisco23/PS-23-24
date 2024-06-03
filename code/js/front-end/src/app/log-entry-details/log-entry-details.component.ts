@@ -1,9 +1,8 @@
 import {Component, inject} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpService} from "../utils/http.service";
-import {PreviousUrlService} from "../previous-url/previous-url.component";
 import {LogEntry} from "../utils/classes";
-import {NgIf} from "@angular/common";
+import {NgIf, Location} from "@angular/common";
 import {MatIcon} from "@angular/material/icon";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatButton, MatFabButton} from "@angular/material/button";
@@ -53,13 +52,12 @@ export class LogEntryDetailsComponent {
   logId: string = ''
   files: string | undefined
 
-  constructor(private router: Router, private previousUrl: PreviousUrlService) {
+  constructor(private router: Router, private location: Location) {
     this.logId = String(this.route.snapshot.params['id']);
     this.httpService.getLogById(this.logId).subscribe((log: LogEntry) => {
       this.log = log;
       this.httpService.getFiles(this.logId, this.log.workId).subscribe((data) => {
         this.files = URL.createObjectURL(data)
-        console.log("images")
       })
     })
   }
@@ -82,8 +80,7 @@ export class LogEntryDetailsComponent {
   }
 
   onBackCall() {
-    const prevUrl = this.previousUrl.getPreviousUrl()
-    this.router.navigate([prevUrl ?? '/work']);
+    this.location.back()
   }
 
 }

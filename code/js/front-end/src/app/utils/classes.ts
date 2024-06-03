@@ -22,6 +22,14 @@ interface Location {
   parish: String
 }
 
+export interface Pending {
+  id: number,
+  email: string,
+  nif: number,
+  location: Location,
+  association: Association
+}
+
 export interface Member {
   id: number;
   name: string;
@@ -92,6 +100,7 @@ export interface User {
   username: String,
   email: String,
   phone: String | null,
+  nif: number,
   firstName: String,
   lastName: String,
   role: String,

@@ -1,7 +1,6 @@
 package pt.isel.sitediary.model
 
 import pt.isel.sitediary.domainmodel.work.Address
-import pt.isel.sitediary.domainmodel.work.Association
 import pt.isel.sitediary.domainmodel.work.ConstructionCompany
 import pt.isel.sitediary.domainmodel.work.WorkType
 import java.util.*
@@ -36,9 +35,12 @@ data class MemberInputModel(
     val role: String
 )
 
-data class InviteResponseModel(
-    val id: UUID,
+data class InviteInputModel(
     val workId: UUID,
-    val accepted: Boolean,
-    val role: String
+    val accepted: Boolean
+)
+
+data class PendingInputModel(
+    val userId: Int,
+    val accepted: Boolean
 )

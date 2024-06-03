@@ -8,9 +8,9 @@ delete from SESSAO;
 delete from UTILIZADOR;
 delete from LOCALIDADE;
 
-insert into utilizador(email, role, username, password, nome, apelido, nif, telefone, freguesia, concelho, distrito, associacao_nome, associacao_numero) values
-    ('ricardorovisco23@gmail.com', 'ADMIN', 'Rovisco23', '12345', 'Ricardo', 'Rovisco', 234565432, NULL, 'Santa Clara', 'Lisboa', 'Lisboa', 'Site Diary Team', 1),
-    ('a49508@alunos.isel.pt', 'ADMIN', 'JMota15', '12345', 'João', 'Mota', 266573150, '910937960', 'União das freguesias de Charneca de Caparica e Sobreda', 'Almada', 'Setúbal', 'Site Diary Team', 2);
+insert into utilizador(email, role, username, password, nome, apelido, nif, telefone, freguesia, concelho, distrito, associacao_nome, associacao_numero, pendente) values
+    ('ricardorovisco23@gmail.com', 'ADMIN', 'Rovisco23', '12345', 'Ricardo', 'Rovisco', 234565432, NULL, 'Santa Clara', 'Lisboa', 'Lisboa', 'Site Diary Team', 1, false),
+    ('a49508@alunos.isel.pt', 'ADMIN', 'JMota15', '12345', 'João', 'Mota', 266573150, '910937960', 'União das freguesias de Charneca de Caparica e Sobreda', 'Almada', 'Setúbal', 'Site Diary Team', 2, false);
 
 -- Alterar local do ficheiro conforme necessário
 COPY LOCALIDADE (distrito, concelho, freguesia)

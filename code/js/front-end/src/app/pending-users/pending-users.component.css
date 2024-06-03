@@ -37,3 +37,21 @@ input[type="text"] {
     width: 70%;
   }
 }
+
+.accept-button {
+  color: #4CAF50;
+}
+
+.refuse-button {
+  color: #f44336;
+}
+
+.accept-button:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.refuse-button:hover {
+  background-color: #f44336;
+  color: white;
+}

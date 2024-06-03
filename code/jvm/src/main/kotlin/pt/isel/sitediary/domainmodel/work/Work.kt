@@ -157,4 +157,4 @@ enum class WorkState(val description: String) {
 
 data class Invite (val id: UUID, val email: String, val role: String, val workId: UUID)
 
-data class InviteSimplified(val id: UUID, val workId: UUID, val workTitle: String, val role: String, val admin: String)
+data class InviteSimplified(val workId: UUID, val workTitle: String, val role: String, val admin: String)

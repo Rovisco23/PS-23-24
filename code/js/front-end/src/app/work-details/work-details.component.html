@@ -12,19 +12,7 @@
       </div>
       <ul class="sidebar-menu">
         <li class="sidebar-menu-item">
-          <a class="sidebar-menu-link" (click)="tabGroup.selectedIndex=1">
-            <div class="sidebar-menu-icon">
-            <span class="material-icons">
-              info
-            </span>
-            </div>
-            <div class="sidebar-menu-text">
-              Visão Geral
-            </div>
-          </a>
-        </li>
-        <li class="sidebar-menu-item">
-          <a class="sidebar-menu-link" (click)="tabGroup.selectedIndex=0">
+          <a class="sidebar-menu-link" (click)="changeTab(0)">
             <div class="sidebar-menu-icon">
             <span class="material-icons">
               error_outline
@@ -37,7 +25,19 @@
           </a>
         </li>
         <li class="sidebar-menu-item">
-          <a class="sidebar-menu-link" (click)="tabGroup.selectedIndex=2">
+          <a class="sidebar-menu-link" (click)="changeTab(1)">
+            <div class="sidebar-menu-icon">
+            <span class="material-icons">
+              info
+            </span>
+            </div>
+            <div class="sidebar-menu-text">
+              Visão Geral
+            </div>
+          </a>
+        </li>
+        <li class="sidebar-menu-item">
+          <a class="sidebar-menu-link" (click)="changeTab(2)">
             <div class="sidebar-menu-icon">
             <span class="material-icons">
               groups
@@ -53,132 +53,129 @@
     </div>
   </div>
   <div class="content">
-    <mat-tab-group #tabGroup>
-      <mat-tab label="Registos">
-        <div class="log-top-bar">
-          <input type="text" class="search-input" placeholder="Procurar Registo" [(ngModel)]="searchLogValue" (ngModelChange)="filterResults(searchLogValue)">
-          <button mat-fab color="primary" aria-label="Example icon button with a delete icon" class="log-button"
-                  (click)="createNewEntry()">
-            <mat-icon>add</mat-icon>
-          </button>
-        </div>
-        <mat-divider></mat-divider>
-        <div>
-          <mat-list *ngFor="let entry of filteredLogList">
-            <mat-list-item (click)="onLogEntryClick(entry.id)">
-              <div matListItemTitle>{{ entry.title }}</div>
-              <div matListItemLine>Posted by {{ entry.author.name }} on {{ entry.createdAt | date }}</div>
-            </mat-list-item>
-            <mat-divider></mat-divider>
-          </mat-list>
-        </div>
-      </mat-tab>
-      <mat-tab label="Geral">
-        <div class="general-tab-content">
-          <div class="work-values">
-            <div class="notification">
-              <div class="notification-content">
-                <span class="notification-number">{{ work?.log?.length }}</span>
-                <span class="notification-text">Ocorrências</span>
-              </div>
-              <div class="notification-icon">
-                <span class="material-icons"> error_outline </span>
-              </div>
-            </div>
-            <div class="notification">
-              <div class="notification-content">
-                <span class="notification-number">{{ work?.images }}</span>
-                <span class="notification-text">Imagens</span>
-              </div>
-              <div class="notification-icon">
-                <span class="material-icons"> image </span>
-              </div>
-            </div>
-            <div class="notification">
-              <div class="notification-content">
-                <span class="notification-number">{{ work?.docs }}</span>
-                <span class="notification-text">Documentos</span>
-              </div>
-              <div class="notification-icon">
-                <span class="material-icons"> sticky_note_2 </span>
-              </div>
-            </div>
+    <div class="log-content" *ngIf="tabIndex == 0">
+      <div class="top-bar">
+        <input type="text" class="search-input" placeholder="Procurar Registo" [(ngModel)]="searchLogValue"
+               (ngModelChange)="filterResults(searchLogValue)">
+        <button mat-fab color="primary" aria-label="Example icon button with a delete icon" class="log-button"
+                (click)="createNewEntry()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+      <mat-divider></mat-divider>
+      <div>
+        <mat-list *ngFor="let entry of filteredLogList">
+          <mat-list-item (click)="onLogEntryClick(entry.id)">
+            <div matListItemTitle>{{ entry.title }}</div>
+            <div matListItemLine>Posted by {{ entry.author.name }} on {{ entry.createdAt | date }}</div>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+        </mat-list>
+      </div>
+    </div>
+    <div class="general-tab-content" *ngIf="tabIndex == 1">
+      <div class="work-values">
+        <div class="notification">
+          <div class="notification-content">
+            <span class="notification-number">{{ work?.log?.length }}</span>
+            <span class="notification-text">Ocorrências</span>
           </div>
-          <div class="container">
-            <div class="row">
-              <div class="col-md-6">
-                <table>
-                  <tr>
-                    <td><strong>Estado</strong></td>
-                    <td>{{ work?.state }}</td>
-                  </tr>
-                  <tr>
-                    <td><strong>Tipo de Obra</strong></td>
-                    <td>{{ work?.type }}</td>
-                  </tr>
-                  <tr>
-                    <td><strong>Localização</strong></td>
-                    <td>{{ work?.address?.street }} {{ work?.address?.postalCode }}
-                      , {{ work?.address?.location?.parish }}, {{ work?.address?.location?.county }}
-                      , {{ work?.address?.location?.district }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>Titular da Licença</strong></td>
-                    <td>{{ work?.licenseHolder }}</td>
-                  </tr>
-                  <tr *ngIf="fiscal">
-                    <td><strong>Responsável de Fiscalização</strong></td>
-                    <td>{{ fiscal }}</td>
-                  </tr>
-                  <tr *ngIf="diretor">
-                    <td><strong>Diretor da Obra</strong></td>
-                    <td>{{ diretor }}</td>
-                  </tr>
-                  <tr *ngIf="coordenador">
-                    <td><strong>Coordenador da Obra</strong></td>
-                    <td>{{ coordenador }}</td>
-                  </tr>
-                </table>
-              </div>
-              <div class="col-md-6">
-                <table>
-                  <tr>
-                    <td><strong>Descrição</strong></td>
-                    <td>{{ work?.description }}</td>
-                  </tr>
-                  <tr>
-                    <td><strong>Empresa de Construção</strong></td>
-                    <td>{{ work?.company?.name }} - Número: {{ work?.company?.num }}</td>
-                  </tr>
-                  <tr>
-                    <td><strong>Prédio</strong></td>
-                    <td>{{ work?.building }}</td>
-                  </tr>
-                </table>
-              </div>
-            </div>
+          <div class="notification-icon">
+            <span class="material-icons"> error_outline </span>
           </div>
         </div>
-      </mat-tab>
-      <mat-tab label="Equipa">
-        <div class="log-top-bar">
-          <button mat-fab color="primary" aria-label="Example icon button with a delete icon" class="log-button"
-                  (click)="onInviteClick()">
-            <mat-icon>add</mat-icon>
-          </button>
+        <div class="notification">
+          <div class="notification-content">
+            <span class="notification-number">{{ work?.images }}</span>
+            <span class="notification-text">Imagens</span>
+          </div>
+          <div class="notification-icon">
+            <span class="material-icons"> image </span>
+          </div>
         </div>
+        <div class="notification">
+          <div class="notification-content">
+            <span class="notification-number">{{ work?.docs }}</span>
+            <span class="notification-text">Documentos</span>
+          </div>
+          <div class="notification-icon">
+            <span class="material-icons"> sticky_note_2 </span>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <table>
+              <tr>
+                <td><strong>Estado</strong></td>
+                <td>{{ work?.state }}</td>
+              </tr>
+              <tr>
+                <td><strong>Tipo de Obra</strong></td>
+                <td>{{ work?.type }}</td>
+              </tr>
+              <tr>
+                <td><strong>Localização</strong></td>
+                <td>{{ work?.address?.street }} {{ work?.address?.postalCode }}
+                  , {{ work?.address?.location?.parish }}, {{ work?.address?.location?.county }}
+                  , {{ work?.address?.location?.district }}
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Titular da Licença</strong></td>
+                <td>{{ work?.licenseHolder }}</td>
+              </tr>
+              <tr *ngIf="fiscal">
+                <td><strong>Responsável de Fiscalização</strong></td>
+                <td>{{ fiscal }}</td>
+              </tr>
+              <tr *ngIf="diretor">
+                <td><strong>Diretor da Obra</strong></td>
+                <td>{{ diretor }}</td>
+              </tr>
+              <tr *ngIf="coordenador">
+                <td><strong>Coordenador da Obra</strong></td>
+                <td>{{ coordenador }}</td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-md-6">
+            <table>
+              <tr>
+                <td><strong>Descrição</strong></td>
+                <td>{{ work?.description }}</td>
+              </tr>
+              <tr>
+                <td><strong>Empresa de Construção</strong></td>
+                <td>{{ work?.company?.name }} - Número: {{ work?.company?.num }}</td>
+              </tr>
+              <tr>
+                <td><strong>Prédio</strong></td>
+                <td>{{ work?.building }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="members-content" *ngIf="tabIndex == 2">
+      <div class="top-bar">
+        <button mat-fab color="primary" aria-label="Example icon button with a delete icon" class="log-button"
+                (click)="onInviteClick()">
+          <mat-icon>add</mat-icon>
+        </button>
         <mat-divider></mat-divider>
-        <div>
-          <mat-list *ngFor="let entry of work?.members">
-            <mat-list-item (click)="onMemberClick(entry.id)">
-              <div matListItemTitle>{{ entry.name }}</div>
-              <div matListItemLine>Role:  {{entry.role}}</div>
-            </mat-list-item>
-            <mat-divider></mat-divider>
-          </mat-list>
-        </div>
-      </mat-tab>
-    </mat-tab-group>
+      </div>
+      <div>
+        <mat-list *ngFor="let entry of work?.members">
+          <mat-list-item (click)="onMemberClick(entry.id)">
+            <div matListItemTitle>{{ entry.name }}</div>
+            <div matListItemLine>Role:  {{ entry.role }}</div>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+        </mat-list>
+      </div>
+    </div>
   </div>
 </div>

@@ -28,6 +28,7 @@ import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.GetUserModel
 import pt.isel.sitediary.model.LoginInputModel
 import pt.isel.sitediary.model.LoginOutputModel
+import pt.isel.sitediary.model.PendingInputModel
 import pt.isel.sitediary.model.SessionInputModel
 import pt.isel.sitediary.model.SignUpInputModel
 import pt.isel.sitediary.model.TokenModel
@@ -188,7 +189,7 @@ class UserController(private val service: UserService) {
         }
     }
 
-    @GetMapping(Paths.User.GET_USER_USERNAME)
+    /*@GetMapping(Paths.User.GET_USER_USERNAME)
     @Operation(summary = "Get profile", description = "Get user profile using username")
     @ApiResponses(
         value = [
@@ -211,7 +212,7 @@ class UserController(private val service: UserService) {
         return handleResponse(res) {
             ResponseEntity.ok(it)
         }
-    }
+    }*/
 
     @PutMapping(Paths.User.GET_USER_ID)
     @Operation(summary = "Edit profile", description = "Edit profile of user")
@@ -287,12 +288,31 @@ class UserController(private val service: UserService) {
         }
     }
 
+    @GetMapping(Paths.User.PENDING)
+    fun getAllPendingCouncils(@Parameter(hidden = true) authUser: AuthenticatedUser): ResponseEntity<*> {
+        val res = service.getAllPendingCouncils(authUser.user)
+        return handleResponse(res) {
+            ResponseEntity.ok().body(it)
+        }
+    }
 
     @PutMapping(Paths.User.PENDING)
-    fun acceptCouncil(@PathVariable id: Int, @Parameter(hidden = true) authUser: AuthenticatedUser): ResponseEntity<*> {
-        val res = service.acceptCouncil(id, authUser.user)
+    fun answerPendingCouncil(
+        @RequestBody body: PendingInputModel,
+        @Parameter(hidden = true) authUser: AuthenticatedUser
+    ): ResponseEntity<*> {
+        val res = service.answerPendingCouncil(body, authUser.user)
         return handleResponse(res) {
             ResponseEntity.ok().body(Unit)
+        }
+    }
+
+    @GetMapping(Paths.User.GET_USER)
+    @Operation(summary = "Get all Users", description = "Get all user accounts in the application")
+    fun getAllUsers(@Parameter(hidden = true) authUser: AuthenticatedUser): ResponseEntity<*> {
+        val res = service.getAllUsers(authUser.user)
+        return handleResponse(res) {
+            ResponseEntity.ok(it)
         }
     }
 }
