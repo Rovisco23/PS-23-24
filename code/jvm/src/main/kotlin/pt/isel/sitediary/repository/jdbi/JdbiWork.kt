@@ -1,6 +1,7 @@
 package pt.isel.sitediary.repository.jdbi
 
 import org.jdbi.v3.core.Handle
+import pt.isel.sitediary.domainmodel.user.Technician
 import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.work.Invite
 import pt.isel.sitediary.domainmodel.work.InviteSimplified
@@ -44,7 +45,8 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         addCouncilAsMember(work.id, work.address.location)
         val companyId = getCompanyId(openingTerm.company.name, openingTerm.company.num)
         val councilId = getCouncil(work.address.location)
-        insertOpeningTerm(openingTerm, companyId, work.id, councilId)
+        val tId = insertOpeningTerm(openingTerm, companyId, work.id, councilId)
+        insertTechnicians(openingTerm.technicians, tId, work.id)
         /** Exemplo
         handle.createUpdate(
         "insert into TECNICO(nif,tId, oId, nome, tipo, associacao, numero) " +
@@ -155,24 +157,6 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
             query.append("('${it.id}', '${it.email}', '${it.role}', '${it.workId}'), ")
         }
         handle.createUpdate(query.toString().dropLast(2)).execute()
-    }
-
-    private fun addCouncilAsMember(workId: UUID, location: Location) {
-        val councilId = handle.createQuery(
-            "select id from UTILIZADOR where freguesia = :parish and " +
-                    "concelho = :county and distrito = :district and role='CÂMARA'"
-        )
-            .bind("parish", location.parish)
-            .bind("county", location.county)
-            .bind("district", location.district)
-            .mapTo(Int::class.java)
-            .singleOrNull()
-        if (councilId != null) {
-            handle.createUpdate("insert into MEMBRO(uId, oId, role) values(:uId, :oId, :role)")
-                .bind("uId", councilId)
-                .bind("oId", workId.toString())
-                .bind("role", "ESPECTADOR")
-        }
     }
 
     override fun getInviteList(userId: Int): List<InviteSimplified> = handle.createQuery(
@@ -304,7 +288,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
             .execute()
     }
 
-    override fun finishWork(workId: UUID, fiscalId: Int, directorId: Int) {
+    override fun finishWork(workId: UUID) {
         handle.createUpdate("update OBRA set estado = :state, data_conclusao = :date where id = :id")
             .bind("id", workId.toString())
             .bind("state", WorkState.FINISHED.toString())
@@ -319,5 +303,39 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
             .bind("role", role)
             .bind("pendente", true)
             .execute()
+    }
+
+    override fun checkRequiredTechnicians(workId: UUID): Boolean = handle.createQuery(
+        "select count(*) from INTERVENIENTE where (oId = :id and (role = 'FISCALIZAÇÃO' or role = 'COORDENADOR'))"
+    )
+        .bind("id", workId.toString())
+        .mapTo(Int::class.java)
+        .single() == 2
+
+    private fun addCouncilAsMember(workId: UUID, location: Location) {
+        val councilId = handle.createQuery(
+            "select id from UTILIZADOR where freguesia = :parish and " +
+                    "concelho = :county and distrito = :district and role='CÂMARA'"
+        )
+            .bind("parish", location.parish)
+            .bind("county", location.county)
+            .bind("district", location.district)
+            .mapTo(Int::class.java)
+            .singleOrNull()
+        if (councilId != null) {
+            handle.createUpdate("insert into MEMBRO(uId, oId, role) values(:uId, :oId, :role)")
+                .bind("uId", councilId)
+                .bind("oId", workId.toString())
+                .bind("role", "ESPECTADOR")
+        }
+    }
+
+    private fun insertTechnicians(technicians: List<Technician>, tId: Int, workId: UUID) {
+        val query = StringBuilder("insert into INTERVENIENTE(tId, oId, nome, role, associacao, numero) values ")
+        technicians.forEach {
+            query.append("($tId, '$workId', '${it.name}', '${it.role}', '${it.association.name}', " +
+                    "${it.association.number}), ")
+        }
+        handle.createUpdate(query.toString().dropLast(2)).execute()
     }
 }

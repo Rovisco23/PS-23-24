@@ -33,6 +33,8 @@ class WorkService(
         val addressRep = it.addressRepository
         if (openingTerm.checkParams()) {
             failure(Errors.invalidParameter)
+        } else if (openingTerm.checkTechnicians()) {
+            failure(Errors.invalidTechnicians)
         } else {
             val location =
                 addressRep.getLocation(openingTerm.address.location.parish, openingTerm.address.location.county)
@@ -173,12 +175,11 @@ class WorkService(
         } else if (work.state != IN_PROGRESS) {
             failure(Errors.workAlreadyFinished)
         } else {
-            val fiscalId = work.members.firstOrNull { m -> m.role == "FISCALIZAÇÃO" }?.id
-            val directorId = work.members.firstOrNull { m -> m.role == "DIRETOR" }?.id
-            if (fiscalId == null || directorId == null) {
+            val requiredTechnicians = workRep.checkRequiredTechnicians(workId)
+            if (!requiredTechnicians) {
                 failure(Errors.membersMissing)
             } else {
-                workRep.finishWork(workId, fiscalId, directorId)
+                workRep.finishWork(workId)
                 success(Unit)
             }
         }

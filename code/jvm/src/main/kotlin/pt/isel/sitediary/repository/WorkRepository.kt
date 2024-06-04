@@ -23,6 +23,7 @@ interface WorkRepository {
     fun insertWorkImage(workId: UUID, featuredImage: FileModel)
     fun changeWorkImage(workId: UUID, featuredImage: FileModel)
     fun removeWorkImage(workId: UUID)
-    fun finishWork(workId: UUID, fiscalId: Int, directorId: Int)
+    fun finishWork(workId: UUID)
     fun inviteMember(id: Int, role: String, workId: UUID)
+    fun checkRequiredTechnicians(workId: UUID): Boolean
 }

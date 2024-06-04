@@ -1,5 +1,6 @@
 package pt.isel.sitediary.model
 
+import pt.isel.sitediary.domainmodel.user.Technician
 import pt.isel.sitediary.domainmodel.work.Address
 import pt.isel.sitediary.domainmodel.work.ConstructionCompany
 import pt.isel.sitediary.domainmodel.work.WorkType
@@ -23,11 +24,14 @@ data class OpeningTermInputModel(
     val company: ConstructionCompany,
     val building: String,
     val address: Address,
+    val technicians: List<Technician>
 ) {
     fun checkParams() =
         name.isBlank() || holder.isBlank() || director.isBlank() || company.name.isBlank() || company.num <= 0 ||
                 building.isBlank() || address.location.parish.isBlank() || address.street.isBlank() ||
                 address.postalCode.isBlank() || address.location.county.isBlank()
+
+    fun checkTechnicians() = technicians.filter { it.role == "FISCALIZAÇÃO" || it.role == "COORDENADOR" }.size < 2
 }
 
 data class MemberInputModel(

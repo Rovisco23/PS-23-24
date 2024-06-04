@@ -1,9 +1,9 @@
 package pt.isel.sitediary.domainmodel.user
 
+import pt.isel.sitediary.domainmodel.work.Association
+
 data class Technician(
-    val nif: Int,
     val name: String,
     val role: String,
-    val association: String,
-    val associationNum: Int
+    val association: Association
 )
