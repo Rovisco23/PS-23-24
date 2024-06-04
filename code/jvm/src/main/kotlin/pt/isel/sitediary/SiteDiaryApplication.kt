@@ -17,43 +17,43 @@ import kotlin.time.Duration.Companion.hours
 @SpringBootApplication
 class SiteDiaryApplication {
 
-	private val databaseURL = ""
+    private val databaseURL = ""
 
-	@Bean
-	fun jdbi(): Jdbi {
-		val jdbcDatabaseURL = System.getenv("JDBC_DATABASE_URL") ?: databaseURL
-		val dataSource = PGSimpleDataSource()
-		dataSource.setURL(jdbcDatabaseURL)
-		return Jdbi.create(dataSource).configureWithAppRequirements()
-	}
+    @Bean
+    fun jdbi(): Jdbi {
+        val jdbcDatabaseURL = System.getenv("JDBC_DATABASE_URL") ?: databaseURL
+        val dataSource = PGSimpleDataSource()
+        dataSource.setURL(jdbcDatabaseURL)
+        return Jdbi.create(dataSource).configureWithAppRequirements()
+    }
 
-	@Bean
-	fun tokenEncoder() = Sha256TokenEncoder()
+    @Bean
+    fun tokenEncoder() = Sha256TokenEncoder()
 
-	@Bean
-	fun clock() = Clock.System
+    @Bean
+    fun clock() = Clock.System
 
-	@Bean
-	fun usersDomainConfig() = UsersDomainConfig(
-		tokenSizeInBytes = 256 / 8,
-		tokenTtl = 24.hours,
-		tokenRollingTtl = 1.hours,
-		maxTokensPerUser = 1
-	)
+    @Bean
+    fun usersDomainConfig() = UsersDomainConfig(
+        tokenSizeInBytes = 256 / 8,
+        tokenTtl = 24.hours,
+        tokenRollingTtl = 1.hours,
+        maxTokensPerUser = 1
+    )
 
 }
 
 @Configuration
 class CorsConfiguration : WebMvcConfigurer {
-	override fun addCorsMappings(registry: CorsRegistry) {
-		registry.addMapping("/**")
-			.allowedOrigins("http://localhost:4200") // Adjust this to your Angular app's domain
-			.allowedMethods("GET", "POST", "PUT", "DELETE")
-			.allowedHeaders("*")
-			.exposedHeaders("Location")
-	}
+    override fun addCorsMappings(registry: CorsRegistry) {
+        registry.addMapping("/**")
+            .allowedOrigins("http://localhost:4200") // Adjust this to your Angular app's domain
+            .allowedMethods("GET", "POST", "PUT", "DELETE")
+            .allowedHeaders("*")
+            .exposedHeaders("Location")
+    }
 }
 
 fun main(args: Array<String>) {
-	runApplication<SiteDiaryApplication>(*args)
+    runApplication<SiteDiaryApplication>(*args)
 }

@@ -19,6 +19,8 @@ repositories {
 }
 
 dependencies {
+	implementation ("com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10")
+	implementation ("com.openhtmltopdf:openhtmltopdf-slf4j:1.0.10")
 	implementation("com.auth0:java-jwt:3.18.2")
 	implementation("org.jdbi:jdbi3-core:3.32.0")
 	implementation("org.jdbi:jdbi3-kotlin:3.28.0")
