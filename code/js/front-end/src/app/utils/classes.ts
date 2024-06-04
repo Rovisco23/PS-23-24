@@ -48,6 +48,7 @@ export interface Work {
   building: string;
   members: Member[];
   log: LogEntrySimplified[];
+  technicians: Technician[];
   images: number;
   docs: number;
 }
@@ -113,23 +114,29 @@ export interface InputWork {
   type: string;
   description: string;
   holder: string;
-  director: string;
   company: Company;
   building: string;
-  address: Address
+  address: Address;
+  technicians: Technician[];
+}
+
+export interface Technician {
+  name: string;
+  role: string;
+  association: Association;
 }
 
 export enum WorkTypes {
-  Residential = 'RESIDENCIAL',
-  Comercial = 'COMERCIAL',
-  Industrial = 'INDUSTRIAL',
-  Infrastructural = 'INFRAESTRUTURA',
-  Institutional = 'INSTITUCIONAL',
-  Rehabilitation = 'REABILITAÇÃO',
-  Special_Structure = 'ESTRUTURA ESPECIAL',
-  Work_of_Art = 'OBRA DE ARTE',
-  Habitation = 'HABITAÇÃO',
-  Special_Building = 'EDIFICIOS ESPECIAL'
+  Residential = 'Residencial',
+  Comercial = 'Comercial',
+  Industrial = 'Industrial',
+  Infrastructural = 'Infraestrutura',
+  Institutional = 'Institucional',
+  Rehabilitation = 'Reabilitação',
+  Special_Structure = 'Estrutura Especial',
+  Work_of_Art = 'Obra De Arte',
+  Habitation = 'Habitação',
+  Special_Building = 'Edificio Especial'
 }
 
 export interface Invite {

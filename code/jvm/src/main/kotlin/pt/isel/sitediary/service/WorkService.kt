@@ -27,7 +27,6 @@ class WorkService(
     private val transactionManager: TransactionManager,
     private val clock: Clock
 ) {
-
     fun createWork(openingTerm: OpeningTermInputModel, user: User): CreateWorkResult = transactionManager.run {
         val workRep = it.workRepository
         val addressRep = it.addressRepository

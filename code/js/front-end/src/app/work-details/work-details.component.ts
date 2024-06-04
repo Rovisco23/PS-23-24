@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import {LogEntrySimplified, Work} from "../utils/classes";
+import {LogEntrySimplified, Role, Technician, Work} from "../utils/classes";
 import {HttpService} from '../utils/http.service';
 import {HttpClientModule} from "@angular/common/http";
 import {MatTab, MatTabGroup} from "@angular/material/tabs";
@@ -57,6 +57,7 @@ export class WorkDetailsComponent {
     this.httpService.getWorkById(workListingId).subscribe((work: Work) => {
       this.work = work;
       this.filteredLogList = work.log;
+      work.technicians = this.composeTechnicianRoles(work.technicians)
       this.fiscal = work.members.find(member => member.role === 'FISCALIZAÇÃO')?.name
       this.diretor = work.members.find(member => member.role === 'DIRETOR')?.name
       this.coordenador = work.members.find(member => member.role === 'COORDENADOR')?.name
@@ -86,6 +87,13 @@ export class WorkDetailsComponent {
 
   createNewEntry() {
     this.router.navigate([`/create-log-entry/${this.work!!.id}`]);
+  }
+
+  composeTechnicianRoles(tecs: Technician[]): Technician[] {
+    return tecs.map(technician => {
+      technician.role = Role.composeRole(technician.role);
+      return technician;
+    });
   }
 
   onLogEntryClick(id: number) {

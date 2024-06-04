@@ -20,18 +20,17 @@ data class OpeningTermInputModel(
     val type: WorkType,
     val description: String?,
     val holder: String,
-    val director: String,
     val company: ConstructionCompany,
     val building: String,
     val address: Address,
     val technicians: List<Technician>
 ) {
     fun checkParams() =
-        name.isBlank() || holder.isBlank() || director.isBlank() || company.name.isBlank() || company.num <= 0 ||
+        name.isBlank() || holder.isBlank() || company.name.isBlank() || company.num <= 0 ||
                 building.isBlank() || address.location.parish.isBlank() || address.street.isBlank() ||
                 address.postalCode.isBlank() || address.location.county.isBlank()
 
-    fun checkTechnicians() = technicians.filter { it.role == "FISCALIZAÇÃO" || it.role == "COORDENADOR" }.size < 2
+    fun checkTechnicians() = technicians.filter { it.role == "DIRETOR" || it.role == "FISCALIZAÇÃO" || it.role == "COORDENADOR" }.size < 3
 }
 
 data class MemberInputModel(

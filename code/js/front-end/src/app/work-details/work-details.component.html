@@ -154,6 +154,10 @@
                 <td><strong>Prédio</strong></td>
                 <td>{{ work?.building }}</td>
               </tr>
+              <tr *ngFor="let technician of work?.technicians">
+                <td><strong>{{technician.role}}</strong></td>
+                <td>{{ technician.name }} - {{ technician.association.name }} {{ technician.association.number }}</td>
+              </tr>
             </table>
           </div>
         </div>

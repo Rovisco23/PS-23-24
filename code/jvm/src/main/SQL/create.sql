@@ -1,11 +1,12 @@
 drop table if exists INTERVENIENTE;
+drop table if exists CONVITE;
 drop table if exists DOCUMENTO;
 drop table if exists IMAGEM;
 drop table if exists IMAGEM_OBRA;
-drop table if exists TERMO_ABERTURA;
-drop table if exists EMPRESA_CONSTRUCAO;
 drop table if exists REGISTO;
 drop table if exists MEMBRO;
+drop table if exists TERMO_ABERTURA;
+drop table if exists EMPRESA_CONSTRUCAO;
 drop table if exists OBRA;
 drop table if exists SESSAO;
 drop table if exists PROFILE_PICTURE;
@@ -61,7 +62,7 @@ create table OBRA
     constraint cPostal_format check (cPostal LIKE '%-%'),
     constraint Tipo CHECK (tipo IN
                            ('RESIDENCIAL', 'COMERCIAL', 'INDUSTRIAL', 'INFRAESTRUTURA', 'INSTITUCIONAL', 'REABILITAÇÃO',
-                            'ESTRUTURA ESPECIAL', 'OBRA DE ARTE', 'HABITAÇÃO', 'EDIFICIOS ESPECIAL')),
+                            'ESTRUTURA ESPECIAL', 'OBRA DE ARTE', 'HABITAÇÃO', 'EDIFICIO ESPECIAL')),
     constraint Estado CHECK (estado IN ('EM PROGRESSO', 'TERMINADA', 'CANCELADA', 'EM PAUSA'))
 );
 

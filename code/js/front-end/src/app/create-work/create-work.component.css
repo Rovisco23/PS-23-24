@@ -41,5 +41,101 @@ form {
   color: white;
 }
 
+.content {
+  display: flex;
+  justify-content: space-between;
+  height: auto;
+  overflow: hidden;
+}
+
+.left-section {
+  font-size: 0.8em;
+  width: 50%;
+  height: inherit;
+  text-align: center;
+}
+
+.input-container {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.input {
+  margin-bottom: 6px;
+}
+
+label {
+  font-size: 0.9em;
+  margin-bottom: 5px;
+}
+
+input[type="text"], select {
+  font-size: 0.9em;
+  padding: 5px;
+  margin-bottom: 2px;
+}
+
+.submit-button {
+  font-size: 0.9em;
+  padding: 5px 10px;
+}
+
+.right-section {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.table-container {
+  max-height: 60%; /* Adjust based on your row height */
+  width: auto;
+  overflow-y: auto;
+}
+
+.table {
+  width: 100%;
+  background-color: #11113D;
+  max-width: 100%;
+}
+
+.table th, .table td {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.table th {
+  color: #FF7A00;
+}
+
+.table td {
+  color: white;
+}
+
+.remove-button {
+  height: auto;
+  width: auto;
+  background-color: white;
+  color: black;
+}
+
+.remove-button:hover {
+  background-color: red;
+  color: white;
+}
 
 
+.add-button {
+  height: auto;
+  width: auto;
+  background-color: white;
+  color: black;
+  margin-left: 5px;
+}
+
+.add-button:hover {
+  background-color: #FF7A00;
+  color: white;
+}
+
+.title {
+  margin: 5px;
+}
