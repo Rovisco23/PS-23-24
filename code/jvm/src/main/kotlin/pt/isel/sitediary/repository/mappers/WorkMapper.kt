@@ -3,7 +3,9 @@ package pt.isel.sitediary.repository.mappers
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
 import pt.isel.sitediary.domainmodel.user.Member
+import pt.isel.sitediary.domainmodel.user.Technician
 import pt.isel.sitediary.domainmodel.work.Address
+import pt.isel.sitediary.domainmodel.work.Association
 import pt.isel.sitediary.domainmodel.work.Author
 import pt.isel.sitediary.domainmodel.work.ConstructionCompany
 import pt.isel.sitediary.domainmodel.work.Location
@@ -18,6 +20,7 @@ import java.util.*
 class WorkMapper : RowMapper<Work> {
     override fun map(rs: ResultSet?, ctx: StatementContext?): Work? = if (rs != null) {
         val log = rs.getString("log").removeSurrounding("{", "}")
+        val technicians = rs.getString("technicians").removeSurrounding("{", "}")
         Work(
             id = UUID.fromString(rs.getString("id")),
             name = rs.getString("nome"),
@@ -63,6 +66,21 @@ class WorkMapper : RowMapper<Work> {
                             title = aux[4],
                             state = aux[5],
                             createdAt = Date.valueOf(aux[6])
+                        )
+                    }
+            },
+            technicians = if (technicians.isEmpty()) emptyList() else {
+                technicians.split(",")
+                    .map {
+                        val x = '"'.toString()
+                        val aux = it.removeSurrounding(x, x).split(";")
+                        Technician(
+                            name = aux[0],
+                            role = aux[1],
+                            association = Association(
+                                name = aux[2],
+                                number = aux[3].toInt()
+                            )
                         )
                     }
             },

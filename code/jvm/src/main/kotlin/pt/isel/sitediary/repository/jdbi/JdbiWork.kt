@@ -67,14 +67,16 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         "select OBRA.id, OBRA.nome, OBRA.tipo, OBRA.descricao, OBRA.estado, OBRA.distrito, OBRA.concelho, " +
                 "OBRA.freguesia, OBRA.rua, OBRA.cpostal, ARRAY(SELECT CONCAT(uId, ';', username, ';', MEMBRO.role) " +
                 "FROM MEMBRO join UTILIZADOR on uId = id WHERE oId = :id and MEMBRO.pendente = :pending) as membros, " +
-                "ARRAY(SELECT CONCAT(REGISTO.id, ';', author, ';', UTILIZADOR.username, ';', MEMBRO.role, ';', " +
-                "titulo, ';', estado, ';', TO_CHAR(REGISTO.creation_date, 'YYYY-MM-DD')) FROM REGISTO " +
-                "join UTILIZADOR on author = UTILIZADOR.id join MEMBRO on uId = author where REGISTO.oId = :id) " +
-                "as log, TERMO_ABERTURA.titular_licenca, TERMO_ABERTURA.predio, EMPRESA_CONSTRUCAO.nome " +
-                "as company_name, EMPRESA_CONSTRUCAO.numero as company_num, (SELECT COUNT(*) FROM IMAGEM " +
-                "WHERE oId = OBRA.id) as imagens, (SELECT COUNT(*) FROM DOCUMENTO WHERE oId = OBRA.id) AS documentos " +
-                "from OBRA join TERMO_ABERTURA on TERMO_ABERTURA.oId = :id join EMPRESA_CONSTRUCAO on " +
-                "EMPRESA_CONSTRUCAO.id = TERMO_ABERTURA.empresa_construcao where OBRA.id = :id"
+                "ARRAY(SELECT CONCAT(nome, ';', role, ';', associacao, ';', numero) from INTERVENIENTE where " +
+                "oId = :id) as technicians, ARRAY(SELECT CONCAT(REGISTO.id, ';', author, ';', UTILIZADOR.username, " +
+                "';', MEMBRO.role, ';', titulo, ';', estado, ';', TO_CHAR(REGISTO.creation_date, 'YYYY-MM-DD')) " +
+                "FROM REGISTO join UTILIZADOR on author = UTILIZADOR.id join MEMBRO on uId = author where " +
+                "REGISTO.oId = :id) as log, TERMO_ABERTURA.titular_licenca, TERMO_ABERTURA.predio, " +
+                "EMPRESA_CONSTRUCAO.nome as company_name, EMPRESA_CONSTRUCAO.numero as company_num, " +
+                "(SELECT COUNT(*) FROM IMAGEM WHERE oId = OBRA.id) as imagens, (SELECT COUNT(*) FROM DOCUMENTO " +
+                "WHERE oId = OBRA.id) AS documentos from OBRA join TERMO_ABERTURA on TERMO_ABERTURA.oId = :id " +
+                "join EMPRESA_CONSTRUCAO on EMPRESA_CONSTRUCAO.id = TERMO_ABERTURA.empresa_construcao " +
+                "where OBRA.id = :id"
     )
         .bind("id", id.toString())
         .bind("pending", false)

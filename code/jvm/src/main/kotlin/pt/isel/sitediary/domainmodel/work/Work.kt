@@ -18,6 +18,7 @@ data class Work(
     val building: String,
     val members: List<Member>,
     val log: List<LogEntrySimplified>,
+    val technicians: List<Technician>,
     val images: Int,
     val docs: Int
 ) {
