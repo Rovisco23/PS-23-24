@@ -117,6 +117,8 @@ class LogService(
             failure(Errors.logNotFound)
         } else if (!logRepository.checkUserAccess(logEntry.workId, userId)) {
             failure(Errors.notMember)
+        } else if (!logEntry.editable) {
+            failure(Errors.logNotEditable)
         } else {
             val images = body.files.filter { f -> f.contentType == "Imagem" }.map { img -> img.id }
             val documents = body.files.filter { f -> f.contentType == "Documento" }.map { doc -> doc.id }

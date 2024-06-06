@@ -14,7 +14,6 @@ interface LogRepository {
         images: List<FileModel>?,
         docs: List<FileModel>?
     ): Int
-
     fun getById(id: Int): LogEntry?
     fun checkUserAccess(workId: UUID, userId: Int): Boolean
     fun getFiles(images: List<Int>, documents: List<Int>): List<FileModel>?
@@ -26,6 +25,5 @@ interface LogRepository {
         images: List<FileModel>?,
         docs: List<FileModel>?
     )
-
     fun deleteFiles(images: List<Int>, documents: List<Int>)
 }
