@@ -17,6 +17,7 @@ import pt.isel.sitediary.utils.success
 import java.sql.Timestamp
 import java.time.Duration
 import java.util.*
+import kotlin.math.log
 
 typealias CreateLogResult = Result<Errors, Int>
 typealias GetLogResult = Result<Errors, LogEntry>
@@ -73,6 +74,7 @@ class LogService(
         } else if (!logRepository.checkUserAccess(logEntry.workId, userId)) {
             failure(Errors.notMember)
         } else {
+            if (logEntry.editable && checkIfEditTimeElapsed(logEntry.createdAt)) logRepository.finish(log.logId)
             val images = log.files.filter { f -> f.contentType == "Imagem" }.map { img -> img.id }
             val documents = log.files.filter { f -> f.contentType == "Documento" }.map { doc -> doc.id }
             val files = logRepository.getFiles(images, documents)
@@ -118,6 +120,9 @@ class LogService(
         } else if (!logRepository.checkUserAccess(logEntry.workId, userId)) {
             failure(Errors.notMember)
         } else if (!logEntry.editable) {
+            failure(Errors.logNotEditable)
+        } else if (checkIfEditTimeElapsed(logEntry.createdAt)) {
+            logRepository.finish(body.logId)
             failure(Errors.logNotEditable)
         } else {
             val images = body.files.filter { f -> f.contentType == "Imagem" }.map { img -> img.id }
