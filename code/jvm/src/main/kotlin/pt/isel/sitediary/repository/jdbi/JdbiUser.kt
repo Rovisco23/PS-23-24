@@ -98,8 +98,8 @@ class JdbiUser(private val handle: Handle) : UserRepository {
             .execute()
     }
 
-    override fun checkEmailInUse(email: String): Boolean = handle.createQuery(
-        "select count(*) from UTILIZADOR where email = :email"
+    override fun checkDummyEmail(email: String): Boolean = handle.createQuery(
+        "select count(*) from UTILIZADOR where email = :email and username is null"
     )
         .bind("email", email)
         .mapTo(Int::class.java)
@@ -234,5 +234,12 @@ class JdbiUser(private val handle: Handle) : UserRepository {
         }
         handle.createUpdate(query.toString().dropLast(2)).execute()
     }
+
+    override fun checkEmailInUse(email: String): Boolean = handle.createQuery(
+        "select count(*) from utilizador where email = :email and username is not null"
+    )
+        .bind("email", email)
+        .mapTo(Int::class.java)
+        .single() == 1
 
 }

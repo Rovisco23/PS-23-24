@@ -1,7 +1,7 @@
 import {Component, inject} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpService} from "../utils/http.service";
-import {AnswerInvite, Association, InviteSimplified, Role} from "../utils/classes";
+import {AnswerInvite, InviteSimplified, Role} from "../utils/classes";
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/material/card";
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
@@ -11,6 +11,8 @@ import {MatRadioButton} from "@angular/material/radio";
 import {MatIcon} from "@angular/material/icon";
 import {MatToolbar} from "@angular/material/toolbar";
 import {NgIf} from "@angular/common";
+import {ErrorHandler} from "../utils/errorHandle";
+import {catchError, throwError} from "rxjs";
 
 @Component({
   selector: 'app-invite-details',
@@ -40,9 +42,14 @@ export class InviteDetailsComponent {
 
   httpService = inject(HttpService);
 
-  constructor(private route: ActivatedRoute, private router: Router){
+  constructor(private route: ActivatedRoute, private router: Router, private errorHandle: ErrorHandler) {
     const inviteId =  String(this.route.snapshot.params['id']);
-    this.httpService.getInvite(inviteId).subscribe((invite: InviteSimplified) => {
+    this.httpService.getInvite(inviteId).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe((invite: InviteSimplified) => {
       this.invite = invite;
       this.invite.role = Role.composeRole(invite.role);
     });
@@ -66,7 +73,12 @@ export class InviteDetailsComponent {
       accepted: true,
       role: Role.decomposeRole(this.invite.role)
     };
-    this.httpService.answerInvite(accept).subscribe(() => {
+    this.httpService.answerInvite(accept).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe(() => {
       this.router.navigate([`/work-details/${this.invite?.workId}`]);
     });
   }
@@ -79,7 +91,12 @@ export class InviteDetailsComponent {
       accepted: false,
       role: Role.decomposeRole(this.invite.role)
     };
-    this.httpService.answerInvite(refuse).subscribe(() => {
+    this.httpService.answerInvite(refuse).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe(() => {
       this.router.navigate(['/work']);
     });
   }

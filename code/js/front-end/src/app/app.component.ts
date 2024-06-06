@@ -9,6 +9,8 @@ import {filter} from 'rxjs/operators';
 import {HttpService} from "./utils/http.service";
 import {HttpClientModule} from "@angular/common/http";
 import {MatBadge} from "@angular/material/badge";
+import {catchError, throwError} from "rxjs";
+import {ErrorHandler} from "./utils/errorHandle";
 
 @Component({
   selector: 'app-root',
@@ -40,34 +42,47 @@ export class AppComponent {
   @ViewChild('drawer') drawer: MatDrawer | undefined;
 
   logout(): void {
-    this.httpService.logout(localStorage.getItem('token') ?? '').subscribe(() => {
+    const token = localStorage.getItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('profilePicture');
+    this.httpService.logout(token ?? '').subscribe(() => {
       console.log("Logout Done")
-      localStorage.removeItem('userId');
-      localStorage.removeItem('token');
-      localStorage.removeItem('role');
-      localStorage.removeItem('profilePicture');
       this.router.navigate(['/login']);
     })
   }
 
-  constructor(private router: Router, private httpService: HttpService) {
+  constructor(private router: Router, private httpService: HttpService, private errorHandle: ErrorHandler) {
     this.router.events
       .pipe(filter((events) => events instanceof NavigationEnd))
       .subscribe((event: any) => {
         const navigationEndEvent = event as NavigationEnd;
         this.showLayout = navigationEndEvent.urlAfterRedirects !== '/login' &&
           navigationEndEvent.urlAfterRedirects !== '/signup';
-        this.httpService.getProfilePicture().subscribe((data) => {
-          if (data.size === 0) {
-            this.src = './assets/profile.png'
-          } else {
-            localStorage.setItem('profilePicture', URL.createObjectURL(data))
-            this.src = URL.createObjectURL(data)
-          }
-        })
-        this.httpService.getInviteList().subscribe(res => {
-          this.notification = res.length;
-        })
+        if (localStorage.getItem('token')){
+          this.httpService.getProfilePicture().pipe(
+            catchError(error => {
+              this.errorHandle.handleError(error);
+              return throwError(error);
+            })
+          ).subscribe((data) => {
+            if (data.size === 0) {
+              this.src = './assets/profile.png'
+            } else {
+              localStorage.setItem('profilePicture', URL.createObjectURL(data))
+              this.src = URL.createObjectURL(data)
+            }
+          })
+          this.httpService.getInviteList().pipe(
+            catchError(error => {
+              this.errorHandle.handleError(error);
+              return throwError(error);
+            })
+          ).subscribe(res => {
+            this.notification = res.length;
+          })
+        }
       })
   }
 

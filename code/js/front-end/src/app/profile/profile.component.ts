@@ -4,6 +4,8 @@ import {User} from "../utils/classes";
 import {ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 import {NgIf, Location} from "@angular/common";
 import {MatIcon} from "@angular/material/icon";
+import {catchError, throwError} from "rxjs";
+import {ErrorHandler} from "../utils/errorHandle";
 
 @Component({
   selector: 'app-profile',
@@ -24,7 +26,7 @@ export class ProfileComponent {
   edit: boolean = false;
   profileSrc = '';
 
-  constructor(private router: Router, private route: ActivatedRoute, private location: Location) {
+  constructor(private router: Router, private route: ActivatedRoute, private location: Location, private errorHandle: ErrorHandler) {
     this.loadUser();
     this.route.queryParams.subscribe(params => {
       if (params['edit'] === 'true') {
@@ -32,7 +34,12 @@ export class ProfileComponent {
         this.loadUser()
       }
     });
-    this.httpService.getProfilePicture().subscribe((data) => {
+    this.httpService.getProfilePicture().pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe((data) => {
       if (data.size === 0) {
         this.profileSrc = './assets/profile.png'
       } else {
@@ -44,7 +51,12 @@ export class ProfileComponent {
 
   loadUser() {
     const uId = String(this.route.snapshot.params['id'] ?? localStorage.getItem('userId'));
-    this.httpService.getProfile(uId).subscribe((user: User) => {
+    this.httpService.getProfile(uId).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe((user: User) => {
       this.user = user;
       if (user.role === 'ADMIN') {
         this.user.role = 'Admin';

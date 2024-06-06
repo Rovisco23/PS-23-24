@@ -7,23 +7,23 @@
   <div class="right">
     <h1 class="page-title">Iniciar Sessão</h1>
     <form (ngSubmit)="login()">
-        <div class="input">
-          <div>
-            <label for="username">Nome de Utilizador</label>
-          </div>
-          <div>
-            <input type="text" id="username" name="username" [(ngModel)]="username" required>
-          </div>
+      <div class="input">
+        <div>
+          <label for="username">Nome de Utilizador</label>
         </div>
-        <div class="input">
-          <div>
-            <label for="password">Palavra Passe</label>
-          </div>
-          <div>
-            <input type="password" id="password" name="password" [(ngModel)]="password" required>
-          </div>
+        <div>
+          <input type="text" id="username" name="username" [(ngModel)]="username" required>
         </div>
-      <div >
+      </div>
+      <div class="input">
+        <div>
+          <label for="password">Palavra Passe</label>
+        </div>
+        <div>
+          <input type="password" id="password" name="password" [(ngModel)]="password" required>
+        </div>
+      </div>
+      <div>
         <button mat-stroked-button class="button" type="submit">Login</button>
       </div>
     </form>

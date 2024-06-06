@@ -23,6 +23,8 @@ import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {SelectionModel} from "@angular/cdk/collections";
+import {ErrorHandler} from "../utils/errorHandle";
+import {catchError, throwError} from "rxjs";
 
 @Component({
   selector: 'app-log-entry-details',
@@ -63,9 +65,14 @@ export class LogEntryDetailsComponent {
   selection = new SelectionModel<SimpleFile>(true, []);
 
 
-  constructor(private router: Router, private location: Location) {
+  constructor(private router: Router, private location: Location, private errorHandle: ErrorHandler) {
     this.logId = String(this.route.snapshot.params['id']);
-    this.httpService.getLogById(this.logId).subscribe((log: LogEntry) => {
+    this.httpService.getLogById(this.logId).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe((log: LogEntry) => {
       this.log = log;
       this.dataSource.data = log.files;
     })
@@ -81,7 +88,12 @@ export class LogEntryDetailsComponent {
 
   downloadFiles() {
     const downloadFiles = this.log?.files.filter(file => this.selection.isSelected(file))
-    this.httpService.downloadFiles(this.logId, this.log!!.workId, downloadFiles!!).subscribe((res) => {
+    this.httpService.downloadFiles(this.logId, this.log!!.workId, downloadFiles!!).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe((res) => {
       const link = document.createElement('a')
       link.href = URL.createObjectURL(res)
       link.download = 'files.zip'
@@ -91,7 +103,12 @@ export class LogEntryDetailsComponent {
 
   deleteFiles() {
     const filesToDelete = this.log?.files.filter(file => this.selection.isSelected(file))
-    this.httpService.deleteFiles(this.logId, this.log!!.workId, filesToDelete!!).subscribe(() => {
+    this.httpService.deleteFiles(this.logId, this.log!!.workId, filesToDelete!!).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe(() => {
       this.dataSource.data = this.dataSource.data.filter(file => !this.selection.isSelected(file))
       this.selection.clear()
     })

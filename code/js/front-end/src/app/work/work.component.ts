@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {WorkListingsComponent} from "../work-listings/work-listings.component";
-import {CommonModule, Location} from "@angular/common";
+import {CommonModule} from "@angular/common";
 import {HttpService} from '../utils/http.service';
 import {Classes} from "../utils/classes";
 import {HttpClientModule} from "@angular/common/http";
@@ -8,6 +8,8 @@ import {Router, RouterLink} from "@angular/router";
 import {MatIcon} from "@angular/material/icon";
 import {MatFabButton} from "@angular/material/button";
 import {FormsModule} from "@angular/forms";
+import {catchError, throwError} from "rxjs";
+import {ErrorHandler} from "../utils/errorHandle";
 
 @Component({
   selector: 'app-work',
@@ -31,8 +33,13 @@ export class WorkComponent {
   inputValue: string = '';
   httpService: HttpService = inject(HttpService);
 
-  constructor(private router: Router, private location: Location) {
-    this.httpService.getWorkListings().subscribe(res => {
+  constructor(private router: Router, private errorHandle: ErrorHandler) {
+    this.httpService.getWorkListings().pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe(res => {
       this.workListingsList = res;
       this.filteredWorkList = this.workListingsList.slice(0, 10);
     });

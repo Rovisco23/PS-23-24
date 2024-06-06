@@ -16,6 +16,8 @@ import {
   MatHeaderRowDef,
   MatRow, MatRowDef, MatTable
 } from "@angular/material/table";
+import {ErrorHandler} from "../utils/errorHandle";
+import {catchError, throwError} from "rxjs";
 
 @Component({
   selector: 'app-edit-log-entry',
@@ -52,9 +54,14 @@ export class EditLogEntryComponent {
   files: Map<string, File> = new Map<string, File>();
   displayedColumns: string[] = ['files', 'delete'];
 
-  constructor(private router: Router, private location: Location) {
+  constructor(private router: Router, private location: Location, private errorHandle: ErrorHandler) {
     this.logId = String(this.route.snapshot.params['id']);
-    this.httpService.getLogById(this.logId).subscribe((log: LogEntry) => {
+    this.httpService.getLogById(this.logId).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe((log: LogEntry) => {
       this.log.title = log.title
       this.log.content = log.content
       this.log.workId = log.workId
@@ -71,7 +78,12 @@ export class EditLogEntryComponent {
       this.files.forEach((file) => {
         this.form.append('files', file)
       })
-      this.httpService.editLog(this.form, this.logId).subscribe(() => {
+      this.httpService.editLog(this.form, this.logId).pipe(
+        catchError(error => {
+          this.errorHandle.handleError(error);
+          return throwError(error);
+        })
+      ).subscribe(() => {
         this.router.navigate([`/log-entry/${this.logId}`])
       });
     }

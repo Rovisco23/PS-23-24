@@ -5,6 +5,8 @@ import {FormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
 import {MatButton} from "@angular/material/button";
 import {OriginalUrlService} from "../utils/originalUrl.service";
+import {catchError, throwError} from "rxjs";
+import {ErrorHandler} from "../utils/errorHandle";
 
 @Component({
   selector: 'app-login',
@@ -25,10 +27,15 @@ export class LoginComponent {
 
   httpService = inject(HttpService);
 
-  constructor(private router: Router, private originalUrlService: OriginalUrlService) {}
+  constructor(private router: Router, private originalUrlService: OriginalUrlService, private errorHandle: ErrorHandler) {}
 
   login(): void {
-    this.httpService.login(this.username, this.password).subscribe(res => {
+    this.httpService.login(this.username, this.password).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe(res => {
       console.log("Done")
       const token = res.token
       const userId = res.userId
@@ -49,9 +56,5 @@ export class LoginComponent {
         this.router.navigate(['/work'])
       }
     })
-  }
-
-  register() {
-    this.router.navigate(['/signup']);
   }
 }

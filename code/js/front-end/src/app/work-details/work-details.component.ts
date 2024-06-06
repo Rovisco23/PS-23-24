@@ -13,6 +13,8 @@ import {MatLabel} from "@angular/material/form-field";
 import {FormsModule} from "@angular/forms";
 import {MatBadge} from "@angular/material/badge";
 import {Location} from "@angular/common"
+import {catchError, throwError} from "rxjs";
+import {ErrorHandler} from "../utils/errorHandle";
 
 @Component({
   selector: 'app-work-details',
@@ -52,9 +54,14 @@ export class WorkDetailsComponent {
   searchLogValue = '';
   tabIndex = 0;
 
-  constructor(private router: Router, private location: Location) {
+  constructor(private router: Router, private location: Location, private errorHandle: ErrorHandler) {
     const workListingId = String(this.route.snapshot.params['id']);
-    this.httpService.getWorkById(workListingId).subscribe((work: Work) => {
+    this.httpService.getWorkById(workListingId).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe((work: Work) => {
       this.work = work;
       this.filteredLogList = work.log;
       work.technicians = this.composeTechnicianRoles(work.technicians)
@@ -63,7 +70,12 @@ export class WorkDetailsComponent {
       this.coordenador = work.members.find(member => member.role === 'COORDENADOR')?.name
       this.admin = this.work.members.find(member => member.role === 'ADMIN')?.id === Number(localStorage.getItem('userId'));
     });
-    this.httpService.getWorkImage(workListingId).subscribe((data) => {
+    this.httpService.getWorkImage(workListingId).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe((data) => {
       if (data.size === 0) {
         this.workSrc = './assets/work.png'
       } else {

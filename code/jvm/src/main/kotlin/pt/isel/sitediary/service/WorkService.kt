@@ -152,12 +152,12 @@ class WorkService(
     }
 
 
-    fun getOpeningTerm(workId: UUID, userId: Int) = transactionManager.run {
+    fun getOpeningTerm(workId: UUID, user: User) = transactionManager.run {
         val workRep = it.workRepository
         val work = workRep.getById(workId)
         if (work == null) {
             failure(Errors.workNotFound)
-        } else if (!work.members.containsMemberById(userId)) {
+        } else if (user.role != "ADMIN" && !work.members.containsMemberById(user.id)) {
             failure(Errors.notMember)
         } else {
             val openingTerm = workRep.getOpeningTerm(workId)
@@ -185,12 +185,12 @@ class WorkService(
         }
     }
 
-    fun getWorkImage(workId: UUID, userId: Int) = transactionManager.run {
+    fun getWorkImage(workId: UUID, user: User) = transactionManager.run {
         val workRep = it.workRepository
         val work = workRep.getById(workId)
         if (work == null) {
             failure(Errors.workNotFound)
-        } else if (!work.members.containsMemberById(userId)) {
+        } else if (user.role != "ADMIN" && !work.members.containsMemberById(user.id)) {
             failure(Errors.notMember)
         } else {
             val file = workRep.getWorkImage(workId)
@@ -203,7 +203,7 @@ class WorkService(
         val work = workRep.getById(workId)
         if (work == null) {
             failure(Errors.workNotFound)
-        } else if (!work.members.containsMemberById(userId)) {
+        } else if (!work.members.checkOwner(userId)) {
             failure(Errors.notMember)
         } else {
             if (workRep.checkWorkImageExists(workId) == null && featuredImage != null) {

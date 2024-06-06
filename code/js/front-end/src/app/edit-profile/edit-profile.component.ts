@@ -9,6 +9,8 @@ import {MatIcon} from "@angular/material/icon";
 import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {concelhos, freguesias} from "../utils/utils";
+import {ErrorHandler} from "../utils/errorHandle";
+import {catchError, throwError} from "rxjs";
 
 @Component({
   selector: 'app-edit-profile',
@@ -39,12 +41,22 @@ export class EditProfileComponent {
 
   httpService = inject(HttpService);
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private errorHandle: ErrorHandler) {
     const uId =  localStorage.getItem('userId');
-    this.httpService.getProfile(uId!!).subscribe((user: User) => {
+    this.httpService.getProfile(uId!!).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe((user: User) => {
       this.user = user;
     });
-    this.httpService.getProfilePicture().subscribe((data) => {
+    this.httpService.getProfilePicture().pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe((data) => {
       if (data.size === 0) {
         this.editSrc = './assets/profile.png'
       } else {
@@ -88,18 +100,33 @@ export class EditProfileComponent {
 
   onSubmitPicture(){
     this.form.append('file', this.newFile);
-    this.httpService.changeProfilePicture(this.form).subscribe(() => {});
+    this.httpService.changeProfilePicture(this.form).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe(() => {});
   }
 
   onRemovePicture(){
-    this.httpService.changeProfilePicture(this.form).subscribe(() => {
+    this.httpService.changeProfilePicture(this.form).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe(() => {
       this.editSrc = './assets/profile.png';
     });
   }
 
   onSubmitEdit(){
     if (this.user) {
-      this.httpService.editProfile(this.user).subscribe(() => {
+      this.httpService.editProfile(this.user).pipe(
+        catchError(error => {
+          this.errorHandle.handleError(error);
+          return throwError(error);
+        })
+      ).subscribe(() => {
         console.log("Edit Profile Finished");
         this.router.navigate(['/profile'], { queryParams: { edit: true } }); // Reset the 'edit' query parameter
       });

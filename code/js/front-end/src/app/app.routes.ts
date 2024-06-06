@@ -21,7 +21,6 @@ export const routes: Routes = [
   {
     path: 'work',
     component: WorkComponent,
-    canActivate: [AuthGuard],
     title: 'Work Page'
   },
   {

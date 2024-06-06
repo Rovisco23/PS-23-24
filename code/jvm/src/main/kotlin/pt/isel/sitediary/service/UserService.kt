@@ -35,6 +35,8 @@ class UserService(
         val rep = it.usersRepository
         if (rep.checkUsernameTaken(user.username) != null) { // username == null
             failure(Errors.usernameAlreadyInUse)
+        } else if(rep.checkEmailInUse(user.email)){
+            failure(Errors.emailAlreadyInUse)
         } else if (user.role != "OPERÁRIO" && user.role != "CÂMARA") {
             failure(Errors.invalidRole)
         } else if (!checkPhoneNumberFormat(user.phone)) {
@@ -43,7 +45,7 @@ class UserService(
             val location = it.addressRepository.getLocation(user.parish, user.county)
             if (location == null) {
                 failure(Errors.invalidLocation)
-            } else if (rep.checkEmailInUse(user.email)) { // email != null
+            } else if (rep.checkDummyEmail(user.email)) { // email != null
                 rep.updateDummyUser(user, location, user.role != "OPERÁRIO")
                 success(Unit)
             } else {

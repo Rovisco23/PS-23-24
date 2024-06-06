@@ -18,6 +18,7 @@ interface UserRepository {
     fun getUserByUsername(username: String): GetUserModel?
     fun updatePhoneNumber(id: Int, number: String)
     fun checkEmailInUse(email: String): Boolean
+    fun checkDummyEmail(email: String): Boolean
     fun checkUsernameTaken(username: String): Int?
     fun editProfile(user: GetUserModel)
     fun getUserByToken(token: TokenValidationInfo): Pair<User, Token>?

@@ -18,6 +18,8 @@ import {MatInput} from "@angular/material/input";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {NgIf, Location} from "@angular/common";
 import {HttpService} from "../utils/http.service";
+import {catchError, throwError} from "rxjs";
+import {ErrorHandler} from "../utils/errorHandle";
 
 @Component({
   selector: 'app-work-invite',
@@ -68,7 +70,7 @@ export class WorkInviteComponent {
   displayedColumns: string[] = ['email', 'role', 'delete'];
   httpService = inject(HttpService)
 
-  constructor(private router: Router, private location: Location) {
+  constructor(private router: Router, private location: Location, private errorHandle: ErrorHandler) {
     this.workId = this.router.getCurrentNavigation()?.extras.state?.['workId'];
     this.emailFormControl.valueChanges.subscribe(value => {
       this.email = value;
@@ -103,7 +105,12 @@ export class WorkInviteComponent {
   }
 
   sendInvites() {
-      this.httpService.inviteMembers(this.workId, this.invites).subscribe(() => {
+      this.httpService.inviteMembers(this.workId, this.invites).pipe(
+        catchError(error => {
+          this.errorHandle.handleError(error);
+          return throwError(error);
+        })
+      ).subscribe(() => {
         this.router.navigate([`/work-details/${this.workId}`]);
       });
   }

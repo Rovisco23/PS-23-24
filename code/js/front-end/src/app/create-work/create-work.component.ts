@@ -18,6 +18,8 @@ import {
   MatRow, MatRowDef, MatTable
 } from "@angular/material/table";
 import {MatInput} from "@angular/material/input";
+import {catchError, throwError} from "rxjs";
+import {ErrorHandler} from "../utils/errorHandle";
 
 @Component({
   selector: 'app-create-work',
@@ -72,11 +74,38 @@ export class CreateWorkComponent {
 
   httpService = inject(HttpService)
 
+  diretor :Technician = {
+    name: '',
+    role: 'DIRETOR',
+    association: {
+      name: '',
+      number: 0
+    }
+  }
+
+  fiscal :Technician = {
+    name: '',
+    role: 'FISCALIZAÇÃO',
+    association: {
+      name: '',
+      number: 0
+    }
+  }
+
+  coordenador :Technician = {
+    name: '',
+    role: 'COORDENADOR',
+    association: {
+      name: '',
+      number: 0
+    }
+  }
+
   counties: string[] = [];
   parishes: string[] = [];
   districts: string[] = [];
 
-  constructor(private router: Router, private location: Location) {
+  constructor(private router: Router, private location: Location, private errorHandle: ErrorHandler) {
     this.work = {
       name: '',
       type: '',
@@ -96,28 +125,7 @@ export class CreateWorkComponent {
         street: '',
         postalCode: ''
       },
-      technicians: [{
-        name: '',
-        role: 'DIRETOR',
-        association: {
-          name: '',
-          number: 0
-        }
-      }, {
-        name: '',
-        role: 'FISCALIZAÇÃO',
-        association: {
-          name: '',
-          number: 0
-        }
-      }, {
-        name: '',
-        role: 'COORDENADOR',
-        association: {
-          name: '',
-          number: 0
-        }
-      }]
+      technicians: []
     }
 
     this.roles.valueChanges.subscribe(value => {
@@ -179,7 +187,12 @@ export class CreateWorkComponent {
 
   create() {
     this.work.type = this.work.type.toUpperCase();
-    this.httpService.createWork(this.work).subscribe(() => {
+    this.httpService.createWork(this.work).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe(() => {
       console.log("Work Created!");
       this.router.navigate(['/work']);
     });
@@ -202,6 +215,16 @@ export class CreateWorkComponent {
     this.roles.reset();
     this.addTechAssociation = '';
     this.addTechNumber = 0;
+    this.table?.renderRows();
+  }
+
+  validateTechnician(tec: Technician) {
+    if (tec.name !== '' && tec.association.name !== '' && Number(tec.association.number) !== 0) {
+      if (!this.work.technicians.some(t => t.role === tec.role)) this.work.technicians.push(tec);
+    }
+    else {
+      this.work.technicians = this.work.technicians.filter(t => t.role !== tec.role);
+    }
     this.table?.renderRows();
   }
 

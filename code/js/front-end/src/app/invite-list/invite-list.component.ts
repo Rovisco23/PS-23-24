@@ -7,6 +7,8 @@ import {MatDivider} from "@angular/material/divider";
 import {MatFabButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
 import {MatList, MatListItem, MatListItemLine, MatListItemTitle} from "@angular/material/list";
+import {catchError, throwError} from "rxjs";
+import {ErrorHandler} from "../utils/errorHandle";
 
 @Component({
   selector: 'app-invite-list',
@@ -33,8 +35,13 @@ export class InviteListComponent {
 
   httpService: HttpService = inject(HttpService);
 
-  constructor(private router: Router, private location: Location) {
-    this.httpService.getInviteList().subscribe(res => {
+  constructor(private router: Router, private location: Location, private errorHandle: ErrorHandler) {
+    this.httpService.getInviteList().pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe(res => {
       this.invites = this.composeInvites(res);
       this.filteredInvites = this.invites;
     });

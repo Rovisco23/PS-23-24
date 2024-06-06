@@ -6,6 +6,8 @@ import {HttpClientModule} from "@angular/common/http";
 import {MatButton} from "@angular/material/button";
 import {NgForOf} from "@angular/common";
 import {concelhos, freguesias} from "../utils/utils";
+import {catchError, throwError} from "rxjs";
+import {ErrorHandler} from "../utils/errorHandle";
 
 @Component({
   selector: 'app-sign-up',
@@ -45,7 +47,7 @@ export class SignUpComponent {
 
   httpService = inject(HttpService);
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private errorHandle: ErrorHandler) {
     concelhos.forEach((value) => {
       value.forEach((v: string) => this.counties.push(v));
     })
@@ -73,7 +75,12 @@ export class SignUpComponent {
 
   signUp(): void {
     this.httpService.signup(this.email, this.username, this.password, this.firstName, this.lastName, this.nif,
-      this.phone, this.parish, this.county, this.role, this.association_name, Number(this.association_num)).subscribe(() => {
+      this.phone, this.parish, this.county, this.role, this.association_name, Number(this.association_num)).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe(() => {
       console.log("Sign Up Finished");
       this.router.navigate(['/login']);
     })

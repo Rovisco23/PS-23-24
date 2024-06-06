@@ -9,11 +9,11 @@ class Errors(val status: Int, val reason: String) {
             .header("Content-Type", "application/problem+json")
             .body<Any>(error.reason)
 
-        val invalidTechnicians = Errors(400, "Para iniciar uma Obra é necessário ter pelo menos um " +
-                "Fiscal e um Coordenador de Obra.")
+        val invalidTechnicians = Errors(400, "Para iniciar uma Obra é necessário ter " +
+                "Fiscal, Diretor e Coordenador de Obra.")
         val logNotEditable = Errors(400, "Esta observação não pode ser editada.")
         val workFinished = Errors(400, "Não é possível registar uma observação numa obra terminada.")
-        val notTechnician = Errors(401, "Não pode criar uma observação se não for um Técnico.")
+        val notTechnician = Errors(403, "Não pode criar uma observação se não for um Técnico.")
         val membersMissing = Errors(400, "É necessário ter pelo menos um Fiscal e um Coordenador de Obra.")
 
         val workAlreadyFinished = Errors(400, "Work is already finished.")
@@ -47,9 +47,9 @@ class Errors(val status: Int, val reason: String) {
 
         val workNotFound = Errors(404, "Work does not exist.")
 
-        val notMember = Errors(401, "You are not a member of this Work")
+        val notMember = Errors(403, "You are not a member of this Work")
 
-        val notAdmin = Errors(401, "You are not an Admin of this Work")
+        val notAdmin = Errors(403, "You are not an Admin of this Work")
 
         val logNotFound = Errors(404, "Log does not exist.")
 

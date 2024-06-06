@@ -8,6 +8,8 @@ import {MatDivider} from "@angular/material/divider";
 import {MatIconButton} from "@angular/material/button";
 import {MatList, MatListItem, MatListItemLine, MatListItemMeta, MatListItemTitle} from "@angular/material/list";
 import {FormsModule} from "@angular/forms";
+import {catchError, throwError} from "rxjs";
+import {ErrorHandler} from "../utils/errorHandle";
 
 @Component({
   selector: 'app-list-users',
@@ -37,8 +39,13 @@ export class ListUsersComponent {
 
   filteredUsersList: User[] = []
 
-  constructor(private router: Router, private location: Location) {
-    this.httpService.getAllUsers().subscribe((res) => {
+  constructor(private router: Router, private location: Location, private errorHandle: ErrorHandler) {
+    this.httpService.getAllUsers().pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe((res) => {
       this.usersList = res
       this.filteredUsersList = this.usersList
     });

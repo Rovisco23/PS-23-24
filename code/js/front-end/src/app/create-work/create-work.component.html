@@ -57,7 +57,8 @@
           <div class="input">
             <label for="street" class="title">Rua</label>
             <br>
-            <input style="margin-right: 3px" type="text" id="street" name="street" [(ngModel)]="work.address.street" required>
+            <input style="margin-right: 3px" type="text" id="street" name="street" [(ngModel)]="work.address.street"
+                   required>
             <input style="margin-right: 3px" type="text" name="postalCode" (input)="formatZipCode()"
                    maxlength="8" [(ngModel)]="work.address.postalCode" required>
           </div>
@@ -101,43 +102,44 @@
         <div class="input">
           <label for="nomeFiscal" class="title">Diretor</label>
           <br>
-          <input style="margin-right: 3px" type="text" id="nomeDiretor" name="nomeFiscal" placeholder="Nome"
-                 [(ngModel)]="work.technicians[0].name"
-                 required>
+          <input style="margin-right: 3px" type="text" id="nomeDiretor" name="nomeDiretor" placeholder="Nome"
+                 [(ngModel)]="diretor.name" (ngModelChange)="validateTechnician(diretor)" required>
           <input style="margin-right: 3px" type="text" id="associacaoNomeDiretor" name="associacaoNomeDiretor"
                  placeholder="Nome da Associação"
-                 [(ngModel)]="work.technicians[0].association.name" required>
+                 [(ngModel)]="diretor.association.name" (ngModelChange)="validateTechnician(diretor)" required>
           <input type="text" id="associacaoNumDiretor" name="associacaoNumDiretor" placeholder="Número de Associado"
-                 [(ngModel)]="work.technicians[0].association.number"
-                 [ngModel]="work.technicians[0].association.number === 0? null : work.technicians[0].association.number"
+                 [(ngModel)]="diretor.association.number"
+                 [ngModel]="diretor.association.number === 0? null : diretor.association.number"
+                 (ngModelChange)="validateTechnician(diretor)"
                  required>
         </div>
         <div class="input">
           <label for="nomeFiscal" class="title">Responsável de Fiscalização</label>
           <br>
           <input style="margin-right: 3px" type="text" id="nomeFiscal" name="nomeFiscal" placeholder="Nome"
-                 [(ngModel)]="work.technicians[1].name"
-                 required>
+                 [(ngModel)]="fiscal.name" (ngModelChange)="validateTechnician(fiscal)" required>
           <input style="margin-right: 3px" type="text" id="associacaoNomeFiscal" name="associacaoNomeFiscal"
                  placeholder="Nome da Associação"
-                 [(ngModel)]="work.technicians[1].association.name" required>
+                 [(ngModel)]="fiscal.association.name" (ngModelChange)="validateTechnician(fiscal)" required>
           <input type="text" id="associacaoNumFiscal" name="associacaoNumFiscal" placeholder="Número de Associado"
-                 [(ngModel)]="work.technicians[1].association.number"
-                 [ngModel]="work.technicians[1].association.number === 0? null : work.technicians[1].association.number"
+                 [(ngModel)]="fiscal.association.number"
+                 [ngModel]="fiscal.association.number === 0? null : fiscal.association.number"
+                 (ngModelChange)="validateTechnician(fiscal)"
                  required>
         </div>
         <div class="input">
           <label for="nomeCoord" class="title">Coordenador</label>
           <br>
           <input style="margin-right: 3px" type="text" id="nomeCoord" name="nomeCoord" placeholder="Nome"
-                 [(ngModel)]="work.technicians[2].name"
+                 [(ngModel)]="coordenador.name" (ngModelChange)="validateTechnician(coordenador)"
                  required>
           <input style="margin-right: 3px" type="text" id="associacaoNomeCoord" name="associacaoNomeCoord"
                  placeholder="Nome da Associação"
-                 [(ngModel)]="work.technicians[2].association.name" required>
+                 [(ngModel)]="coordenador.association.name" (ngModelChange)="validateTechnician(coordenador)" required>
           <input type="text" id="associacaoNumCoord" name="associacaoNumCoord" placeholder="Número de Associado"
-                 [(ngModel)]="work.technicians[2].association.number"
-                 [ngModel]="work.technicians[2].association.number === 0? null : work.technicians[2].association.number"
+                 [(ngModel)]="coordenador.association.number"
+                 [ngModel]="coordenador.association.number === 0? null : coordenador.association.number"
+                 (ngModelChange)="validateTechnician(coordenador)"
                  required>
         </div>
         <button mat-flat-button color="accent" class="submit-button" type="submit">Criar</button>

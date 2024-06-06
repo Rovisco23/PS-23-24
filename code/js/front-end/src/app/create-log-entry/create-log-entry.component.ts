@@ -18,6 +18,8 @@ import {
   MatTable
 } from "@angular/material/table";
 import {HttpResponse} from "@angular/common/http";
+import {catchError, throwError} from "rxjs";
+import {ErrorHandler} from "../utils/errorHandle";
 
 @Component({
   selector: 'app-create-log-entry',
@@ -59,7 +61,7 @@ export class CreateLogEntryComponent {
   files: Map<string, File> = new Map<string, File>();
   displayedColumns: string[] = ['files', 'delete'];
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private errorHandle: ErrorHandler) {
   }
 
   onSubmit() {
@@ -72,7 +74,12 @@ export class CreateLogEntryComponent {
     this.files.forEach((file) => {
       this.form.append('files', file)
     })
-    this.httpService.createLogEntry(this.form).subscribe((response: HttpResponse<any>) => {
+    this.httpService.createLogEntry(this.form).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe((response: HttpResponse<any>) => {
       const headers = response.headers.get("Location")!!
       this.router.navigate([headers])
     })
