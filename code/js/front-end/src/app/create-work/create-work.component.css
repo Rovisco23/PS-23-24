@@ -139,3 +139,12 @@ input[type="text"], select {
 .title {
   margin: 5px;
 }
+
+.same-line-input-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.same-line-input-container .input {
+  flex: 1; /* Make the input take up the remaining space */
+}

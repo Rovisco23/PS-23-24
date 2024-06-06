@@ -132,6 +132,14 @@ export class CreateWorkComponent {
     })
   }
 
+  formatZipCode() {
+    let value = this.work.address.postalCode.replace(/\D/g, '');
+    if (value.length > 4) {
+      value = `${value.slice(0, 4)}-${value.slice(4, 7)}`;
+    }
+    this.work.address.postalCode = value;
+  }
+
   updateLocation(change: boolean) {
     const selectedParish = this.work.address.location.parish;
     const selectedCounty = this.work.address.location.county;

@@ -1,5 +1,6 @@
 package pt.isel.sitediary.domainmodel.work
 
+import kotlinx.serialization.Serializable
 import org.apache.commons.mail.DefaultAuthenticator
 import org.apache.commons.mail.SimpleEmail
 import pt.isel.sitediary.domainmodel.user.Member
@@ -59,7 +60,7 @@ data class LogEntry(
     val author: Author,
     val title: String,
     val content: String,
-    val state: String,
+    val editable: Boolean,
     val createdAt: Date,
     val lastModifiedAt: Date?
 )

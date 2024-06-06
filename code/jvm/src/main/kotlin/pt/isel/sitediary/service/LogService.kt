@@ -57,9 +57,9 @@ class LogService(
         } else if (!logRepository.checkUserAccess(log.workId, userId)) {
             failure(Errors.notMember)
         } else {
-            if (log.state == "EDITÁVEL" && checkIfEditTimeElapsed(log.createdAt)) {
+            if (log.editable && checkIfEditTimeElapsed(log.createdAt)) {
                 logRepository.finish(logId)
-                val aux = log.copy(state = "NÃO EDITÁVEL")
+                val aux = log.copy(editable = false)
                 success(aux)
             } else success(log)
         }
@@ -84,7 +84,7 @@ class LogService(
             val logEntry = logRepository.getById(logId)
             if (logEntry == null) {
                 failure(Errors.logNotFound)
-            } else if (logEntry.state != "EDITÁVEL") {
+            } else if (!logEntry.editable) {
                 failure(Errors.logNotEditable)
             } else if (checkIfEditTimeElapsed(logEntry.createdAt)) {
                 logRepository.finish(logId)

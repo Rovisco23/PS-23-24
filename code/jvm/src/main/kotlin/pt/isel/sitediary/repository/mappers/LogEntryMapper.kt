@@ -16,7 +16,7 @@ class LogEntryMapper : RowMapper<LogEntry> {
             workId = UUID.fromString(rs.getString("oId")),
             title = rs.getString("titulo"),
             content = rs.getString("texto"),
-            state = rs.getString("estado"),
+            editable = rs.getBoolean("editable"),
             createdAt = Date.from(rs.getTimestamp("creation_date").toInstant()),
             lastModifiedAt = if (modificationDate != null) Date.from(modificationDate.toInstant()) else null,
             author = Author(

@@ -65,7 +65,7 @@ export interface LogEntry {
   workId: string,
   title: string,
   content: string,
-  state: string,
+  editable: boolean,
   createdAt: string,
   modifiedAt: string,
   author: Author
@@ -168,7 +168,7 @@ export class Role {
 
   private static composedRoles: { [key: string]: string } = {
     'MEMBRO': 'Membro',
-    'VIEWER': 'Espectador',
+    'ESPECTADOR': 'Espectador',
     'FISCALIZAÇÃO': 'Responsável de Fiscalização',
     'COORDENADOR': 'Coordenador',
     'ARQUITETURA': 'Técnico de Arquitetura',

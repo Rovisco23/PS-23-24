@@ -63,7 +63,7 @@ export class LogEntryDetailsComponent {
   }
 
   isEditable() {
-    return this.log?.state === 'EDITÁVEL'
+    return this.log!!.editable
   }
 
   editCall() {

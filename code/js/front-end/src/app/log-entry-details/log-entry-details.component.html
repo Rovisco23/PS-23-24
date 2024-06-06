@@ -6,7 +6,7 @@
 </div>
 
 <p>Autor: {{ log?.author?.name }}</p>
-<p>Title: {{ log?.title }}  | Estado: {{ log?.state }}</p>
+<p>Title: {{ log?.title }}  | Estado: {{ log?.editable }}</p>
 <p>Observação: {{ log?.content }}</p>
 <p>Criado no dia: {{ log?.createdAt }}</p>
 <p *ngIf="log?.modifiedAt">Modificado no dia: {{ log?.modifiedAt }}</p>

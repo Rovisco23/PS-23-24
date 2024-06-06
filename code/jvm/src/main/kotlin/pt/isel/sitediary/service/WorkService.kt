@@ -9,6 +9,7 @@ import pt.isel.sitediary.domainmodel.work.Address
 import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.domainmodel.work.WorkInput
 import pt.isel.sitediary.domainmodel.work.WorkState.IN_PROGRESS
+import pt.isel.sitediary.domainmodel.work.WorkType
 import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.InviteInputModel
 import pt.isel.sitediary.model.MemberInputModel
@@ -45,7 +46,7 @@ class WorkService(
                     name = openingTerm.name,
                     description = openingTerm.description ?: "",
                     state = IN_PROGRESS,
-                    type = openingTerm.type,
+                    type = WorkType.fromString(openingTerm.type) ?: WorkType.RESIDENCIAL,
                     address = Address(
                         Location(
                             location.district,

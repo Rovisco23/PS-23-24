@@ -105,7 +105,7 @@ class LogController(private val service: LogService) {
                 workId = it.workId,
                 title = it.title,
                 content = it.content,
-                state = it.state,
+                editable = it.editable,
                 createdAt = it.createdAt,
                 modifiedAt = it.lastModifiedAt,
                 author = it.author

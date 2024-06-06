@@ -20,7 +20,7 @@ data class LogOutputModel(
     val author: Author,
     val title: String,
     val content: String,
-    val state: String,
+    val editable: Boolean,
     val createdAt: Date,
     val modifiedAt: Date?
 )

@@ -43,46 +43,60 @@
                  [ngModel]="work.company.num === 0? null : work.company.num"
                  placeholder="Número" required>
         </div>
-        <div class="input">
-          <label for="building" class="title">Prédio</label>
-          <br>
-          <input type="text" id="building" name="building" [(ngModel)]="work.building" required>
-        </div>
-        <div class="input">
-          <label for="street" class="title">Selecionar Distrito</label>
-          <br>
-          <select class="selector" name="district" [(ngModel)]="work.address.location.district">
-            <ng-container *ngFor="let distrito of districts">
-              <option [value]="distrito">{{ distrito }}</option>
-            </ng-container>
-          </select>
-        </div>
-        <div class="input">
-          <label for="street" class="title">Selecionar Concelho</label>
-          <br>
-          <select class="selector" name="county" [(ngModel)]="work.address.location.county"
-                  (change)="updateLocation(true)">
-            <ng-container *ngFor="let concelho of counties">
-              <option [value]="concelho">{{ concelho }}</option>
-            </ng-container>
-          </select>
-        </div>
-        <div class="input">
-          <label for="street" class="title">Selecionar Freguesia</label>
-          <br>
-          <select class="selector" name="Parish" [(ngModel)]="work.address.location.parish"
-                  (change)="updateLocation(false)">
-            <ng-container *ngFor="let freguesia of parishes">
-              <option [value]="freguesia">{{ freguesia }}</option>
-            </ng-container>
-          </select>
-        </div>
-        <div class="input">
+        <!--<div class="input">
           <label for="street" class="title">Rua</label>
           <br>
           <input style="margin-right: 3px" type="text" id="street" name="street" [(ngModel)]="work.address.street"
                  required>
           <input type="text" id="zipCode" name="zipCode" [(ngModel)]="work.address.postalCode" required>
+          <br>
+          <label for="building" class="title">Prédio</label>
+          <input type="text" id="building" name="building" [(ngModel)]="work.building" required>
+        </div> -->
+        <div class="same-line-input-container">
+          <div class="input">
+            <label for="street" class="title">Rua</label>
+            <br>
+            <input style="margin-right: 3px" type="text" id="street" name="street" [(ngModel)]="work.address.street" required>
+            <input style="margin-right: 3px" type="text" name="postalCode" (input)="formatZipCode()"
+                   maxlength="8" [(ngModel)]="work.address.postalCode" required>
+          </div>
+          <div class="input">
+            <label for="building" class="title">Prédio</label>
+            <br>
+            <input type="text" id="building" name="building" [(ngModel)]="work.building" required>
+          </div>
+        </div>
+        <div class="same-line-input-container">
+          <div class="input">
+            <label for="district" class="title">Selecionar Distrito</label>
+            <br>
+            <select class="selector" id="district" name="district" [(ngModel)]="work.address.location.district">
+              <ng-container *ngFor="let distrito of districts">
+                <option [value]="distrito">{{ distrito }}</option>
+              </ng-container>
+            </select>
+          </div>
+          <div class="input">
+            <label for="county" class="title">Selecionar Concelho</label>
+            <br>
+            <select class="selector" id="county" name="county" [(ngModel)]="work.address.location.county"
+                    (change)="updateLocation(true)">
+              <ng-container *ngFor="let concelho of counties">
+                <option [value]="concelho">{{ concelho }}</option>
+              </ng-container>
+            </select>
+          </div>
+          <div class="input">
+            <label for="parish" class="title">Selecionar Freguesia</label>
+            <br>
+            <select class="selector" id="parish" name="Parish" [(ngModel)]="work.address.location.parish"
+                    (change)="updateLocation(false)">
+              <ng-container *ngFor="let freguesia of parishes">
+                <option [value]="freguesia">{{ freguesia }}</option>
+              </ng-container>
+            </select>
+          </div>
         </div>
         <div class="input">
           <label for="nomeFiscal" class="title">Diretor</label>
@@ -180,8 +194,10 @@
         <ng-container matColumnDef="delete">
           <th mat-header-cell *matHeaderCellDef> Remover</th>
           <td mat-cell *matCellDef="let element">
-            <button *ngIf="element.role !== 'FISCALIZAÇÃO' && element.role !== 'COORDENADOR' && element.role !== 'DIRETOR'" class="remove-button"
-                    mat-fab (click)="onRemoveTechnician(element.role)">
+            <button
+              *ngIf="element.role !== 'FISCALIZAÇÃO' && element.role !== 'COORDENADOR' && element.role !== 'DIRETOR'"
+              class="remove-button"
+              mat-fab (click)="onRemoveTechnician(element.role)">
               <mat-icon>delete</mat-icon>
             </button>
           </td>

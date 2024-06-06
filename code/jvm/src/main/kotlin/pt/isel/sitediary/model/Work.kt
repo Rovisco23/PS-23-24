@@ -17,7 +17,7 @@ data class WorkOutputModel(
 
 data class OpeningTermInputModel(
     val name: String,
-    val type: WorkType,
+    val type: String,
     val description: String?,
     val holder: String,
     val company: ConstructionCompany,

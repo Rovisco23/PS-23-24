@@ -29,7 +29,7 @@ create table UTILIZADOR
     freguesia         varchar(255),
     concelho          varchar(255),
     distrito          varchar(255),
-    pendente          boolean not null,
+    pendente          boolean,
     primary key (id),
     constraint Role_Format check (ROLE IN ('OPERÁRIO', 'CÂMARA', 'ADMIN')),
     constraint Email_Format check (email like '%@%.%')
@@ -87,14 +87,13 @@ create table REGISTO
     oId                    varchar(255),
     titulo                 varchar(255)  not null,
     texto                  varchar(2500) not null,
-    estado                 varchar(50)   not null,
+    editable               boolean       not null,
     creation_date          timestamp     not null,
     last_modification_date timestamp,
     author                 integer,
     primary key (id, oId),
     constraint ObraId foreign key (oId) references OBRA (id),
-    constraint UserId foreign key (author) references UTILIZADOR (id),
-    constraint Estado CHECK (estado IN ('EDITÁVEL', 'NÃO EDITÁVEL'))
+    constraint UserId foreign key (author) references UTILIZADOR (id)
 );
 
 create table IMAGEM
@@ -161,7 +160,7 @@ create table INTERVENIENTE
 (
     id         serial,
     tId        integer,
-    oId		   varchar(255),
+    oId        varchar(255),
     nome       varchar(255) not null,
     role       varchar(255) not null,
     associacao varchar(255) not null,

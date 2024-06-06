@@ -18,13 +18,13 @@ class JdbiLog(private val handle: Handle) : LogRepository {
         docs: List<FileModel>?
     ): Int {
         val rId = handle.createUpdate(
-            "insert into registo(oId, titulo, texto, estado, creation_date, author)" +
-                    "values (:workId, :title, :description, :state, :createdAt, :author)"
+            "insert into registo(oId, titulo, texto, editable, creation_date, author)" +
+                    "values (:workId, :title, :description, :editable, :createdAt, :author)"
         )
             .bind("workId", log.workId)
             .bind("title", log.title)
             .bind("description", log.description)
-            .bind("state", "EDITÁVEL")
+            .bind("editable", true)
             .bind("createdAt", createdAt)
             .bind("author", author)
             .executeAndReturnGeneratedKeys()
@@ -36,7 +36,7 @@ class JdbiLog(private val handle: Handle) : LogRepository {
     }
 
     override fun getById(id: Int): LogEntry? = handle.createQuery(
-        "select REGISTO.id, titulo, REGISTO.oid, texto, estado, creation_date, last_modification_date, author, " +
+        "select REGISTO.id, titulo, REGISTO.oid, texto, editable, creation_date, last_modification_date, author, " +
                 "username, MEMBRO.role from REGISTO join UTILIZADOR on UTILIZADOR.id = author " +
                 "join MEMBRO on MEMBRO.uid = author where Registo.id = :id"
     )
@@ -72,9 +72,10 @@ class JdbiLog(private val handle: Handle) : LogRepository {
 
     override fun finish(logId: Int) {
         handle.createUpdate(
-            "update REGISTO set estado = 'NÃO EDITÁVEL' where id = :id"
+            "update REGISTO set editable = :editable where id = :id"
         )
             .bind("id", logId)
+            .bind("editable", false)
             .execute()
     }
 
