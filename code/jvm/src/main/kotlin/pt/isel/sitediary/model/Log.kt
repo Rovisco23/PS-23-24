@@ -12,7 +12,8 @@ data class LogInputModel(
 
 data class LogCredentialsModel(
     val logId: Int,
-    val workId: UUID
+    val workId: UUID,
+    val files: List<FileOutputModel>
 )
 
 data class LogOutputModel(
@@ -22,5 +23,12 @@ data class LogOutputModel(
     val content: String,
     val editable: Boolean,
     val createdAt: Date,
-    val modifiedAt: Date?
+    val modifiedAt: Date?,
+    val files: List<FileOutputModel>
+)
+
+data class FileOutputModel(
+    val id: Int,
+    val fileName: String,
+    val contentType: String,
 )

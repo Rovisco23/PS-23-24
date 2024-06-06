@@ -7,10 +7,25 @@ import java.sql.Timestamp
 import java.util.*
 
 interface LogRepository {
-    fun createLog(log: LogInputModel, createdAt: Timestamp, author: Int, images: List<FileModel>?, docs: List<FileModel>?): Int
+    fun createLog(
+        log: LogInputModel,
+        createdAt: Timestamp,
+        author: Int,
+        images: List<FileModel>?,
+        docs: List<FileModel>?
+    ): Int
+
     fun getById(id: Int): LogEntry?
     fun checkUserAccess(workId: UUID, userId: Int): Boolean
-    fun getFiles(logId: Int): List<FileModel>?
+    fun getFiles(images: List<Int>, documents: List<Int>): List<FileModel>?
     fun finish(logId: Int)
-    fun editLog(logId: Int, logInfo: LogInputModel, modifiedAt: Timestamp, images: List<FileModel>?, docs: List<FileModel>?)
+    fun editLog(
+        logId: Int,
+        logInfo: LogInputModel,
+        modifiedAt: Timestamp,
+        images: List<FileModel>?,
+        docs: List<FileModel>?
+    )
+
+    fun deleteFiles(images: List<Int>, documents: List<Int>)
 }

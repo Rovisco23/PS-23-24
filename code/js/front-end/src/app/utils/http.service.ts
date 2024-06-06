@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {AnswerInvite, Classes, InputWork, User} from "./classes";
+import {AnswerInvite, Classes, InputWork, SimpleFile, User} from "./classes";
 
 @Injectable({
   providedIn: 'root',
@@ -162,5 +162,34 @@ export class HttpService {
   getAllUsers() {
     const headers = this.getTokenHeader();
     return this.http.get<any>('http://localhost:8080/api/users', {headers: headers})
+  }
+
+  downloadFiles(logId: string, workId: string, downloadFiles: SimpleFile[]) {
+    const headers = this.getTokenHeader();
+    return this.http.post<any>('http://localhost:8080/api/logs-files',
+      {
+        logId: logId,
+        workId: workId,
+        files: downloadFiles
+      },
+      {
+        headers: headers,
+        responseType: 'blob' as 'json'
+      }
+    )
+  }
+
+  deleteFiles(logId: string, workId: string, filesToDelete: SimpleFile[]) {
+    const headers = this.getTokenHeader();
+    return this.http.post<any>('http://localhost:8080/api/delete-files',
+      {
+        logId: logId,
+        workId: workId,
+        files: filesToDelete
+      },
+      {
+        headers: headers,
+        responseType: 'blob' as 'json'
+      })
   }
 }

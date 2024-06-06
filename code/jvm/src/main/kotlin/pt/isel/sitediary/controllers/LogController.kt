@@ -108,7 +108,8 @@ class LogController(private val service: LogService) {
                 editable = it.editable,
                 createdAt = it.createdAt,
                 modifiedAt = it.lastModifiedAt,
-                author = it.author
+                author = it.author,
+                files = it.files
             )
             ResponseEntity.ok(log)
         }
@@ -155,6 +156,18 @@ class LogController(private val service: LogService) {
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(ByteArrayResource(zipBytes))
             }
+        }
+    }
+
+    @PostMapping(Paths.Log.DELETE_FILES)
+    @Operation(summary = "Delete Log", description = "Used to delete a log.")
+    fun deleteFile(
+        @RequestBody body: LogCredentialsModel,
+        @Parameter(hidden = true) user: AuthenticatedUser
+    ): ResponseEntity<*> {
+        val res = service.deleteFile(body, user.user.id)
+        return handleResponse(res) {
+            ResponseEntity.ok().body(Unit)
         }
     }
 

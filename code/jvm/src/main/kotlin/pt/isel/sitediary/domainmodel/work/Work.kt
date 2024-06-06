@@ -1,10 +1,10 @@
 package pt.isel.sitediary.domainmodel.work
 
-import kotlinx.serialization.Serializable
 import org.apache.commons.mail.DefaultAuthenticator
 import org.apache.commons.mail.SimpleEmail
 import pt.isel.sitediary.domainmodel.user.Member
 import pt.isel.sitediary.domainmodel.user.Technician
+import pt.isel.sitediary.model.FileOutputModel
 import java.util.*
 
 data class Work(
@@ -43,7 +43,7 @@ data class Work(
     }
 }
 
-data class WorkInput (
+data class WorkInput(
     val id: UUID,
     val name: String,
     val description: String,
@@ -62,7 +62,8 @@ data class LogEntry(
     val content: String,
     val editable: Boolean,
     val createdAt: Date,
-    val lastModifiedAt: Date?
+    val lastModifiedAt: Date?,
+    val files: List<FileOutputModel>
 )
 
 data class Author(
@@ -157,6 +158,6 @@ enum class WorkState(val description: String) {
     }
 }
 
-data class Invite (val id: UUID, val email: String, val role: String, val workId: UUID)
+data class Invite(val id: UUID, val email: String, val role: String, val workId: UUID)
 
 data class InviteSimplified(val workId: UUID, val workTitle: String, val role: String, val admin: String)

@@ -37,8 +37,10 @@ class JdbiLog(private val handle: Handle) : LogRepository {
 
     override fun getById(id: Int): LogEntry? = handle.createQuery(
         "select REGISTO.id, titulo, REGISTO.oid, texto, editable, creation_date, last_modification_date, author, " +
-                "username, MEMBRO.role from REGISTO join UTILIZADOR on UTILIZADOR.id = author " +
-                "join MEMBRO on MEMBRO.uid = author where Registo.id = :id"
+                "username, MEMBRO.role, ARRAY(SELECT CONCAT(id, ';', name, ';', 'Imagem') from IMAGEM where " +
+                "rId = :id) as images, ARRAY(SELECT CONCAT(id, ';', name, ';', 'Documento') from DOCUMENTO where " +
+                "rId = :id) as documents from REGISTO join UTILIZADOR on UTILIZADOR.id = author join MEMBRO on " +
+                "MEMBRO.uid = author where Registo.id = :id"
     )
         .bind("id", id)
         .mapTo(LogEntry::class.java)
@@ -53,20 +55,28 @@ class JdbiLog(private val handle: Handle) : LogRepository {
         .mapTo(Int::class.java)
         .single() == 1
 
-    override fun getFiles(logId: Int): List<FileModel>? {
-        val images = handle.createQuery(
-            "select name, type, file from IMAGEM where rId = :rId"
-        )
-            .bind("rId", logId)
-            .mapTo(FileModel::class.java)
-            .list()
-        val docs = handle.createQuery(
-            "select name, type, file from DOCUMENTO where rId = :rId"
-        )
-            .bind("rId", logId)
-            .mapTo(FileModel::class.java)
-            .list()
-        val files = listOf(images, docs).flatten()
+    override fun getFiles(images: List<Int>, documents: List<Int>): List<FileModel>? {
+        val files = mutableListOf<FileModel>()
+        images.forEach {
+            files.add(
+                handle.createQuery(
+                    "select name, type, file from IMAGEM where id = :id"
+                )
+                    .bind("id", it)
+                    .mapTo(FileModel::class.java)
+                    .single()
+            )
+        }
+        documents.forEach {
+            files.add(
+                handle.createQuery(
+                    "select name, type, file from DOCUMENTO where id = :id"
+                )
+                    .bind("id", it)
+                    .mapTo(FileModel::class.java)
+                    .single()
+            )
+        }
         return files.ifEmpty { null }
     }
 
@@ -79,7 +89,13 @@ class JdbiLog(private val handle: Handle) : LogRepository {
             .execute()
     }
 
-    override fun editLog(logId: Int, logInfo: LogInputModel, modifiedAt: Timestamp, images: List<FileModel>?, docs: List<FileModel>?) {
+    override fun editLog(
+        logId: Int,
+        logInfo: LogInputModel,
+        modifiedAt: Timestamp,
+        images: List<FileModel>?,
+        docs: List<FileModel>?
+    ) {
         handle.createUpdate(
             "update REGISTO set titulo = :title, texto = :description, last_modification_date = :modDate " +
                     "where id = :id"
@@ -91,6 +107,23 @@ class JdbiLog(private val handle: Handle) : LogRepository {
             .execute()
         images?.forEach { img -> inputImagesToLog(logId, logInfo.workId, img, modifiedAt) }
         docs?.forEach { doc -> inputDocsToLog(logId, logInfo.workId, doc, modifiedAt) }
+    }
+
+    override fun deleteFiles(images: List<Int>, documents: List<Int>) {
+        images.forEach {
+            handle.createUpdate(
+                "delete from IMAGEM where id = :id"
+            )
+                .bind("id", it)
+                .execute()
+        }
+        documents.forEach {
+            handle.createUpdate(
+                "delete from DOCUMENTO where id = :id"
+            )
+                .bind("id", it)
+                .execute()
+        }
     }
 
     private fun inputImagesToLog(rId: Int, workId: UUID, images: FileModel, uploadDate: Timestamp) {

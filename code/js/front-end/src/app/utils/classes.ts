@@ -68,7 +68,14 @@ export interface LogEntry {
   editable: boolean,
   createdAt: string,
   modifiedAt: string,
-  author: Author
+  author: Author,
+  files: SimpleFile[]
+}
+
+export interface SimpleFile {
+  id: number;
+  fileName: string;
+  contentType: string;
 }
 
 export interface LogEditableEntry {

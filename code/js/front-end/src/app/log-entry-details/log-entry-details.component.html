@@ -5,13 +5,63 @@
   <h2>Ocorrência</h2>
 </div>
 
-<p>Autor: {{ log?.author?.name }}</p>
-<p>Title: {{ log?.title }}  | Estado: {{ log?.editable }}</p>
-<p>Observação: {{ log?.content }}</p>
-<p>Criado no dia: {{ log?.createdAt }}</p>
-<p *ngIf="log?.modifiedAt">Modificado no dia: {{ log?.modifiedAt }}</p>
-<button *ngIf="isEditable()" (click)="editCall()">Editar Log</button>
-<br>
-<button *ngIf="files" (click)="downloadFiles()">Download Log Files</button>
+<div class="content">
+  <div class="left-section">
+    <p>Autor: {{ log?.author?.name }}</p>
+    <p>Title: {{ log?.title }}  | Estado: {{ log?.editable }}</p>
+    <p>Observação: {{ log?.content }}</p>
+    <p>Criado no dia: {{ log?.createdAt }}</p>
+    <p *ngIf="log?.modifiedAt">Modificado no dia: {{ log?.modifiedAt }}</p>
+    <button *ngIf="isEditable()" (click)="editCall()">Editar Log</button>
+    <br>
+  </div>
+
+  <div class="right-section">
+    <h3>Ficheiros</h3>
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                          [checked]="selection.hasValue() && isAllSelected()"
+                          [indeterminate]="selection.hasValue() && !isAllSelected()"
+                          [aria-label]="checkboxLabel()">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                          (change)="$event ? selection.toggle(row) : null"
+                          [checked]="selection.isSelected(row)"
+                          [aria-label]="checkboxLabel(row)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Name</th>
+          <td mat-cell *matCellDef="let element"> {{ element.fileName }}</td>
+        </ng-container>
+
+        <!-- Type Column -->
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef>Tipo</th>
+          <td mat-cell *matCellDef="let element"> {{ element.contentType }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+            (click)="selection.toggle(row)">
+        </tr>
+      </table>
+    </div>
+    <button [disabled]="selection.isEmpty()" (click)="downloadFiles()">Download Log Files</button>
+    <button [disabled]="selection.isEmpty()" (click)="deleteFiles()">Delete Log Files</button>
+  </div>
+</div>
+
+
+
 
 

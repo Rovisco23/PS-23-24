@@ -73,7 +73,9 @@ class LogService(
         } else if (!logRepository.checkUserAccess(logEntry.workId, userId)) {
             failure(Errors.notMember)
         } else {
-            val files = logRepository.getFiles(log.logId)
+            val images = log.files.filter { f -> f.contentType == "Imagem" }.map { img -> img.id }
+            val documents = log.files.filter { f -> f.contentType == "Documento" }.map { doc -> doc.id }
+            val files = logRepository.getFiles(images, documents)
             success(files)
         }
     }
@@ -106,5 +108,20 @@ class LogService(
     private fun checkIfEditTimeElapsed(createdAt: Date): Boolean {
         val elapsedTime = Duration.between(createdAt.toInstant(), clock.now().toJavaInstant()).toMillis()
         return elapsedTime >= Duration.ofHours(3).toMillis()
+    }
+
+    fun deleteFile(body: LogCredentialsModel, userId: Int) = transactionManager.run {
+        val logRepository = it.logRepository
+        val logEntry = logRepository.getById(body.logId)
+        if (logEntry == null) {
+            failure(Errors.logNotFound)
+        } else if (!logRepository.checkUserAccess(logEntry.workId, userId)) {
+            failure(Errors.notMember)
+        } else {
+            val images = body.files.filter { f -> f.contentType == "Imagem" }.map { img -> img.id }
+            val documents = body.files.filter { f -> f.contentType == "Documento" }.map { doc -> doc.id }
+            logRepository.deleteFiles(images, documents)
+            success(Unit)
+        }
     }
 }
