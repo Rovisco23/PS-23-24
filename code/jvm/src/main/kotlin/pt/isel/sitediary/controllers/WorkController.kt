@@ -118,6 +118,14 @@ class WorkController(private val service: WorkService) {
         }
     }
 
+    @GetMapping(Paths.Invite.GET_INVITE_NUMBER)
+    fun getNumberOfInvites(@Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
+        val res = service.getNumberOfInvites(user.user.id)
+        return handleResponse(res) {
+            ResponseEntity.status(200).body(it)
+        }
+    }
+
     @GetMapping(Paths.Invite.GET_INVITE_LIST)
     fun getInviteList(@Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
         val res = service.getInviteList(user.user.id)

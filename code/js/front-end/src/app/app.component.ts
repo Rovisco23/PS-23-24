@@ -48,7 +48,6 @@ export class AppComponent {
     localStorage.removeItem('role');
     localStorage.removeItem('profilePicture');
     this.httpService.logout(token ?? '').subscribe(() => {
-      console.log("Logout Done")
       this.router.navigate(['/login']);
     })
   }
@@ -74,13 +73,13 @@ export class AppComponent {
               this.src = URL.createObjectURL(data)
             }
           })
-          this.httpService.getInviteList().pipe(
+          this.httpService.getNumberOfInvites().pipe(
             catchError(error => {
               this.errorHandle.handleError(error);
               return throwError(error);
             })
           ).subscribe(res => {
-            this.notification = res.length;
+            this.notification = res;
           })
         }
       })

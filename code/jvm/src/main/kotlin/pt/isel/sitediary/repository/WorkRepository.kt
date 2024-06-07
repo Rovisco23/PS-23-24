@@ -26,4 +26,5 @@ interface WorkRepository {
     fun finishWork(workId: UUID)
     fun inviteMember(id: Int, role: String, workId: UUID)
     fun checkRequiredTechnicians(workId: UUID): Boolean
+    fun getNumberOfInvites(id: Int): Int
 }

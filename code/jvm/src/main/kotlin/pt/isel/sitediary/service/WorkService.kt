@@ -216,4 +216,8 @@ class WorkService(
             success(Unit)
         }
     }
+
+    fun getNumberOfInvites(id: Int) = transactionManager.run {
+        success(it.workRepository.getNumberOfInvites(id))
+    }
 }

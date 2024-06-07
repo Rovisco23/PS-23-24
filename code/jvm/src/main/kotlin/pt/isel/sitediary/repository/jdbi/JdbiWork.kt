@@ -162,9 +162,12 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
     }
 
     override fun getInviteList(userId: Int): List<InviteSimplified> = handle.createQuery(
-        "select Obra.id, Obra.nome as workTitle, Membro.role, (select Utilizador.username from Membro join " +
-                "Utilizador on Membro.uId = Utilizador.id where Membro.role = 'DONO') as owner from Obra " +
-                "join Membro on Obra.id = Membro.oId where uid = :uId and pendente = :pending"
+        "with Table1 as (select Obra.id, Obra.nome as workTitle, Membro.role from Obra join Membro on Obra.id = " +
+                "Membro.oId where Membro.uId = :uId and pendente = :pending), Table2 as (select Obra.id, " +
+                "Utilizador.username as owner from Membro join Utilizador on Membro.uId = Utilizador.id join Obra " +
+                "on Membro.oId = Obra.id where Membro.role = 'DONO' and Membro.uId != :uId and Membro.oId = Obra.id) " +
+                "select Table1.id, Table1.workTitle, Table1.role, Table2.owner from Table1 inner join Table2 on " +
+                "Table1.id = Table2.id;"
     )
         .bind("uId", userId)
         .bind("pending", true)
@@ -313,6 +316,13 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         .bind("id", workId.toString())
         .mapTo(Int::class.java)
         .single() == 2
+
+    override fun getNumberOfInvites(id: Int): Int = handle.createQuery(
+        "select count(*) from Membro where uId = :uId and pendente = 'True'"
+    )
+        .bind("uId", id)
+        .mapTo(Int::class.java)
+        .single()
 
     private fun addCouncilAsMember(workId: UUID, location: Location) {
         val councilId = handle.createQuery(

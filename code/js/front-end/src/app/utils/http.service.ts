@@ -179,6 +179,11 @@ export class HttpService {
     )
   }
 
+  getNumberOfInvites() {
+    const headers = this.getTokenHeader();
+    return this.http.get<any>('http://localhost:8080/api/invite-number', {headers: headers})
+  }
+
   deleteFiles(logId: string, workId: string, filesToDelete: SimpleFile[]) {
     const headers = this.getTokenHeader();
     return this.http.post<any>('http://localhost:8080/api/delete-files',

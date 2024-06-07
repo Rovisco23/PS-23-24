@@ -239,9 +239,11 @@ class UserController(private val service: UserService) {
         ]
     )
     fun editProfile(@RequestBody u: EditProfileInputModel, @Parameter(hidden = true) user: AuthenticatedUser)
-            : ResponseEntity<Unit> {
-        service.editProfile(user = user.user, editUser = u)
-        return ResponseEntity.ok(Unit)
+            : ResponseEntity<*> {
+        val res = service.editProfile(user = user.user, editUser = u)
+        return handleResponse(res) {
+            ResponseEntity.ok(Unit)
+        }
     }
 
     @PutMapping(Paths.User.PROFILE_PICTURE, consumes = ["multipart/form-data"])

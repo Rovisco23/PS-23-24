@@ -13,7 +13,6 @@ object Paths {
         const val SESSION = "$PREFIX/session"
         const val PROFILE_PICTURE = "$PREFIX/profile-picture"
         const val PENDING = "$PREFIX/pending"
-        const val PENDING_BY_ID = "$PREFIX/pending/{id}"
     }
 
     object Work {
@@ -25,6 +24,7 @@ object Paths {
     }
 
     object Invite {
+        const val GET_INVITE_NUMBER = "$PREFIX/invite-number"
         const val GET_INVITE_LIST = "$PREFIX/invite"
         const val GET_INVITE = "$PREFIX/invite/{id}"
     }
