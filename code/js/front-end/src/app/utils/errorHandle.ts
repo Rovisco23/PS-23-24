@@ -12,15 +12,25 @@ export class ErrorHandler {
   }
 
   handleError(error: any) {
-    if (error.status == 401) {
+    if (error.status === 401) {
       localStorage.removeItem('token')
       localStorage.removeItem('role')
       localStorage.removeItem('userId')
-      this.showErrorMessage(error.error, error.status)
+      this.handleErrorInternal(error)
       this.router.navigate(['/login'])
-    } else if (error.status == 403) {
-      this.showErrorMessage(error.error, error.status)
+    } else if (error.status === 403) {
+      this.handleErrorInternal(error)
       this.location.back()
+    } else {
+      this.handleErrorInternal(error)
+    }
+  }
+
+  private handleErrorInternal(error: any) {
+    if (error.error instanceof Blob) {
+      error.error.text().then((errorMessage: string) => {
+        this.showErrorMessage(errorMessage, error.status)
+      });
     } else {
       this.showErrorMessage(error.error, error.status)
     }
