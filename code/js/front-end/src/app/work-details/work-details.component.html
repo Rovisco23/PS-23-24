@@ -12,7 +12,7 @@
       </div>
       <ul class="sidebar-menu">
         <li class="sidebar-menu-item">
-          <a class="sidebar-menu-link" (click)="changeTab(0)">
+          <a [ngClass]="tabIndex === 0 ? 'sidebar-menu-link-selected' : 'sidebar-menu-link'" (click)="changeTab(0)">
             <div class="sidebar-menu-icon">
             <span class="material-icons">
               error_outline
@@ -25,7 +25,7 @@
           </a>
         </li>
         <li class="sidebar-menu-item">
-          <a class="sidebar-menu-link" (click)="changeTab(1)">
+          <a [ngClass]="tabIndex === 1 ? 'sidebar-menu-link-selected' : 'sidebar-menu-link'" (click)="changeTab(1)">
             <div class="sidebar-menu-icon">
             <span class="material-icons">
               info
@@ -37,7 +37,7 @@
           </a>
         </li>
         <li class="sidebar-menu-item">
-          <a class="sidebar-menu-link" (click)="changeTab(2)">
+          <a [ngClass]="tabIndex === 2 ? 'sidebar-menu-link-selected' : 'sidebar-menu-link'" (click)="changeTab(2)">
             <div class="sidebar-menu-icon">
             <span class="material-icons">
               groups
@@ -50,6 +50,11 @@
           </a>
         </li>
       </ul>
+    </div>
+    <div class="sidebar-footer">
+      <button mat-raised-button color="primary" class="finish-button" (click)="finishWorkCall()">
+        Terminar Obra
+      </button>
     </div>
   </div>
   <div class="content">
@@ -155,7 +160,7 @@
                 <td>{{ work?.building }}</td>
               </tr>
               <tr *ngFor="let technician of work?.technicians">
-                <td><strong>{{technician.role}}</strong></td>
+                <td><strong>{{ technician.role }}</strong></td>
                 <td>{{ technician.name }} - {{ technician.association.name }} {{ technician.association.number }}</td>
               </tr>
             </table>

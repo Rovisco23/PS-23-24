@@ -48,7 +48,7 @@ export class AppComponent {
     localStorage.removeItem('role');
     localStorage.removeItem('profilePicture');
     this.httpService.logout(token ?? '').subscribe(() => {
-      this.router.navigate(['/login']);
+      this.router.navigate(['login']);
     })
   }
 

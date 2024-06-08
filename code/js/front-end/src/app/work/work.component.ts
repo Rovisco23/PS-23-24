@@ -6,10 +6,11 @@ import {Classes} from "../utils/classes";
 import {HttpClientModule} from "@angular/common/http";
 import {Router, RouterLink} from "@angular/router";
 import {MatIcon} from "@angular/material/icon";
-import {MatFabButton} from "@angular/material/button";
+import {MatButton, MatFabButton} from "@angular/material/button";
 import {FormsModule} from "@angular/forms";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
+import {MatBadge} from "@angular/material/badge";
 
 @Component({
   selector: 'app-work',
@@ -21,7 +22,9 @@ import {ErrorHandler} from "../utils/errorHandle";
     RouterLink,
     MatIcon,
     MatFabButton,
-    FormsModule
+    FormsModule,
+    MatButton,
+    MatBadge
   ],
   providers: [HttpService],
   templateUrl: './work.component.html',
@@ -32,17 +35,31 @@ export class WorkComponent {
   filteredWorkList: Classes[] = [];
   inputValue: string = '';
   httpService: HttpService = inject(HttpService);
+  numberOfVerifications: number = 0;
 
   constructor(private router: Router, private errorHandle: ErrorHandler) {
-    this.httpService.getWorkListings().pipe(
-      catchError(error => {
-        this.errorHandle.handleError(error);
-        return throwError(error);
-      })
-    ).subscribe(res => {
-      this.workListingsList = res;
-      this.filteredWorkList = this.workListingsList.slice(0, 10);
-    });
+    if (localStorage.getItem('token')) {
+      this.httpService.getWorkListings().pipe(
+        catchError(error => {
+          this.errorHandle.handleError(error);
+          return throwError(error);
+        })
+      ).subscribe(res => {
+        this.workListingsList = res;
+        this.filteredWorkList = this.workListingsList.slice(0, 10);
+      });
+      if (localStorage.getItem('role') === 'CÂMARA') {
+        /*this.httpService.getNumberOfVerifications(localStorage.getItem('userId') ?? '').pipe(
+          catchError(error => {
+            this.errorHandle.handleError(error);
+            return throwError(error);
+          })
+        ).subscribe(res => {
+          this.numberOfVerifications = res;
+        });*/
+      }
+    }
+
   }
 
   filterResults(text: string) {
@@ -53,6 +70,14 @@ export class WorkComponent {
     this.filteredWorkList = this.workListingsList.filter(
       workListing => workListing?.name.toLowerCase().includes(text.toLowerCase())
     );
+  }
+
+  checkCouncil(){
+    return localStorage.getItem('role') === 'CÂMARA';
+  }
+
+  councilVerifications(){
+    this.router.navigate(['/verifications']);
   }
 
   createWork() {

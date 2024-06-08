@@ -5,11 +5,8 @@ import org.springframework.stereotype.Component
 import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.user.checkOwner
 import pt.isel.sitediary.domainmodel.user.containsMemberById
-import pt.isel.sitediary.domainmodel.work.Address
-import pt.isel.sitediary.domainmodel.work.Location
-import pt.isel.sitediary.domainmodel.work.WorkInput
+import pt.isel.sitediary.domainmodel.work.*
 import pt.isel.sitediary.domainmodel.work.WorkState.IN_PROGRESS
-import pt.isel.sitediary.domainmodel.work.WorkType
 import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.InviteInputModel
 import pt.isel.sitediary.model.MemberInputModel
@@ -105,6 +102,7 @@ class WorkService(
                     val dummyId = userRep.createDummyUser(m.email)
                     workRep.inviteMember(dummyId, m.role, workId)
                 }
+                work.sendEmailInvitation(Invite(UUID.randomUUID(), m.email, m.role, workId))
             }
             success(Unit)
         }

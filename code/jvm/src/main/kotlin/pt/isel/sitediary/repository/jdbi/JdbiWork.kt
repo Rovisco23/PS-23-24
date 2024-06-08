@@ -177,7 +177,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
     override fun getInvite(workId: UUID, userId: Int): InviteSimplified? = handle.createQuery(
         "select Obra.id, Obra.nome as workTitle, Membro.role, (select Utilizador.username from Membro join " +
                 "Utilizador on Membro.uId = Utilizador.id where Membro.oId = :oId and Membro.role = 'DONO') " +
-                "as owner from Obra join Membro on Obra.id = Membro.oId where uid = :uId"
+                "as owner from Obra join Membro on Obra.id = Membro.oId where uid = :uId and Membro.pendente = 'true'"
     )
         .bind("oId", workId.toString())
         .bind("uId", userId)
@@ -345,8 +345,10 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
     private fun insertTechnicians(technicians: List<Technician>, tId: Int, workId: UUID) {
         val query = StringBuilder("insert into INTERVENIENTE(tId, oId, nome, role, associacao, numero) values ")
         technicians.forEach {
-            query.append("($tId, '$workId', '${it.name}', '${it.role}', '${it.association.name}', " +
-                    "${it.association.number}), ")
+            query.append(
+                "($tId, '$workId', '${it.name}', '${it.role}', '${it.association.name}', " +
+                        "${it.association.number}), "
+            )
         }
         handle.createUpdate(query.toString().dropLast(2)).execute()
     }

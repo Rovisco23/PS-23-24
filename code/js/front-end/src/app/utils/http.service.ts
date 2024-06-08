@@ -197,4 +197,13 @@ export class HttpService {
         responseType: 'blob' as 'json'
       })
   }
+
+  getNumberOfVerifications(userId: string) {
+
+  }
+
+  finishWork(work: string) {
+    const headers = this.getTokenHeader();
+    return this.http.post<any>(`http://localhost:8080/api/finish-work?work=${work}`, {}, {headers: headers})
+  }
 }

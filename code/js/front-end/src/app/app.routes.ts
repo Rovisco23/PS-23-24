@@ -15,6 +15,8 @@ import {EditLogEntryComponent} from "./edit-log-entry/edit-log-entry.component";
 import {PendingUsersComponent} from "./pending-users/pending-users.component";
 import {AdminGuard} from "./utils/admin.guard";
 import {ListUsersComponent} from "./list-users/list-users.component";
+import {WorkVerificationsComponent} from "./work-verifications/work-verifications.component";
+import {CouncilGuard} from "./utils/council.guard";
 
 export const routes: Routes = [
   {
@@ -88,8 +90,11 @@ export const routes: Routes = [
     path: 'users',
     component: ListUsersComponent,
     canActivate: [AdminGuard]
-  },
-  {
+  },{
+    path: 'verifications',
+    component: WorkVerificationsComponent,
+    canActivate: [CouncilGuard]
+  },{
     path: '**',
     redirectTo: '/work'
   }

@@ -23,13 +23,13 @@ data class Work(
     val images: Int,
     val docs: Int
 ) {
-    fun createInvites(invite: Invite) {
+    fun sendEmailInvitation(invite: Invite) {
         val mail = SimpleEmail()
         mail.hostName = "smtp.googlemail.com"
         mail.setSmtpPort(465)
-        mail.setAuthenticator(DefaultAuthenticator("ricardorovisco23@gmail.com", "jkqi ailn dgfa oyzt"))
+        mail.setAuthenticator(DefaultAuthenticator("sitediaryteam@gmail.com", "aozx lmoh yban imfz"))
         mail.isSSLOnConnect = true
-        mail.setFrom("ricardorovisco23@gmail.com", "SiteDiary")
+        mail.setFrom("sitediaryteam@gmail.com", "SiteDiary")
         mail.addTo(invite.email)
         mail.subject = "Convite para a obra $name"
         val acceptLink = "http://localhost:4200/invites/$id"

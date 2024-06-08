@@ -130,7 +130,14 @@ export class WorkDetailsComponent {
     this.location.back()
   }
 
-  closeWork() {
-    console.log("Closing work");
+  finishWorkCall() {
+    this.httpService.finishWork(this.work!!.id).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe(() => {
+      this.router.navigate(['/work'])
+    })
   }
 }

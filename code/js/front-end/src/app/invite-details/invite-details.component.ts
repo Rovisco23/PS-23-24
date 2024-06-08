@@ -47,6 +47,7 @@ export class InviteDetailsComponent {
     this.httpService.getInvite(inviteId).pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
+        this.router.navigate(['/invites']);
         return throwError(error);
       })
     ).subscribe((invite: InviteSimplified) => {

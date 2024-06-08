@@ -2,6 +2,12 @@
   <h2>Obras</h2>
   <div class="input-button-container">
     <input type="text" placeholder="Procurar Obra" [(ngModel)]="inputValue" (ngModelChange)="filterResults(inputValue)">
+    <button *ngIf="checkCouncil() && numberOfVerifications === 0" mat-flat-button color="primary"
+            (click)="councilVerifications()">Autorizações
+    </button>
+    <button *ngIf="checkCouncil() && numberOfVerifications > 0" mat-flat-button color="primary"
+            (click)="councilVerifications()" [matBadge]="numberOfVerifications" matBadgeColor="warn">Autorizações
+    </button>
     <button mat-fab (click)="createWork()" class="create-work-button">
       <mat-icon>add</mat-icon>
     </button>
