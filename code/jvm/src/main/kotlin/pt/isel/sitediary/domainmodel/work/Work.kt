@@ -66,18 +66,18 @@ data class LogEntry(
     val files: List<FileOutputModel>
 )
 
-data class Author(
-    val id: Int,
-    val name: String,
-    val role: String
-)
-
 data class LogEntrySimplified(
     val id: Int,
     val author: Author,
     val title: String,
     val state: String,
     val createdAt: Date
+)
+
+data class Author(
+    val id: Int,
+    val name: String,
+    val role: String
 )
 
 data class WorkSimplified(
