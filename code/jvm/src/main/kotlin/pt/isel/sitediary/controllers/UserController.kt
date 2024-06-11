@@ -267,7 +267,7 @@ class UserController(private val service: UserService) {
         }
     }
 
-    @GetMapping(Paths.User.PROFILE_PICTURE)
+    @GetMapping(Paths.User.PROFILE_PICTURE_BY_ID)
     @Operation(summary = "Get profile Picture", description = "Gets the profile picture of a user")
     @ApiResponses(
         value = [
@@ -279,8 +279,8 @@ class UserController(private val service: UserService) {
             )
         ]
     )
-    fun getProfilePicture(@Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
-        val res = service.getProfilePicture(user.user.id)
+    fun getProfilePicture(@PathVariable id: Int, @Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
+        val res = service.getProfilePicture(id)
         return handleResponse(res) {
             if (it == null) ResponseEntity.ok().body(null)
             else ResponseEntity.ok()

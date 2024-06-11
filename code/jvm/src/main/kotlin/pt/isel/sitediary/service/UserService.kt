@@ -211,13 +211,13 @@ class UserService(
         }
     }
 
-    fun getProfilePicture(id: Int): GetProfilePictureResult = transactionManager.run {
+    fun getProfilePicture(userId: Int): GetProfilePictureResult = transactionManager.run {
         val rep = it.usersRepository
-        val user = rep.getUserById(id)
+        val user = rep.getUserById(userId)
         if (user == null) {
             failure(Errors.userNotFound)
         } else {
-            val pfp = rep.getProfilePicture(id)
+            val pfp = rep.getProfilePicture(userId)
             success(pfp)
         }
     }
