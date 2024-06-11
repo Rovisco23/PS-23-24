@@ -9,15 +9,15 @@ import java.util.*
 interface WorkRepository {
     fun createWork(work: WorkInput, openingTerm: OpeningTermInputModel, user: User)
     fun getById(id: UUID): Work?
-    fun getWorkList(skip: Int, userId: Int): List<WorkSimplified>
+    fun getWorkList(userId: Int): List<WorkSimplified>
     fun getOpeningTerm(workId: UUID): OpeningTerm
     fun inviteMembers(invites: List<Invite>)
     fun getInviteList(userId: Int): List<InviteSimplified>
     fun getInvite(workId: UUID, userId: Int): InviteSimplified?
     fun acceptInvite(inv: InviteSimplified, user: User)
     fun declineInvite(workId: UUID, userId: Int)
-    fun getWorkListAdmin(skip: Int): List<WorkSimplified>
-    fun getWorkListCouncil(skip: Int, location: Location): List<WorkSimplified>
+    fun getWorkListAdmin(): List<WorkSimplified>
+    fun getWorkListCouncil(location: Location): List<WorkSimplified>
     fun getWorkImage(workId: UUID): FileModel?
     fun checkWorkImageExists(workId: UUID): UUID?
     fun insertWorkImage(workId: UUID, featuredImage: FileModel)

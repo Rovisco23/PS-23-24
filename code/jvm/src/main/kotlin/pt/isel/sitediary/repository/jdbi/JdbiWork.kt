@@ -83,13 +83,12 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         .mapTo(Work::class.java)
         .singleOrNull()
 
-    override fun getWorkList(skip: Int, userId: Int): List<WorkSimplified> = handle.createQuery(
+    override fun getWorkList(userId: Int): List<WorkSimplified> = handle.createQuery(
         "select OBRA.id, OBRA.nome, Obra.tipo, OBRA.descricao, OBRA.estado, OBRA.freguesia, OBRA.concelho, " +
                 "OBRA.distrito, OBRA.rua, OBRA.cpostal from MEMBRO join OBRA on id = oId where uId = :id and " +
-                "MEMBRO.pendente = :pending OFFSET :skip LIMIT 6"
+                "MEMBRO.pendente = :pending"
     )
         .bind("id", userId)
-        .bind("skip", skip)
         .bind("pending", false)
         .mapTo(WorkSimplified::class.java)
         .list()
@@ -236,22 +235,19 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
             .execute()
     }
 
-    override fun getWorkListAdmin(skip: Int) = handle.createQuery(
-        "select id, nome, tipo, descricao, estado, freguesia, concelho, distrito, rua, cpostal from OBRA " +
-                "OFFSET :skip LIMIT 6"
+    override fun getWorkListAdmin() = handle.createQuery(
+        "select id, nome, tipo, descricao, estado, freguesia, concelho, distrito, rua, cpostal from OBRA"
     )
-        .bind("skip", skip)
         .mapTo(WorkSimplified::class.java)
         .list()
 
-    override fun getWorkListCouncil(skip: Int, location: Location) = handle.createQuery(
+    override fun getWorkListCouncil(location: Location) = handle.createQuery(
         "select id, nome, tipo, descricao, estado, freguesia, concelho, distrito, rua, cpostal from OBRA " +
-                "where freguesia = :parish and concelho = :county and distrito = :district OFFSET :skip LIMIT 6"
+                "where freguesia = :parish and concelho = :county and distrito = :district"
     )
         .bind("parish", location.parish)
         .bind("county", location.county)
         .bind("district", location.district)
-        .bind("skip", skip)
         .mapTo(WorkSimplified::class.java)
         .list()
 

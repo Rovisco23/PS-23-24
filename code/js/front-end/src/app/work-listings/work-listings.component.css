@@ -1,35 +1,51 @@
-.listing {
-  background: #9b76ec;
-  border-radius: 30px;
-  padding-bottom: 30px;
-  text-align: center;
-}
-.listing-heading {
-  color: #1b0431;
-  padding: 10px 20px 0 20px;
-}
-.listing-description {
-}
-.listing-state {
-}
-.listing-type {
-}
-.listing-location {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.location-pin {
-  margin-right: 10px;
-  text-align: center;
+
+.card {
+  background-color: #11113D;
+  color: white;
+  max-width: 100%;
 }
 
-section.listing a {
-  padding-left: 20px;
-  text-decoration: none;
-  color: #57498d;
+.card mat-card-subtitle{
+  color: #FF7A00;
 }
-section.listing a::after {
-  content: "\203A";
-  margin-left: 5px;
+
+.card mat-divider {
+  background-color: #FF7A00;
+}
+
+.card mat-card-title {
+  color: #FF7A00;
+}
+
+.card p {
+  font-size: 14px;
+}
+
+.card button {
+  width: 40px;
+  height: 30px;
+  color: white;
+  background-color: #11113D;
+  border: none;
+}
+
+.card button:hover {
+  background-color: #FF7A00;
+  color: white;
+}
+
+.card span{
+  font-size: 10px;
+  margin-left: 10px;
+  width: auto;
+}
+
+.card mat-icon{
+  height: auto;
+  width: 8%;
+
+}
+
+.card div{
+  padding-right: 10px;
 }
