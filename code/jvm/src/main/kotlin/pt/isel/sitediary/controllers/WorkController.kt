@@ -85,8 +85,8 @@ class WorkController(private val service: WorkService) {
             )
         ]
     )
-    fun getWorkList(@RequestParam skip: Int?, @Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
-        val res = service.getWorkList(skip ?: 0, user.user)
+    fun getWorkList(@Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
+        val res = service.getWorkList(user.user)
         return handleResponse(res) {
             ResponseEntity.ok(it)
         }

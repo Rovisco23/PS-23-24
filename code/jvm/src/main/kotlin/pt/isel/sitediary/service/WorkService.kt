@@ -73,7 +73,7 @@ class WorkService(
         }
     }
 
-    fun getWorkList(skip: Int, user: User) = transactionManager.run {
+    fun getWorkList(user: User) = transactionManager.run {
         val work = when (user.role) {
             "ADMIN" -> it.workRepository.getWorkListAdmin()
             "CÂMARA" -> it.workRepository.getWorkListCouncil(user.location)
