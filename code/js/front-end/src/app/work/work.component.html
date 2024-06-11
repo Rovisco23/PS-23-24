@@ -19,3 +19,5 @@
     [workListing]="workListing">
   </app-work-listings>
 </section>
+<mat-paginator #paginator [length]="workElements" pageSize="6" aria-label="Select page" [hidePageSize]="true"
+               (page)="onPageChange($event)"></mat-paginator>

@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import {LogEntrySimplified, Role, Technician, Work} from "../utils/classes";
+import {LogEntrySimplified, Member, Role, Technician, Work} from "../utils/classes";
 import {HttpService} from '../utils/http.service';
 import {HttpClientModule} from "@angular/common/http";
 import {MatTab, MatTabGroup} from "@angular/material/tabs";
@@ -50,8 +50,10 @@ export class WorkDetailsComponent {
   diretor: string | undefined;
   coordenador: string | undefined;
   filteredLogList: LogEntrySimplified[] = [];
+  filteredMembers: Member[] = [];
   workSrc = ''
   searchLogValue = '';
+  searchMemberValue = '';
   tabIndex = 0;
 
   constructor(private router: Router, private location: Location, private errorHandle: ErrorHandler) {
@@ -64,6 +66,7 @@ export class WorkDetailsComponent {
     ).subscribe((work: Work) => {
       this.work = work;
       this.filteredLogList = work.log;
+      this.filteredMembers = work.members;
       work.technicians = this.composeTechnicianRoles(work.technicians)
       this.fiscal = work.members.find(member => member.role === 'FISCALIZAÇÃO')?.name
       this.diretor = work.members.find(member => member.role === 'DIRETOR')?.name
@@ -123,6 +126,16 @@ export class WorkDetailsComponent {
     }
     this.filteredLogList = this.work!!.log.filter(
       entry => entry.title.toLowerCase().includes(text.toLowerCase())
+    );
+  }
+
+  filterMembers(text: string) {
+    if (!text) {
+      this.filteredMembers = this.work!!.members;
+      return;
+    }
+    this.filteredMembers = this.work!!.members.filter(
+      entry => entry.name.toLowerCase().includes(text.toLowerCase())
     );
   }
 

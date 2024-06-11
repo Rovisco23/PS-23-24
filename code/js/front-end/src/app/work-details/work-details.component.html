@@ -52,7 +52,7 @@
       </ul>
     </div>
     <div class="sidebar-footer">
-      <button mat-raised-button color="primary" class="finish-button" (click)="finishWorkCall()">
+      <button mat-raised-button class="finish-button" (click)="finishWorkCall()">
         Terminar Obra
       </button>
     </div>
@@ -170,6 +170,8 @@
     </div>
     <div class="members-content" *ngIf="tabIndex == 2">
       <div class="top-bar">
+        <input type="text" class="search-input" placeholder="Procurar Membro" [(ngModel)]="searchMemberValue"
+               (ngModelChange)="filterMembers(searchMemberValue)">
         <button mat-fab color="primary" aria-label="Example icon button with a delete icon" class="log-button"
                 (click)="onInviteClick()">
           <mat-icon>add</mat-icon>
@@ -177,7 +179,7 @@
         <mat-divider></mat-divider>
       </div>
       <div>
-        <mat-list *ngFor="let entry of work?.members">
+        <mat-list *ngFor="let entry of filteredMembers">
           <mat-list-item (click)="onMemberClick(entry.id)">
             <div matListItemTitle>{{ entry.name }}</div>
             <div matListItemLine>Role:  {{ entry.role }}</div>

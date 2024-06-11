@@ -2,10 +2,12 @@
 .card {
   background-color: #11113D;
   color: white;
-  max-width: 100%;
+  width: 95%;
+  height: 300px;
 }
 
 .card mat-card-subtitle{
+  font-size: 16px;
   color: #FF7A00;
 }
 
@@ -14,6 +16,7 @@
 }
 
 .card mat-card-title {
+  font-size: 30px;
   color: #FF7A00;
 }
 
@@ -35,15 +38,14 @@
 }
 
 .card span{
-  font-size: 10px;
+  font-size: 14px;
   margin-left: 10px;
   width: auto;
 }
 
 .card mat-icon{
   height: auto;
-  width: 8%;
-
+  width: 5%;
 }
 
 .card div{

@@ -4,6 +4,7 @@ import {ErrorStateMatcher} from "@angular/material/core";
 export interface Classes {
   id: string;
   name: string;
+  owner: string;
   description: string;
   address: Address;
   type: string;

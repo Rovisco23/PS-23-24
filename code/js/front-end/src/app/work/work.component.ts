@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ViewChild} from '@angular/core';
 import {WorkListingsComponent} from "../work-listings/work-listings.component";
 import {CommonModule} from "@angular/common";
 import {HttpService} from '../utils/http.service';
@@ -11,6 +11,7 @@ import {FormsModule} from "@angular/forms";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
 import {MatBadge} from "@angular/material/badge";
+import {MatPaginator, PageEvent} from "@angular/material/paginator";
 
 @Component({
   selector: 'app-work',
@@ -24,7 +25,8 @@ import {MatBadge} from "@angular/material/badge";
     MatFabButton,
     FormsModule,
     MatButton,
-    MatBadge
+    MatBadge,
+    MatPaginator
   ],
   providers: [HttpService],
   templateUrl: './work.component.html',
@@ -36,6 +38,9 @@ export class WorkComponent {
   inputValue: string = '';
   httpService: HttpService = inject(HttpService);
   numberOfVerifications: number = 0;
+  workElements: number = 6;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(private router: Router, private errorHandle: ErrorHandler) {
     if (localStorage.getItem('token')) {
@@ -46,7 +51,8 @@ export class WorkComponent {
         })
       ).subscribe(res => {
         this.workListingsList = res;
-        this.filteredWorkList = this.workListingsList.slice(0, 10);
+        this.workElements = res.length;
+        this.filteredWorkList = this.workListingsList.slice(0, 6);
       });
       if (localStorage.getItem('role') === 'CÂMARA') {
         /*this.httpService.getNumberOfVerifications(localStorage.getItem('userId') ?? '').pipe(
@@ -59,17 +65,29 @@ export class WorkComponent {
         });*/
       }
     }
+  }
 
+  ngAfterViewInit() {
+    this.paginator.page.subscribe((event: PageEvent) => this.onPageChange(event));
+  }
+
+  onPageChange(event: PageEvent) {
+    const startIndex = event.pageIndex * event.pageSize;
+    const endIndex = startIndex + event.pageSize;
+    this.filteredWorkList = this.workListingsList.slice(startIndex, endIndex);
   }
 
   filterResults(text: string) {
     if (!text) {
-      this.filteredWorkList = this.workListingsList;
+      this.filteredWorkList = this.workListingsList.slice(0, 6);
+      this.workElements = this.workListingsList.length;
       return;
     }
     this.filteredWorkList = this.workListingsList.filter(
       workListing => workListing?.name.toLowerCase().includes(text.toLowerCase())
     );
+    this.workElements = this.filteredWorkList.length;
+    this.paginator.pageIndex = 0; // Reset the paginator to the first page
   }
 
   checkCouncil(){

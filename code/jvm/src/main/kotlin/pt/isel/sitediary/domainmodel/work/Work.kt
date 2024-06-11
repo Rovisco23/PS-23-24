@@ -82,6 +82,7 @@ data class Author(
 
 data class WorkSimplified(
     val id: UUID,
+    val owner: String,
     val name: String,
     val description: String,
     val type: String,

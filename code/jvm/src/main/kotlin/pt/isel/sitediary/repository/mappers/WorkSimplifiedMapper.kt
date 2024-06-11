@@ -16,6 +16,7 @@ class WorkSimplifiedMapper : RowMapper<WorkSimplified> {
             description = rs.getString("descricao"),
             type = rs.getString("tipo"),
             state = rs.getString("estado"),
+            owner = rs.getString("owner"),
             address = Address(
                 location = Location(
                     rs.getString("distrito"),

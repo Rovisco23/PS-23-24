@@ -1,21 +1,28 @@
 <mat-card class="card">
   <mat-card-header>
-    <mat-card-subtitle>Obra</mat-card-subtitle>
     <mat-card-title>{{ workListing.name }}</mat-card-title>
   </mat-card-header>
-  <mat-card-content>
-    <p>{{ workListing.description }}</p>
-    <div style="display: flex; margin-bottom: 10px">
-      <mat-icon>location_pin</mat-icon>
-      <span>
-      {{ workListing.address.street }}, {{ workListing.address.postalCode }} | {{ workListing.address.location.parish }}
-        , {{ workListing.address.location.county }}, {{ workListing.address.location.district }}
-      </span>
+  <mat-card-content style="display: flex; flex-direction: column; justify-content: space-between; height: 100%">
+    <div>
+      <p>{{ workListing.description }}</p>
+      <div style="display: flex; align-items: center; margin-bottom: 10px">
+        <mat-icon style="margin-right: 10px">person</mat-icon>
+        <span style="flex: 1">{{workListing.owner}}</span>
+      </div>
+      <div style="display: flex; align-items: center; margin-bottom: 10px">
+        <mat-icon style="margin-right: 10px">location_pin</mat-icon>
+        <span style="flex: 1">
+          {{ workListing.address.street }}, {{ workListing.address.postalCode }} |
+          {{ workListing.address.location.parish }}, {{ workListing.address.location.county }},
+          {{ workListing.address.location.district }}
+        </span>
+      </div>
     </div>
-    <mat-divider></mat-divider>
+    <div>
+      <mat-divider></mat-divider>
+      <mat-card-actions style="display: flex; justify-content: center; align-items: center;">
+        <button [routerLink]="['/work-details', workListing.id]">Ver</button>
+      </mat-card-actions>
+    </div>
   </mat-card-content>
-  <mat-card-actions style="justify-content: center">
-    <button [routerLink]="['/work-details', workListing.id]">Ver</button>
-  </mat-card-actions>
 </mat-card>
-

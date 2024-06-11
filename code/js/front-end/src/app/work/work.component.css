@@ -48,11 +48,11 @@ button {
 
 .results {
   display: grid;
-  column-gap: 14px;
-  row-gap: 14px;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 400px));
-  margin-top: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
+  gap: 14px;
+  margin: 20px;
   justify-content: space-around;
+  height: 80%;
 }
 
 @media (max-width: 499px) {
@@ -68,17 +68,8 @@ button {
 }
 
 @media (min-width: 500px) and (max-width: 768px) {
-  .results {
-    grid-template-columns: repeat(2, 1fr);
-  }
   input[type="text"] {
     width: 70%;
   }
 }
 
-@media (max-width: 499px) {
-  .results {
-    grid-template-columns: 1fr;
-    height: 90%;
-  }
-}

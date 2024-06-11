@@ -84,12 +84,12 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         .singleOrNull()
 
     override fun getWorkList(userId: Int): List<WorkSimplified> = handle.createQuery(
-        "select OBRA.id, OBRA.nome, Obra.tipo, OBRA.descricao, OBRA.estado, OBRA.freguesia, OBRA.concelho, " +
-                "OBRA.distrito, OBRA.rua, OBRA.cpostal from MEMBRO join OBRA on id = oId where uId = :id and " +
-                "MEMBRO.pendente = :pending"
+        "select OBRA.id, OBRA.nome, ta.titular_licenca as owner, Obra.tipo, OBRA.descricao, OBRA.estado," +
+                " OBRA.freguesia, OBRA.concelho, OBRA.distrito, OBRA.rua, OBRA.cpostal from MEMBRO join" +
+                " OBRA on id = oId join TERMO_ABERTURA ta on OBRA.id = ta.oId where uId = :id and " +
+                "MEMBRO.pendente = 'false'"
     )
         .bind("id", userId)
-        .bind("pending", false)
         .mapTo(WorkSimplified::class.java)
         .list()
 
@@ -236,13 +236,15 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
     }
 
     override fun getWorkListAdmin() = handle.createQuery(
-        "select id, nome, tipo, descricao, estado, freguesia, concelho, distrito, rua, cpostal from OBRA"
+        "select o.id, o.nome, ta.titular_licenca as owner,  o.tipo, o.descricao, o.estado, o.freguesia," +
+                " o.concelho, o.distrito, o.rua, o.cpostal from OBRA o join TERMO_ABERTURA ta on ta.oId = o.id"
     )
         .mapTo(WorkSimplified::class.java)
         .list()
 
     override fun getWorkListCouncil(location: Location) = handle.createQuery(
-        "select id, nome, tipo, descricao, estado, freguesia, concelho, distrito, rua, cpostal from OBRA " +
+        "select o.id, o.nome, ta.titular_licenca as owner, o.tipo, o.descricao, o.estado, o.freguesia, o.concelho," +
+                " o.distrito, o.rua, o.cpostal from OBRA o join TERMO_ABERTURA ta on ta.oId = o.id " +
                 "where freguesia = :parish and concelho = :county and distrito = :district"
     )
         .bind("parish", location.parish)
