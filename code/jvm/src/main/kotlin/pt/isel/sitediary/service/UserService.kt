@@ -20,7 +20,7 @@ import pt.isel.sitediary.utils.success
 
 typealias UserCreationResult = Result<Errors, Unit>
 typealias LoginResult = Result<Errors, TokenExternalInfo>
-typealias LogoutResult = Result<Errors, String>
+typealias LogoutResult = Result<Errors, Unit>
 typealias UserEditResult = Result<Errors, GetUserModel>
 typealias SessionResult = Result<Errors, SessionValidation>
 typealias GetProfilePictureResult = Result<Errors, FileModel?>
@@ -126,7 +126,7 @@ class UserService(
             if (!out) {
                 failure(Errors.noUserLoggedIn)
             } else {
-                success("Logout successful")
+                success(Unit)
             }
         }
     }
