@@ -21,7 +21,9 @@ data class SignUpInputModel(
     val county: String,
     val associationName: String,
     val associationNum: Int
-)
+) {
+    fun checkNifSize() = nif.toString().length == 9
+}
 
 data class LoginInputModel(
     val user: String,

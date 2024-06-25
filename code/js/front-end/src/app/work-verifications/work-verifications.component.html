@@ -1,1 +1,19 @@
-<p>work-verifications works!</p>
+<div class="header">
+  <button (click)="onBackCall()" class="small-button">
+    <mat-icon class="small-icon">arrow_back</mat-icon>
+  </button>
+  <h2 class="title">Verificações para Obras</h2>
+</div>
+<div>
+    <input type="text" placeholder="Procurar Verificação" [(ngModel)]="inputValue" (ngModelChange)="filterVerifications(inputValue)">
+</div>
+<mat-divider></mat-divider>
+<div>
+  <mat-list *ngFor="let entry of filteredVerifications">
+    <mat-list-item (click)="onVerificationClick(entry.workId)">
+      <div matListItemTitle>{{ entry.workTitle }}</div>
+      <div matListItemLine>{{ entry.admin }} pediu autorização à câmara para a obra {{entry.workTitle}}</div>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+  </mat-list>
+</div>

@@ -192,40 +192,41 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
             .bind("pendente", false)
             .execute()
 
-        val tId = handle.createQuery(
-            "select id from TERMO_ABERTURA where oId = :oId"
-        )
-            .bind("oId", inv.workId.toString())
-            .mapTo(Int::class.java)
-            .single()
-        val roleExists = handle.createQuery(
-            "select count(*)=0 from Interveniente where role=:role"
-        )
-            .bind("role", inv.role)
-            .mapTo(Boolean::class.java)
-            .single()
-        if (roleExists) {
-            val name = handle.createQuery(
-                "select CONCAT(nome,' ',apelido) as nome from UTILIZADOR where id = :uId"
+        if(inv.checkTechnician()){
+            val tId = handle.createQuery(
+                "select id from TERMO_ABERTURA where oId = :oId"
             )
-                .bind("uId", user.id)
-                .mapTo(String::class.java)
-                .single()
-
-            // Adicionar ao Interveniente
-            handle.createUpdate(
-                "insert into INTERVENIENTE(tId, oId, nome, role, associacao, numero) values(:tId, :oId, :nome, " +
-                        ":role, :association,:num)"
-            )
-                .bind("tId", tId)
                 .bind("oId", inv.workId.toString())
-                .bind("nome", name)
+                .mapTo(Int::class.java)
+                .single()
+            val roleExists = handle.createQuery(
+                "select count(*)=0 from Interveniente where role=:role"
+            )
                 .bind("role", inv.role)
-                .bind("association", user.association.name)
-                .bind("num", user.association.number)
-                .execute()
-        }
+                .mapTo(Boolean::class.java)
+                .single()
+            if (roleExists) {
+                val name = handle.createQuery(
+                    "select CONCAT(nome,' ',apelido) as nome from UTILIZADOR where id = :uId"
+                )
+                    .bind("uId", user.id)
+                    .mapTo(String::class.java)
+                    .single()
 
+                // Adicionar ao Interveniente
+                handle.createUpdate(
+                    "insert into INTERVENIENTE(tId, oId, nome, role, associacao, numero) values(:tId, :oId, :nome, " +
+                            ":role, :association,:num)"
+                )
+                    .bind("tId", tId)
+                    .bind("oId", inv.workId.toString())
+                    .bind("nome", name)
+                    .bind("role", inv.role)
+                    .bind("association", user.association.name)
+                    .bind("num", user.association.number)
+                    .execute()
+            }
+        }
     }
 
     override fun declineInvite(workId: UUID, userId: Int) {

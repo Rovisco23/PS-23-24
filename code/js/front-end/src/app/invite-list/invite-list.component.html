@@ -5,17 +5,15 @@
   <h2 class="title">Introduza o Email e a Role das pessoas que pertende convidar</h2>
 </div>
 <div>
-  <form>
-    <input type="text" placeholder="Procurar Convite" #filter>
-    <button class="primary" type="button" (click)="filterInvites(filter.value)">Search</button>
-  </form>
+  <input type="text" placeholder="Procurar Verificação" [(ngModel)]="inputValue"
+         (ngModelChange)="filterInvites(inputValue)">
 </div>
 <mat-divider></mat-divider>
 <div>
   <mat-list *ngFor="let entry of filteredInvites">
     <mat-list-item (click)="onInviteClick(entry.workId)">
       <div matListItemTitle>{{ entry.workTitle }}</div>
-      <div matListItemLine>{{ entry.admin }} convidou-te para seres parte desta obra como {{entry.role}}</div>
+      <div matListItemLine>{{ entry.admin }} convidou-te para seres parte desta obra como {{ entry.role }}</div>
     </mat-list-item>
     <mat-divider></mat-divider>
   </mat-list>

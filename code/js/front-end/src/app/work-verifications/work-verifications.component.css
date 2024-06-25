@@ -1,0 +1,44 @@
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  height: 7%;
+}
+
+.small-button {
+  width: 2%;
+  height: auto;
+  margin: 10px;
+  background-color: transparent;
+  border: none;
+}
+
+.small-icon {
+  font-size: 200%;
+}
+
+input[type="text"] {
+  border: solid 1px #000000;
+  padding: 10px;
+  border-radius: 8px;
+  margin-right: 4px;
+  width: 30%; /* Adjust the width of the input */
+}
+
+input {
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 499px) {
+  input[type="text"], button {
+    width: 100%;
+    margin: 5px 0;
+  }
+}
+
+@media (min-width: 500px) and (max-width: 768px) {
+  input[type="text"] {
+    width: 70%;
+  }
+}

@@ -32,7 +32,8 @@ create table UTILIZADOR
     pendente          boolean,
     primary key (id),
     constraint Role_Format check (ROLE IN ('OPERÁRIO', 'CÂMARA', 'ADMIN')),
-    constraint Email_Format check (email like '%@%.%')
+    constraint Email_Format check (email like '%@%.%'),
+    CONSTRAINT check_nine_digits CHECK (char_length(nif::text) = 9)
 );
 
 create table SESSAO

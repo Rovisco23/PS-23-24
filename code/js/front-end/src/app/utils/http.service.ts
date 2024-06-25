@@ -92,6 +92,14 @@ export class HttpService {
     })
   }
 
+  getProfilePictureById(userId: string) {
+    const headers = this.getTokenHeader();
+    return this.http.get<any>(`http://localhost:8080/api/profile-picture/${userId}`, {
+      headers: headers,
+      responseType: 'blob' as 'json'
+    })
+  }
+
   inviteMembers(workId: string, invites: any): Observable<any> {
     const headers = this.getTokenHeader();
     return this.http.post<any>(`http://localhost:8080/api/invite/${workId}`, invites, {headers: headers})

@@ -34,19 +34,25 @@ export class ProfileComponent {
         this.loadUser()
       }
     });
-    this.httpService.getProfilePicture().pipe(
-      catchError(error => {
-        this.errorHandle.handleError(error);
-        return throwError(error);
-      })
-    ).subscribe((data) => {
-      if (data.size === 0) {
-        this.profileSrc = './assets/profile.png'
-      } else {
-        localStorage.setItem('profilePicture', URL.createObjectURL(data))
-        this.profileSrc = URL.createObjectURL(data)
+    let userId: string ;
+    this.route.paramMap.subscribe(
+      params => {
+        userId = params.get('id') ?? localStorage.getItem('userId') ?? ''
+        this.httpService.getProfilePictureById(userId).pipe(
+          catchError(error => {
+            this.errorHandle.handleError(error);
+            return throwError(error);
+          })
+        ).subscribe((data) => {
+          if (data.size === 0) {
+            this.profileSrc = './assets/profile.png'
+          } else {
+            localStorage.setItem('profilePicture', URL.createObjectURL(data))
+            this.profileSrc = URL.createObjectURL(data)
+          }
+        })
       }
-    })
+    );
   }
 
   loadUser() {

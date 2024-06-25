@@ -9,6 +9,7 @@ import {MatIcon} from "@angular/material/icon";
 import {MatList, MatListItem, MatListItemLine, MatListItemTitle} from "@angular/material/list";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-invite-list',
@@ -22,7 +23,8 @@ import {ErrorHandler} from "../utils/errorHandle";
     MatListItem,
     MatListItemLine,
     MatListItemTitle,
-    NgForOf
+    NgForOf,
+    FormsModule
   ],
   templateUrl: './invite-list.component.html',
   styleUrl: './invite-list.component.css'
@@ -32,6 +34,8 @@ export class InviteListComponent {
   invites: InviteSimplified[] = [];
 
   filteredInvites: InviteSimplified[] = [];
+
+  inputValue: string = '';
 
   httpService: HttpService = inject(HttpService);
 

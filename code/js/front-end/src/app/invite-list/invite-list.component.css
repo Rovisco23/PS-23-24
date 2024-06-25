@@ -17,6 +17,11 @@
   font-size: 200%;
 }
 
+input {
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
 input[type="text"] {
   border: solid 1px #000000;
   padding: 10px;

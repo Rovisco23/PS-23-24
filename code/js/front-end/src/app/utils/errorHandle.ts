@@ -18,7 +18,7 @@ export class ErrorHandler {
       localStorage.removeItem('userId')
       this.handleErrorInternal(error)
       this.router.navigate(['/login'])
-    } else if (error.status === 403) {
+    } else if (error.status === 403 || error.status === 404) {
       this.handleErrorInternal(error)
       this.location.back()
     } else {

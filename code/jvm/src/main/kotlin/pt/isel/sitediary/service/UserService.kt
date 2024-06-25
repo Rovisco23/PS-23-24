@@ -41,6 +41,8 @@ class UserService(
             failure(Errors.invalidRole)
         } else if (!checkPhoneNumberFormat(user.phone)) {
             failure(Errors.invalidPhoneNumber)
+        } else if (!user.checkNifSize()){
+            failure(Errors.invalidNif)
         } else {
             val location = it.addressRepository.getLocation(user.parish, user.county)
             if (location == null) {

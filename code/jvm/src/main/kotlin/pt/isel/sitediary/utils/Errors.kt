@@ -11,50 +11,53 @@ class Errors(val status: Int, val reason: String) {
 
         val invalidTechnicians = Errors(400, "Para iniciar uma Obra é necessário ter " +
                 "Fiscal, Diretor e Coordenador de Obra.")
-        val logNotEditable = Errors(400, "Esta observação não pode ser editada.")
-        val workFinished = Errors(400, "Não é possível registar uma observação numa obra terminada.")
-        val notTechnician = Errors(403, "Não pode criar uma observação se não for um Técnico.")
+        val logNotEditable = Errors(400, "Este registo não pode ser editado.")
+        val workFinished = Errors(400, "Não é possível fazer um registo numa obra terminada.")
+        val notTechnician = Errors(403, "Não pode criar registo se não for um Técnico.")
         val membersMissing = Errors(400, "É necessário ter pelo menos um Fiscal e um Coordenador de Obra.")
 
-        val workAlreadyFinished = Errors(400, "Work is already finished.")
+        val workAlreadyFinished = Errors(400, "Obra terminada.")
 
-        val forbidden = Errors(403, "Forbidden")
+        val forbidden = Errors(403, "Não tem permissões para aceder a este recurso.")
 
-        val userNotFound = Errors(404, "User does not exist.")
+        val userNotFound = Errors(404, "Utilizador não existe.")
 
-        val emailAlreadyInUse = Errors(400, "That email is already in use.")
+        val emailAlreadyInUse = Errors(400, "Email em uso.")
 
-        val invalidParameter = Errors(400, "Invalid Parameter.")
+        val invalidNif = Errors(400, "NIF inválido.")
 
-        val invalidPhoneNumber = Errors(400, "Invalid Phone number.")
+        val invalidParameter = Errors(400, "Parâmetro inválido.")
 
-        val invalidRole = Errors(400, "Invalid Role.")
+        val invalidPhoneNumber = Errors(400, "Número de telemóvel inválido.")
 
-        val invalidLocation = Errors(400, "Invalid Location.")
+        val invalidRole = Errors(400, "Papel de obra inválido.")
 
-        val internalError = Errors(500, "Internal Server Error. Please try again later.")
+        val invalidLocation = Errors(400, "Localização inválida.")
 
-        val invalidLoginParamCombination = Errors(400, "User or password are invalid.")
+        val internalError = Errors(500, "Erro Interno do Servidor. Por favor, tente novamente mais tarde.")
 
-        val noUserLoggedIn = Errors(401, "No user is logged in.")
+        val invalidLoginParamCombination = Errors(400, "Nome de utilizador ou password errado.")
+
+        val noUserLoggedIn = Errors(401, "Não tem sessão iniciada.")
 
         val invalidPassword = Errors(
             400,
-            "Invalid Password.\nPassword must have at least 8 digits, one uppercase letter, one number and a symbol."
+            "Palavra passe inválida.\n" +
+                    "A palavra passe deve ter no mínimo 8 dígitos, uma letra maiúscula, um número e um símbolo."
         )
 
-        val usernameAlreadyInUse = Errors(400, "That username is already in use.")
+        val usernameAlreadyInUse = Errors(400, "Nome de utilizador em uso.")
 
-        val workNotFound = Errors(404, "Work does not exist.")
+        val workNotFound = Errors(404, "Obra não existe.")
 
-        val notMember = Errors(403, "You are not a member of this Work")
+        val notMember = Errors(403, "Não é membro desta obra.")
 
-        val notAdmin = Errors(403, "You are not an Admin of this Work")
+        val notAdmin = Errors(403, "Não é dono desta obra.")
 
-        val logNotFound = Errors(404, "Log does not exist.")
+        val logNotFound = Errors(404, "Registo não existe.")
 
-        val inviteNotFound = Errors(404, "Invite does not exist.")
+        val inviteNotFound = Errors(404, "Convite não existe.")
 
-        val notInviteOwner = Errors(403, "You are not the owner of this Invite")
+        val notInviteOwner = Errors(403, "Não é dono deste convite.")
     }
 }

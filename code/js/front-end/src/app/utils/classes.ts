@@ -172,6 +172,13 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 
+export interface Verification {
+  id: string;
+  workId: string;
+  workTitle: string;
+  admin: string;
+}
+
 export class Role {
 
   private static composedRoles: { [key: string]: string } = {
