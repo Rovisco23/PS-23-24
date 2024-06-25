@@ -299,7 +299,7 @@ class UserController(private val service: UserService) {
             )
         ]
     )
-    fun getProfilePicture(@PathVariable id: Int, @Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
+    fun getProfilePictureById(@PathVariable id: Int, @Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
         val res = service.getProfilePicture(id)
         return handleResponse(res) {
             if (it == null) ResponseEntity.ok().body(null)
