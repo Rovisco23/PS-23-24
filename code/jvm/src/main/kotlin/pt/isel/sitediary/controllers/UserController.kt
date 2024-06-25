@@ -264,6 +264,29 @@ class UserController(private val service: UserService) {
         }
     }
 
+    @GetMapping(Paths.User.PROFILE_PICTURE)
+    @Operation(summary = "Get profile Picture", description = "Gets the profile picture of a user")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "Successful profile picture retrieval",
+                content = [
+                    Content(schema = Schema(implementation = FileModel::class))
+                ]
+            )
+        ]
+    )
+    fun getProfilePicture(@Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
+        val res = service.getProfilePicture(user.user.id)
+        return handleResponse(res) {
+            if (it == null) ResponseEntity.ok().body(null)
+            else ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "Attachment;filename=${it.fileName}")
+                .contentType(MediaType.parseMediaType(it.contentType))
+                .body(ByteArrayResource(it.file))
+        }
+    }
+
     @GetMapping(Paths.User.PROFILE_PICTURE_BY_ID)
     @Operation(summary = "Get profile Picture", description = "Gets the profile picture of a user")
     @ApiResponses(
