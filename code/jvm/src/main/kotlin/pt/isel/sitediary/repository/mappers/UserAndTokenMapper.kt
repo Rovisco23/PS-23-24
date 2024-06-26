@@ -14,6 +14,7 @@ class UserAndTokenMapper : RowMapper<UserAndTokenModel> {
         UserAndTokenModel(
             rs.getInt("id"),
             rs.getString("username"),
+            rs.getString("nome") + " " + rs.getString("apelido"),
             rs.getInt("nif"),
             rs.getString("email"),
             rs.getString("telefone") ?: "",

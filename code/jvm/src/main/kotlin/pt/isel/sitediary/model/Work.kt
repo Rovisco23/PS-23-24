@@ -3,7 +3,6 @@ package pt.isel.sitediary.model
 import pt.isel.sitediary.domainmodel.user.Technician
 import pt.isel.sitediary.domainmodel.work.Address
 import pt.isel.sitediary.domainmodel.work.ConstructionCompany
-import pt.isel.sitediary.domainmodel.work.WorkType
 import java.util.*
 
 data class ListOfWorksOutputModel(val list: List<WorkOutputModel>)
@@ -23,7 +22,9 @@ data class OpeningTermInputModel(
     val company: ConstructionCompany,
     val building: String,
     val address: Address,
-    val technicians: List<Technician>
+    val technicians: List<Technician>,
+    val verification: Boolean,
+    val verificationDoc: String?
 ) {
     fun checkParams() =
         name.isBlank() || holder.isBlank() || company.name.isBlank() || company.num <= 0 ||

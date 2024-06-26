@@ -92,6 +92,73 @@ class WorkController(private val service: WorkService) {
         }
     }
 
+    @GetMapping(Paths.Work.GET_WORKS_PENDING)
+    @Operation(summary = "Get all works waiting for verification", description = "Used to request all works waiting for verification")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "List of work received successfully",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ListOfWorksOutputModel::class)
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "401", description = "Login Required",
+                content = [
+                    Content(mediaType = "application/json", schema = Schema(implementation = Errors::class))
+                ]
+            ),
+            ApiResponse(
+                responseCode = "403", description = "You don't have access to this resource",
+                content = [
+                    Content(mediaType = "application/json", schema = Schema(implementation = Errors::class))
+                ]
+            )
+        ]
+    )
+    fun getWorksPending(@Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
+        val res = service.getWorksPending(user.user)
+        return handleResponse(res) {
+            ResponseEntity.ok(it)
+        }
+    }
+
+    @PutMapping(Paths.Work.ANSWER_PENDING)
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "List of work received successfully",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ListOfWorksOutputModel::class)
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "401", description = "Login Required",
+                content = [
+                    Content(mediaType = "application/json", schema = Schema(implementation = Errors::class))
+                ]
+            ),
+            ApiResponse(
+                responseCode = "403", description = "You don't have access to this resource",
+                content = [
+                    Content(mediaType = "application/json", schema = Schema(implementation = Errors::class))
+                ]
+            )
+        ]
+    )
+    fun answerPendingWork(@PathVariable id: UUID, @RequestBody answer: Boolean, @Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
+        val res = service.answerPendingWork(id, user.user, answer)
+        return handleResponse(res) {
+            ResponseEntity.ok(it)
+        }
+
+    }
     @PostMapping(Paths.Invite.GET_INVITE)
     @Operation(summary = "Invite Members", description = "Used to to invite users to a work")
     @ApiResponses(

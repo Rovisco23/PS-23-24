@@ -64,7 +64,7 @@ create table OBRA
     constraint Tipo CHECK (tipo IN
                            ('RESIDENCIAL', 'COMERCIAL', 'INDUSTRIAL', 'INFRAESTRUTURA', 'INSTITUCIONAL', 'REABILITAÇÃO',
                             'ESTRUTURA ESPECIAL', 'OBRA DE ARTE', 'HABITAÇÃO', 'EDIFICIO ESPECIAL')),
-    constraint Estado CHECK (estado IN ('EM PROGRESSO', 'TERMINADA', 'CANCELADA', 'EM PAUSA'))
+    constraint Estado CHECK (estado IN ('EM PROGRESSO', 'TERMINADA', 'CANCELADA', 'EM VERIFICAÇÃO'))
 );
 
 create table MEMBRO
@@ -150,6 +150,9 @@ create table TERMO_ABERTURA
     camara             integer,
     titular_licenca    varchar(255) not null,
     empresa_construcao integer,
+    autorizacao        varchar(255),
+    assinatura         varchar(255),
+    dt_assinatura      timestamp,
     predio             varchar(255) not null,
     primary key (id, oId),
     constraint ObraId foreign key (oId) references OBRA (id),

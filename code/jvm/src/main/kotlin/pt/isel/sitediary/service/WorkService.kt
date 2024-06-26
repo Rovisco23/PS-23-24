@@ -1,12 +1,14 @@
 package pt.isel.sitediary.service
 
 import kotlinx.datetime.Clock
+import kotlinx.datetime.toJavaInstant
 import org.springframework.stereotype.Component
 import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.user.checkOwner
 import pt.isel.sitediary.domainmodel.user.containsMemberById
 import pt.isel.sitediary.domainmodel.work.*
 import pt.isel.sitediary.domainmodel.work.WorkState.IN_PROGRESS
+import pt.isel.sitediary.domainmodel.work.WorkState.VERIFYING
 import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.InviteInputModel
 import pt.isel.sitediary.model.MemberInputModel
@@ -16,6 +18,7 @@ import pt.isel.sitediary.utils.Errors
 import pt.isel.sitediary.utils.Result
 import pt.isel.sitediary.utils.failure
 import pt.isel.sitediary.utils.success
+import java.sql.Timestamp
 import java.util.*
 
 typealias CreateWorkResult = Result<Errors, Unit>
@@ -42,7 +45,7 @@ class WorkService(
                     id = UUID.randomUUID(),
                     name = openingTerm.name,
                     description = openingTerm.description ?: "",
-                    state = IN_PROGRESS,
+                    state = if (openingTerm.verification) VERIFYING else IN_PROGRESS,
                     type = WorkType.fromString(openingTerm.type) ?: WorkType.RESIDENCIAL,
                     address = Address(
                         Location(
@@ -80,6 +83,33 @@ class WorkService(
             else -> it.workRepository.getWorkList(user.id)
         }
         success(work)
+    }
+
+    fun getWorksPending(user: User) =
+        transactionManager.run {
+            val rep = it.workRepository
+            if (user.role == "ADMIN") {
+                val works = rep.getAllWorksPending()
+                success(works)
+            } else if (user.role == "CÂMARA") {
+                val works = rep.getWorksPending(user.location)
+                success(works)
+            } else {
+                failure(Errors.forbidden)
+            }
+        }
+
+    fun answerPendingWork(workId: UUID, user: User, accepted: Boolean) = transactionManager.run {
+        val rep = it.workRepository
+        if (user.role != "ADMIN" && user.role != "CÂMARA") {
+            failure(Errors.forbidden)
+        } else if (accepted) {
+            rep.acceptPending(workId, user.name, Timestamp.from(clock.now().toJavaInstant()))
+            success(Unit)
+        } else {
+            rep.declinePending(workId, user.name, Timestamp.from(clock.now().toJavaInstant()))
+            success(Unit)
+        }
     }
 
     fun inviteMembers(members: List<MemberInputModel>, workId: UUID, userId: Int) = transactionManager.run {

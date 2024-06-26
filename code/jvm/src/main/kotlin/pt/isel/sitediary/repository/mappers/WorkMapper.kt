@@ -84,6 +84,7 @@ class WorkMapper : RowMapper<Work> {
                         )
                     }
             },
+            verification = rs.getBoolean("verification"),
             images = rs.getInt("imagens"),
             docs = rs.getInt("documentos")
         )

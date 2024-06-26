@@ -22,6 +22,8 @@ object Paths {
         const val GET_OPENING_TERM = "$PREFIX/opening-term/{id}"
         const val FINISH_WORK = "$PREFIX/finish-work"
         const val GET_IMAGE = "$PREFIX/work-image/{id}"
+        const val GET_WORKS_PENDING = "$PREFIX/work-pending"
+        const val ANSWER_PENDING = "$PREFIX/work-pending/{id}"
     }
 
     object Invite {

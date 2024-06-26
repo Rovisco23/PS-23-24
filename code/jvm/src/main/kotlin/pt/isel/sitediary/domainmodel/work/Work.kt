@@ -20,6 +20,7 @@ data class Work(
     val members: List<Member>,
     val log: List<LogEntrySimplified>,
     val technicians: List<Technician>,
+    val verification: Boolean,
     val images: Int,
     val docs: Int
 ) {
@@ -90,6 +91,14 @@ data class WorkSimplified(
     val address: Address,
 )
 
+data class WorkVerifying(
+    val id: UUID,
+    val owner: String,
+    val name: String,
+    val type: String,
+    val address: Address,
+)
+
 data class ConstructionCompany(
     val name: String,
     val num: Int
@@ -144,7 +153,7 @@ enum class WorkState(val description: String) {
     IN_PROGRESS("EM PROGRESSO"),
     FINISHED("TERMINADA"),
     CANCELED("CANCELADA"),
-    PAUSED("EM PAUSA");
+    VERIFYING("EM VERIFICAÇÃO");
 
     override fun toString() = description
 
@@ -153,7 +162,7 @@ enum class WorkState(val description: String) {
             "EM PROGRESSO" -> IN_PROGRESS
             "TERMINADA" -> FINISHED
             "CANCELADA" -> CANCELED
-            "EM PAUSA" -> PAUSED
+            "EM VERIFICAÇÃO" -> VERIFYING
             else -> null
         }
     }

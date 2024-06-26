@@ -129,7 +129,7 @@ class JdbiUser(private val handle: Handle) : UserRepository {
     }
 
     override fun getUserByToken(token: TokenValidationInfo): Pair<User, Token>? = handle.createQuery(
-        "select id, username, nif, email, telefone, role, freguesia, concelho, distrito, associacao_nome, " +
+        "select id, username, nome, apelido, nif, email, telefone, role, freguesia, concelho, distrito, associacao_nome, " +
                 "associacao_numero, token_validation, created_at, last_used_at from utilizador " +
                 "inner join sessao  on utilizador.id = sessao.uId where token_validation = :validation_information"
     )
@@ -174,12 +174,6 @@ class JdbiUser(private val handle: Handle) : UserRepository {
         .bind("id", id)
         .mapTo(FileModel::class.java)
         .singleOrNull()
-
-    override fun insertPending(id: Int, role: String) {
-        handle.createUpdate("insert into pendente(uId) values (:id)")
-            .bind("id", id)
-            .execute()
-    }
 
     override fun acceptCouncil(userId: Int) {
         handle.createUpdate("update utilizador set role = 'CÂMARA', pendente = :pending where id = :id")

@@ -4,6 +4,7 @@ import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.work.*
 import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.OpeningTermInputModel
+import java.sql.Timestamp
 import java.util.*
 
 interface WorkRepository {
@@ -27,4 +28,8 @@ interface WorkRepository {
     fun inviteMember(id: Int, role: String, workId: UUID)
     fun checkRequiredTechnicians(workId: UUID): Boolean
     fun getNumberOfInvites(id: Int): Int
+    fun getAllWorksPending(): List<WorkVerifying>
+    fun getWorksPending(location: Location): List<WorkVerifying>
+    fun acceptPending(workId: UUID, user: String, dateAuth: Timestamp)
+    fun declinePending(workId: UUID, user: String, dateAuth: Timestamp)
 }

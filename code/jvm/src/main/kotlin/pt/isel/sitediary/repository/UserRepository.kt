@@ -27,7 +27,6 @@ interface UserRepository {
     fun checkProfilePictureExists(id: Int): Int?
     fun removeProfilePicture(id: Int)
     fun getProfilePicture(id: Int): FileModel?
-    fun insertPending(id: Int, role: String)
     fun acceptCouncil(userId: Int)
     fun createDummyUser(email: String): Int
     fun getAllPendingCouncils(): List<PendingCouncils>
