@@ -48,7 +48,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
                 "FROM MEMBRO join UTILIZADOR on uId = id WHERE oId = :id and MEMBRO.pendente = :pending) as membros, " +
                 "ARRAY(SELECT CONCAT(nome, ';', role, ';', associacao, ';', numero) from INTERVENIENTE where " +
                 "oId = :id) as technicians, ARRAY(SELECT CONCAT(REGISTO.id, ';', author, ';', UTILIZADOR.username, " +
-                "';', MEMBRO.role, ';', titulo, ';', estado, ';', TO_CHAR(REGISTO.creation_date, 'YYYY-MM-DD')) " +
+                "';', MEMBRO.role, ';', titulo, ';', editable, ';', TO_CHAR(REGISTO.creation_date, 'YYYY-MM-DD')) " +
                 "FROM REGISTO join UTILIZADOR on author = UTILIZADOR.id join MEMBRO on uId = author where " +
                 "REGISTO.oId = :id) as log, TERMO_ABERTURA.titular_licenca, TERMO_ABERTURA.predio, " +
                 "EMPRESA_CONSTRUCAO.nome as company_name, EMPRESA_CONSTRUCAO.numero as company_num, " +

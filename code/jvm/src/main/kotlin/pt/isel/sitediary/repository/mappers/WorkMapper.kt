@@ -64,7 +64,7 @@ class WorkMapper : RowMapper<Work> {
                                 role = aux[3]
                             ),
                             title = aux[4],
-                            state = aux[5],
+                            state = if(aux[5] == "t") "Editável" else "Não editável",
                             createdAt = Date.valueOf(aux[6])
                         )
                     }
