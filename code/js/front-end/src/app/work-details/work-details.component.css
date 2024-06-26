@@ -28,7 +28,7 @@
 }
 
 .sidebar-content {
-  height: 78%;
+  height: 73%;
   padding: 10px;
 }
 
@@ -294,6 +294,19 @@ strong {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  margin-top: 2px;
+}
+
+.edit-button {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #FF7A00 !important;
+  border: 2px solid #FF7A00;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 2px;
 }
 
 .finish-button:hover {

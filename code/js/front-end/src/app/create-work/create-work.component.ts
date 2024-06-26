@@ -72,6 +72,7 @@ export class CreateWorkComponent {
   types = Object.values(WorkTypes);
   displayedColumns: string[] = ['name', 'role', 'association', 'delete'];
 
+
   httpService = inject(HttpService)
 
   diretor :Technician = {
@@ -125,7 +126,9 @@ export class CreateWorkComponent {
         street: '',
         postalCode: ''
       },
-      technicians: []
+      technicians: [],
+      verification: false,
+      verificationDoc: null
     }
 
     this.roles.valueChanges.subscribe(value => {
@@ -231,6 +234,10 @@ export class CreateWorkComponent {
   onRemoveTechnician(role: string) {
     this.work.technicians = this.work.technicians.filter(t => t.role !== role);
     this.table?.renderRows();
+  }
+
+  toggleVerification(event: any) {
+    this.work.verification = event.target.checked;
   }
 
   onBackCall() {

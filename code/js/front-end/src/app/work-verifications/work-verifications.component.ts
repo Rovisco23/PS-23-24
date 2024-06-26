@@ -1,4 +1,4 @@
-import {Component, ErrorHandler} from '@angular/core';
+import {Component, ErrorHandler, inject} from '@angular/core';
 import {MatDivider} from "@angular/material/divider";
 import {MatIcon} from "@angular/material/icon";
 import {MatList, MatListItem, MatListItemLine, MatListItemTitle} from "@angular/material/list";
@@ -6,6 +6,9 @@ import {Location, NgForOf} from "@angular/common";
 import {Router} from "@angular/router";
 import {Verification} from "../utils/classes";
 import {FormsModule} from "@angular/forms";
+import {catchError, throwError} from "rxjs";
+import {HttpService} from "../utils/http.service";
+import {MatIconButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-work-verifications',
@@ -18,40 +21,31 @@ import {FormsModule} from "@angular/forms";
     MatListItemLine,
     MatListItemTitle,
     NgForOf,
-    FormsModule
+    FormsModule,
+    MatIconButton
   ],
   templateUrl: './work-verifications.component.html',
   styleUrl: './work-verifications.component.css'
 })
 export class WorkVerificationsComponent {
 
-  verifications: Verification[] = [{
-    workId: '1',
-    workTitle: 'Teste',
-    id: '1',
-    admin: 'admin'
-  },{
-    workId: '2',
-    workTitle: 'Teste2',
-    id: '2',
-    admin: 'admin2'
-  }];
-  filteredVerifications: Verification[] = [{
-    workId: '1',
-    workTitle: 'Teste',
-    id: '1',
-    admin: 'admin'
-  },{
-    workId: '2',
-    workTitle: 'Teste2',
-    id: '2',
-    admin: 'admin2'
-  }];
+  verifications: Verification[] = [];
+  filteredVerifications: Verification[] = [];
+
+  httpService: HttpService = inject(HttpService);
 
   inputValue: string = '';
 
   constructor(private router: Router, private location: Location, private errorHandle: ErrorHandler) {
-
+    this.httpService.getWorksPending().pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe(res => {
+      this.verifications = res;
+      this.filteredVerifications = res;
+    });
   }
 
   filterVerifications(text: string) {
@@ -60,12 +54,20 @@ export class WorkVerificationsComponent {
       return;
     }
     this.filteredVerifications = this.verifications.filter(
-      entry => entry.workTitle.toLowerCase().includes(text.toLowerCase())
+      entry => entry.name.toLowerCase().includes(text.toLowerCase())
     );
   }
 
-  onVerificationClick(id: string) {
-    this.router.navigate([`/verifications/${id}`]);
+  onAccept(id: string) {
+    this.httpService.answerPendingWork(id, true).pipe().subscribe(() => {
+      this.router.navigate(['/work']);
+    })
+  }
+
+  onDecline(id: string) {
+    this.httpService.answerPendingWork(id, false).pipe().subscribe(() => {
+      this.router.navigate(['/work']);
+    })
   }
 
   onBackCall(){

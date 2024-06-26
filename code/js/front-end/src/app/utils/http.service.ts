@@ -206,8 +206,14 @@ export class HttpService {
       })
   }
 
-  getNumberOfVerifications(userId: string) {
+  getWorksPending() {
+    const headers = this.getTokenHeader();
+    return this.http.get<any>('http://localhost:8080/api/work-pending', {headers: headers})
+  }
 
+  answerPendingWork(workId: string, answer: boolean) {
+    const headers = this.getTokenHeader();
+    return this.http.put<any>(`http://localhost:8080/api/work-pending/${workId}`, answer, {headers: headers})
   }
 
   finishWork(work: string) {

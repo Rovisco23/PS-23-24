@@ -157,7 +157,6 @@ class WorkController(private val service: WorkService) {
         return handleResponse(res) {
             ResponseEntity.ok(it)
         }
-
     }
     @PostMapping(Paths.Invite.GET_INVITE)
     @Operation(summary = "Invite Members", description = "Used to to invite users to a work")

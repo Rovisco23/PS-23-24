@@ -142,6 +142,13 @@
                  (ngModelChange)="validateTechnician(coordenador)"
                  required>
         </div>
+        <div class="input">
+          <label for="nomeCoord" class="title">Verificação da Câmara</label>
+          <br>
+          <input type="checkbox" (change)="toggleVerification($event)">
+          <input type="text" id="verificationDoc" name="verificationDoc" placeholder="Documento de Verificação"
+                 [(ngModel)]="work.verificationDoc">
+        </div>
         <button mat-flat-button color="accent" class="submit-button" type="submit">Criar</button>
       </div>
     </form>

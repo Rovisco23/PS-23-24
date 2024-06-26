@@ -143,6 +143,10 @@ export class WorkDetailsComponent {
     this.location.back()
   }
 
+  onEditWorkCall() {
+    this.router.navigate([`/work-details/edit/${this.work!!.id}`])
+  }
+
   finishWorkCall() {
     this.httpService.finishWork(this.work!!.id).pipe(
       catchError(error => {

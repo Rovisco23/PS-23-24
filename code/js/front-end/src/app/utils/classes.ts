@@ -126,6 +126,8 @@ export interface InputWork {
   building: string;
   address: Address;
   technicians: Technician[];
+  verification: boolean,
+  verificationDoc: string | null
 }
 
 export interface Technician {
@@ -173,10 +175,11 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 }
 
 export interface Verification {
-  id: string;
-  workId: string;
-  workTitle: string;
-  admin: string;
+  id: string,
+  owner: string,
+  name: string,
+  type: string,
+  address: Address
 }
 
 export class Role {
