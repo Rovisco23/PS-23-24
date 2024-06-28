@@ -16,10 +16,11 @@ import {MatError, MatFormField, MatLabel} from "@angular/material/form-field";
 import {FormControl, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatInput} from "@angular/material/input";
 import {MatOption, MatSelect} from "@angular/material/select";
-import {NgIf, Location} from "@angular/common";
+import {NgIf} from "@angular/common";
 import {HttpService} from "../utils/http.service";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
+import {NavigationService} from "../utils/navService";
 
 @Component({
   selector: 'app-work-invite',
@@ -70,7 +71,7 @@ export class WorkInviteComponent {
   displayedColumns: string[] = ['email', 'role', 'delete'];
   httpService = inject(HttpService)
 
-  constructor(private router: Router, private location: Location, private errorHandle: ErrorHandler) {
+  constructor(private navService: NavigationService, private router: Router, private errorHandle: ErrorHandler) {
     this.workId = this.router.getCurrentNavigation()?.extras.state?.['workId'];
     this.emailFormControl.valueChanges.subscribe(value => {
       this.email = value;
@@ -111,11 +112,11 @@ export class WorkInviteComponent {
           return throwError(error);
         })
       ).subscribe(() => {
-        this.router.navigate([`/work-details/${this.workId}`]);
+        this.navService.navWorkDetails(this.workId);
       });
   }
 
   onBackCall(){
-    this.location.back()
+    this.navService.navWorkDetails(this.workId);
   }
 }

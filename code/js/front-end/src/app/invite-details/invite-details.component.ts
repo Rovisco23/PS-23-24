@@ -13,6 +13,7 @@ import {MatToolbar} from "@angular/material/toolbar";
 import {NgIf} from "@angular/common";
 import {ErrorHandler} from "../utils/errorHandle";
 import {catchError, throwError} from "rxjs";
+import {NavigationService} from "../utils/navService";
 
 @Component({
   selector: 'app-invite-details',
@@ -42,12 +43,12 @@ export class InviteDetailsComponent {
 
   httpService = inject(HttpService);
 
-  constructor(private route: ActivatedRoute, private router: Router, private errorHandle: ErrorHandler) {
+  constructor(private route: ActivatedRoute, private router: Router, private errorHandle: ErrorHandler, private navService: NavigationService) {
     const inviteId =  String(this.route.snapshot.params['id']);
     this.httpService.getInvite(inviteId).pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
-        this.router.navigate(['/invites']);
+        this.navService.navInviteList()
         return throwError(error);
       })
     ).subscribe((invite: InviteSimplified) => {
@@ -57,7 +58,7 @@ export class InviteDetailsComponent {
   }
 
   onBackCall() {
-    this.router.navigate(['/invites']);
+    this.navService.navInviteList();
   }
 
   checkIsNumber(value: string) {
@@ -80,7 +81,7 @@ export class InviteDetailsComponent {
         return throwError(error);
       })
     ).subscribe(() => {
-      this.router.navigate([`/work-details/${this.invite?.workId}`]);
+      this.navService.navWorkDetails(this.invite?.workId ?? '')
     });
   }
 
@@ -98,7 +99,7 @@ export class InviteDetailsComponent {
         return throwError(error);
       })
     ).subscribe(() => {
-      this.router.navigate(['/work']);
+      this.navService.navWork()
     });
   }
 

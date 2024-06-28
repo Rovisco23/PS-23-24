@@ -1,8 +1,7 @@
 import {Component, inject} from '@angular/core';
 import {HttpService} from "../utils/http.service";
-import {Router} from "@angular/router";
 import {InviteSimplified, Role} from "../utils/classes";
-import {DatePipe, NgForOf, Location} from "@angular/common";
+import {DatePipe, NgForOf} from "@angular/common";
 import {MatDivider} from "@angular/material/divider";
 import {MatFabButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
@@ -10,6 +9,7 @@ import {MatList, MatListItem, MatListItemLine, MatListItemTitle} from "@angular/
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
 import {FormsModule} from "@angular/forms";
+import {NavigationService} from "../utils/navService";
 
 @Component({
   selector: 'app-invite-list',
@@ -39,7 +39,7 @@ export class InviteListComponent {
 
   httpService: HttpService = inject(HttpService);
 
-  constructor(private router: Router, private location: Location, private errorHandle: ErrorHandler) {
+  constructor(private navService: NavigationService, private errorHandle: ErrorHandler) {
     this.httpService.getInviteList().pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
@@ -69,10 +69,10 @@ export class InviteListComponent {
   }
 
   onInviteClick(id: string) {
-    this.router.navigate([`/invites/${id}`]);
+    this.navService.navInvite(id)
   }
 
   onBackCall(){
-    this.location.back()
+    this.navService.back()
   }
 }

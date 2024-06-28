@@ -8,6 +8,7 @@ import {NgForOf} from "@angular/common";
 import {concelhos, freguesias} from "../utils/utils";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
+import {NavigationService} from "../utils/navService";
 
 @Component({
   selector: 'app-sign-up',
@@ -47,7 +48,7 @@ export class SignUpComponent {
 
   httpService = inject(HttpService);
 
-  constructor(private router: Router, private errorHandle: ErrorHandler) {
+  constructor(private router: Router, private errorHandle: ErrorHandler, private navService: NavigationService) {
     concelhos.forEach((value) => {
       value.forEach((v: string) => this.counties.push(v));
     })
@@ -82,7 +83,11 @@ export class SignUpComponent {
       })
     ).subscribe(() => {
       console.log("Sign Up Finished");
-      this.router.navigate(['/login']);
+      this.navService.navLogin()
     })
+  }
+
+  onLoginClick(): void {
+    this.navService.navLogin()
   }
 }

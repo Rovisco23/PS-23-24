@@ -69,8 +69,8 @@ export class HttpService {
       firstName: user.firstName,
       lastName: user.lastName,
       phone: user.phone,
-      parish: user.location.parish,
-      county: user.location.county
+      location: user.location,
+      association: user.association
     }, {headers: headers});
   }
 

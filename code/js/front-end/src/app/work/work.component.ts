@@ -12,6 +12,7 @@ import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
 import {MatBadge} from "@angular/material/badge";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
+import {NavigationService} from "../utils/navService";
 
 @Component({
   selector: 'app-work',
@@ -42,7 +43,7 @@ export class WorkComponent {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private router: Router, private errorHandle: ErrorHandler) {
+  constructor(private navService: NavigationService, private router: Router, private errorHandle: ErrorHandler) {
     if (localStorage.getItem('token')) {
       this.httpService.getWorkListings().pipe(
         catchError(error => {
@@ -95,10 +96,10 @@ export class WorkComponent {
   }
 
   councilVerifications(){
-    this.router.navigate(['/verifications']);
+    this.navService.navVerifications();
   }
 
   createWork() {
-    this.router.navigate(['/create-work']);
+    this.navService.navCreateWork()
   }
 }

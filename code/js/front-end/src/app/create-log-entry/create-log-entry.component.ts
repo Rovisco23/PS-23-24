@@ -20,6 +20,7 @@ import {
 import {HttpResponse} from "@angular/common/http";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
+import {NavigationService} from "../utils/navService";
 
 @Component({
   selector: 'app-create-log-entry',
@@ -61,7 +62,7 @@ export class CreateLogEntryComponent {
   files: Map<string, File> = new Map<string, File>();
   displayedColumns: string[] = ['files', 'delete'];
 
-  constructor(private router: Router, private errorHandle: ErrorHandler) {
+  constructor(private router: Router, private errorHandle: ErrorHandler, private navService: NavigationService) {
   }
 
   onSubmit() {
@@ -81,7 +82,7 @@ export class CreateLogEntryComponent {
       })
     ).subscribe((response: HttpResponse<any>) => {
       const headers = response.headers.get("Location")!!
-      this.router.navigate([headers])
+      this.navService.navUrl(headers)
     })
   }
 
@@ -104,6 +105,6 @@ export class CreateLogEntryComponent {
   }
 
   onBackCall() {
-    this.router.navigate([`/work-details/${this.workId}`])
+    this.navService.navWorkDetails(this.workId)
   }
 }

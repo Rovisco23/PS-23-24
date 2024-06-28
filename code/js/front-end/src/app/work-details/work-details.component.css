@@ -4,38 +4,39 @@
 }
 
 .sidebar {
-  display: flex;
-  flex-direction: column;
+  position: fixed;
   width: 15%;
-  height: 100%;
+  height: 100vh; /* set the height to 100vh */
   background-color: #f5f5f5;
   border-right: 1px solid #ddd;
-  position: fixed;
+  overflow-y: auto; /* enable vertical scrolling */
+}
+
+.sidebar-inner { /* new container element */
+  height: inherit;
+  overflow-y: auto; /* enable vertical scrolling */
 }
 
 .sidebar-header {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  padding: 10px;
   background-color: #11113D;
-  color: #FF7A00;
+  color: white;
 }
 
 .sidebar-title {
+  text-align: center;
   font-size: 1.2em;
   font-weight: bold;
   margin-left: 10px;
+  margin-bottom: 10px;
 }
 
 .sidebar-content {
-  height: 73%;
+  /* remove height: 100% */
   padding: 10px;
 }
-
-.sidebar-footer {
-  margin: 10px;
-}
-
 
 .sidebar-menu {
   list-style: none;
@@ -63,6 +64,7 @@
 
 .sidebar-menu-link:hover {
   background-color: #ddd;
+  cursor: pointer;
 }
 
 .sidebar-menu-icon {
@@ -167,7 +169,6 @@ form {
 .image-container {
   width: 100%; /* or a fixed width, e.g., 200px */
   aspect-ratio: 1/1; /* maintain a 1:1 aspect ratio */
-  overflow: hidden; /* ensure the image doesn't overflow */
 }
 
 .work-image {
@@ -184,6 +185,7 @@ form {
 
 .sidebar .close-button:hover {
   background-color: red;
+  cursor: pointer;
 }
 
 .general-tab-content {
@@ -312,4 +314,28 @@ strong {
 .finish-button:hover {
   background-color: #FF7A00 !important;
   color: white !important;
+  cursor: pointer;
+}
+
+mat-list {
+  padding: 0;
+}
+
+mat-list-item {
+  border-bottom: 1px solid lightgrey;
+  display: flex;
+  align-items: center; /* center items vertically */
+  justify-content: center;
+  width: 100%;
+  margin: 0;
+  align-content: center;
+}
+
+mat-list-item:hover {
+  background-color: lightgrey;
+  cursor: pointer;
+}
+
+matListItemTitle {
+  vertical-align: center;
 }

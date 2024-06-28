@@ -17,8 +17,6 @@ import {AdminGuard} from "./utils/admin.guard";
 import {ListUsersComponent} from "./list-users/list-users.component";
 import {WorkVerificationsComponent} from "./work-verifications/work-verifications.component";
 import {CouncilGuard} from "./utils/council.guard";
-import {EditWorkComponent} from "./edit-work/edit-work.component";
-
 export const routes: Routes = [
   {
     path: 'work',
@@ -95,10 +93,6 @@ export const routes: Routes = [
     path: 'verifications',
     component: WorkVerificationsComponent,
     canActivate: [CouncilGuard]
-  },{
-    path: 'work-details/edit/:id',
-    component: EditWorkComponent,
-    title: 'Work details'
   },{
     path: '**',
     redirectTo: '/work'

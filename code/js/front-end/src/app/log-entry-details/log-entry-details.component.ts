@@ -1,8 +1,8 @@
 import {Component, inject} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {HttpService} from "../utils/http.service";
 import {LogEntry, SimpleFile} from "../utils/classes";
-import {Location, NgIf} from "@angular/common";
+import {NgIf} from "@angular/common";
 import {MatIcon} from "@angular/material/icon";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatButton, MatFabButton} from "@angular/material/button";
@@ -25,6 +25,7 @@ import {MatCheckbox} from "@angular/material/checkbox";
 import {SelectionModel} from "@angular/cdk/collections";
 import {ErrorHandler} from "../utils/errorHandle";
 import {catchError, throwError} from "rxjs";
+import {NavigationService} from "../utils/navService";
 
 @Component({
   selector: 'app-log-entry-details',
@@ -65,7 +66,7 @@ export class LogEntryDetailsComponent {
   selection = new SelectionModel<SimpleFile>(true, []);
 
 
-  constructor(private router: Router, private location: Location, private errorHandle: ErrorHandler) {
+  constructor(private errorHandle: ErrorHandler, private navService: NavigationService) {
     this.logId = String(this.route.snapshot.params['id']);
     this.httpService.getLogById(this.logId).pipe(
       catchError(error => {
@@ -83,7 +84,7 @@ export class LogEntryDetailsComponent {
   }
 
   editCall() {
-    this.router.navigate([`/edit-log/${this.logId}`]);
+    this.navService.navEditLog(this.logId)
   }
 
   downloadFiles() {
@@ -115,7 +116,7 @@ export class LogEntryDetailsComponent {
   }
 
   onBackCall() {
-    this.location.back()
+    this.navService.back()
   }
 
 

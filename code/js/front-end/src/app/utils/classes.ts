@@ -59,7 +59,8 @@ export interface LogEntrySimplified {
   author: Author,
   title: string,
   state: string,
-  createdAt: string
+  createdAt: string,
+  anexos: boolean
 }
 
 export interface LogEntry {
@@ -220,4 +221,91 @@ export class Role {
   public static decomposeRole(roleDescription: string): string {
     return Role.invertedRoles[roleDescription] || roleDescription;
   }
+}
+export class WorkState {
+
+  public static composeState(state: string){
+    switch (state) {
+      case 'IN_PROGRESS':
+        return 'Em Progresso';
+      case 'FINISHED':
+        return 'Terminada';
+      case 'REJECTED':
+        return 'Rejeitada';
+      case 'VERIFYING':
+        return 'Em Verificação';
+      default:
+        return state;
+    }
+  }
+
+  public static decomposeState(state: string): string {
+    switch (state) {
+      case 'Em Progresso':
+        return 'IN_PROGRESS';
+      case 'Terminada':
+        return 'FINISHED';
+      case 'Rejeitada':
+        return 'REJECTED';
+      case 'Em Verificação':
+        return 'VERIFYING';
+      default:
+        return state;
+    }
+  }
+
+  public static composeType(type: string): string {
+    switch (type) {
+      case 'RESIDENCIAL':
+        return 'Residencial';
+      case 'COMERCIAL':
+        return 'Comercial';
+      case 'INDUSTRIAL':
+        return 'Industrial';
+      case 'INFRAESTRUTURA':
+        return 'Infraestrutura';
+      case 'INSTITUCIONAL':
+        return 'Institucional';
+      case 'REABILITACAO': // Corrigi a ausência do 'Ç' em 'REABILITAÇÃO' para funcionar no código
+        return 'Reabilitação';
+      case 'ESTRUTURA ESPECIAL':
+        return 'Estrutura Especial';
+      case 'OBRA DE ARTE':
+        return 'Obra de Arte';
+      case 'HABITACAO': // Corrigi a ausência do 'Ç' em 'HABITAÇÃO' para funcionar no código
+        return 'Habitação';
+      case 'EDIFICIO ESPECIAL':
+        return 'Edifício Especial';
+      default:
+        return 'Tipo Desconhecido';
+    }
+  }
+
+  public static decomposeType(type: string): string {
+    switch (type) {
+      case 'Residencial':
+        return 'RESIDENCIAL';
+      case 'Comercial':
+        return 'COMERCIAL';
+      case 'Industrial':
+        return 'INDUSTRIAL';
+      case 'Infraestrutura':
+        return 'INFRAESTRUTURA';
+      case 'Institucional':
+        return 'INSTITUCIONAL';
+      case 'Reabilitação':
+        return 'REABILITACAO'; // Corrigi a ausência do 'Ç' em 'REABILITAÇÃO' para funcionar no código
+      case 'Estrutura Especial':
+        return 'ESTRUTURA ESPECIAL';
+      case 'Obra de Arte':
+        return 'OBRA DE ARTE';
+      case 'Habitação':
+        return 'HABITACAO'; // Corrigi a ausência do 'Ç' em 'HABITAÇÃO' para funcionar no código
+      case 'Edifício Especial':
+        return 'EDIFICIO ESPECIAL';
+      default:
+        return 'Tipo Desconhecido';
+    }
+  }
+
 }

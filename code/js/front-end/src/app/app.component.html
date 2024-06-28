@@ -27,22 +27,22 @@
         <button
           class="side-option-button"
           routerLinkActive="side-option-active"
-          routerLink="work">Obras
+          (click)="onWorkCall()">Obras
         </button>
         <button
           class="side-option-button"
           routerLinkActive="side-option-active"
-          routerLink="users">Listar Utilizadores
+          (click)="onUsersCall()">Listar Utilizadores
         </button>
         <button
           class="side-option-button"
           routerLinkActive="side-option-active"
-          routerLink="pending-users">Utilizadores Pendentes
+          (click)="onPendingUsersCall()">Utilizadores Pendentes
         </button>
         <button
           class="side-option-button"
           routerLinkActive="side-option-active"
-          routerLink="verifications">Obras Pendentes
+          (click)="onVerificationsCall()">Obras Pendentes
         </button>
       </mat-drawer>
       <mat-drawer #drawerProfile class="profile-drawer" mode="over" position="end">
@@ -55,7 +55,6 @@
           <button
             class="side-option-button"
             routerLinkActive="side-option-active"
-            routerLink="Logout"
             (click)="logout()">Logout
           </button>
         </div>

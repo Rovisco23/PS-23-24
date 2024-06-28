@@ -9,13 +9,13 @@ import {
   MatListItemTitle,
   MatListSubheaderCssMatStyler
 } from "@angular/material/list";
-import {Location, NgForOf} from "@angular/common";
-import {Router} from "@angular/router";
+import {NgForOf} from "@angular/common";
 import {HttpService} from "../utils/http.service";
 import {Pending} from "../utils/classes";
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
+import {NavigationService} from "../utils/navService";
 
 @Component({
   selector: 'app-pending-users',
@@ -44,7 +44,7 @@ export class PendingUsersComponent {
 
   filteredPendingList: Pending[] = [];
 
-  constructor(private router: Router, private location: Location, private errorHandle: ErrorHandler) {
+  constructor(private errorHandle: ErrorHandler, private navService: NavigationService) {
     this.httpService.getPendingUsers().pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
@@ -67,7 +67,7 @@ export class PendingUsersComponent {
   }
 
   onItemClick(id: number) {
-    this.router.navigate(['/profile/' + id]);
+    this.navService.navMemberProfile(id);
   }
 
   onAccept(id: number) {
@@ -95,6 +95,6 @@ export class PendingUsersComponent {
   }
 
   onBackCall() {
-    this.location.back()
+    this.navService.back()
   }
 }

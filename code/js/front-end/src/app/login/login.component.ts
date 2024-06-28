@@ -7,6 +7,7 @@ import {MatButton} from "@angular/material/button";
 import {OriginalUrlService} from "../utils/originalUrl.service";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
+import {NavigationService} from "../utils/navService";
 
 @Component({
   selector: 'app-login',
@@ -27,7 +28,7 @@ export class LoginComponent {
 
   httpService = inject(HttpService);
 
-  constructor(private router: Router, private originalUrlService: OriginalUrlService, private errorHandle: ErrorHandler) {}
+  constructor(private router: Router, private originalUrlService: OriginalUrlService, private errorHandle: ErrorHandler, private navService: NavigationService) {}
 
   login(): void {
     this.httpService.login(this.username, this.password).pipe(
@@ -51,10 +52,14 @@ export class LoginComponent {
       const redirect = this.originalUrlService.getOriginalUrl()
       if (redirect) {
         this.originalUrlService.resetOriginalUrl()
-        this.router.navigate([redirect])
+        this.navService.navUrl(redirect)
       } else {
-        this.router.navigate(['/work'])
+        this.navService.navWork()
       }
     })
+  }
+
+  onSignUpClick() {
+    this.navService.navSignUp()
   }
 }

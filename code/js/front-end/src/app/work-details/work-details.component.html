@@ -1,63 +1,72 @@
 <div class="main-container">
   <div class="sidebar">
-    <div class="sidebar-header">
-      <button (click)="onBackCall()" class="small-button">
-        <mat-icon class="small-icon">arrow_back</mat-icon>
-      </button>
-      <span class="sidebar-title">{{ work?.name }}</span>
-    </div>
-    <div class="sidebar-content">
-      <div class="image-container">
-        <img src="{{workSrc}}" class="work-image" alt="Work Image">
+    <div class="sidebar-inner">
+      <div class="sidebar-header">
+        <div style="display: flex; flex-direction: row">
+          <button (click)="onBackCall()" class="small-button">
+            <mat-icon class="small-icon">arrow_back</mat-icon>
+          </button>
+          <span class="sidebar-title" style="margin-left: 5px;">Voltar</span>
+        </div>
       </div>
-      <ul class="sidebar-menu">
-        <li class="sidebar-menu-item">
-          <a [ngClass]="tabIndex === 0 ? 'sidebar-menu-link-selected' : 'sidebar-menu-link'" (click)="changeTab(0)">
-            <div class="sidebar-menu-icon">
-            <span class="material-icons">
-              error_outline
-            </span>
-            </div>
-            <div class="sidebar-menu-text">
-              Registos de Ocorrências
-              <span class="sidebar-menu-badge">{{ work?.log?.length }}</span>
-            </div>
-          </a>
-        </li>
-        <li class="sidebar-menu-item">
-          <a [ngClass]="tabIndex === 1 ? 'sidebar-menu-link-selected' : 'sidebar-menu-link'" (click)="changeTab(1)">
-            <div class="sidebar-menu-icon">
+      <div class="sidebar-content">
+        <span class="sidebar-title">{{ work?.name }}</span>
+        <div class="image-container">
+          <img src="{{workSrc}}" class="work-image" alt="Work Image">
+        </div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item">
+            <a [ngClass]="tabIndex === 1 ? 'sidebar-menu-link-selected' : 'sidebar-menu-link'" (click)="changeTab(1)">
+              <div class="sidebar-menu-icon">
             <span class="material-icons">
               info
             </span>
-            </div>
-            <div class="sidebar-menu-text">
-              Visão Geral
-            </div>
-          </a>
-        </li>
-        <li class="sidebar-menu-item">
-          <a [ngClass]="tabIndex === 2 ? 'sidebar-menu-link-selected' : 'sidebar-menu-link'" (click)="changeTab(2)">
-            <div class="sidebar-menu-icon">
+              </div>
+              <div class="sidebar-menu-text">
+                Visão Geral
+              </div>
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
+            <a [ngClass]="tabIndex === 0 ? 'sidebar-menu-link-selected' : 'sidebar-menu-link'" (click)="changeTab(0)">
+              <div class="sidebar-menu-icon">
+            <span class="material-icons">
+              error_outline
+            </span>
+              </div>
+              <div class="sidebar-menu-text">
+                Registos de Ocorrências
+                <span class="sidebar-menu-badge">{{ work?.log?.length }}</span>
+              </div>
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
+            <a [ngClass]="tabIndex === 2 ? 'sidebar-menu-link-selected' : 'sidebar-menu-link'" (click)="changeTab(2)">
+              <div class="sidebar-menu-icon">
             <span class="material-icons">
               groups
             </span>
-            </div>
-            <div class="sidebar-menu-text">
-              Equipa
-              <span class="sidebar-menu-badge">{{ work?.members?.length }}</span>
-            </div>
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div class="sidebar-footer">
-      <button mat-raised-button class="edit-button" (click)="onEditWorkCall()">
-        Editar Obra
-      </button>
-      <button mat-raised-button class="finish-button" (click)="finishWorkCall()">
-        Terminar Obra
-      </button>
+              </div>
+              <div class="sidebar-menu-text">
+                Equipa
+                <span class="sidebar-menu-badge">{{ work?.members?.length }}</span>
+              </div>
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
+            <a class="sidebar-menu-link" *ngIf="work?.state !== 'Terminada'" (click)="finishWorkCall()">
+              <div class="sidebar-menu-icon">
+            <span class="material-icons">
+              close
+            </span>
+              </div>
+              <div class="sidebar-menu-text">
+                Terminar Obra
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
   <div class="content">
@@ -74,10 +83,14 @@
       <div>
         <mat-list *ngFor="let entry of filteredLogList">
           <mat-list-item (click)="onLogEntryClick(entry.id)">
+            <mat-icon matListItemIcon>article</mat-icon>
             <div matListItemTitle>{{ entry.title }}</div>
             <div matListItemLine>Posted by {{ entry.author.name }} on {{ entry.createdAt | date }}</div>
+            <div matListItemMeta>
+              <mat-icon *ngIf="entry.anexos" >attach_file</mat-icon>
+              <mat-icon *ngIf="entry.state == 'Editável'" >edit</mat-icon>
+            </div>
           </mat-list-item>
-          <mat-divider></mat-divider>
         </mat-list>
       </div>
     </div>
@@ -134,22 +147,6 @@
                 <td><strong>Titular da Licença</strong></td>
                 <td>{{ work?.licenseHolder }}</td>
               </tr>
-              <tr *ngIf="fiscal">
-                <td><strong>Responsável de Fiscalização</strong></td>
-                <td>{{ fiscal }}</td>
-              </tr>
-              <tr *ngIf="diretor">
-                <td><strong>Diretor da Obra</strong></td>
-                <td>{{ diretor }}</td>
-              </tr>
-              <tr *ngIf="coordenador">
-                <td><strong>Coordenador da Obra</strong></td>
-                <td>{{ coordenador }}</td>
-              </tr>
-            </table>
-          </div>
-          <div class="col-md-6">
-            <table>
               <tr>
                 <td><strong>Descrição</strong></td>
                 <td>{{ work?.description }}</td>
@@ -162,6 +159,10 @@
                 <td><strong>Prédio</strong></td>
                 <td>{{ work?.building }}</td>
               </tr>
+            </table>
+          </div>
+          <div class="col-md-6">
+            <table>
               <tr *ngFor="let technician of work?.technicians">
                 <td><strong>{{ technician.role }}</strong></td>
                 <td>{{ technician.name }} - {{ technician.association.name }} {{ technician.association.number }}</td>

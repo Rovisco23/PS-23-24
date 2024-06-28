@@ -115,7 +115,8 @@ class JdbiUser(private val handle: Handle) : UserRepository {
     override fun editProfile(user: GetUserModel) {
         handle.createUpdate(
             "update utilizador set username = :username, telefone = :phone, nome = :firstName, apelido = :lastName, " +
-                    "freguesia = :parish, concelho = :county, distrito = :district where id = :id"
+                    "freguesia = :parish, concelho = :county, distrito = :district, associacao_nome = :association, " +
+                    "associacao_numero = :associationNum where id = :id"
         )
             .bind("username", user.username)
             .bind("phone", user.phone)
@@ -124,6 +125,8 @@ class JdbiUser(private val handle: Handle) : UserRepository {
             .bind("parish", user.location.parish)
             .bind("county", user.location.county)
             .bind("district", user.location.district)
+            .bind("association", user.association.name)
+            .bind("associationNum", user.association.number)
             .bind("id", user.id)
             .execute()
     }

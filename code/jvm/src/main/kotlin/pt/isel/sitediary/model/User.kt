@@ -35,8 +35,8 @@ data class EditProfileInputModel(
     val firstName: String,
     val lastName: String,
     val phone: String,
-    val parish: String,
-    val county: String
+    val location: Location,
+    val association: Association
 )
 
 data class GetUserModel(

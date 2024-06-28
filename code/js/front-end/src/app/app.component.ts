@@ -11,6 +11,8 @@ import {HttpClientModule} from "@angular/common/http";
 import {MatBadge} from "@angular/material/badge";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "./utils/errorHandle";
+import {OriginalUrlService} from "./utils/originalUrl.service";
+import {NavigationService} from "./utils/navService";
 
 @Component({
   selector: 'app-root',
@@ -48,11 +50,11 @@ export class AppComponent {
     localStorage.removeItem('role');
     localStorage.removeItem('profilePicture');
     this.httpService.logout(token ?? '').subscribe(() => {
-      this.router.navigate(['login']);
+      this.navService.navLogin()
     })
   }
 
-  constructor(private router: Router, private httpService: HttpService, private errorHandle: ErrorHandler) {
+  constructor(private router: Router, private httpService: HttpService, private errorHandle: ErrorHandler, private urlService: OriginalUrlService, private navService: NavigationService) {
     this.router.events
       .pipe(filter((events) => events instanceof NavigationEnd))
       .subscribe((event: any) => {
@@ -96,6 +98,23 @@ export class AppComponent {
   }
 
   onProfileCall() {
-    this.router.navigate(['/profile']);
+    this.urlService.setOriginalUrl(this.router.url)
+    this.navService.navProfile()
+  }
+
+  onWorkCall() {
+    this.navService.navWork()
+  }
+
+  onUsersCall() {
+    this.navService.navUsers()
+  }
+
+  onPendingUsersCall() {
+    this.navService.navPendingUsers()
+  }
+
+  onVerificationsCall() {
+    this.navService.navVerifications()
   }
 }

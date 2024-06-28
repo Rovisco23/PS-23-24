@@ -20,6 +20,7 @@ import {
 import {MatInput} from "@angular/material/input";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
+import {NavigationService} from "../utils/navService";
 
 @Component({
   selector: 'app-create-work',
@@ -106,7 +107,7 @@ export class CreateWorkComponent {
   parishes: string[] = [];
   districts: string[] = [];
 
-  constructor(private router: Router, private location: Location, private errorHandle: ErrorHandler) {
+  constructor(private router: Router, private location: Location, private errorHandle: ErrorHandler, private navService: NavigationService) {
     this.work = {
       name: '',
       type: '',
@@ -197,7 +198,7 @@ export class CreateWorkComponent {
       })
     ).subscribe(() => {
       console.log("Work Created!");
-      this.router.navigate(['/work']);
+      this.navService.navWork()
     });
   }
 
@@ -241,6 +242,6 @@ export class CreateWorkComponent {
   }
 
   onBackCall() {
-    this.location.back()
+    this.navService.back()
   }
 }

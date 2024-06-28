@@ -11,6 +11,7 @@ import {MatInput} from "@angular/material/input";
 import {concelhos, freguesias} from "../utils/utils";
 import {ErrorHandler} from "../utils/errorHandle";
 import {catchError, throwError} from "rxjs";
+import {NavigationService} from "../utils/navService";
 
 @Component({
   selector: 'app-edit-profile',
@@ -41,7 +42,7 @@ export class EditProfileComponent {
 
   httpService = inject(HttpService);
 
-  constructor(private router: Router, private errorHandle: ErrorHandler) {
+  constructor(private router: Router, private errorHandle: ErrorHandler, private navService: NavigationService) {
     const uId =  localStorage.getItem('userId');
     this.httpService.getProfile(uId!!).pipe(
       catchError(error => {
@@ -128,7 +129,7 @@ export class EditProfileComponent {
         })
       ).subscribe(() => {
         console.log("Edit Profile Finished");
-        this.router.navigate(['/profile'], { queryParams: { edit: true } }); // Reset the 'edit' query parameter
+        this.navService.navProfile({ queryParams: { edit: true } }) // Reset the 'edit' query parameter
       });
     } else {
       console.error('User data is not available');
@@ -136,6 +137,6 @@ export class EditProfileComponent {
   }
 
   onBackCall(){
-    this.router.navigate(['/profile']);
+    this.navService.navProfile()
   }
 }

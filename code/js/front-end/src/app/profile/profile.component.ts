@@ -2,10 +2,12 @@ import {Component, inject} from '@angular/core';
 import {HttpService} from "../utils/http.service";
 import {User} from "../utils/classes";
 import {ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
-import {NgIf, Location} from "@angular/common";
+import {NgIf} from "@angular/common";
 import {MatIcon} from "@angular/material/icon";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
+import {NavigationService} from "../utils/navService";
+import {OriginalUrlService} from "../utils/originalUrl.service";
 
 @Component({
   selector: 'app-profile',
@@ -26,7 +28,7 @@ export class ProfileComponent {
   edit: boolean = false;
   profileSrc = '';
 
-  constructor(private router: Router, private route: ActivatedRoute, private location: Location, private errorHandle: ErrorHandler) {
+  constructor(private router: Router, private route: ActivatedRoute, private urlService: OriginalUrlService, private errorHandle: ErrorHandler, private navService: NavigationService) {
     this.loadUser();
     this.route.queryParams.subscribe(params => {
       if (params['edit'] === 'true') {
@@ -80,10 +82,12 @@ export class ProfileComponent {
 
   editCall() {
     this.edit = true;
-    this.router.navigate(['/edit-profile']);
+    this.navService.navEditProfile();
   }
 
   onBackCall() {
-    this.location.back()
+    const url = this.urlService.getOriginalUrl() ?? '';
+    this.urlService.resetOriginalUrl();
+    this.navService.navUrl(url);
   }
 }

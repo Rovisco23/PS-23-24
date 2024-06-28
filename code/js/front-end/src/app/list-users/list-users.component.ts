@@ -1,7 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {MatIcon} from "@angular/material/icon";
-import {Router} from "@angular/router";
-import {Location, NgForOf} from "@angular/common";
+import {NgForOf} from "@angular/common";
 import {User} from "../utils/classes";
 import {HttpService} from "../utils/http.service";
 import {MatDivider} from "@angular/material/divider";
@@ -10,6 +9,7 @@ import {MatList, MatListItem, MatListItemLine, MatListItemMeta, MatListItemTitle
 import {FormsModule} from "@angular/forms";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
+import {NavigationService} from "../utils/navService";
 
 @Component({
   selector: 'app-list-users',
@@ -39,7 +39,7 @@ export class ListUsersComponent {
 
   filteredUsersList: User[] = []
 
-  constructor(private router: Router, private location: Location, private errorHandle: ErrorHandler) {
+  constructor(private errorHandle: ErrorHandler, private navService: NavigationService) {
     this.httpService.getAllUsers().pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
@@ -62,10 +62,10 @@ export class ListUsersComponent {
   }
 
   onBackCall() {
-    this.location.back()
+    this.navService.back()
   }
 
   onUserClick(id: String) {
-    this.router.navigate(['/profile', id])
+    this.navService.navMemberProfile(Number(id))
   }
 }

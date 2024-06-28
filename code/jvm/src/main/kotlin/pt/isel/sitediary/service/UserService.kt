@@ -158,7 +158,7 @@ class UserService(
         } else if (!checkPhoneNumberFormat(editUser.phone)) {
             failure(Errors.invalidPhoneNumber)
         } else {
-            val location = it.addressRepository.getLocation(editUser.parish, editUser.county)
+            val location = it.addressRepository.getLocation(editUser.location.parish, editUser.location.county)
             if (location == null) {
                 failure(Errors.invalidLocation)
             } else {
@@ -171,7 +171,7 @@ class UserService(
                     editUser.firstName,
                     editUser.lastName,
                     user.role,
-                    user.association,
+                    editUser.association,
                     location
                 )
                 rep.editProfile(updatedUser)

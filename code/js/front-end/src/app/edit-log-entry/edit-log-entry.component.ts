@@ -5,7 +5,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {MatIcon} from "@angular/material/icon";
 import {FormsModule} from "@angular/forms";
 import {MatButton, MatFabButton} from "@angular/material/button";
-import {NgIf, Location} from "@angular/common";
+import {NgIf} from "@angular/common";
 import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
 import {
   MatCell,
@@ -18,6 +18,7 @@ import {
 } from "@angular/material/table";
 import {ErrorHandler} from "../utils/errorHandle";
 import {catchError, throwError} from "rxjs";
+import {NavigationService} from "../utils/navService";
 
 @Component({
   selector: 'app-edit-log-entry',
@@ -54,7 +55,7 @@ export class EditLogEntryComponent {
   files: Map<string, File> = new Map<string, File>();
   displayedColumns: string[] = ['files', 'delete'];
 
-  constructor(private router: Router, private location: Location, private errorHandle: ErrorHandler) {
+  constructor(private router: Router, private errorHandle: ErrorHandler, private navService: NavigationService) {
     this.logId = String(this.route.snapshot.params['id']);
     this.httpService.getLogById(this.logId).pipe(
       catchError(error => {
@@ -84,7 +85,7 @@ export class EditLogEntryComponent {
           return throwError(error);
         })
       ).subscribe(() => {
-        this.router.navigate([`/log-entry/${this.logId}`])
+        this.navService.navLogEntry(Number(this.logId))
       });
     }
   }
@@ -108,6 +109,6 @@ export class EditLogEntryComponent {
   }
 
   onBackCall() {
-    this.location.back()
+    this.navService.back()
   }
 }
