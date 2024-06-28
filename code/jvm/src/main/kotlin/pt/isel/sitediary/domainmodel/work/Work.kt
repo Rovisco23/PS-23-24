@@ -71,9 +71,9 @@ data class LogEntrySimplified(
     val id: Int,
     val author: Author,
     val title: String,
-    val state: String,
+    val editable: Boolean,
     val createdAt: Date,
-    val anexos: Boolean
+    val attachments: Boolean
 )
 
 data class Author(
