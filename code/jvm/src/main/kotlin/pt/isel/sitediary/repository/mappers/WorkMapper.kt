@@ -64,8 +64,10 @@ class WorkMapper : RowMapper<Work> {
                                 role = aux[3]
                             ),
                             title = aux[4],
-                            state = if(aux[5] == "t") "Editável" else "Não editável",
-                            createdAt = Date.valueOf(aux[6])
+                            state = if (aux[5] == "t") "Editável" else "Não editável",
+                            images = aux[6] == "TRUE",
+                            docs = aux[7] == "TRUE",
+                            createdAt = Date.valueOf(aux[8]),
                         )
                     }
             },

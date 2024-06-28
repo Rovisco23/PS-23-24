@@ -43,22 +43,23 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
     }
 
     override fun getById(id: UUID): Work? = handle.createQuery(
-        "select OBRA.id, OBRA.nome, OBRA.tipo, OBRA.descricao, OBRA.estado, OBRA.distrito, OBRA.concelho, " +
+        "SELECT OBRA.id, OBRA.nome, OBRA.tipo, OBRA.descricao, OBRA.estado, OBRA.distrito, OBRA.concelho, " +
                 "OBRA.freguesia, OBRA.rua, OBRA.cpostal, ARRAY(SELECT CONCAT(uId, ';', username, ';', MEMBRO.role) " +
-                "FROM MEMBRO join UTILIZADOR on uId = id WHERE oId = :id and MEMBRO.pendente = :pending) as membros, " +
-                "ARRAY(SELECT CONCAT(nome, ';', role, ';', associacao, ';', numero) from INTERVENIENTE where " +
-                "oId = :id) as technicians, ARRAY(SELECT CONCAT(REGISTO.id, ';', author, ';', UTILIZADOR.username, " +
-                "';', MEMBRO.role, ';', titulo, ';', editable, ';', TO_CHAR(REGISTO.creation_date, 'YYYY-MM-DD')) " +
-                "FROM REGISTO join UTILIZADOR on author = UTILIZADOR.id join MEMBRO on uId = author where " +
-                "REGISTO.oId = :id) as log, TERMO_ABERTURA.titular_licenca, TERMO_ABERTURA.predio, " +
-                "EMPRESA_CONSTRUCAO.nome as company_name, EMPRESA_CONSTRUCAO.numero as company_num, " +
-                "(SELECT COUNT(*) FROM IMAGEM WHERE oId = OBRA.id) as imagens, (SELECT COUNT(*) FROM DOCUMENTO " +
-                "WHERE oId = OBRA.id) AS documentos, TERMO_ABERTURA.assinatura is not null as verification from OBRA join TERMO_ABERTURA on TERMO_ABERTURA.oId = :id " +
-                "join EMPRESA_CONSTRUCAO on EMPRESA_CONSTRUCAO.id = TERMO_ABERTURA.empresa_construcao " +
-                "where OBRA.id = :id"
+                "FROM MEMBRO JOIN UTILIZADOR ON uId = id WHERE oId = :id " +
+                "AND MEMBRO.pendente = 'false') AS membros, ARRAY(SELECT CONCAT(nome, ';', role, ';', associacao, ';', numero) " +
+                "FROM INTERVENIENTE WHERE oId = :id) AS technicians, " +
+                "ARRAY(SELECT CONCAT(REGISTO.id, ';', author, ';', UTILIZADOR.username, ';', MEMBRO.role, ';', " +
+                "titulo, ';', editable, ';', CASE WHEN COUNT(i.name) > 0 THEN 'TRUE' ELSE 'FALSE' END, ';', CASE " +
+                "WHEN COUNT(d.name) > 0 THEN 'TRUE' ELSE 'FALSE' END, ';', TO_CHAR(REGISTO.creation_date, 'YYYY-MM-DD'))" +
+                "FROM REGISTO LEFT JOIN IMAGEM i ON i.rId = REGISTO.id LEFT JOIN DOCUMENTO d ON d.rId = REGISTO.id " +
+                "JOIN UTILIZADOR ON author = UTILIZADOR.id JOIN MEMBRO ON uId = author WHERE REGISTO.oId = :id " +
+                "GROUP BY REGISTO.id, author, UTILIZADOR.username, MEMBRO.role, titulo, editable, REGISTO.creation_date) AS log, " +
+                "TERMO_ABERTURA.titular_licenca, TERMO_ABERTURA.predio, EMPRESA_CONSTRUCAO.nome AS company_name, EMPRESA_CONSTRUCAO.numero AS company_num, " +
+                "(SELECT COUNT(*) FROM IMAGEM WHERE oId = OBRA.id) AS imagens, (SELECT COUNT(*) FROM DOCUMENTO WHERE oId = OBRA.id) AS documentos, " +
+                "TERMO_ABERTURA.assinatura IS NOT NULL AS verification FROM OBRA JOIN TERMO_ABERTURA ON TERMO_ABERTURA.oId = OBRA.id JOIN " +
+                "EMPRESA_CONSTRUCAO ON EMPRESA_CONSTRUCAO.id = TERMO_ABERTURA.empresa_construcao WHERE OBRA.id = :id;"
     )
         .bind("id", id.toString())
-        .bind("pending", false)
         .mapTo(Work::class.java)
         .singleOrNull()
 
