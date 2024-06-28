@@ -73,8 +73,7 @@ data class LogEntrySimplified(
     val title: String,
     val state: String,
     val createdAt: Date,
-    val docs: Boolean,
-    val images: Boolean
+    val anexos: Boolean
 )
 
 data class Author(
