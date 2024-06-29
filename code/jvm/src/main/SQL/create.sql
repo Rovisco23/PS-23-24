@@ -64,7 +64,7 @@ create table OBRA
     constraint Tipo CHECK (tipo IN
                            ('RESIDENCIAL', 'COMERCIAL', 'INDUSTRIAL', 'INFRAESTRUTURA', 'INSTITUCIONAL', 'REABILITAÇÃO',
                             'ESTRUTURA ESPECIAL', 'OBRA DE ARTE', 'HABITAÇÃO', 'EDIFICIO ESPECIAL')),
-    constraint Estado CHECK (estado IN ('EM PROGRESSO', 'TERMINADA', 'CANCELADA', 'EM VERIFICAÇÃO'))
+    constraint Estado CHECK (estado IN ('EM PROGRESSO', 'TERMINADA', 'REJEITADA', 'EM VERIFICAÇÃO'))
 );
 
 create table MEMBRO

@@ -153,7 +153,7 @@ enum class WorkType(val description: String) {
 enum class WorkState(val description: String) {
     IN_PROGRESS("EM PROGRESSO"),
     FINISHED("TERMINADA"),
-    CANCELED("CANCELADA"),
+    REJECTED("REJEITADA"),
     VERIFYING("EM VERIFICAÇÃO");
 
     override fun toString() = description
@@ -162,7 +162,7 @@ enum class WorkState(val description: String) {
         fun fromString(state: String) = when (state) {
             "EM PROGRESSO" -> IN_PROGRESS
             "TERMINADA" -> FINISHED
-            "CANCELADA" -> CANCELED
+            "REJEITADA" -> REJECTED
             "EM VERIFICAÇÃO" -> VERIFYING
             else -> null
         }
