@@ -46,9 +46,11 @@ export class AppComponent {
   logout(): void {
     const token = localStorage.getItem('token');
     localStorage.removeItem('userId');
+    localStorage.removeItem('username');
     localStorage.removeItem('token');
     localStorage.removeItem('role');
     localStorage.removeItem('profilePicture');
+    this.urlService.setOriginalUrl(this.router.url)
     this.httpService.logout(token ?? '').subscribe(() => {
       this.navService.navLogin()
     })
@@ -98,8 +100,9 @@ export class AppComponent {
   }
 
   onProfileCall() {
+    const username = localStorage.getItem('username') ?? '';
     this.urlService.setOriginalUrl(this.router.url)
-    this.navService.navProfile()
+    this.navService.navProfile(username)
   }
 
   onWorkCall() {
@@ -116,5 +119,9 @@ export class AppComponent {
 
   onVerificationsCall() {
     this.navService.navVerifications()
+  }
+
+  getUserName() {
+    return localStorage.getItem('username') ?? '';
   }
 }

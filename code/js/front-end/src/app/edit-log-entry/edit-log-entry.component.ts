@@ -109,6 +109,6 @@ export class EditLogEntryComponent {
   }
 
   onBackCall() {
-    this.navService.back()
+    this.navService.navWorkDetails(this.log.workId)
   }
 }

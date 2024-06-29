@@ -10,6 +10,11 @@
       <div class="top-section">
         <img src="{{profileSrc}}" alt="Profile Picture">
         <h1>{{ user?.firstName }} {{ user?.lastName }}</h1>
+        <div>
+          <span class="material-icons" style="margin-right: 5px;">person</span>
+          <span class="span-inline">
+           {{ user?.username }} </span>
+        </div>
         <p>{{ user?.role }}</p>
       </div>
     </div>

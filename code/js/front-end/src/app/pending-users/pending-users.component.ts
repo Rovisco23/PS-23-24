@@ -66,8 +66,8 @@ export class PendingUsersComponent {
     );
   }
 
-  onItemClick(id: number) {
-    this.navService.navMemberProfile(id);
+  onItemClick(username: string, id: number) {
+    this.navService.navProfile(username, {queryParams: {userId: id.toString()}});
   }
 
   onAccept(id: number) {

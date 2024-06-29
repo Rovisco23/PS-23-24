@@ -47,10 +47,6 @@ export class NavigationService {
     this.router.navigate([`/log-entry/${id}`]);
   }
 
-  navMemberProfile(id: number) {
-    this.router.navigate([`/profile/${id}`])
-  }
-
   navVerifications() {
     this.router.navigate(['/verifications']);
   }
@@ -63,15 +59,15 @@ export class NavigationService {
     this.router.navigate(['/signup']);
   }
 
-  navEditProfile() {
-    this.router.navigate(['/edit-profile']);
+  navEditProfile(username: string) {
+    this.router.navigate([`/edit-profile/${username}`]);
   }
 
-  navProfile(extras: any = null) {
+  navProfile(username: string, extras: any = null) {
     if (extras === null) {
-      this.router.navigate(['/profile']);
+      this.router.navigate([`/profile/${username}`]);
     } else {
-      this.router.navigate(['/profile'], extras);
+      this.router.navigate([`/profile/${username}`], extras);
     }
   }
 

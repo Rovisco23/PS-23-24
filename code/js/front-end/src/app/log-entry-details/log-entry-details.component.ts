@@ -2,7 +2,7 @@ import {Component, inject} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {HttpService} from "../utils/http.service";
 import {LogEntry, SimpleFile} from "../utils/classes";
-import {NgIf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
 import {MatIcon} from "@angular/material/icon";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatButton, MatFabButton} from "@angular/material/button";
@@ -24,8 +24,10 @@ import {MatInput} from "@angular/material/input";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {SelectionModel} from "@angular/cdk/collections";
 import {ErrorHandler} from "../utils/errorHandle";
-import {catchError, throwError} from "rxjs";
+import {catchError, EMPTY, throwError} from "rxjs";
 import {NavigationService} from "../utils/navService";
+import {MatListOption, MatSelectionList} from "@angular/material/list";
+import {MatDivider} from "@angular/material/divider";
 
 @Component({
   selector: 'app-log-entry-details',
@@ -50,7 +52,11 @@ import {NavigationService} from "../utils/navService";
     MatTable,
     ReactiveFormsModule,
     MatHeaderCellDef,
-    MatCheckbox
+    MatCheckbox,
+    MatSelectionList,
+    MatListOption,
+    NgForOf,
+    MatDivider
   ],
   templateUrl: './log-entry-details.component.html',
   styleUrl: './log-entry-details.component.css'
@@ -71,16 +77,20 @@ export class LogEntryDetailsComponent {
     this.httpService.getLogById(this.logId).pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
-        return throwError(error);
+        return EMPTY;
       })
     ).subscribe((log: LogEntry) => {
       this.log = log;
+      const createDate = new Date(log.createdAt);
+      this.log.createdAt = `${createDate.getDate()}/${createDate.getMonth() + 1}/${createDate.getFullYear()} ${createDate.getHours()}:${createDate.getMinutes()}`
+      const modificationDate = new Date(log.modifiedAt);
+      this.log.modifiedAt = `${modificationDate.getDate()}/${modificationDate.getMonth() + 1}/${modificationDate.getFullYear()} ${modificationDate.getHours()}:${modificationDate.getMinutes()}`
       this.dataSource.data = log.files;
     })
   }
 
   isEditable() {
-    return this.log!!.editable
+    return this.log?.editable ?? false
   }
 
   editCall() {

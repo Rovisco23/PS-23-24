@@ -37,11 +37,7 @@ export const routes: Routes = [
     component: SignUpComponent
   },
   {
-    path: 'profile/:id',
-    component: ProfileComponent,
-  },
-  {
-    path: 'profile',
+    path: 'profile/:name',
     component: ProfileComponent,
     children: [{
       path: 'edit',
@@ -49,7 +45,7 @@ export const routes: Routes = [
     }]
   },
   {
-    path: 'edit-profile',
+    path: 'edit-profile/:name',
     component: EditProfileComponent,
   },
   {
@@ -89,11 +85,13 @@ export const routes: Routes = [
     path: 'users',
     component: ListUsersComponent,
     canActivate: [AdminGuard]
-  },{
+  },
+  {
     path: 'verifications',
     component: WorkVerificationsComponent,
     canActivate: [CouncilGuard]
-  },{
+  },
+  {
     path: '**',
     redirectTo: '/work'
   }

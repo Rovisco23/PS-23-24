@@ -35,13 +35,13 @@ class UserService(
         val rep = it.usersRepository
         if (rep.checkUsernameTaken(user.username) != null) { // username == null
             failure(Errors.usernameAlreadyInUse)
-        } else if(rep.checkEmailInUse(user.email)){
+        } else if (rep.checkEmailInUse(user.email)) {
             failure(Errors.emailAlreadyInUse)
         } else if (user.role != "OPERÁRIO" && user.role != "CÂMARA") {
             failure(Errors.invalidRole)
         } else if (!checkPhoneNumberFormat(user.phone)) {
             failure(Errors.invalidPhoneNumber)
-        } else if (!user.checkNifSize()){
+        } else if (!user.checkNifSize()) {
             failure(Errors.invalidNif)
         } else {
             val location = it.addressRepository.getLocation(user.parish, user.county)
@@ -213,16 +213,22 @@ class UserService(
         }
     }
 
-    fun getProfilePicture(userId: Int): GetProfilePictureResult = transactionManager.run {
-        val rep = it.usersRepository
-        val user = rep.getUserById(userId)
-        if (user == null) {
-            failure(Errors.userNotFound)
-        } else {
-            val pfp = rep.getProfilePicture(userId)
-            success(pfp)
+    fun getProfilePicture(userId: Int): GetProfilePictureResult =
+        transactionManager.run {
+            if (userId <= 0) success(null)
+            else {
+                val rep = it.usersRepository
+                val user = rep.getUserById(userId)
+                if (user == null) {
+                    failure(Errors.userNotFound)
+                } else {
+                    val pfp = rep.getProfilePicture(userId)
+                    success(pfp)
+                }
+            }
+
         }
-    }
+
 
     fun answerPendingCouncil(pendingInput: PendingInputModel, authUser: User) = transactionManager.run {
         val userRep = it.usersRepository

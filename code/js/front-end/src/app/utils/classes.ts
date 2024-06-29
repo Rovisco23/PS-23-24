@@ -26,6 +26,7 @@ interface Location {
 export interface Pending {
   id: number,
   email: string,
+  username: string,
   nif: number,
   location: Location,
   association: Association
@@ -58,9 +59,9 @@ export interface LogEntrySimplified {
   id: number,
   author: Author,
   title: string,
-  state: string,
+  editable: boolean,
   createdAt: string,
-  anexos: boolean
+  attachments: boolean
 }
 
 export interface LogEntry {
@@ -106,14 +107,14 @@ export interface Company {
 }
 
 export interface User {
-  id: String
-  username: String,
-  email: String,
-  phone: String | null,
+  id: string
+  username: string,
+  email: string,
+  phone: string | null,
   nif: number,
-  firstName: String,
-  lastName: String,
-  role: String,
+  firstName: string,
+  lastName: string,
+  role: string,
   location: Location,
   association: Association
 }

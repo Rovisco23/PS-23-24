@@ -47,6 +47,7 @@
   background-color: #11113D;
   color: #FF7A00;
   vertical-align: middle;
+  cursor: pointer;
 }
 
 .side-option-button {
@@ -55,13 +56,13 @@
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
   transition: background-color 0.3s; /* Add transition for smooth effect */
   width: 100%;
 }
 
 .side-option-button:hover {
   background-color: #FF7A00;
+  cursor: pointer;
 }
 
 .side-option-active {
@@ -78,6 +79,7 @@
   color: #FF7A00;
   border: none;
   margin-right: 10px;
+  cursor: pointer;
 }
 
 .badge {

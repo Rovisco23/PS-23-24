@@ -18,8 +18,8 @@ class JdbiLog(private val handle: Handle) : LogRepository {
         docs: List<FileModel>?
     ): Int {
         val rId = handle.createUpdate(
-            "insert into registo(oId, titulo, texto, editable, creation_date, author)" +
-                    "values (:workId, :title, :description, :editable, :createdAt, :author)"
+            "insert into registo(oId, titulo, texto, editable, creation_date, last_modification_date, author)" +
+                    "values (:workId, :title, :description, :editable, :createdAt, :createdAt, :author)"
         )
             .bind("workId", log.workId)
             .bind("title", log.title)

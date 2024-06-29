@@ -56,9 +56,9 @@ export class HttpService {
     return this.http.get<Classes>(`http://localhost:8080/api/work/${id}`, {headers: headers})
   }
 
-  getProfile(id: string): Observable<any> {
+  getProfile(username: string): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.get<any>(`http://localhost:8080/api/users/${id}`, {headers: headers})
+    return this.http.get<any>(`http://localhost:8080/api/users/username/${username}`, {headers: headers})
   }
 
   editProfile(user: User) {

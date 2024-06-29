@@ -19,6 +19,7 @@ class PendingCouncilsMapper : RowMapper<PendingCouncils> {
                 county = rs.getString("concelho"),
                 parish = rs.getString("freguesia")
             ),
+            username = rs.getString("username"),
             association = Association(
                 name = rs.getString("associacao_nome"),
                 number = rs.getInt("associacao_numero")

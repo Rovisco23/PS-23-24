@@ -10,6 +10,8 @@ import {FormsModule} from "@angular/forms";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
 import {NavigationService} from "../utils/navService";
+import {Router} from "@angular/router";
+import {OriginalUrlService} from "../utils/originalUrl.service";
 
 @Component({
   selector: 'app-list-users',
@@ -39,7 +41,7 @@ export class ListUsersComponent {
 
   filteredUsersList: User[] = []
 
-  constructor(private errorHandle: ErrorHandler, private navService: NavigationService) {
+  constructor(private router: Router, private errorHandle: ErrorHandler, private navService: NavigationService, private urlService: OriginalUrlService) {
     this.httpService.getAllUsers().pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
@@ -65,7 +67,8 @@ export class ListUsersComponent {
     this.navService.back()
   }
 
-  onUserClick(id: String) {
-    this.navService.navMemberProfile(Number(id))
+  onUserClick(username: string, id: string) {
+    this.urlService.setOriginalUrl(this.router.url)
+    this.navService.navProfile(username, {queryParams: {userId: id}})
   }
 }

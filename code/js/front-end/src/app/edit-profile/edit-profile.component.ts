@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {HttpService} from "../utils/http.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {User} from "../utils/classes";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatButton} from "@angular/material/button";
@@ -42,39 +42,43 @@ export class EditProfileComponent {
 
   httpService = inject(HttpService);
 
-  constructor(private router: Router, private errorHandle: ErrorHandler, private navService: NavigationService) {
-    const uId =  localStorage.getItem('userId');
-    this.httpService.getProfile(uId!!).pipe(
-      catchError(error => {
-        this.errorHandle.handleError(error);
-        return throwError(error);
+  constructor(private route: ActivatedRoute, private errorHandle: ErrorHandler, private navService: NavigationService) {
+    const username = String(this.route.snapshot.params['name']);
+    if (username !== localStorage.getItem('username')) {
+      this.errorHandle.handleError({status: 403, error: 'Não tens acesso a este recurso.'})
+    } else{
+      this.httpService.getProfile(username).pipe(
+        catchError(error => {
+          this.errorHandle.handleError(error);
+          return throwError(error);
+        })
+      ).subscribe((user: User) => {
+        this.user = user;
+      });
+      this.httpService.getProfilePictureById(localStorage.getItem('userId') ?? '').pipe(
+        catchError(error => {
+          this.errorHandle.handleError(error);
+          return throwError(error);
+        })
+      ).subscribe((data) => {
+        if (data.size === 0) {
+          this.editSrc = './assets/profile.png'
+        } else {
+          localStorage.setItem('profilePicture', URL.createObjectURL(data))
+          this.editSrc = URL.createObjectURL(data)
+        }
+      });
+      concelhos.forEach((value) => {
+        value.forEach((v: string) => this.counties.push(v));
       })
-    ).subscribe((user: User) => {
-      this.user = user;
-    });
-    this.httpService.getProfilePicture().pipe(
-      catchError(error => {
-        this.errorHandle.handleError(error);
-        return throwError(error);
+      freguesias.forEach((value) => {
+        value.forEach((x: string) => this.parishes.push(x));
       })
-    ).subscribe((data) => {
-      if (data.size === 0) {
-        this.editSrc = './assets/profile.png'
-      } else {
-        localStorage.setItem('profilePicture', URL.createObjectURL(data))
-        this.editSrc = URL.createObjectURL(data)
-      }
-    })
-    concelhos.forEach((value) => {
-      value.forEach((v: string) => this.counties.push(v));
-    })
-    freguesias.forEach((value) => {
-      value.forEach((x: string) => this.parishes.push(x));
-    })
+    }
   }
 
   updateLocation() {
-    if(this.user){
+    if (this.user) {
       const selectedParish = this.user.location.parish;
       const cList: string[] = [];
       for (const c of freguesias.keys()) {
@@ -99,17 +103,18 @@ export class EditProfileComponent {
     reader.readAsDataURL(this.newFile);
   }
 
-  onSubmitPicture(){
+  onSubmitPicture() {
     this.form.append('file', this.newFile);
     this.httpService.changeProfilePicture(this.form).pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
         return throwError(error);
       })
-    ).subscribe(() => {});
+    ).subscribe(() => {
+    });
   }
 
-  onRemovePicture(){
+  onRemovePicture() {
     this.httpService.changeProfilePicture(this.form).pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
@@ -120,7 +125,7 @@ export class EditProfileComponent {
     });
   }
 
-  onSubmitEdit(){
+  onSubmitEdit() {
     if (this.user) {
       this.httpService.editProfile(this.user).pipe(
         catchError(error => {
@@ -129,14 +134,18 @@ export class EditProfileComponent {
         })
       ).subscribe(() => {
         console.log("Edit Profile Finished");
-        this.navService.navProfile({ queryParams: { edit: true } }) // Reset the 'edit' query parameter
+        const newUsername = this.user?.username ?? '';
+        if (newUsername !== localStorage.getItem('username')) {
+          localStorage.setItem('username', newUsername);
+        }
+        this.navService.navProfile(newUsername,{queryParams: {edit: true}}) // Reset the 'edit' query parameter
       });
     } else {
       console.error('User data is not available');
     }
   }
 
-  onBackCall(){
-    this.navService.navProfile()
+  onBackCall() {
+    this.navService.navProfile(this.user?.username ?? '')
   }
 }

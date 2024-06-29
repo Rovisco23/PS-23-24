@@ -345,7 +345,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
                     "update termo_abertura set dt_assinatura = :date, assinatura = :user where oId = :oId"
         )
             .bind("oId", workId.toString())
-            .bind("state", WorkState.CANCELED.toString())
+            .bind("state", WorkState.REJECTED.toString())
             .bind("date", dateAuth)
             .bind("user", user)
             .execute()

@@ -3,6 +3,7 @@ package pt.isel.sitediary.service
 import kotlinx.datetime.Clock
 import kotlinx.datetime.toJavaInstant
 import org.springframework.stereotype.Component
+import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.user.containsMemberById
 import pt.isel.sitediary.domainmodel.work.LogEntry
 import pt.isel.sitediary.domainmodel.work.WorkState
@@ -17,7 +18,6 @@ import pt.isel.sitediary.utils.success
 import java.sql.Timestamp
 import java.time.Duration
 import java.util.*
-import kotlin.math.log
 
 typealias CreateLogResult = Result<Errors, Int>
 typealias GetLogResult = Result<Errors, LogEntry>
@@ -50,12 +50,12 @@ class LogService(
         }
     }
 
-    fun getLog(logId: Int, userId: Int): GetLogResult = transactionManager.run {
+    fun getLog(logId: Int, user: User): GetLogResult = transactionManager.run {
         val logRepository = it.logRepository
         val log = logRepository.getById(logId)
         if (log == null) {
             failure(Errors.logNotFound)
-        } else if (!logRepository.checkUserAccess(log.workId, userId)) {
+        } else if (user.role != "ADMIN" && !logRepository.checkUserAccess(log.workId, user.id)) {
             failure(Errors.notMember)
         } else {
             if (log.editable && checkIfEditTimeElapsed(log.createdAt)) {

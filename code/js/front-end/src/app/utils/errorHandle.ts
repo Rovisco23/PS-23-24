@@ -16,9 +16,10 @@ export class ErrorHandler {
       localStorage.removeItem('token')
       localStorage.removeItem('role')
       localStorage.removeItem('userId')
+      localStorage.removeItem('username');
       this.handleErrorInternal(error, () => this.navService.navLogin())
     } else if (error.status === 403) {
-      this.handleErrorInternal(error, () => this.navService.back())
+      this.handleErrorInternal(error, () => this.navService.navWork())
     } else if (error.status === 404 || error.status === 400) {
       const nothing = () => {
       }
@@ -42,6 +43,7 @@ export class ErrorHandler {
   }
 
   private showErrorMessage(message: string, status: number, onClose: () => void) {
+    console.log('Showing error message:', message, status);  // Add this line
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '20%',
       height: 'auto',

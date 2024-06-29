@@ -4,23 +4,22 @@
 }
 
 .sidebar {
-  position: fixed;
   width: 15%;
-  height: 100vh; /* set the height to 100vh */
+  height: 100%; /* Full height */
   background-color: #f5f5f5;
   border-right: 1px solid #ddd;
-  overflow-y: auto; /* enable vertical scrolling */
+  overflow-y: auto; /* Enable vertical scrolling */
 }
 
-.sidebar-inner { /* new container element */
+.sidebar-inner {
   height: inherit;
-  overflow-y: auto; /* enable vertical scrolling */
+  overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .sidebar-header {
   display: flex;
-  flex-direction: row;
   align-items: center;
+  margin-bottom: 20px;
   background-color: #11113D;
   color: white;
 }
@@ -34,9 +33,9 @@
 }
 
 .sidebar-content {
-  /* remove height: 100% */
   padding: 10px;
 }
+
 
 .sidebar-menu {
   list-style: none;
@@ -91,21 +90,17 @@
 }
 
 .small-button {
-  width: 2%;
-  height: auto;
+  display: flex;
+  align-items: center;
   background-color: transparent;
   color: white;
   border: none;
-  margin-right: 20px;
-}
-
-.small-icon {
-  font-size: 200%;
+  cursor: pointer;
 }
 
 .content {
-  width: 85%;
-  margin-left: 15%;
+  flex: 1; /* Flex-grow to take remaining space */
+  overflow-y: auto; /* Enable vertical scrolling if necessary */
 }
 
 .members-container {
@@ -153,8 +148,8 @@
 
 .top-bar {
   display: flex;
-  align-items: center; /* Align items vertically centered */
-  justify-content: space-between; /* Distribute space between items */
+  align-items: center;
+  justify-content: space-between;
 }
 
 form {
@@ -324,15 +319,14 @@ mat-list {
 mat-list-item {
   border-bottom: 1px solid lightgrey;
   display: flex;
-  align-items: center; /* center items vertically */
+  align-items: center;
   justify-content: center;
   width: 100%;
-  margin: 0;
   align-content: center;
 }
 
 mat-list-item:hover {
-  background-color: lightgrey;
+  background-color: lightgray;
   cursor: pointer;
 }
 

@@ -2,11 +2,10 @@
   <div class="sidebar">
     <div class="sidebar-inner">
       <div class="sidebar-header">
-        <div style="display: flex; flex-direction: row">
+        <div>
           <button (click)="onBackCall()" class="small-button">
-            <mat-icon class="small-icon">arrow_back</mat-icon>
+            <mat-icon class="small-icon">arrow_back</mat-icon>Voltar
           </button>
-          <span class="sidebar-title" style="margin-left: 5px;">Voltar</span>
         </div>
       </div>
       <div class="sidebar-content">
@@ -54,7 +53,7 @@
             </a>
           </li>
           <li class="sidebar-menu-item">
-            <a class="sidebar-menu-link" *ngIf="work?.state !== 'Terminada'" (click)="finishWorkCall()">
+            <a class="sidebar-menu-link" *ngIf="checkWorkCanFinish()" (click)="finishWorkCall()">
               <div class="sidebar-menu-icon">
             <span class="material-icons">
               close
@@ -85,10 +84,10 @@
           <mat-list-item (click)="onLogEntryClick(entry.id)">
             <mat-icon matListItemIcon>article</mat-icon>
             <div matListItemTitle>{{ entry.title }}</div>
-            <div matListItemLine>Posted by {{ entry.author.name }} on {{ entry.createdAt | date }}</div>
+            <div matListItemLine>Registado por {{ entry.author.name }} a {{ entry.createdAt | date }}</div>
             <div matListItemMeta>
-              <mat-icon *ngIf="entry.anexos" >attach_file</mat-icon>
-              <mat-icon *ngIf="entry.state == 'Editável'" >edit</mat-icon>
+              <mat-icon *ngIf="entry.attachments" >attach_file</mat-icon>
+              <mat-icon *ngIf="entry.editable" >edit</mat-icon>
             </div>
           </mat-list-item>
         </mat-list>
@@ -184,7 +183,7 @@
       </div>
       <div>
         <mat-list *ngFor="let entry of filteredMembers">
-          <mat-list-item (click)="onMemberClick(entry.id)">
+          <mat-list-item (click)="onMemberClick(entry.name, entry.id)">
             <div matListItemTitle>{{ entry.name }}</div>
             <div matListItemLine>Role:  {{ entry.role }}</div>
           </mat-list-item>

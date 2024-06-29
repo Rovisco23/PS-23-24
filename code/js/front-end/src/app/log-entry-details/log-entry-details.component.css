@@ -1,3 +1,10 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+}
+
 .header {
   display: flex;
   align-items: center;
@@ -5,98 +12,59 @@
 }
 
 .small-button {
-  width: 2%;
-  height: auto;
-  margin: 10px;
-  background-color: white;
-  border: none;
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
 }
 
 .small-icon {
-  font-size: 200%;
-}
-
-.title {
-  margin-left: 20px;
+  font-size: 30px;
+  margin-right: 5px;
 }
 
 .content {
-  display: flex;
-  justify-content: space-between;
-  height: 80%;
-  overflow: hidden;
-}
-
-.left-section {
-  flex: 1;
-  margin-right: 20px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* Center content vertically */
-}
-
-.example-form {
-  margin-top: 20px;
-}
-
-.example-form mat-form-field {
-  width: 50%;
-  margin: 0 auto; /* Center form fields horizontally */
-}
-
-.add-button {
-  display: block;
-  width: auto;
-  margin: 10px auto; /* Center button and add margin for spacing */
-}
-
-.right-section {
-  flex: 1;
-  margin-right: 20px;
-}
-
-.table-container {
-  max-height: 55%; /* Adjust based on your row height */
-  overflow-y: auto;
-}
-
-.table {
   width: 100%;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.author {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.dates {
+  margin-bottom: 20px;
+}
+
+.dates div {
+  margin-bottom: 5px;
+}
+
+.description {
+  margin-bottom: 20px;
+}
+
+.files table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.files th, .files td {
+  border: 1px solid #FF7A00;
+  padding: 8px;
+  text-align: left;
+}
+
+.files th {
   background-color: #11113D;
-  max-width: 100%;
-}
-
-.table th, .table td {
-  text-align: center;
-  white-space: nowrap;
-}
-
-.table th {
   color: #FF7A00;
 }
 
-.table td {
-  color: white;
-}
-
-.submit-button {
-  display: block;
-  margin: 20px auto;
-}
-
-mat-label {
-  color: #FF7A00;
-}
-
-.remove-button {
-  height: auto;
-  width: auto;
-  background-color: white;
-  color: black;
-}
-
-.remove-button:hover {
-  background-color: red;
-  color: white;
+.files tr:nth-child(even) {
+  background-color: #f3f3f3;
 }

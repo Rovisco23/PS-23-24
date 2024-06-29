@@ -99,7 +99,7 @@ class LogController(private val service: LogService) {
         ]
     )
     fun getLogById(@PathVariable id: Int, @Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
-        val res = service.getLog(id, user.user.id)
+        val res = service.getLog(id, user.user)
         return handleResponse(res) {
             val log = LogOutputModel(
                 workId = it.workId,

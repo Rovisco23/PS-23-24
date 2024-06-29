@@ -1,7 +1,7 @@
 import {Component, inject} from '@angular/core';
 import {HttpService} from "../utils/http.service";
 import {User} from "../utils/classes";
-import {ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
+import {ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 import {NgIf} from "@angular/common";
 import {MatIcon} from "@angular/material/icon";
 import {catchError, throwError} from "rxjs";
@@ -24,42 +24,47 @@ import {OriginalUrlService} from "../utils/originalUrl.service";
 })
 export class ProfileComponent {
   httpService = inject(HttpService);
+  userId = '-1';
   user: User | undefined;
   edit: boolean = false;
-  profileSrc = '';
+  profileSrc: string;
 
-  constructor(private router: Router, private route: ActivatedRoute, private urlService: OriginalUrlService, private errorHandle: ErrorHandler, private navService: NavigationService) {
-    this.loadUser();
+  constructor(private route: ActivatedRoute, private urlService: OriginalUrlService, private errorHandle: ErrorHandler, private navService: NavigationService) {
+    this.profileSrc = './assets/profile.png';
+    const username = String(this.route.snapshot.params['name']);
+    this.loadUser(username);
     this.route.queryParams.subscribe(params => {
       if (params['edit'] === 'true') {
         this.edit = false;
-        this.loadUser()
+        this.loadUser(username)
+      }
+      if (username === localStorage.getItem('username')) {
+        this.userId = localStorage.getItem('userId') ?? '';
+      } else {
+        if (params['userId']){
+          this.userId = params['userId']
+        } else if (localStorage.getItem('userId') === username){
+          this.userId = localStorage.getItem('userId') ?? '';
+        }
       }
     });
-    let userId: string ;
-    this.route.paramMap.subscribe(
-      params => {
-        userId = params.get('id') ?? localStorage.getItem('userId') ?? ''
-        this.httpService.getProfilePictureById(userId).pipe(
-          catchError(error => {
-            this.errorHandle.handleError(error);
-            return throwError(error);
-          })
-        ).subscribe((data) => {
-          if (data.size === 0) {
-            this.profileSrc = './assets/profile.png'
-          } else {
-            localStorage.setItem('profilePicture', URL.createObjectURL(data))
-            this.profileSrc = URL.createObjectURL(data)
-          }
-        })
+    this.httpService.getProfilePictureById(this.userId).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe((data) => {
+      if (data.size === 0) {
+        this.profileSrc = './assets/profile.png'
+      } else {
+        localStorage.setItem('profilePicture', URL.createObjectURL(data))
+        this.profileSrc = URL.createObjectURL(data)
       }
-    );
+    })
   }
 
-  loadUser() {
-    const uId = String(this.route.snapshot.params['id'] ?? localStorage.getItem('userId'));
-    this.httpService.getProfile(uId).pipe(
+  loadUser(username: string) {
+    this.httpService.getProfile(username).pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
         return throwError(error);
@@ -82,7 +87,7 @@ export class ProfileComponent {
 
   editCall() {
     this.edit = true;
-    this.navService.navEditProfile();
+    this.navService.navEditProfile( localStorage.getItem("username") ?? '');
   }
 
   onBackCall() {

@@ -186,7 +186,7 @@ class UserController(private val service: UserService) {
         }
     }
 
-    /*@GetMapping(Paths.User.GET_USER_USERNAME)
+    @GetMapping(Paths.User.GET_USER_BY_USERNAME)
     @Operation(summary = "Get profile", description = "Get user profile using username")
     @ApiResponses(
         value = [
@@ -204,12 +204,15 @@ class UserController(private val service: UserService) {
             )
         ]
     )
-    fun getUserByUsername(@RequestParam username: String): ResponseEntity<*> {
+    fun getUserByUsername(
+        @PathVariable username: String,
+        @Parameter(hidden = true) user: AuthenticatedUser
+    ): ResponseEntity<*> {
         val res = service.getUserByUsername(username)
         return handleResponse(res) {
             ResponseEntity.ok(it)
         }
-    }*/
+    }
 
     @PutMapping(Paths.User.GET_USER_ID)
     @Operation(summary = "Edit profile", description = "Edit profile of user")
@@ -299,7 +302,10 @@ class UserController(private val service: UserService) {
             )
         ]
     )
-    fun getProfilePictureById(@PathVariable id: Int, @Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
+    fun getProfilePictureById(
+        @PathVariable id: Int,
+        @Parameter(hidden = true) user: AuthenticatedUser
+    ): ResponseEntity<*> {
         val res = service.getProfilePicture(id)
         return handleResponse(res) {
             if (it == null) ResponseEntity.ok().body(null)
