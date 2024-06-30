@@ -7,6 +7,7 @@ import pt.isel.sitediary.domainmodel.work.LogEntry
 import pt.isel.sitediary.model.FileOutputModel
 import java.sql.Date
 import java.sql.ResultSet
+import java.sql.Timestamp
 import java.util.*
 
 class LogEntryMapper : RowMapper<LogEntry> {
@@ -38,7 +39,8 @@ class LogEntryMapper : RowMapper<LogEntry> {
                                 FileOutputModel(
                                     id = aux[0].toInt(),
                                     fileName = aux[1],
-                                    contentType = aux[2]
+                                    contentType = aux[2],
+                                    uploadDate = Date.from(Timestamp.valueOf(aux[3]).toInstant())
                                 )
                             )
                         }
@@ -52,7 +54,8 @@ class LogEntryMapper : RowMapper<LogEntry> {
                                 FileOutputModel(
                                     id = aux[0].toInt(),
                                     fileName = aux[1],
-                                    contentType = aux[2]
+                                    contentType = aux[2],
+                                    uploadDate = Date.from(Timestamp.valueOf(aux[3]).toInstant())
                                 )
                             )
                         }

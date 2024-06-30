@@ -90,6 +90,7 @@ data class WorkSimplified(
     val type: String,
     val state: String,
     val address: Address,
+    val verification: Boolean
 )
 
 data class WorkVerifying(

@@ -37,8 +37,8 @@ class JdbiLog(private val handle: Handle) : LogRepository {
 
     override fun getById(id: Int): LogEntry? = handle.createQuery(
         "select REGISTO.id, titulo, REGISTO.oid, texto, editable, creation_date, last_modification_date, author, " +
-                "username, MEMBRO.role, ARRAY(SELECT CONCAT(id, ';', name, ';', 'Imagem') from IMAGEM where " +
-                "rId = :id) as images, ARRAY(SELECT CONCAT(id, ';', name, ';', 'Documento') from DOCUMENTO where " +
+                "username, MEMBRO.role, ARRAY(SELECT CONCAT(id, ';', name, ';', 'Imagem', ';', upload_date) from IMAGEM where " +
+                "rId = :id) as images, ARRAY(SELECT CONCAT(id, ';', name, ';', 'Documento', ';', upload_date) from DOCUMENTO where " +
                 "rId = :id) as documents from REGISTO join UTILIZADOR on UTILIZADOR.id = author join MEMBRO on " +
                 "MEMBRO.uid = author where Registo.id = :id"
     )

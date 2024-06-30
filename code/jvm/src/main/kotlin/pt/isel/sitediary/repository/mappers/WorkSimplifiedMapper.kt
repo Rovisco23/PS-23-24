@@ -25,7 +25,8 @@ class WorkSimplifiedMapper : RowMapper<WorkSimplified> {
                 ),
                 rs.getString("rua"),
                 rs.getString("cpostal")
-            )
+            ),
+            verification = rs.getBoolean("verification")
         )
     } else null
 }

@@ -30,4 +30,5 @@ data class FileOutputModel(
     val id: Int,
     val fileName: String,
     val contentType: String,
+    val uploadDate: Date
 )
