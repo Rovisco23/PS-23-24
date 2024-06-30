@@ -11,7 +11,6 @@ import {CreateLogEntryComponent} from "./create-log-entry/create-log-entry.compo
 import {WorkInviteComponent} from "./work-invite/work-invite.component";
 import {InviteListComponent} from "./invite-list/invite-list.component";
 import {InviteDetailsComponent} from "./invite-details/invite-details.component";
-import {EditLogEntryComponent} from "./edit-log-entry/edit-log-entry.component";
 import {PendingUsersComponent} from "./pending-users/pending-users.component";
 import {AdminGuard} from "./utils/admin.guard";
 import {ListUsersComponent} from "./list-users/list-users.component";
@@ -59,10 +58,6 @@ export const routes: Routes = [
   {
     path: 'log-entry/:id',
     component: LogEntryDetailsComponent,
-  },
-  {
-    path: 'edit-log/:id',
-    component: EditLogEntryComponent,
   },
   {
     path: 'create-log-entry/:id',

@@ -108,10 +108,6 @@ export class LogEntryDetailsComponent {
     return this.log?.editable && this.log?.author.name == localStorage.getItem('username');
   }
 
-  editCall() {
-    this.navService.navEditLog(this.logId)
-  }
-
   downloadFiles() {
     const downloadFiles = this.log?.files.filter(file => this.selection.isSelected(file));
     this.httpService.downloadFiles(this.logId, this.log!!.workId, downloadFiles!!).pipe(

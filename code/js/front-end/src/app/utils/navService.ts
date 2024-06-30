@@ -79,10 +79,6 @@ export class NavigationService {
     this.router.navigate(['/pending-users']);
   }
 
-  navEditLog(logId: string) {
-    this.router.navigate([`/edit-log/${logId}`]);
-  }
-
   navInvite(id: string) {
     this.router.navigate([`/invites/${id}`]);
   }
