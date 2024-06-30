@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, ElementRef, inject, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {HttpService} from "../utils/http.service";
 import {LogEntry, SimpleFile} from "../utils/classes";
@@ -28,6 +28,8 @@ import {catchError, EMPTY, throwError} from "rxjs";
 import {NavigationService} from "../utils/navService";
 import {MatListOption, MatSelectionList} from "@angular/material/list";
 import {MatDivider} from "@angular/material/divider";
+import {ConfirmDialogComponent} from "../utils/dialogComponent";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-log-entry-details',
@@ -59,21 +61,32 @@ import {MatDivider} from "@angular/material/divider";
     MatDivider
   ],
   templateUrl: './log-entry-details.component.html',
-  styleUrl: './log-entry-details.component.css'
+  styleUrls: ['./log-entry-details.component.css']
 })
 export class LogEntryDetailsComponent {
   route: ActivatedRoute = inject(ActivatedRoute);
   httpService = inject(HttpService);
-  log: LogEntry | undefined
-  logId: string = ''
+  form: FormData = new FormData()
+  files: Map<string, File> = new Map<string, File>();
+  log: LogEntry | undefined;
+  logId: string = '';
+  editTitle: boolean = false;
+  editDescription: boolean = false;
 
-  displayedColumns: string[] = ['select', 'name', 'type'];
+  displayedColumns: string[] = ['select', 'name', 'uploadDate'];
   dataSource = new MatTableDataSource<SimpleFile>();
   selection = new SelectionModel<SimpleFile>(true, []);
+  newContent: string = '';
+  newTitle: string = '';
+  @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement> | undefined;
 
-
-  constructor(private errorHandle: ErrorHandler, private navService: NavigationService) {
+  constructor(private dialog: MatDialog, private errorHandle: ErrorHandler, private navService: NavigationService) {
     this.logId = String(this.route.snapshot.params['id']);
+
+    this.loadLog();
+  }
+
+  loadLog() {
     this.httpService.getLogById(this.logId).pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
@@ -81,16 +94,18 @@ export class LogEntryDetailsComponent {
       })
     ).subscribe((log: LogEntry) => {
       this.log = log;
+      this.newContent = log.content;
+      this.newTitle = log.title;
       const createDate = new Date(log.createdAt);
-      this.log.createdAt = `${createDate.getDate()}/${createDate.getMonth() + 1}/${createDate.getFullYear()} ${createDate.getHours()}:${createDate.getMinutes()}`
+      this.log.createdAt = `${createDate.getDate()}/${createDate.getMonth() + 1}/${createDate.getFullYear()} ${createDate.getHours()}:${createDate.getMinutes()}`;
       const modificationDate = new Date(log.modifiedAt);
-      this.log.modifiedAt = `${modificationDate.getDate()}/${modificationDate.getMonth() + 1}/${modificationDate.getFullYear()} ${modificationDate.getHours()}:${modificationDate.getMinutes()}`
+      this.log.modifiedAt = `${modificationDate.getDate()}/${modificationDate.getMonth() + 1}/${modificationDate.getFullYear()} ${modificationDate.getHours()}:${modificationDate.getMinutes()}`;
       this.dataSource.data = log.files;
     })
   }
 
   isEditable() {
-    return this.log?.editable ?? false
+    return this.log?.editable && this.log?.author.name == localStorage.getItem('username');
   }
 
   editCall() {
@@ -98,46 +113,46 @@ export class LogEntryDetailsComponent {
   }
 
   downloadFiles() {
-    const downloadFiles = this.log?.files.filter(file => this.selection.isSelected(file))
+    const downloadFiles = this.log?.files.filter(file => this.selection.isSelected(file));
     this.httpService.downloadFiles(this.logId, this.log!!.workId, downloadFiles!!).pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
         return throwError(error);
       })
     ).subscribe((res) => {
-      const link = document.createElement('a')
-      link.href = URL.createObjectURL(res)
-      link.download = 'files.zip'
-      link.click()
-    })
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(res);
+      link.download = 'files.zip';
+      link.click();
+    });
   }
 
   deleteFiles() {
-    const filesToDelete = this.log?.files.filter(file => this.selection.isSelected(file))
-    this.httpService.deleteFiles(this.logId, this.log!!.workId, filesToDelete!!).pipe(
-      catchError(error => {
-        this.errorHandle.handleError(error);
-        return throwError(error);
-      })
-    ).subscribe(() => {
-      this.dataSource.data = this.dataSource.data.filter(file => !this.selection.isSelected(file))
-      this.selection.clear()
-    })
+    const filesToDelete = this.log?.files.filter(file => this.selection.isSelected(file));
+    if (filesToDelete){
+      this.httpService.deleteFiles(this.logId, this.log!!.workId, filesToDelete!!).pipe(
+        catchError(error => {
+          this.errorHandle.handleError(error);
+          return throwError(error);
+        })
+      ).subscribe(() => {
+        this.dataSource.data = this.dataSource.data.filter(file => !this.selection.isSelected(file));
+        filesToDelete.forEach(file => this.files.delete(file.fileName))
+        this.selection.clear();
+      });
+    }
   }
 
   onBackCall() {
-    this.navService.back()
+    this.navService.back();
   }
 
-
-  /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
     return numSelected === numRows;
   }
 
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
   toggleAllRows() {
     if (this.isAllSelected()) {
       this.selection.clear();
@@ -146,7 +161,6 @@ export class LogEntryDetailsComponent {
     this.selection.select(...this.dataSource.data);
   }
 
-  /** The label for the checkbox on the passed row */
   checkboxLabel(row?: SimpleFile): string {
     if (!row) {
       return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
@@ -154,4 +168,81 @@ export class LogEntryDetailsComponent {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
   }
 
+  toggleEditTitle(cancel: boolean = false) {
+    if (cancel) {
+      this.newTitle = this.log?.title || '';
+    }
+    this.editTitle = !this.editTitle;
+  }
+
+  toggleEditDescription(cancel: boolean = false) {
+    if (cancel) {
+      this.newContent = this.log?.content || '';
+    }
+    this.editDescription = !this.editDescription;
+  }
+
+  onEditLogCall(field: string) {
+    if (this.log) {
+      this.form.append("log", new Blob([JSON.stringify({
+        title: this.newTitle,
+        description: this.newContent,
+        workId: this.log.workId
+      })], {type: 'application/json'}))
+      this.files.forEach((file) => {
+        if (!this.dataSource.data.find(f => f.fileName == file.name)) {
+        this.form.append('files', file)
+        }
+      })
+      this.httpService.editLog(this.form, this.logId).pipe(
+        catchError(error => {
+          this.errorHandle.handleError(error);
+          return throwError(error);
+        })
+      ).subscribe(() => {
+        this.loadLog()
+        this.form = new FormData();
+        if (field === 'Title') {
+          this.log!.title = this.newTitle;
+          this.toggleEditTitle();
+        } else if (field === 'Content') {
+          this.log!.content = this.newContent;
+          this.toggleEditDescription();
+        }
+      });
+    }
+    console.log('Title: ' + this.newTitle + '\n' + 'Content: ' + this.newContent);
+  }
+
+  onChangeValues(event: any, field: string) {
+    if (field == 'Title') {
+      this.newTitle = event;
+    } else if (field == 'Content') {
+      this.newContent = event;
+    }
+  }
+
+  onFileUpload(event: any) {
+    if (event.target.files.length > 0) {
+      const file: File = event.target.files[0];
+      if (!this.files.has(file.name) && !this.dataSource.data.find(f => f.fileName == file.name)) {
+        this.files.set(file.name, file);
+        this.onEditLogCall('Files');
+      } else {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+          data: {
+            title: 'Erro 400',
+            message: 'Ficheiros não podem ter o mesmo nome no registo',
+          },
+        });
+        dialogRef.afterClosed().subscribe(() => {});
+      }
+    }
+    this.fileInput!.nativeElement.value = '';
+  }
+
+  openFileInput() {
+    // Trigger click on file input element to open file selection dialog
+    this.fileInput!.nativeElement.click();
+  }
 }

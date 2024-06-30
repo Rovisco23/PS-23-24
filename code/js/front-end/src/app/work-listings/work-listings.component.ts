@@ -12,6 +12,7 @@ import {
 } from "@angular/material/card";
 import {MatDivider} from "@angular/material/divider";
 import {MatIcon} from "@angular/material/icon";
+import {NgClass, NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-work-listings',
@@ -26,7 +27,9 @@ import {MatIcon} from "@angular/material/icon";
     MatCardActions,
     MatCardTitle,
     MatCardSubtitle,
-    MatIcon
+    MatIcon,
+    NgClass,
+    NgIf
   ],
   templateUrl: './work-listings.component.html',
   styleUrl: './work-listings.component.css'

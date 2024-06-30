@@ -8,6 +8,7 @@ import {NgClass, NgIf, NgOptimizedImage} from "@angular/common";
 import {filter} from 'rxjs/operators';
 import {HttpService} from "./utils/http.service";
 import {HttpClientModule} from "@angular/common/http";
+import { FormsModule } from '@angular/forms';
 import {MatBadge} from "@angular/material/badge";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "./utils/errorHandle";
@@ -19,6 +20,7 @@ import {NavigationService} from "./utils/navService";
   standalone: true,
   imports: [
     RouterModule,
+    FormsModule,
     MatToolbarModule,
     MatSidenavModule,
     MatIconModule,
@@ -51,7 +53,12 @@ export class AppComponent {
     localStorage.removeItem('role');
     localStorage.removeItem('profilePicture');
     this.urlService.setOriginalUrl(this.router.url)
-    this.httpService.logout(token ?? '').subscribe(() => {
+    this.httpService.logout(token ?? '').pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe(() => {
       this.navService.navLogin()
     })
   }

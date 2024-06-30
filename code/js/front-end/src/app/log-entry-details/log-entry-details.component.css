@@ -27,13 +27,16 @@
 }
 
 .title {
-  font-size: 24px;
+  font-size: 32px;
   font-weight: bold;
+  width: 60% !important;
+  max-width: 60% !important;
+  overflow-wrap: break-word; /* Ensures long words break to fit within the container */
+  word-wrap: break-word; /* Compatibility for older browsers */
 }
 
 .author {
   margin-bottom: 10px;
-  font-size: 18px;
 }
 
 .dates {
@@ -46,18 +49,25 @@
 
 .description {
   margin-bottom: 20px;
+  width: 60% !important;
+  max-width: 60% !important;
+  overflow-wrap: break-word; /* Ensures long words break to fit within the container */
+  word-wrap: break-word; /* Compatibility for older browsers */
 }
 
 .files table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
+  margin-bottom: 20px;
 }
 
 .files th, .files td {
   border: 1px solid #FF7A00;
   padding: 8px;
   text-align: left;
+  width: 33.3% !important;
+  max-width: 33.3% !important;
 }
 
 .files th {
@@ -67,4 +77,8 @@
 
 .files tr:nth-child(even) {
   background-color: #f3f3f3;
+}
+
+mat-icon {
+  cursor: pointer;
 }

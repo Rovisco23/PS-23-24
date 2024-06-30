@@ -71,6 +71,6 @@ export class WorkVerificationsComponent {
   }
 
   onBackCall() {
-    this.navService.back();
+    this.navService.navWork();
   }
 }

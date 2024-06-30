@@ -64,7 +64,7 @@ export class ListUsersComponent {
   }
 
   onBackCall() {
-    this.navService.back()
+    this.navService.navWork()
   }
 
   onUserClick(username: string, id: string) {

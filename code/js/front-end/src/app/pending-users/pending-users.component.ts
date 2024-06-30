@@ -95,6 +95,6 @@ export class PendingUsersComponent {
   }
 
   onBackCall() {
-    this.navService.back()
+    this.navService.navWork()
   }
 }

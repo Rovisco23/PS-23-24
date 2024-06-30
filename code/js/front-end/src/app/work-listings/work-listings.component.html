@@ -1,13 +1,17 @@
 <mat-card class="card">
   <mat-card-header>
-    <mat-card-title>{{ workListing.name }}</mat-card-title>
+    <mat-card-title>{{ workListing.name }}
+      <span class="accepted">
+        <mat-icon *ngIf="workListing.verification">verified</mat-icon>
+      </span>
+    </mat-card-title>
   </mat-card-header>
   <mat-card-content style="display: flex; flex-direction: column; justify-content: space-between; height: 100%">
     <div>
       <p>{{ workListing.description }}</p>
       <div style="display: flex; align-items: center; margin-bottom: 10px">
         <mat-icon style="margin-right: 10px">person</mat-icon>
-        <span style="flex: 1">{{workListing.owner}}</span>
+        <span style="flex: 1">{{ workListing.owner }}</span>
       </div>
       <div style="display: flex; align-items: center; margin-bottom: 10px">
         <mat-icon style="margin-right: 10px">location_pin</mat-icon>

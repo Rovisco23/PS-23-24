@@ -9,6 +9,7 @@ export interface Classes {
   address: Address;
   type: string;
   state: string;
+  verification: boolean;
 }
 
 interface Address {

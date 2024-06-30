@@ -17,7 +17,8 @@ export class ErrorHandler {
       localStorage.removeItem('role')
       localStorage.removeItem('userId')
       localStorage.removeItem('username');
-      this.handleErrorInternal(error, () => this.navService.navLogin())
+        this.handleErrorInternal(error, () => this.navService.navLogin())
+
     } else if (error.status === 403) {
       this.handleErrorInternal(error, () => this.navService.navWork())
     } else if (error.status === 404 || error.status === 400) {

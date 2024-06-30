@@ -142,7 +142,7 @@ export class WorkDetailsComponent {
   }
 
   onBackCall() {
-    this.navService.back()
+    this.navService.navWork()
   }
 
   finishWorkCall() {

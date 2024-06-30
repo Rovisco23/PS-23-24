@@ -20,7 +20,7 @@ import {NgIf} from "@angular/common";
       <mat-dialog-actions style="justify-content: center">
         <button *ngIf="!(data.title.includes('Erro'))" class="submit-button" mat-button mat-dialog-close>Cancelar
         </button>
-        <button class="submit-button" mat-button [mat-dialog-close]="true">Proceder</button>
+        <button class="submit-button" mat-button [mat-dialog-close]="true">Ok</button>
       </mat-dialog-actions>
     </div>
   `,
