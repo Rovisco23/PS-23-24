@@ -19,9 +19,9 @@ interface Address {
 }
 
 interface Location {
-  district: String,
-  county: String,
-  parish: String
+  district: string,
+  county: string,
+  parish: string
 }
 
 export interface Pending {
@@ -80,12 +80,7 @@ export interface SimpleFile {
   id: number;
   fileName: string;
   contentType: string;
-}
-
-export interface LogEditableEntry {
-  workId: string,
-  title: string,
-  content: string
+  uploadDate: string
 }
 
 export interface InviteSimplified {

@@ -100,6 +100,10 @@ export class LogEntryDetailsComponent {
       this.log.createdAt = `${createDate.getDate()}/${createDate.getMonth() + 1}/${createDate.getFullYear()} ${createDate.getHours()}:${createDate.getMinutes()}`;
       const modificationDate = new Date(log.modifiedAt);
       this.log.modifiedAt = `${modificationDate.getDate()}/${modificationDate.getMonth() + 1}/${modificationDate.getFullYear()} ${modificationDate.getHours()}:${modificationDate.getMinutes()}`;
+      log.files.forEach(file => {
+        const modificationDate = new Date(file.uploadDate);
+        file.uploadDate = `${modificationDate.getDate()}/${modificationDate.getMonth() + 1}/${modificationDate.getFullYear()} ${modificationDate.getHours()}:${modificationDate.getMinutes()}`;
+      });
       this.dataSource.data = log.files;
     })
   }
@@ -140,7 +144,7 @@ export class LogEntryDetailsComponent {
   }
 
   onBackCall() {
-    this.navService.back();
+    this.navService.navWorkDetails(this.log?.workId || '');
   }
 
   isAllSelected() {

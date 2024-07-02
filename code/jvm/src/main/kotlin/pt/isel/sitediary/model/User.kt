@@ -17,12 +17,17 @@ data class SignUpInputModel(
     val lastName: String,
     val nif: Int,
     val phone: String?,
+    val district: String,
     val parish: String,
     val county: String,
     val associationName: String,
     val associationNum: Int
 ) {
     fun checkNifSize() = nif.toString().length == 9
+
+    fun checkParameters(): Boolean = email.isBlank() || role.isBlank() || username.isBlank() || password.isBlank() ||
+            firstName.isBlank() || lastName.isBlank() || district.isBlank() || parish.isBlank() || county.isBlank() ||
+            associationName.isBlank() || associationNum < 1
 }
 
 data class LoginInputModel(

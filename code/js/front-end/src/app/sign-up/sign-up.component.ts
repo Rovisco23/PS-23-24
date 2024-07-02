@@ -37,12 +37,15 @@ export class SignUpComponent {
   phone: string = '';
   parish: string = '';
   county: string = '';
+  district: string = '';
   role: string = 'OPERÁRIO';
   association_name: string = '';
   association_num: string = '';
 
+
   isChecked: boolean = false;
 
+  districts: string[] = [];
   counties: string[] = [];
   parishes: string[] = [];
 
@@ -61,22 +64,46 @@ export class SignUpComponent {
     this.role = this.isChecked ? 'CÂMARA' : 'OPERÁRIO';
   }
 
-  updateLocation() {
+  updateLocation(change: boolean) {
     const selectedParish = this.parish;
-    const cList: string[] = [];
-    for (const c of freguesias.keys()) {
-      const pList = freguesias.get(c);
-      if (pList.includes(selectedParish)) {
-        cList.push(c);
+    const selectedCounty = this.county;
+    if (!change) {
+      const cList: string[] = [];
+      const dList: string[] = [];
+      for (const c of freguesias.keys()) {
+        const pList = freguesias.get(c);
+        if (pList.includes(selectedParish)) {
+          cList.push(c);
+        }
       }
+      for (const d of concelhos.keys()) {
+        const conList = concelhos.get(d);
+        for (const c of cList) {
+          if (conList.includes(c)) {
+            dList.push(d);
+          }
+        }
+      }
+      this.counties = cList;
+      this.districts = dList;
+      this.county = cList[0];
     }
-    this.counties = cList;
-    this.county = this.counties[0];
+    if (change) {
+      const dList: string[] = [];
+      for (const d of concelhos.keys()) {
+        const cList = concelhos.get(d);
+        if (cList.includes(selectedCounty)) {
+          dList.push(d);
+        }
+      }
+      this.districts = dList;
+    }
+    this.district = this.districts[0];
   }
 
   signUp(): void {
     this.httpService.signup(this.email, this.username, this.password, this.firstName, this.lastName, this.nif,
-      this.phone, this.parish, this.county, this.role, this.association_name, Number(this.association_num)).pipe(
+      this.phone, this.parish, this.county, this.district, this.role, this.association_name, Number(this.association_num)).pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
         return throwError(error);

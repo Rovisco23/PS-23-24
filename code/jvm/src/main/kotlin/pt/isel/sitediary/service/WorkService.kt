@@ -37,7 +37,7 @@ class WorkService(
             failure(Errors.invalidTechnicians)
         } else {
             val location =
-                addressRep.getLocation(openingTerm.address.location.parish, openingTerm.address.location.county)
+                addressRep.getLocation(openingTerm.address.location.parish, openingTerm.address.location.county, openingTerm.address.location.district)
             if (location == null) {
                 failure(Errors.invalidLocation)
             } else {
@@ -45,7 +45,7 @@ class WorkService(
                     id = UUID.randomUUID(),
                     name = openingTerm.name,
                     description = openingTerm.description ?: "",
-                    state = if (openingTerm.verification) VERIFYING else IN_PROGRESS,
+                    state = if (openingTerm.verification && !openingTerm.checkCouncilWork(user)) VERIFYING else IN_PROGRESS,
                     type = WorkType.fromString(openingTerm.type) ?: WorkType.RESIDENCIAL,
                     address = Address(
                         Location(
@@ -59,7 +59,7 @@ class WorkService(
                     members = listOf(user.toMember()),
                     log = emptyList()
                 )
-                workRep.createWork(work, openingTerm, user)
+                workRep.createWork(work, Timestamp.from(clock.now().toJavaInstant()), openingTerm, user)
                 success(Unit)
             }
         }
@@ -79,7 +79,7 @@ class WorkService(
     fun getWorkList(user: User) = transactionManager.run {
         val work = when (user.role) {
             "ADMIN" -> it.workRepository.getWorkListAdmin()
-            "CÂMARA" -> it.workRepository.getWorkListCouncil(user.location)
+            "CÂMARA" -> it.workRepository.getWorkListCouncil(user.location, user)
             else -> it.workRepository.getWorkList(user.id)
         }
         success(work)

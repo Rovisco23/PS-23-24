@@ -31,7 +31,7 @@
     <div class="files">
       <h2>Ficheiros</h2>
       <input type="file" (change)="onFileUpload($event)" #fileInput style="display:none">
-      <button type="button" class="add-button" (click)="openFileInput()">Adicionar Ficheiro</button>
+      <button *ngIf="log.editable" type="button" class="add-button" (click)="openFileInput()">Adicionar Ficheiro</button>
       <button *ngIf="!selection.isEmpty()" (click)="downloadFiles()">Transferir ficheiros</button>
       <button *ngIf="!selection.isEmpty() && isEditable()" (click)="deleteFiles()">Apagar Ficheiros</button>
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">

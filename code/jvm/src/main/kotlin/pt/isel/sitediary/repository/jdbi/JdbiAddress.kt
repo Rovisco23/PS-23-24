@@ -5,11 +5,12 @@ import pt.isel.sitediary.domainmodel.work.Location
 import pt.isel.sitediary.repository.AddressRepository
 
 class JdbiAddress (private val handle: Handle): AddressRepository {
-    override fun getLocation(parish: String, county: String): Location? = handle.createQuery(
-        "select freguesia, concelho, distrito from localidade where freguesia = :parish and concelho = :county"
+    override fun getLocation(parish: String, county: String, district: String): Location? = handle.createQuery(
+        "select freguesia, concelho, distrito from localidade where freguesia = :parish and concelho = :county and distrito = :district"
     )
         .bind("parish", parish)
         .bind("county", county)
+        .bind("district", district)
         .mapTo(Location::class.java)
         .singleOrNull()
 

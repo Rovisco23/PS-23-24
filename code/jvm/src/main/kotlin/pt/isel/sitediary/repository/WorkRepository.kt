@@ -8,7 +8,7 @@ import java.sql.Timestamp
 import java.util.*
 
 interface WorkRepository {
-    fun createWork(work: WorkInput, openingTerm: OpeningTermInputModel, user: User)
+    fun createWork(work: WorkInput, createdAt: Timestamp, openingTerm: OpeningTermInputModel, user: User)
     fun getById(id: UUID): Work?
     fun getWorkList(userId: Int): List<WorkSimplified>
     fun getOpeningTerm(workId: UUID): OpeningTerm
@@ -18,7 +18,7 @@ interface WorkRepository {
     fun acceptInvite(inv: InviteSimplified, user: User)
     fun declineInvite(workId: UUID, userId: Int)
     fun getWorkListAdmin(): List<WorkSimplified>
-    fun getWorkListCouncil(location: Location): List<WorkSimplified>
+    fun getWorkListCouncil(location: Location, user: User): List<WorkSimplified>
     fun getWorkImage(workId: UUID): FileModel?
     fun checkWorkImageExists(workId: UUID): UUID?
     fun insertWorkImage(workId: UUID, featuredImage: FileModel)

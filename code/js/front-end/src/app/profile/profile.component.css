@@ -9,7 +9,7 @@
   width: 2%;
   height: auto;
   margin: 10px;
-  background-color: transparent;
+  background-color: white;
   border: none;
 }
 
@@ -28,13 +28,13 @@
   width: 20%;
   height: 70%;
   border: 2px solid #FF7A00;
+  overflow: auto; /* Adicione esta linha */
 }
 
 .left-section img {
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  border: 2px solid #FF7A00;
 }
 
 .right-section {
@@ -44,6 +44,7 @@
   height: 70%;
   color: #FF7A00;
   border: 2px solid #FF7A00;
+  overflow: auto; /* Adicione esta linha */
 }
 
 .right-section h1 {
@@ -84,14 +85,23 @@
   border-radius: 5px;
   border: 2px solid #FF7A00;
   color: #FF7A00;
-  margin: 5px;
   height: 2%;
   user-select: none;
+  margin-bottom: 10px;
+  margin-top: 5px;
+  margin-right: 10px;
 }
 
-.edit-button {
+.edit:hover {
+  background-color: #FF7A00;
+  color: white;
+  cursor: pointer;
+}
+
+.edit-picture-button {
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 
 .details-title {
@@ -109,7 +119,7 @@
   display: inline;
 }
 
-.details {
+.details, .details-location, .details-association, .details-phone {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
@@ -120,20 +130,66 @@
 }
 
 .information {
-  display: flex;
   margin-top: 70px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.information div {
-  text-align: center;
-  margin-bottom: 20px;
 }
 
 .details-sub-title {
   color: #FF7A00;
   font-weight: bold;
-  margin-bottom: 10px;
+}
+
+.change-picture {
+  background-size: cover;
+  background-position: center;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px solid #FF7A00;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+  background-color: #11113D;
+}
+
+.change-picture:hover::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+}
+
+.change-picture:hover {
+  border-color: #FF7A00;
+}
+
+.profile-picture {
+  background-size: cover;
+  background-position: center;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px solid #FF7A00;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+.input {
+  margin: 5px;
+  text-align: center;
+}
+
+.selector {
+  margin: 5px;
+  width: 200px;
 }

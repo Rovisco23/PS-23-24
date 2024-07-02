@@ -27,10 +27,22 @@ export class HttpService {
   }
 
   signup(email: string, username: string, password: string, firstName: string, lastName: string, nif: number,
-         phone: string, parish: string, county: string, role: string, associationName: string, associationNum: number)
+         phone: string, parish: string, county: string, district: string, role: string, associationName: string, associationNum: number)
     : Observable<any> {
     return this.http.post<any>('http://localhost:8080/api/signup', {
-      email, username, password, firstName, lastName, nif, phone, parish, county, role, associationName, associationNum
+      email,
+      username,
+      password,
+      firstName,
+      lastName,
+      nif,
+      phone,
+      parish,
+      county,
+      district,
+      role,
+      associationName,
+      associationNum
     })
   }
 

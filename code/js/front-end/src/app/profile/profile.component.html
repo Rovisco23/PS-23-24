@@ -8,20 +8,75 @@
   <div class="left-section">
     <div class="middle-section">
       <div class="top-section">
-        <img src="{{profileSrc}}" alt="Profile Picture">
-        <h1>{{ user?.firstName }} {{ user?.lastName }}</h1>
-        <div>
-          <span class="material-icons" style="margin-right: 5px;">person</span>
-          <span class="span-inline">
-           {{ user?.username }} </span>
+        <button *ngIf="!editPicture && !(profileSrc == './assets/profile.png')" type="button"
+                [class]="isOwner() ? 'change-picture' : 'profile-picture'" (click)="toggleEdit('picture')">
+          <img src="{{ profileSrc }}" alt="Profile Picture">
+        </button>
+        <div *ngIf="editPicture || profileSrc == './assets/profile.png'">
+          <input type="file" (change)="onImageChange($event)" #fileInput style="display:none">
+          <button type="button" class="change-picture" (click)="fileInput.click()">
+            <img src="{{ newSrc?? profileSrc }}" alt="Profile Picture">
+          </button>
+        </div>
+        <div *ngIf="editPicture" style="display: flex; flex-direction: row">
+          <div class="edit" *ngIf="!(profileSrc == './assets/profile.png')" (click)="onRemovePicture()">
+            <div class="edit-picture-button">
+              <span class="notification-text">Remover</span>
+            </div>
+          </div>
+          <div class="edit" *ngIf="newSrc" (click)="onSubmitPicture()">
+            <div class="edit-picture-button">
+              <span class="notification-text">Submeter</span>
+            </div>
+          </div>
+          <div class="edit" *ngIf="!(profileSrc == './assets/profile.png') || newSrc" (click)="onCancelEdit('picture')">
+            <div class="edit-picture-button">
+              <span class="notification-text">Cancelar</span>
+            </div>
+          </div>
+        </div>
+        <h1 *ngIf="!editName">{{ user?.firstName }} {{ user?.lastName }}
+          <mat-icon *ngIf="isOwner()" (click)="toggleEdit('name')">edit</mat-icon>
+        </h1>
+        <div *ngIf="editName">
+          <input placeholder="Nome Próprio" [(ngModel)]="newName" required>
+          <input placeholder="Apelido" [(ngModel)]="newLastName" required>
+        </div>
+        <div *ngIf="editName" style="display: flex; flex-direction: row">
+          <div class="edit" (click)="onUpdateProfile('name')">
+            <div class="edit-picture-button">
+              <span class="notification-text">Submeter</span>
+            </div>
+          </div>
+          <div class="edit" (click)="onCancelEdit('name')">
+            <div class="edit-picture-button">
+              <span class="notification-text">Cancelar</span>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!editUsername">
+          <p>
+            <mat-icon *ngIf="isOwner()">person</mat-icon>
+            {{ user?.username }}
+            <mat-icon *ngIf="isOwner()" (click)="toggleEdit('username')">edit</mat-icon>
+          </p>
+        </div>
+        <div *ngIf="editUsername">
+          <input placeholder="Nome de Utilizador" [(ngModel)]="newUsername" required>
+        </div>
+        <div *ngIf="editUsername" style="display: flex; flex-direction: row">
+          <div class="edit" (click)="onUpdateProfile('username')">
+            <div class="edit-picture-button">
+              <span class="notification-text">Submeter</span>
+            </div>
+          </div>
+          <div class="edit" (click)="onCancelEdit('username')">
+            <div class="edit-picture-button">
+              <span class="notification-text">Cancelar</span>
+            </div>
+          </div>
         </div>
         <p>{{ user?.role }}</p>
-      </div>
-    </div>
-    <div *ngIf="isOwner()" class="edit">
-      <div class="edit-button" (click)="editCall()">
-        <span class="notification-text">Editar Perfil</span>
-        <span class="material-icons"> edit </span>
       </div>
     </div>
   </div>
@@ -34,21 +89,91 @@
           <span class="material-icons" style="margin-right: 5px;">email</span>
           <span>{{ user?.email }}</span>
         </div>
-        <div class="details" *ngIf="user?.phone">
-          <span class="material-icons" style="margin-right: 5px;">phone</span>
-          <span class="span-inline">
-           {{ user?.phone }} </span>
+        <div class="details-phone" *ngIf="!editPhone">
+          <p>
+            <mat-icon *ngIf="isOwner()">phone</mat-icon>
+            {{ user?.phone }}
+            <mat-icon *ngIf="isOwner()" (click)="toggleEdit('phone')">edit</mat-icon>
+          </p>
+        </div>
+        <div *ngIf="editPhone">
+          <input placeholder="Número de telefone" [(ngModel)]="newPhone" required>
+        </div>
+        <div *ngIf="editPhone" style="display: flex; flex-direction: row">
+          <div class="edit" (click)="onUpdateProfile('phone')">
+            <div class="edit-picture-button">
+              <span class="notification-text">Submeter</span>
+            </div>
+          </div>
+          <div class="edit" (click)="onCancelEdit('phone')">
+            <div class="edit-picture-button">
+              <span class="notification-text">Cancelar</span>
+            </div>
+          </div>
         </div>
       </div>
       <div>
         <h3 class="details-sub-title">Informação</h3>
-        <div class="details">
-          <span class="material-icons" style="margin-right: 5px;">apartment</span>
-          <span>{{user?.association?.name}} Número: {{user?.association?.number}}</span>
+        <div class="details-association" *ngIf="!editAssociation">
+          <p>
+            <mat-icon *ngIf="isOwner()">apartment</mat-icon>
+            {{ user?.association?.name }} | Número: {{ user?.association?.number }}
+            <mat-icon *ngIf="isOwner()" (click)="toggleEdit('association')">edit</mat-icon>
+          </p>
         </div>
-        <div class="details">
-          <span class="material-icons" style="margin-right: 5px;">location_on</span>
-          <span>{{user?.location?.parish}}, {{user?.location?.county}}, {{user?.location?.district}}</span>
+        <div *ngIf="editAssociation">
+          <input placeholder="Nome da associação" [(ngModel)]="newAssociationName" required>
+          <input placeholder="Número de associado" [(ngModel)]="newAssociationNumber" required>
+        </div>
+        <div *ngIf="editAssociation" style="display: flex; flex-direction: row">
+          <div class="edit" (click)="onUpdateProfile('association')">
+            <div class="edit-picture-button">
+              <span class="notification-text">Submeter</span>
+            </div>
+          </div>
+          <div class="edit" (click)="onCancelEdit('association')">
+            <div class="edit-picture-button">
+              <span class="notification-text">Cancelar</span>
+            </div>
+          </div>
+        </div>
+        <div class="details-location" *ngIf="!editLocation">
+          <p>
+            <mat-icon *ngIf="isOwner()">location_on</mat-icon>
+            {{ user?.location?.parish }}, {{ user?.location?.county }}, {{ user?.location?.district }}
+            <mat-icon *ngIf="isOwner()" (click)="toggleEdit('location')">edit</mat-icon>
+          </p>
+        </div>
+        <div *ngIf="editLocation" style="display: flex; flex-direction: row">
+          <select class="selector" id="district" name="district" [(ngModel)]="newDistrict">
+            <ng-container *ngFor="let distrito of districts">
+              <option [value]="distrito">{{ distrito }}</option>
+            </ng-container>
+          </select>
+          <select class="selector" id="county" name="county" [(ngModel)]="newCounty"
+                  (change)="updateLocation(true)">
+            <ng-container *ngFor="let concelho of counties">
+              <option [value]="concelho">{{ concelho }}</option>
+            </ng-container>
+          </select>
+          <select class="selector" id="parish" name="Parish" [(ngModel)]="newParish"
+                  (change)="updateLocation(false)">
+            <ng-container *ngFor="let freguesia of parishes">
+              <option [value]="freguesia">{{ freguesia }}</option>
+            </ng-container>
+          </select>
+        </div>
+        <div *ngIf="editLocation" style="display: flex; flex-direction: row">
+          <div class="edit" (click)="onUpdateProfile('location')">
+            <div class="edit-picture-button">
+              <span class="notification-text">Submeter</span>
+            </div>
+          </div>
+          <div class="edit" (click)="onCancelEdit('location')">
+            <div class="edit-picture-button">
+              <span class="notification-text">Cancelar</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 package pt.isel.sitediary.model
 
 import pt.isel.sitediary.domainmodel.user.Technician
+import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.work.Address
 import pt.isel.sitediary.domainmodel.work.ConstructionCompany
 import java.util.*
@@ -31,7 +32,12 @@ data class OpeningTermInputModel(
                 building.isBlank() || address.location.parish.isBlank() || address.street.isBlank() ||
                 address.postalCode.isBlank() || address.location.county.isBlank() || verification && verificationDoc.isNullOrBlank()
 
-    fun checkTechnicians() = technicians.filter { it.role == "DIRETOR" || it.role == "FISCALIZAÇÃO" || it.role == "COORDENADOR" }.size < 3
+    fun checkTechnicians() =
+        technicians.filter { it.role == "DIRETOR" || it.role == "FISCALIZAÇÃO" || it.role == "COORDENADOR" }.size < 3
+
+    fun checkCouncilWork(user: User): Boolean =
+        address.location.district == user.location.district && address.location.county == user.location.county && user.role == "CÂMARA"
+
 }
 
 data class MemberInputModel(

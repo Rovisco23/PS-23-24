@@ -102,6 +102,10 @@ export class AppComponent {
     }
   }
 
+  updatePicture(src: string){
+    this.src = src
+  }
+
   checkAdminRole() {
     return localStorage.getItem('role') === 'ADMIN'
   }

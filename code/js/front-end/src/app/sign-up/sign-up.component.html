@@ -13,7 +13,7 @@
           <label for="email">Email</label>
         </div>
         <div>
-          <input  type="email" id="email" name="email" [(ngModel)]="email" required>
+          <input type="email" id="email" name="email" [(ngModel)]="email" required>
         </div>
       </div>
       <div class="input">
@@ -83,10 +83,23 @@
       </div>
       <div class="input">
         <div>
+          <label>Distrito</label>
+        </div>
+        <div>
+          <select class="selector" id="district" name="district" [(ngModel)]="district">
+            <ng-container *ngFor="let distrito of districts">
+              <option [value]="distrito">{{ distrito }}</option>
+            </ng-container>
+          </select>
+        </div>
+      </div>
+      <div class="input">
+        <div>
           <label>Concelho</label>
         </div>
         <div>
-          <select class="selector" name="county" [(ngModel)]="county">
+          <select class="selector" id="county" name="county" [(ngModel)]="county"
+                  (change)="updateLocation(true)">
             <ng-container *ngFor="let concelho of counties">
               <option [value]="concelho">{{ concelho }}</option>
             </ng-container>
@@ -98,7 +111,9 @@
           <label>Freguesia</label>
         </div>
         <div>
-          <select class="selector" name="Parish" [(ngModel)]="parish" (change)="updateLocation()">
+
+          <select class="selector" id="parish" name="Parish" [(ngModel)]="parish"
+                  (change)="updateLocation(false)">
             <ng-container *ngFor="let freguesia of parishes">
               <option [value]="freguesia">{{ freguesia }}</option>
             </ng-container>
@@ -111,7 +126,7 @@
           <input type="checkbox" id="role" name="role" [(ngModel)]="isChecked" (change)="changeRole()">
         </div>
       </div>
-      <div >
+      <div>
         <button mat-stroked-button class="button" type="submit">Registar</button>
       </div>
     </form>

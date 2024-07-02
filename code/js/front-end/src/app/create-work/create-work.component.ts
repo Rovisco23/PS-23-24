@@ -2,11 +2,10 @@ import {Component, inject, ViewChild} from '@angular/core';
 import {freguesias, concelhos} from '../utils/utils';
 import {HttpService} from "../utils/http.service";
 import {InputWork, MyErrorStateMatcher, Technician, WorkTypes} from "../utils/classes";
-import {Router} from "@angular/router";
 import {FormControl, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatButton, MatFabButton} from "@angular/material/button";
 import {MatError, MatFormField, MatLabel, MatOption, MatSelect} from "@angular/material/select";
-import {CommonModule, NgForOf, NgIf, Location} from "@angular/common";
+import {CommonModule, NgForOf, NgIf} from "@angular/common";
 import {MatIcon} from "@angular/material/icon";
 import {
   MatCell,
@@ -107,7 +106,7 @@ export class CreateWorkComponent {
   parishes: string[] = [];
   districts: string[] = [];
 
-  constructor(private router: Router, private location: Location, private errorHandle: ErrorHandler, private navService: NavigationService) {
+  constructor(private errorHandle: ErrorHandler, private navService: NavigationService) {
     this.work = {
       name: '',
       type: '',

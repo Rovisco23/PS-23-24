@@ -4,7 +4,6 @@ import { WorkComponent } from "./work/work.component";
 import {WorkDetailsComponent} from "./work-details/work-details.component";
 import {SignUpComponent} from "./sign-up/sign-up.component";
 import {ProfileComponent} from "./profile/profile.component";
-import {EditProfileComponent} from "./edit-profile/edit-profile.component";
 import {CreateWorkComponent} from "./create-work/create-work.component";
 import {LogEntryDetailsComponent} from "./log-entry-details/log-entry-details.component";
 import {CreateLogEntryComponent} from "./create-log-entry/create-log-entry.component";
@@ -38,14 +37,6 @@ export const routes: Routes = [
   {
     path: 'profile/:name',
     component: ProfileComponent,
-    children: [{
-      path: 'edit',
-      component: EditProfileComponent
-    }]
-  },
-  {
-    path: 'edit-profile/:name',
-    component: EditProfileComponent,
   },
   {
     path: 'create-work',

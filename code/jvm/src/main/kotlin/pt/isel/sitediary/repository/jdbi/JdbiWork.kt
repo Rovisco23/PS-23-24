@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 class JdbiWork(private val handle: Handle) : WorkRepository {
-    override fun createWork(work: WorkInput, openingTerm: OpeningTermInputModel, user: User) {
+    override fun createWork(work: WorkInput, createdAt: Timestamp, openingTerm: OpeningTermInputModel, user: User) {
         handle.createUpdate(
             "insert into OBRA(id, nome, tipo, descricao, estado, freguesia, concelho, distrito, rua, cpostal)" +
                     "values (:id, :nome, :tipo, :descricao, :estado, :freguesia, :concelho, :distrito, :rua, :cpostal)"
@@ -38,7 +38,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         addCouncilAsMember(work.id, work.address.location)
         val companyId = getCompanyId(openingTerm.company.name, openingTerm.company.num)
         val councilId = getCouncil(work.address.location)
-        val tId = insertOpeningTerm(openingTerm, companyId, work.id, councilId)
+        val tId = insertOpeningTerm(openingTerm, createdAt, companyId, work.id, councilId, user)
         insertTechnicians(openingTerm.technicians, tId, work.id)
     }
 
@@ -116,23 +116,32 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
 
     private fun insertOpeningTerm(
         openingTerm: OpeningTermInputModel,
+        createdAt: Timestamp,
         companyId: Int,
         workId: UUID,
-        councilId: Int
-    ): Int = handle.createUpdate(
-        "insert into TERMO_ABERTURA(oId, inicio, camara, titular_licenca, empresa_construcao, autorizacao, assinatura, dt_assinatura, predio)" +
-                "values (:oId, :inicio, :camara, :titular_licença, :empresa_construção, :doc, null, null, :predio)"
-    )
-        .bind("oId", workId)
-        .bind("inicio", Timestamp.valueOf(LocalDateTime.now()))
-        .bind("camara", councilId)
-        .bind("titular_licença", openingTerm.holder)
-        .bind("doc", if (openingTerm.verification) openingTerm.verificationDoc else null)
-        .bind("empresa_construção", companyId)
-        .bind("predio", openingTerm.building)
-        .executeAndReturnGeneratedKeys()
-        .mapTo(Int::class.java)
-        .one()
+        councilId: Int,
+        user: User
+    ): Int {
+        val assinatura =
+            if (openingTerm.checkCouncilWork(user) && openingTerm.verification) user.name else null
+        val time = if (assinatura != null) createdAt else null
+        return handle.createUpdate(
+            "insert into TERMO_ABERTURA(oId, inicio, camara, titular_licenca, empresa_construcao, autorizacao, assinatura, dt_assinatura, predio)" +
+                    "values (:oId, :inicio, :camara, :titular_licença, :empresa_construção, :doc, :assinatura, :createdAt, :predio)"
+        )
+            .bind("oId", workId)
+            .bind("inicio", Timestamp.valueOf(LocalDateTime.now()))
+            .bind("camara", councilId)
+            .bind("titular_licença", openingTerm.holder)
+            .bind("doc", if (openingTerm.verification) openingTerm.verificationDoc else null)
+            .bind("empresa_construção", companyId)
+            .bind("predio", openingTerm.building)
+            .bind("assinatura", assinatura)
+            .bind("createdAt", time)
+            .executeAndReturnGeneratedKeys()
+            .mapTo(Int::class.java)
+            .one()
+    }
 
     override fun inviteMembers(invites: List<Invite>) {
         val query = StringBuilder("insert into CONVITE(id, email, role, oId) values ")
@@ -226,12 +235,13 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         .mapTo(WorkSimplified::class.java)
         .list()
 
-    override fun getWorkListCouncil(location: Location) = handle.createQuery(
+    override fun getWorkListCouncil(location: Location, user: User) = handle.createQuery(
         "select o.id, o.nome, ta.titular_licenca as owner, o.tipo, o.descricao, o.estado, o.freguesia, o.concelho," +
                 " o.distrito, o.rua, o.cpostal, ta.assinatura IS NOT NULL AS " +
-                "verification from OBRA o join TERMO_ABERTURA ta on ta.oId = o.id " +
-                "where freguesia = :parish and concelho = :county and distrito = :district"
+                "verification from OBRA o join TERMO_ABERTURA ta on ta.oId = o.id join MEMBRO m on ta.oid = m.oid " +
+                "where (freguesia = :parish and concelho = :county and distrito = :district) or (m.role = 'DONO' and m.uid = :id)"
     )
+        .bind("id", user.id)
         .bind("parish", location.parish)
         .bind("county", location.county)
         .bind("district", location.district)
@@ -321,9 +331,8 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
                 " o.freguesia, o.concelho, o.distrito, o.rua, o.cpostal from OBRA o " +
                 "join TERMO_ABERTURA ta on o.id = ta.oid join MEMBRO m on ta.oId = m.oId " +
                 "join UTILIZADOR u on m.uId = u.id where o.estado = 'EM VERIFICAÇÃO' and m.role = 'DONO' " +
-                "and o.freguesia = :parish and o.concelho = :county and o.distrito = :district"
+                "and o.concelho = :county and o.distrito = :district"
     )
-        .bind("parish", location.parish)
         .bind("county", location.county)
         .bind("district", location.district)
         .mapTo(WorkVerifying::class.java)
