@@ -42,8 +42,8 @@ export class NavigationService {
     this.router.navigate([`/work-details/${workId}/log-entry/${id}`]);
   }
 
-  navWorkMemberProfile(workId: string, username: string, extras: any = null) {
-    this.router.navigate([`/work-details/${workId}/profile/${username}`], extras);
+  navWorkMemberProfile(workId: string, username: string) {
+    this.router.navigate([`/work-details/${workId}/profile/${username}`]);
   }
 
   navVerifications() {
@@ -58,12 +58,8 @@ export class NavigationService {
     this.router.navigate(['/signup']);
   }
 
-  navProfile(username: string, extras: any = null) {
-    if (extras === null) {
+  navProfile(username: string) {
       this.router.navigate([`/profile/${username}`]);
-    } else {
-      this.router.navigate([`/profile/${username}`], extras);
-    }
   }
 
   navUsers() {

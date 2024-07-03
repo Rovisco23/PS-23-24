@@ -29,7 +29,6 @@ import {FormsModule} from "@angular/forms";
 })
 export class ProfileComponent {
   httpService = inject(HttpService);
-  userId = '-1';
   user: User | undefined;
 
   profileSrc: string;
@@ -60,29 +59,16 @@ export class ProfileComponent {
 
   oldValue: any = undefined;
 
-  constructor(private app: AppComponent, private route: ActivatedRoute, private urlService: OriginalUrlService, private errorHandle: ErrorHandler, private navService: NavigationService) {
+  constructor(
+    private app: AppComponent,
+    private route: ActivatedRoute,
+    private urlService: OriginalUrlService,
+    private errorHandle: ErrorHandler,
+    private navService: NavigationService) {
     this.profileSrc = './assets/profile.png';
     const username = String(this.route.snapshot.params['name']);
     this.loadUser(username);
-    this.route.queryParams.subscribe(params => {
-      if (username === localStorage.getItem('username')) {
-        this.userId = localStorage.getItem('userId') ?? '';
-      } else {
-        if (params['userId']) {
-          this.userId = params['userId']
-        } else if (localStorage.getItem('userId') === username) {
-          this.userId = localStorage.getItem('userId') ?? '';
-        }
-      }
-      concelhos.forEach((value, key) => {
-        value.forEach((v: string) => this.counties.push(v));
-        this.districts.push(key);
-      })
-      freguesias.forEach((value) => {
-        value.forEach((x: string) => this.parishes.push(x));
-      })
-    });
-    this.httpService.getProfilePictureById(this.userId).pipe(
+    this.httpService.getProfilePictureByUsername(username).pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
         return throwError(error);
@@ -94,6 +80,13 @@ export class ProfileComponent {
         localStorage.setItem('profilePicture', URL.createObjectURL(data))
         this.profileSrc = URL.createObjectURL(data)
       }
+    })
+    concelhos.forEach((value, key) => {
+      value.forEach((v: string) => this.counties.push(v));
+      this.districts.push(key);
+    })
+    freguesias.forEach((value) => {
+      value.forEach((x: string) => this.parishes.push(x));
     })
   }
 

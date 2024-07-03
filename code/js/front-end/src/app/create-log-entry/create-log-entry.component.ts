@@ -75,10 +75,14 @@ export class CreateLogEntryComponent {
     private workComponent: WorkDetailsComponent,
     private dialog: MatDialog
   ) {
+    this.workComponent.tabIndex = 0;
     const parentRoute = this.route.parent;
     if (parentRoute) {
       const parentId = parentRoute.snapshot.paramMap.get('id');
       this.workId = parentId || '';
+    }
+    if (!this.workComponent.checkActionPermissions('log')) {
+      this.onBackCall()
     }
   }
 

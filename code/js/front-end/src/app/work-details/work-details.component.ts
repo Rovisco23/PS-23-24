@@ -93,6 +93,9 @@ export class WorkDetailsComponent {
         this.workSrc = URL.createObjectURL(data)
       }
     })
+    if (this.router.url !== '/work-details/' + workListingId) {
+      this.showLayout = false
+    }
   }
 
   changeTab(id: number) {
@@ -123,10 +126,10 @@ export class WorkDetailsComponent {
     this.navService.navLogEntry(this.work?.id ?? '', id)
   }
 
-  onMemberClick(username: string, id: number) {
+  onMemberClick(username: string) {
     this.showLayout = false
     this.urlService.setOriginalUrl(this.router.url)
-    this.navService.navWorkMemberProfile(this.work?.id ?? '', username, {queryParams: {userId: id}})
+    this.navService.navWorkMemberProfile(this.work?.id ?? '', username)
   }
 
   filterResults(text: string) {
@@ -178,5 +181,16 @@ export class WorkDetailsComponent {
   checkWorkCanFinish() {
     const isOwner = this.work?.members.find(member => member.role === 'DONO')?.id === Number(localStorage.getItem('userId'))
     return this.work?.state !== 'Terminada' && isOwner
+  }
+
+  checkActionPermissions(action: string) {
+    const role = this.work?.members.find(member => member.id === Number(localStorage.getItem('userId')))?.role
+    if (!role){
+      return false
+    } else if (action === 'log'){
+      return role !== 'MEMBRO' && role !== 'ESPECTADOR'
+    } else {
+      return role === 'ADMIN'
+    }
   }
 }

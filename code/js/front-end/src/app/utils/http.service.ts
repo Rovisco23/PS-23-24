@@ -104,9 +104,9 @@ export class HttpService {
     })
   }
 
-  getProfilePictureById(userId: string) {
+  getProfilePictureByUsername(username: string) {
     const headers = this.getTokenHeader();
-    return this.http.get<any>(`http://localhost:8080/api/profile-picture/${userId}`, {
+    return this.http.get<any>(`http://localhost:8080/api/profile-picture-username/${username}`, {
       headers: headers,
       responseType: 'blob' as 'json'
     })

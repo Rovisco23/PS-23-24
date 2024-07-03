@@ -8,11 +8,14 @@
   <div class="left-section">
     <div class="middle-section">
       <div class="top-section">
-        <button *ngIf="!editPicture && !(profileSrc == './assets/profile.png')" type="button"
-                [class]="isOwner() ? 'change-picture' : 'profile-picture'" (click)="toggleEdit('picture')">
+        <button *ngIf="!isOwner()" type="button" class="profile-picture">
           <img src="{{ profileSrc }}" alt="Profile Picture">
         </button>
-        <div *ngIf="editPicture || profileSrc == './assets/profile.png'">
+        <button *ngIf="isOwner() && !editPicture && !(profileSrc == './assets/profile.png')" type="button"
+                class="change-picture" (click)="toggleEdit('picture')">
+          <img src="{{ profileSrc }}" alt="Profile Picture">
+        </button>
+        <div *ngIf="(editPicture || profileSrc == './assets/profile.png') && isOwner()">
           <input type="file" (change)="onImageChange($event)" #fileInput style="display:none">
           <button type="button" class="change-picture" (click)="fileInput.click()">
             <img src="{{ newSrc?? profileSrc }}" alt="Profile Picture">

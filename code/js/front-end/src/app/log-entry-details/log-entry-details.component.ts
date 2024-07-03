@@ -82,6 +82,7 @@ export class LogEntryDetailsComponent {
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement> | undefined;
 
   constructor(private workComponent: WorkDetailsComponent, private dialog: MatDialog, private errorHandle: ErrorHandler, private navService: NavigationService) {
+    this.workComponent.tabIndex = 0
     this.logId = String(this.route.snapshot.params['id']);
     this.loadLog();
   }

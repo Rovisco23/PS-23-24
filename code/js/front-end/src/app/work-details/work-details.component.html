@@ -70,10 +70,10 @@
   </div>
   <div class="content" *ngIf="showLayout">
     <div class="log-content" *ngIf="tabIndex == 0">
-      <div class="top-bar">
+      <div [class]="checkActionPermissions('log') ? 'top-bar' : 'top-bar-permission'">
         <input type="text" class="search-input" placeholder="Procurar Registo" [(ngModel)]="searchLogValue"
                (ngModelChange)="filterResults(searchLogValue)">
-        <button mat-fab color="primary" aria-label="Example icon button with a delete icon" class="log-button"
+        <button *ngIf="checkActionPermissions('log')" mat-fab color="primary" aria-label="Example icon button with a delete icon" class="log-button"
                 (click)="createNewEntry()">
           <mat-icon>add</mat-icon>
         </button>
@@ -172,18 +172,18 @@
       </div>
     </div>
     <div class="members-content" *ngIf="tabIndex == 2">
-      <div class="top-bar">
+      <div [class]="checkActionPermissions('invite') ? 'top-bar' : 'top-bar-permission'">
         <input type="text" class="search-input" placeholder="Procurar Membro" [(ngModel)]="searchMemberValue"
                (ngModelChange)="filterMembers(searchMemberValue)">
-        <button mat-fab color="primary" aria-label="Example icon button with a delete icon" class="log-button"
+        <button *ngIf="checkActionPermissions('invite')" mat-fab color="primary" aria-label="Example icon button with a delete icon" class="log-button"
                 (click)="onInviteClick()">
           <mat-icon>add</mat-icon>
         </button>
-        <mat-divider></mat-divider>
       </div>
+      <mat-divider></mat-divider>
       <div>
         <mat-list *ngFor="let entry of filteredMembers">
-          <mat-list-item (click)="onMemberClick(entry.name, entry.id)">
+          <mat-list-item (click)="onMemberClick(entry.name)">
             <div matListItemTitle>{{ entry.name }}</div>
             <div matListItemLine>Role:  {{ entry.role }}</div>
           </mat-list-item>
