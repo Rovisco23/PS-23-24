@@ -316,6 +316,35 @@ class UserController(private val service: UserService) {
         }
     }
 
+    @GetMapping(Paths.User.PROFILE_PICTURE_BY_USERNAME)
+    @Operation(
+        summary = "Get profile Picture by Username",
+        description = "Gets the profile picture of a user using it's username"
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "Successful profile picture retrieval",
+                content = [
+                    Content(schema = Schema(implementation = FileModel::class))
+                ]
+            )
+        ]
+    )
+    fun getProfilePictureByUsername(
+        @PathVariable username: String,
+        @Parameter(hidden = true) user: AuthenticatedUser
+    ): ResponseEntity<*> {
+        val res = service.getProfilePictureByUsername(username)
+        return handleResponse(res) {
+            if (it == null) ResponseEntity.ok().body(null)
+            else ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "Attachment;filename=${it.fileName}")
+                .contentType(MediaType.parseMediaType(it.contentType))
+                .body(ByteArrayResource(it.file))
+        }
+    }
+
     @GetMapping(Paths.User.PENDING)
     fun getAllPendingCouncils(@Parameter(hidden = true) authUser: AuthenticatedUser): ResponseEntity<*> {
         val res = service.getAllPendingCouncils(authUser.user)

@@ -1,5 +1,5 @@
 import {Component, inject, ViewChild} from '@angular/core';
-import {Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {MatButton, MatFabButton} from "@angular/material/button";
 import {Invite, MyErrorStateMatcher} from "../utils/classes";
 import {
@@ -21,6 +21,7 @@ import {HttpService} from "../utils/http.service";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
 import {NavigationService} from "../utils/navService";
+import {WorkDetailsComponent} from "../work-details/work-details.component";
 
 @Component({
   selector: 'app-work-invite',
@@ -60,19 +61,28 @@ export class WorkInviteComponent {
     Validators.pattern(/^(ESPECTADOR|MEMBRO|ARQUITETURA|ESTABILIDADE|ELETRICIDADE|GÁS|CANALIZAÇÃO|TELECOMUNICAÇÕES|TERMICO|ACUSTICO|TRANSPORTES)$/)
   ]);
 
-  @ViewChild(MatTable, { static: false }) table: MatTable<Invite> | undefined;
+  @ViewChild(MatTable, {static: false}) table: MatTable<Invite> | undefined;
 
   matcher = new MyErrorStateMatcher()
 
-  workId: string;
+  workId: string = '';
   invites: Invite[] = [];
   email: string | null = this.emailFormControl.value;
   role: string | null = this.roles.value;
   displayedColumns: string[] = ['email', 'role', 'delete'];
   httpService = inject(HttpService)
 
-  constructor(private navService: NavigationService, private router: Router, private errorHandle: ErrorHandler) {
-    this.workId = this.router.getCurrentNavigation()?.extras.state?.['workId'];
+  constructor(
+    private workComponent: WorkDetailsComponent,
+    private route: ActivatedRoute,
+    private navService: NavigationService,
+    private errorHandle: ErrorHandler
+  ) {
+    const parentRoute = this.route.parent;
+    if (parentRoute) {
+      const parentId = parentRoute.snapshot.paramMap.get('id');
+      this.workId = parentId ?? '';
+    }
     this.emailFormControl.valueChanges.subscribe(value => {
       this.email = value;
     });
@@ -106,17 +116,19 @@ export class WorkInviteComponent {
   }
 
   sendInvites() {
-      this.httpService.inviteMembers(this.workId, this.invites).pipe(
-        catchError(error => {
-          this.errorHandle.handleError(error);
-          return throwError(error);
-        })
-      ).subscribe(() => {
-        this.navService.navWorkDetails(this.workId);
-      });
+    this.httpService.inviteMembers(this.workId, this.invites).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe(() => {
+      this.workComponent.showLayout = true;
+      this.navService.navWorkDetails(this.workId);
+    });
   }
 
-  onBackCall(){
+  onBackCall() {
+    this.workComponent.showLayout = true;
     this.navService.navWorkDetails(this.workId);
   }
 }

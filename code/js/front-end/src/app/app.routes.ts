@@ -24,7 +24,25 @@ export const routes: Routes = [
   {
     path: 'work-details/:id',
     component: WorkDetailsComponent,
-    title: 'Work details'
+    title: 'Work details',
+    children: [
+      {
+        path: 'log-entry/:id',
+        component: LogEntryDetailsComponent,
+      },
+      {
+        path: 'create-log-entry',
+        component: CreateLogEntryComponent,
+      },
+      {
+        path: 'profile/:name',
+        component: ProfileComponent,
+      },
+      {
+        path: 'invite-members',
+        component: WorkInviteComponent,
+      }
+    ]
   },
   {
     path: 'login',
@@ -41,18 +59,6 @@ export const routes: Routes = [
   {
     path: 'create-work',
     component: CreateWorkComponent,
-  },
-  {
-    path: 'invite-members',
-    component: WorkInviteComponent,
-  },
-  {
-    path: 'log-entry/:id',
-    component: LogEntryDetailsComponent,
-  },
-  {
-    path: 'create-log-entry/:id',
-    component: CreateLogEntryComponent,
   },
   {
     path: 'invites',

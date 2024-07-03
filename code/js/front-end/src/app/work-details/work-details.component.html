@@ -68,7 +68,7 @@
       </div>
     </div>
   </div>
-  <div class="content">
+  <div class="content" *ngIf="showLayout">
     <div class="log-content" *ngIf="tabIndex == 0">
       <div class="top-bar">
         <input type="text" class="search-input" placeholder="Procurar Registo" [(ngModel)]="searchLogValue"
@@ -191,5 +191,8 @@
         </mat-list>
       </div>
     </div>
+  </div>
+  <div class="content" *ngIf="!showLayout">
+    <router-outlet></router-outlet>
   </div>
 </div>

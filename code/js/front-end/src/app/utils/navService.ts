@@ -30,21 +30,20 @@ export class NavigationService {
     this.router.navigate([`/work-details/${workId}`]);
   }
 
-  navInviteMembers(name: string | undefined, id: string | undefined) {
-    this.router.navigate(['/invite-members'], {
-      state: {
-        workName: name,
-        workId: id
-      }
-    })
+  navInviteMembers(id: string) {
+    this.router.navigate([`/work-details/${id}/invite-members`])
   }
 
   navCreateLogEntry(id: string) {
-    this.router.navigate([`/create-log-entry/${id}`]);
+    this.router.navigate([`/work-details/${id}/create-log-entry`]);
   }
 
-  navLogEntry(id: number) {
-    this.router.navigate([`/log-entry/${id}`]);
+  navLogEntry(workId: string, id: number) {
+    this.router.navigate([`/work-details/${workId}/log-entry/${id}`]);
+  }
+
+  navWorkMemberProfile(workId: string, username: string, extras: any = null) {
+    this.router.navigate([`/work-details/${workId}/profile/${username}`], extras);
   }
 
   navVerifications() {
@@ -57,10 +56,6 @@ export class NavigationService {
 
   navSignUp() {
     this.router.navigate(['/signup']);
-  }
-
-  navEditProfile(username: string) {
-    this.router.navigate([`/edit-profile/${username}`]);
   }
 
   navProfile(username: string, extras: any = null) {

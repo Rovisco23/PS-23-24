@@ -1,5 +1,5 @@
 import {Component, inject} from '@angular/core';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink, RouterOutlet} from '@angular/router';
 import {LogEntrySimplified, Member, Role, Technician, Work, WorkState} from "../utils/classes";
 import {HttpService} from '../utils/http.service';
 import {HttpClientModule} from "@angular/common/http";
@@ -39,7 +39,8 @@ import {OriginalUrlService} from "../utils/originalUrl.service";
     MatLabel,
     FormsModule,
     MatBadge,
-    MatIconButton
+    MatIconButton,
+    RouterOutlet
   ],
   providers: [HttpService],
   templateUrl: './work-details.component.html',
@@ -59,6 +60,7 @@ export class WorkDetailsComponent {
   searchLogValue = '';
   searchMemberValue = '';
   tabIndex = 0;
+  showLayout: boolean = true;
 
   constructor(private router: Router, private urlService: OriginalUrlService, private navService: NavigationService, private dialog: MatDialog, private errorHandle: ErrorHandler) {
     const workListingId = String(this.route.snapshot.params['id']);
@@ -94,14 +96,18 @@ export class WorkDetailsComponent {
   }
 
   changeTab(id: number) {
+    this.showLayout = true
+    this.navService.navWorkDetails(this.work!!.id)
     this.tabIndex = id
   }
 
   onInviteClick() {
-    this.navService.navInviteMembers(this.work?.name, this.work?.id)
+    this.showLayout = false
+    this.navService.navInviteMembers(this.work?.id ?? '')
   }
 
   createNewEntry() {
+    this.showLayout = false
     this.navService.navCreateLogEntry(this.work!!.id);
   }
 
@@ -113,12 +119,14 @@ export class WorkDetailsComponent {
   }
 
   onLogEntryClick(id: number) {
-    this.navService.navLogEntry(id)
+    this.showLayout = false
+    this.navService.navLogEntry(this.work?.id ?? '', id)
   }
 
   onMemberClick(username: string, id: number) {
+    this.showLayout = false
     this.urlService.setOriginalUrl(this.router.url)
-    this.navService.navProfile(username, {queryParams: {userId: id}})
+    this.navService.navWorkMemberProfile(this.work?.id ?? '', username, {queryParams: {userId: id}})
   }
 
   filterResults(text: string) {

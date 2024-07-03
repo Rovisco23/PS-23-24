@@ -28,6 +28,7 @@ import {SimpleFile} from "../utils/classes";
 import {SelectionModel} from "@angular/cdk/collections";
 import {ConfirmDialogComponent} from "../utils/dialogComponent";
 import {MatDialog} from "@angular/material/dialog";
+import {WorkDetailsComponent} from "../work-details/work-details.component";
 
 @Component({
   selector: 'app-create-log-entry',
@@ -71,10 +72,14 @@ export class CreateLogEntryComponent {
     private httpService: HttpService,
     private errorHandle: ErrorHandler,
     private navService: NavigationService,
+    private workComponent: WorkDetailsComponent,
     private dialog: MatDialog
   ) {
-    // Get workId from route params
-    this.workId = this.route.snapshot.params['id'];
+    const parentRoute = this.route.parent;
+    if (parentRoute) {
+      const parentId = parentRoute.snapshot.paramMap.get('id');
+      this.workId = parentId || '';
+    }
   }
 
   onSubmit() {
@@ -95,7 +100,7 @@ export class CreateLogEntryComponent {
       })
     ).subscribe((response: HttpResponse<any>) => {
       const headers = response.headers.get("Location") || '';
-      this.navService.navUrl(headers);
+      this.navService.navUrl('work-details/'+ this.workId +'/'+headers);
     });
   }
 
@@ -140,17 +145,12 @@ export class CreateLogEntryComponent {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.fileName}`;
   }
 
-  onRemoveFile(key: string) {
-    this.files.delete(key);
-    this.updateDataSource();
-  }
-
   onBackCall() {
+    this.workComponent.showLayout = true;
     this.navService.navWorkDetails(this.workId);
   }
 
   openFileInput() {
-    // Trigger click on file input element to open file selection dialog
     if (this.fileInput) {
       this.fileInput.nativeElement.click();
     }

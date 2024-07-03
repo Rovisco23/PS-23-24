@@ -30,6 +30,7 @@ import {MatListOption, MatSelectionList} from "@angular/material/list";
 import {MatDivider} from "@angular/material/divider";
 import {ConfirmDialogComponent} from "../utils/dialogComponent";
 import {MatDialog} from "@angular/material/dialog";
+import {WorkDetailsComponent} from "../work-details/work-details.component";
 
 @Component({
   selector: 'app-log-entry-details',
@@ -80,9 +81,8 @@ export class LogEntryDetailsComponent {
   newTitle: string = '';
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement> | undefined;
 
-  constructor(private dialog: MatDialog, private errorHandle: ErrorHandler, private navService: NavigationService) {
+  constructor(private workComponent: WorkDetailsComponent, private dialog: MatDialog, private errorHandle: ErrorHandler, private navService: NavigationService) {
     this.logId = String(this.route.snapshot.params['id']);
-
     this.loadLog();
   }
 
@@ -144,6 +144,7 @@ export class LogEntryDetailsComponent {
   }
 
   onBackCall() {
+    this.workComponent.showLayout = true;
     this.navService.navWorkDetails(this.log?.workId || '');
   }
 
