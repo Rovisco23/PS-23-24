@@ -76,7 +76,15 @@ class WorkService(
         } else if (user.role != "ADMIN" && !work.members.containsMemberById(user.id)) {
             failure(Errors.notMember)
         } else {
-            success(work)
+            val workResult = work.copy( log = work.log.map { log ->
+                if (log.editable && checkIfEditTimeElapsed(log.createdAt, clock)) {
+                    it.logRepository.finish(log.id)
+                    log.copy(editable = false)
+                } else {
+                    log
+                }
+            })
+            success(workResult)
         }
     }
 
@@ -131,7 +139,9 @@ class WorkService(
             members.forEach { m ->
                 val id = userRep.getUserByEmail(m.email)?.id
                 if (id != null) {
-                    workRep.inviteMember(id, m.role, workId)
+                    if (!work.members.containsMemberById(id)){
+                        workRep.inviteMember(id, m.role, workId)
+                    }
                 } else {
                     val dummyId = userRep.createDummyUser(m.email)
                     workRep.inviteMember(dummyId, m.role, workId)

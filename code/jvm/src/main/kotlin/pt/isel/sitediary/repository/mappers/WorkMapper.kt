@@ -1,5 +1,6 @@
 package pt.isel.sitediary.repository.mappers
 
+
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
 import pt.isel.sitediary.domainmodel.user.Member
@@ -15,6 +16,7 @@ import pt.isel.sitediary.domainmodel.work.WorkState
 import pt.isel.sitediary.domainmodel.work.WorkType
 import java.sql.Date
 import java.sql.ResultSet
+import java.sql.Timestamp
 import java.util.*
 
 class WorkMapper : RowMapper<Work> {
@@ -65,7 +67,7 @@ class WorkMapper : RowMapper<Work> {
                             ),
                             editable = aux[4] == "t",
                             attachments = aux[5] == "t",
-                            createdAt = Date.valueOf(aux[6]),
+                            createdAt = Date.from(Timestamp.valueOf(aux[6]).toInstant()),
                         )
                     }
             },

@@ -1,10 +1,13 @@
 package pt.isel.sitediary.domainmodel.work
 
+import kotlinx.datetime.toJavaInstant
 import org.apache.commons.mail.DefaultAuthenticator
 import org.apache.commons.mail.SimpleEmail
 import pt.isel.sitediary.domainmodel.user.Member
 import pt.isel.sitediary.domainmodel.user.Technician
 import pt.isel.sitediary.model.FileOutputModel
+import kotlinx.datetime.Clock
+import java.time.Duration
 import java.util.*
 
 data class Work(
@@ -191,4 +194,9 @@ data class Invite(val id: UUID, val email: String, val role: String, val workId:
 
 data class InviteSimplified(val workId: UUID, val workTitle: String, val role: String, val admin: String){
     fun checkTechnician() = role != "MEMBRO" && role != "ESPECTADOR"
+}
+
+fun checkIfEditTimeElapsed(createdAt: Date, clock: Clock): Boolean {
+    val elapsedTime = Duration.between(createdAt.toInstant(), clock.now().toJavaInstant()).toMillis()
+    return elapsedTime >= Duration.ofHours(3).toMillis()
 }

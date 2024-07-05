@@ -34,8 +34,6 @@ class Errors(val status: Int, val reason: String) {
 
         val invalidLocation = Errors(400, "Localização inválida.")
 
-        val internalError = Errors(500, "Erro Interno do Servidor. Por favor, tente novamente mais tarde.")
-
         val invalidLoginParamCombination = Errors(400, "Nome de utilizador ou password errado.")
 
         val noUserLoggedIn = Errors(401, "Não tem sessão iniciada.")
@@ -60,6 +58,6 @@ class Errors(val status: Int, val reason: String) {
 
         val memberNotFound = Errors(404, "Não existe nenhum membro nesta obra com esse nome de utilizador.")
 
-        val notInviteOwner = Errors(403, "Não é dono deste convite.")
+        val logDescriptionTooShort = Errors(400, "Observação demasiado curta. A observação deve ter no mínimo 10 caracteres.")
     }
 }

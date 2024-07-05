@@ -37,7 +37,7 @@
                           [aria-label]="checkboxLabel()">
             </mat-checkbox>
           </th>
-          <td mat-cell *matCellDef="let row">
+          <td mat-cell *matCellDef="let row" style="text-align: center;">
             <mat-checkbox (click)="$event.stopPropagation()"
                           (change)="$event ? selection.toggle(row) : null"
                           [checked]="selection.isSelected(row)"
@@ -62,7 +62,7 @@
                   <mat-icon>download</mat-icon>
                   <span>Transferir Ficheiro</span>
                 </button>
-                <button mat-menu-item (click)="onDeleteFile(element.id)">
+                <button *ngIf="isEditable()" mat-menu-item (click)="onDeleteFile(element.id)">
                   <mat-icon>delete</mat-icon>
                   <span>Remover Ficheiro</span>
                 </button>

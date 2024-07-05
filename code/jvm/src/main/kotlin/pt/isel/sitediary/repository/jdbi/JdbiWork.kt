@@ -49,7 +49,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
                 "ARRAY(SELECT CONCAT(nome, ';', role, ';', associacao, ';', numero) FROM INTERVENIENTE " +
                 "WHERE oId = :id) AS technicians, ARRAY(SELECT CONCAT(REGISTO.id, ';', author, ';', " +
                 "UTILIZADOR.username, ';', MEMBRO.role, ';', editable, ';', COUNT(i.name) > 0 OR " +
-                "COUNT(d.name) > 0, ';', TO_CHAR(REGISTO.creation_date, 'YYYY-MM-DD')) FROM REGISTO LEFT JOIN " +
+                "COUNT(d.name) > 0, ';', REGISTO.creation_date) FROM REGISTO LEFT JOIN " +
                 "IMAGEM i ON i.rId = REGISTO.id LEFT JOIN DOCUMENTO d ON d.rId = REGISTO.id JOIN UTILIZADOR ON " +
                 "author = UTILIZADOR.id JOIN MEMBRO ON uId = author WHERE REGISTO.oId = :id GROUP BY REGISTO.id, " +
                 "author, UTILIZADOR.username, MEMBRO.role, editable, REGISTO.creation_date) AS log, " +

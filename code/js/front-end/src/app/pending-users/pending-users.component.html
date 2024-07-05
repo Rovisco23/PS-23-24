@@ -15,7 +15,7 @@
 <div>
   <mat-list *ngFor="let item of filteredPendingList">
     <mat-list-item>
-      <div matListItemTitle style="font-weight: bold" (click)="onItemClick(item.username, item.id)">{{ item.email }}</div>
+      <div matListItemTitle style="font-weight: bold" (click)="onItemClick(item.username)">{{ item.email }}</div>
       <div matListItemLine style="font-weight: bold">NIF: {{ item.nif }} | Association: {{ item.association.name }} - {{ item.association.number }}</div>
       <div matListItemMeta>
         <button mat-icon-button class="accept-button" (click)="onAccept(item.id)">

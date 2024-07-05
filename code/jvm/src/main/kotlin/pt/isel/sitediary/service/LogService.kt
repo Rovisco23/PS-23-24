@@ -7,6 +7,7 @@ import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.user.containsMemberById
 import pt.isel.sitediary.domainmodel.work.LogEntry
 import pt.isel.sitediary.domainmodel.work.WorkState
+import pt.isel.sitediary.domainmodel.work.checkIfEditTimeElapsed
 import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.LogCredentialsModel
 import pt.isel.sitediary.model.LogInputModel
@@ -16,8 +17,6 @@ import pt.isel.sitediary.utils.Result
 import pt.isel.sitediary.utils.failure
 import pt.isel.sitediary.utils.success
 import java.sql.Timestamp
-import java.time.Duration
-import java.util.*
 
 typealias CreateLogResult = Result<Errors, Int>
 typealias GetLogResult = Result<Errors, LogEntry>
@@ -38,6 +37,8 @@ class LogService(
             failure(Errors.notTechnician)
         } else if (work.state == WorkState.FINISHED) {
             failure(Errors.workFinished)
+        } else if (log.description.length < 10){
+            failure(Errors.logDescriptionTooShort)
         } else {
             val logId = if (files != null) {
                 val docs = files.filter { f -> f.fileName.endsWith(".pdf") }
@@ -58,7 +59,7 @@ class LogService(
         } else if (user.role != "ADMIN" && !logRepository.checkUserAccess(log.workId, user.id)) {
             failure(Errors.notMember)
         } else {
-            if (log.editable && checkIfEditTimeElapsed(log.createdAt)) {
+            if (log.editable && checkIfEditTimeElapsed(log.createdAt, clock)) {
                 logRepository.finish(logId)
                 val aux = log.copy(editable = false)
                 success(aux)
@@ -74,7 +75,7 @@ class LogService(
         } else if (!logRepository.checkUserAccess(logEntry.workId, userId)) {
             failure(Errors.notMember)
         } else {
-            if (logEntry.editable && checkIfEditTimeElapsed(logEntry.createdAt)) logRepository.finish(log.logId)
+            if (logEntry.editable && checkIfEditTimeElapsed(logEntry.createdAt, clock)) logRepository.finish(log.logId)
             val images = log.files.filter { f -> f.contentType == "Imagem" }.map { img -> img.id }
             val documents = log.files.filter { f -> f.contentType == "Documento" }.map { doc -> doc.id }
             val files = logRepository.getFiles(images, documents)
@@ -90,7 +91,7 @@ class LogService(
                 failure(Errors.logNotFound)
             } else if (!logEntry.editable) {
                 failure(Errors.logNotEditable)
-            } else if (checkIfEditTimeElapsed(logEntry.createdAt)) {
+            } else if (checkIfEditTimeElapsed(logEntry.createdAt, clock)) {
                 logRepository.finish(logId)
                 failure(Errors.logNotEditable)
             } else if (!logRepository.checkUserAccess(logEntry.workId, userId)) {
@@ -107,11 +108,6 @@ class LogService(
             success(Unit)
         }
 
-    private fun checkIfEditTimeElapsed(createdAt: Date): Boolean {
-        val elapsedTime = Duration.between(createdAt.toInstant(), clock.now().toJavaInstant()).toMillis()
-        return elapsedTime >= Duration.ofHours(3).toMillis()
-    }
-
     fun deleteFile(body: LogCredentialsModel, userId: Int) = transactionManager.run {
         val logRepository = it.logRepository
         val logEntry = logRepository.getById(body.logId)
@@ -121,7 +117,7 @@ class LogService(
             failure(Errors.notMember)
         } else if (!logEntry.editable) {
             failure(Errors.logNotEditable)
-        } else if (checkIfEditTimeElapsed(logEntry.createdAt)) {
+        } else if (checkIfEditTimeElapsed(logEntry.createdAt, clock)) {
             logRepository.finish(body.logId)
             failure(Errors.logNotEditable)
         } else {

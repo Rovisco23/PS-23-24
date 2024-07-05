@@ -170,6 +170,13 @@ export interface Invite {
   role: string;
 }
 
+export interface InviteCreation {
+  position: number;
+  email: string;
+  role: string;
+  submitted: boolean;
+}
+
 export interface AnswerInvite {
   id: string;
   workId: string | null;

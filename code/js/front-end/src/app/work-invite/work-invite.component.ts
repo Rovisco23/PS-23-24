@@ -1,7 +1,7 @@
-import {Component, inject, ViewChild} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {MatButton, MatFabButton} from "@angular/material/button";
-import {Invite, MyErrorStateMatcher} from "../utils/classes";
+import {MatButton, MatFabButton, MatIconButton} from "@angular/material/button";
+import {Invite, InviteCreation, Role} from "../utils/classes";
 import {
   MatCell,
   MatCellDef,
@@ -9,19 +9,23 @@ import {
   MatHeaderCell,
   MatHeaderCellDef, MatHeaderRow,
   MatHeaderRowDef, MatRow, MatRowDef,
-  MatTable
+  MatTable, MatTableDataSource
 } from "@angular/material/table";
 import {MatIconModule} from "@angular/material/icon";
 import {MatError, MatFormField, MatLabel} from "@angular/material/form-field";
-import {FormControl, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatInput} from "@angular/material/input";
 import {MatOption, MatSelect} from "@angular/material/select";
-import {NgIf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
 import {HttpService} from "../utils/http.service";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
 import {NavigationService} from "../utils/navService";
 import {WorkDetailsComponent} from "../work-details/work-details.component";
+import {MatCheckbox} from "@angular/material/checkbox";
+import {MatMenu, MatMenuItem} from "@angular/material/menu";
+import {ConfirmDialogComponent} from "../utils/dialogComponent";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-work-invite',
@@ -47,71 +51,103 @@ import {WorkDetailsComponent} from "../work-details/work-details.component";
     MatInput,
     MatSelect,
     MatOption,
-    NgIf
+    NgIf,
+    MatCheckbox,
+    MatIconButton,
+    MatMenu,
+    MatMenuItem,
+    FormsModule,
+    NgForOf
   ],
   templateUrl: './work-invite.component.html',
   styleUrl: './work-invite.component.css'
 })
 export class WorkInviteComponent {
 
-  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
-
-  roles = new FormControl('', [
+  /*roles = new FormControl('', [
     Validators.required,
     Validators.pattern(/^(ESPECTADOR|MEMBRO|ARQUITETURA|ESTABILIDADE|ELETRICIDADE|GÁS|CANALIZAÇÃO|TELECOMUNICAÇÕES|TERMICO|ACUSTICO|TRANSPORTES)$/)
-  ]);
+  ]);*/
 
-  @ViewChild(MatTable, {static: false}) table: MatTable<Invite> | undefined;
-
-  matcher = new MyErrorStateMatcher()
+  roles = ['ESPECTADOR', 'MEMBRO', 'ARQUITETURA', 'ESTABILIDADE', 'ELETRICIDADE', 'GÁS', 'CANALIZAÇÃO', 'TELECOMUNICAÇÕES', 'TERMICO', 'ACUSTICO', 'TRANSPORTES'];
 
   workId: string = '';
+  inviteCreation: InviteCreation[] = [];
   invites: Invite[] = [];
-  email: string | null = this.emailFormControl.value;
-  role: string | null = this.roles.value;
-  displayedColumns: string[] = ['email', 'role', 'delete'];
+  dataSource: MatTableDataSource<InviteCreation> = new MatTableDataSource<InviteCreation>(this.inviteCreation);
+  displayedColumns: string[] = ['email', 'role', 'actions'];
   httpService = inject(HttpService)
 
   constructor(
     private workComponent: WorkDetailsComponent,
     private route: ActivatedRoute,
     private navService: NavigationService,
-    private errorHandle: ErrorHandler
+    private errorHandle: ErrorHandler,
+    private dialog: MatDialog
   ) {
     const parentRoute = this.route.parent;
     if (parentRoute) {
       const parentId = parentRoute.snapshot.paramMap.get('id');
       this.workId = parentId ?? '';
     }
-    this.emailFormControl.valueChanges.subscribe(value => {
-      this.email = value;
-    });
-    this.roles.valueChanges.subscribe(value => {
-      this.role = value;
-    });
+    this.roles = this.roles.map(role => Role.composeRole(role));
+    this.workComponent.work?.members.forEach( member => this.roles = this.roles.filter(role => role !== member.role || role === 'Membro' || role === 'Espectador'))
   }
 
-  addInvite(email: string | null, role: string | null) {
-    if (!email || !role || this.invites.some(i => i.email === email)) {
-      return;
+  addRowInvite() {
+    const invite = {
+      position: this.inviteCreation.length + 1,
+      email: '',
+      role: '',
+      submitted: false
     }
-    const invite: Invite = {
-      position: this.invites.length + 1,
-      email: email,
-      role: role
-    };
-    this.invites.push(invite);
-    this.emailFormControl.reset();
-    this.roles.reset();
-    this.table?.renderRows();
+    this.inviteCreation.push(invite);
+    this.dataSource.data = this.inviteCreation;
   }
 
-  removeInvite(position: number) {
-    const index = this.invites.findIndex(invite => invite.position === position);
-    if (index !== -1) {
-      this.invites.splice(index, 1);
-      this.invites.forEach((invite, i) => invite.position = i + 1);
-      this.table?.renderRows();
+  removeInvite(id: number) {
+    this.roles.push(Role.composeRole(this.inviteCreation.find(invite => invite.position === id)!.role))
+    this.inviteCreation = this.inviteCreation.filter(invite => invite.position !== id);
+    this.invites = this.invites.filter(invite => invite.position !== id);
+    this.dataSource.data = this.inviteCreation;
+  }
+
+  submitInvite(id: number){
+    const inviteCreation = this.inviteCreation.find(invite => invite.position === id);
+    if (inviteCreation){
+      if (this.checkInvite(inviteCreation)){
+        const invite = {
+          position: inviteCreation.position,
+          email: inviteCreation.email,
+          role: Role.decomposeRole(inviteCreation.role)
+        }
+        this.invites.push(invite);
+        this.inviteCreation.find(invite => invite.position === id)!.submitted = true;
+        this.roles = this.roles.filter(role => role !== inviteCreation.role || role === 'Membro' || role === 'Espectador')
+      }
+    }
+  }
+
+  checkInvite(invite: InviteCreation): boolean {
+    let errorMessage = '';
+    if (invite.role === '' || invite.email === '') {
+      errorMessage = 'É necessário preencher os campos de papel e email para adicionar um convite.'
+    } else  if (invite.role !== 'Membro' && invite.role !== 'Espectador' && this.roles.find(role => role === invite.role) === undefined){
+      errorMessage = 'Já existe um membro da obra ou convite com esse papel.'
+    } else if (this.invites.find(i => i.email === invite.email) !== undefined){
+      errorMessage = 'Já existe um convite para esse email.'
+    }
+    if (errorMessage.length === 0) {
+      return true
+    } else {
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        data: {
+          title: 'Erro',
+          message: errorMessage,
+        },
+      });
+      dialogRef.afterClosed().subscribe(() => {});
+      return false
     }
   }
 
@@ -122,6 +158,7 @@ export class WorkInviteComponent {
         return throwError(error);
       })
     ).subscribe(() => {
+      this.workComponent.loadWork(this.workId);
       this.workComponent.showLayout = true;
       this.navService.navWorkDetails(this.workId);
     });

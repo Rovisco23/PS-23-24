@@ -94,6 +94,7 @@ export class CreateLogEntryComponent {
 
     this.httpService.createLogEntry(this.form).pipe(
       catchError(error => {
+        this.form.delete('log');
         this.errorHandle.handleError(error);
         return throwError(error);
       })
@@ -168,5 +169,9 @@ export class CreateLogEntryComponent {
     this.dataSource.data = Array.from(this.files.values()).map(file => ({
       fileName: file.name
     } as SimpleFile));
+  }
+
+  changeDescription(event: any) {
+    this.description = event
   }
 }
