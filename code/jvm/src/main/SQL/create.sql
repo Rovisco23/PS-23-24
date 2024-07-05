@@ -86,7 +86,6 @@ create table REGISTO
 (
     id                     serial,
     oId                    varchar(255),
-    titulo                 varchar(255)  not null,
     texto                  varchar(2500) not null,
     editable               boolean       not null,
     creation_date          timestamp     not null,

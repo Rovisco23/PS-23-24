@@ -6,6 +6,8 @@
 }
 
 .top-bar {
+  padding-bottom: 5px;
+  padding-top: 5px;
   display: flex;
   justify-content: space-between; /* Align items on the toolbar */
   background-color: #11113D;

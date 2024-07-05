@@ -1,6 +1,7 @@
 package pt.isel.sitediary.repository
 
 import pt.isel.sitediary.domainmodel.work.LogEntry
+import pt.isel.sitediary.domainmodel.work.OwnLogSimplified
 import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.LogInputModel
 import java.sql.Timestamp
@@ -26,4 +27,5 @@ interface LogRepository {
         docs: List<FileModel>?
     )
     fun deleteFiles(images: List<Int>, documents: List<Int>)
+    fun getMyLogs(userId: Int): List<OwnLogSimplified>
 }

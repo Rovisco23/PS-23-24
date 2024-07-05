@@ -18,7 +18,6 @@ class LogEntryMapper : RowMapper<LogEntry> {
         LogEntry(
             id = rs.getInt("id"),
             workId = UUID.fromString(rs.getString("oId")),
-            title = rs.getString("titulo"),
             content = rs.getString("texto"),
             editable = rs.getBoolean("editable"),
             createdAt = Date.from(rs.getTimestamp("creation_date").toInstant()),

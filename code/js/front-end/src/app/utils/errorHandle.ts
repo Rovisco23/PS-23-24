@@ -19,9 +19,7 @@ export class ErrorHandler {
       localStorage.removeItem('username');
         this.handleErrorInternal(error, () => this.navService.navLogin())
 
-    } else if (error.status === 403) {
-      this.handleErrorInternal(error, () => this.navService.navWork())
-    } else if (error.status === 404 || error.status === 400) {
+    } else if (error.status === 404 || error.status === 400 || error.status === 403) {
       const nothing = () => {
       }
       this.handleErrorInternal(error, nothing)
@@ -36,20 +34,20 @@ export class ErrorHandler {
   private handleErrorInternal(error: any, onClose: () => any) {
     if (error.error instanceof Blob) {
       error.error.text().then((errorMessage: string) => {
-        this.showErrorMessage(errorMessage, error.status, onClose)
+        this.showErrorMessage(errorMessage, onClose)
       });
     } else {
-      this.showErrorMessage(error.error, error.status, onClose)
+      this.showErrorMessage(error.error, onClose)
     }
   }
 
-  private showErrorMessage(message: string, status: number, onClose: () => void) {
+  private showErrorMessage(message: string, onClose: () => void) {
     console.log('Showing error message:', message, status);  // Add this line
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '20%',
       height: 'auto',
       data: {
-        title: 'Erro ' + status,
+        title: 'Erro',
         message: message,
       },
     });

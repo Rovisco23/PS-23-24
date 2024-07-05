@@ -37,7 +37,11 @@ class WorkService(
             failure(Errors.invalidTechnicians)
         } else {
             val location =
-                addressRep.getLocation(openingTerm.address.location.parish, openingTerm.address.location.county, openingTerm.address.location.district)
+                addressRep.getLocation(
+                    openingTerm.address.location.parish,
+                    openingTerm.address.location.county,
+                    openingTerm.address.location.district
+                )
             if (location == null) {
                 failure(Errors.invalidLocation)
             } else {
@@ -248,4 +252,21 @@ class WorkService(
     fun getNumberOfInvites(id: Int) = transactionManager.run {
         success(it.workRepository.getNumberOfInvites(id))
     }
+
+    fun getMemberProfile(workId: String, member: String, user: User) =
+        transactionManager.run {
+            val rep = it.workRepository
+            val work = rep.getById(UUID.fromString(workId))
+            if (work == null) {
+                failure(Errors.workNotFound)
+            } else {
+                val profile = rep.getMemberProfile(workId, member)
+                if (profile == null) {
+                    failure(Errors.memberNotFound)
+                } else {
+                    success(profile)
+                }
+            }
+        }
+
 }

@@ -43,7 +43,7 @@ export class NavigationService {
   }
 
   navWorkMemberProfile(workId: string, username: string) {
-    this.router.navigate([`/work-details/${workId}/profile/${username}`]);
+    this.router.navigate([`/work-details/${workId}/member/${username}`]);
   }
 
   navVerifications() {
@@ -76,5 +76,9 @@ export class NavigationService {
 
   navInviteList() {
     this.router.navigate(['/invites']);
+  }
+
+  navMyLogs() {
+    this.router.navigate(['/my-logs']);
   }
 }

@@ -1,10 +1,10 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, inject, LOCALE_ID, ViewChild} from '@angular/core';
 import {NavigationEnd, Router, RouterLink, RouterLinkActive, RouterModule} from '@angular/router';
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatDrawer, MatSidenavModule} from "@angular/material/sidenav";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButton, MatIconButton} from "@angular/material/button";
-import {NgClass, NgIf, NgOptimizedImage} from "@angular/common";
+import {NgClass, NgIf, NgOptimizedImage, registerLocaleData} from "@angular/common";
 import {filter} from 'rxjs/operators';
 import {HttpService} from "./utils/http.service";
 import {HttpClientModule} from "@angular/common/http";
@@ -14,6 +14,11 @@ import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "./utils/errorHandle";
 import {OriginalUrlService} from "./utils/originalUrl.service";
 import {NavigationService} from "./utils/navService";
+import localePt from '@angular/common/locales/pt';
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {LoadingQueue} from "./utils/loadingQueue";
+
+registerLocaleData(localePt);
 
 @Component({
   selector: 'app-root',
@@ -32,11 +37,12 @@ import {NavigationService} from "./utils/navService";
     NgIf,
     NgOptimizedImage,
     MatBadge,
-    NgClass
+    NgClass,
+    MatProgressSpinner
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
-  providers: [HttpService],
+  providers: [HttpService,  { provide: LOCALE_ID, useValue: 'pt-PT' }],
 })
 export class AppComponent {
   title = 'livro-de-obra-eletronico';
@@ -44,6 +50,7 @@ export class AppComponent {
   src = ''
   notification = 0;
   @ViewChild('drawer') drawer: MatDrawer | undefined;
+  loadingQueue = inject(LoadingQueue);
 
   logout(): void {
     const token = localStorage.getItem('token');
@@ -128,6 +135,10 @@ export class AppComponent {
     this.navService.navPendingUsers()
   }
 
+  onMyLogsCall() {
+    this.navService.navMyLogs()
+  }
+
   onVerificationsCall() {
     this.navService.navVerifications()
   }
@@ -135,4 +146,9 @@ export class AppComponent {
   getUserName() {
     return localStorage.getItem('username') ?? '';
   }
+
+  checkRole() {
+    return localStorage.getItem('role') === 'ADMIN' || localStorage.getItem('role') === 'CÂMARA'
+  }
+
 }

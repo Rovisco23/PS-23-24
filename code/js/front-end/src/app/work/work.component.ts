@@ -56,20 +56,8 @@ export class WorkComponent {
         this.filteredWorkList = this.workListingsList.slice(0, 6);
       });
       if (localStorage.getItem('role') === 'CÂMARA') {
-        /*this.httpService.getNumberOfVerifications(localStorage.getItem('userId') ?? '').pipe(
-          catchError(error => {
-            this.errorHandle.handleError(error);
-            return throwError(error);
-          })
-        ).subscribe(res => {
-          this.numberOfVerifications = res;
-        });*/
       }
     }
-  }
-
-  ngAfterViewInit() {
-    this.paginator.page.subscribe((event: PageEvent) => this.onPageChange(event));
   }
 
   onPageChange(event: PageEvent) {

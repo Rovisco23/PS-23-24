@@ -63,10 +63,9 @@ class WorkMapper : RowMapper<Work> {
                                 name = aux[2],
                                 role = aux[3]
                             ),
-                            title = aux[4],
-                            editable = aux[5] == "t",
-                            attachments = aux[6] == "t",
-                            createdAt = Date.valueOf(aux[7]),
+                            editable = aux[4] == "t",
+                            attachments = aux[5] == "t",
+                            createdAt = Date.valueOf(aux[6]),
                         )
                     }
             },

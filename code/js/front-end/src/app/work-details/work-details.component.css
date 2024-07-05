@@ -11,11 +11,6 @@
   overflow-y: auto; /* Enable vertical scrolling */
 }
 
-.sidebar-inner {
-  height: inherit;
-  overflow-y: auto; /* Enable vertical scrolling */
-}
-
 .sidebar-header {
   display: flex;
   align-items: center;
@@ -55,6 +50,7 @@
   padding: 5px;
   border-radius: 5px;
   user-select: none;
+  cursor: pointer;
 }
 
 .sidebar-menu-link-selected {
@@ -77,16 +73,6 @@
 .sidebar-menu-text {
   font-size: 0.9em;
   color: #333;
-}
-
-.sidebar-menu-badge {
-  display: inline-block;
-  padding: 0 5px;
-  background-color: #FF7A00;
-  color: #fff;
-  font-size: 0.7em;
-  border-radius: 10px;
-  margin-left: 5px;
 }
 
 .small-button {
@@ -140,10 +126,6 @@
   display: flex;
   justify-content: center; /* Center horizontally */
   margin-bottom: 10px;
-}
-
-.element-value {
-  margin-right: 20px; /* Add space between icons */
 }
 
 .top-bar {
@@ -301,18 +283,6 @@ strong {
   margin-top: 2px;
 }
 
-.edit-button {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  font-weight: bold;
-  color: #FF7A00 !important;
-  border: 2px solid #FF7A00;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 2px;
-}
-
 .finish-button:hover {
   background-color: #FF7A00 !important;
   color: white !important;
@@ -334,6 +304,13 @@ mat-list-item {
 mat-list-item:hover {
   background-color: lightgray;
   cursor: pointer;
+}
+
+mat-list-item .item-icon {
+  height: auto;
+  width: auto;
+  font-size: 40px;
+  color: #11113D;
 }
 
 matListItemTitle {

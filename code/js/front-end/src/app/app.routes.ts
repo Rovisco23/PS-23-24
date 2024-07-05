@@ -15,6 +15,8 @@ import {AdminGuard} from "./utils/admin.guard";
 import {ListUsersComponent} from "./list-users/list-users.component";
 import {WorkVerificationsComponent} from "./work-verifications/work-verifications.component";
 import {CouncilGuard} from "./utils/council.guard";
+import {MyLogsComponent} from "./my-logs/my-logs.component";
+import {MemberProfileComponent} from "./member-profile/member-profile.component";
 export const routes: Routes = [
   {
     path: 'work',
@@ -35,8 +37,8 @@ export const routes: Routes = [
         component: CreateLogEntryComponent,
       },
       {
-        path: 'profile/:name',
-        component: ProfileComponent,
+        path: 'member/:username',
+        component: MemberProfileComponent,
       },
       {
         path: 'invite-members',
@@ -82,6 +84,10 @@ export const routes: Routes = [
     path: 'verifications',
     component: WorkVerificationsComponent,
     canActivate: [CouncilGuard]
+  },
+  {
+    path: 'my-logs',
+    component: MyLogsComponent
   },
   {
     path: '**',

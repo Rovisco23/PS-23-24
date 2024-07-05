@@ -103,7 +103,6 @@ class LogController(private val service: LogService) {
         return handleResponse(res) {
             val log = LogOutputModel(
                 workId = it.workId,
-                title = it.title,
                 content = it.content,
                 editable = it.editable,
                 createdAt = it.createdAt,
@@ -112,6 +111,34 @@ class LogController(private val service: LogService) {
                 files = it.files
             )
             ResponseEntity.ok(log)
+        }
+    }
+
+    @GetMapping(Paths.Log.GET_MY_LOGS)
+    @Operation(summary = "Get user's logs", description = "Used to get a list with a user's logs")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "Log received successfully",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = LogEntry::class)
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "401", description = "Not a Member of the Work",
+                content = [
+                    Content(mediaType = "application/json", schema = Schema(implementation = Errors::class))
+                ]
+            )
+        ]
+    )
+    fun getMyLogs(@Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
+        val res = service.getMyLogs(user.user)
+        return handleResponse(res) {
+            ResponseEntity.ok(it)
         }
     }
 

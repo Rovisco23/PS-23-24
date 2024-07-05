@@ -22,11 +22,7 @@ import org.springframework.web.multipart.MultipartFile
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
 import pt.isel.sitediary.domainmodel.work.OpeningTerm
 import pt.isel.sitediary.domainmodel.work.Work
-import pt.isel.sitediary.model.FileModel
-import pt.isel.sitediary.model.InviteInputModel
-import pt.isel.sitediary.model.ListOfWorksOutputModel
-import pt.isel.sitediary.model.MemberInputModel
-import pt.isel.sitediary.model.OpeningTermInputModel
+import pt.isel.sitediary.model.*
 import pt.isel.sitediary.service.WorkService
 import pt.isel.sitediary.utils.Errors
 import pt.isel.sitediary.utils.Paths
@@ -93,7 +89,10 @@ class WorkController(private val service: WorkService) {
     }
 
     @GetMapping(Paths.Work.GET_WORKS_PENDING)
-    @Operation(summary = "Get all works waiting for verification", description = "Used to request all works waiting for verification")
+    @Operation(
+        summary = "Get all works waiting for verification",
+        description = "Used to request all works waiting for verification"
+    )
     @ApiResponses(
         value = [
             ApiResponse(
@@ -152,12 +151,17 @@ class WorkController(private val service: WorkService) {
             )
         ]
     )
-    fun answerPendingWork(@PathVariable id: UUID, @RequestBody answer: Boolean, @Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
+    fun answerPendingWork(
+        @PathVariable id: UUID,
+        @RequestBody answer: Boolean,
+        @Parameter(hidden = true) user: AuthenticatedUser
+    ): ResponseEntity<*> {
         val res = service.answerPendingWork(id, user.user, answer)
         return handleResponse(res) {
             ResponseEntity.ok(it)
         }
     }
+
     @PostMapping(Paths.Invite.GET_INVITE)
     @Operation(summary = "Invite Members", description = "Used to to invite users to a work")
     @ApiResponses(
@@ -187,6 +191,18 @@ class WorkController(private val service: WorkService) {
     @GetMapping(Paths.Invite.GET_INVITE_NUMBER)
     fun getNumberOfInvites(@Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
         val res = service.getNumberOfInvites(user.user.id)
+        return handleResponse(res) {
+            ResponseEntity.status(200).body(it)
+        }
+    }
+
+    @GetMapping(Paths.Work.GET_MEMBER_PROFILE)
+    fun getMemberProfile(
+        @PathVariable id: String,
+        @PathVariable username: String,
+        @Parameter(hidden = true) user: AuthenticatedUser
+    ): ResponseEntity<*> {
+        val res = service.getMemberProfile(id, username, user.user)
         return handleResponse(res) {
             ResponseEntity.status(200).body(it)
         }

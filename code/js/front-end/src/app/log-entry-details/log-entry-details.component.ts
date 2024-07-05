@@ -2,10 +2,10 @@ import {Component, ElementRef, inject, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {HttpService} from "../utils/http.service";
 import {LogEntry, SimpleFile} from "../utils/classes";
-import {NgForOf, NgIf} from "@angular/common";
+import {DatePipe, NgForOf, NgIf} from "@angular/common";
 import {MatIcon} from "@angular/material/icon";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {MatButton, MatFabButton} from "@angular/material/button";
+import {MatButton, MatFabButton, MatIconButton} from "@angular/material/button";
 import {
   MatCell,
   MatCellDef,
@@ -31,6 +31,7 @@ import {MatDivider} from "@angular/material/divider";
 import {ConfirmDialogComponent} from "../utils/dialogComponent";
 import {MatDialog} from "@angular/material/dialog";
 import {WorkDetailsComponent} from "../work-details/work-details.component";
+import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 
 @Component({
   selector: 'app-log-entry-details',
@@ -59,8 +60,13 @@ import {WorkDetailsComponent} from "../work-details/work-details.component";
     MatSelectionList,
     MatListOption,
     NgForOf,
-    MatDivider
+    MatDivider,
+    MatIconButton,
+    MatMenuTrigger,
+    MatMenu,
+    MatMenuItem
   ],
+  providers: [DatePipe],
   templateUrl: './log-entry-details.component.html',
   styleUrls: ['./log-entry-details.component.css']
 })
@@ -71,17 +77,21 @@ export class LogEntryDetailsComponent {
   files: Map<string, File> = new Map<string, File>();
   log: LogEntry | undefined;
   logId: string = '';
-  editTitle: boolean = false;
   editDescription: boolean = false;
 
   displayedColumns: string[] = ['select', 'name', 'uploadDate'];
   dataSource = new MatTableDataSource<SimpleFile>();
   selection = new SelectionModel<SimpleFile>(true, []);
   newContent: string = '';
-  newTitle: string = '';
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement> | undefined;
 
-  constructor(private workComponent: WorkDetailsComponent, private dialog: MatDialog, private errorHandle: ErrorHandler, private navService: NavigationService) {
+  constructor(
+    private workComponent: WorkDetailsComponent,
+    private dialog: MatDialog,
+    private errorHandle: ErrorHandler,
+    private navService: NavigationService,
+    private datePipe: DatePipe
+  ) {
     this.workComponent.tabIndex = 0
     this.logId = String(this.route.snapshot.params['id']);
     this.loadLog();
@@ -96,17 +106,14 @@ export class LogEntryDetailsComponent {
     ).subscribe((log: LogEntry) => {
       this.log = log;
       this.newContent = log.content;
-      this.newTitle = log.title;
-      const createDate = new Date(log.createdAt);
-      this.log.createdAt = `${createDate.getDate()}/${createDate.getMonth() + 1}/${createDate.getFullYear()} ${createDate.getHours()}:${createDate.getMinutes()}`;
-      const modificationDate = new Date(log.modifiedAt);
-      this.log.modifiedAt = `${modificationDate.getDate()}/${modificationDate.getMonth() + 1}/${modificationDate.getFullYear()} ${modificationDate.getHours()}:${modificationDate.getMinutes()}`;
-      log.files.forEach(file => {
-        const modificationDate = new Date(file.uploadDate);
-        file.uploadDate = `${modificationDate.getDate()}/${modificationDate.getMonth() + 1}/${modificationDate.getFullYear()} ${modificationDate.getHours()}:${modificationDate.getMinutes()}`;
-      });
+      this.log.createdAt = this.datePipe.transform(log.createdAt, 'd MMMM y, hh:mm') ?? log.createdAt;
+      this.log.modifiedAt = this.datePipe.transform(log.modifiedAt, 'd MMMM y, hh:mm') ?? log.modifiedAt
       this.dataSource.data = log.files;
     })
+  }
+
+  representFileDate(date: string) {
+    return this.datePipe.transform(date, 'd MMMM y, hh:mm') ?? date
   }
 
   isEditable() {
@@ -145,6 +152,7 @@ export class LogEntryDetailsComponent {
   }
 
   onBackCall() {
+    this.workComponent.loadWork(this.log?.workId || '');
     this.workComponent.showLayout = true;
     this.navService.navWorkDetails(this.log?.workId || '');
   }
@@ -170,13 +178,6 @@ export class LogEntryDetailsComponent {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
   }
 
-  toggleEditTitle(cancel: boolean = false) {
-    if (cancel) {
-      this.newTitle = this.log?.title || '';
-    }
-    this.editTitle = !this.editTitle;
-  }
-
   toggleEditDescription(cancel: boolean = false) {
     if (cancel) {
       this.newContent = this.log?.content || '';
@@ -187,7 +188,6 @@ export class LogEntryDetailsComponent {
   onEditLogCall(field: string) {
     if (this.log) {
       this.form.append("log", new Blob([JSON.stringify({
-        title: this.newTitle,
         description: this.newContent,
         workId: this.log.workId
       })], {type: 'application/json'}))
@@ -204,22 +204,16 @@ export class LogEntryDetailsComponent {
       ).subscribe(() => {
         this.loadLog()
         this.form = new FormData();
-        if (field === 'Title') {
-          this.log!.title = this.newTitle;
-          this.toggleEditTitle();
-        } else if (field === 'Content') {
+        if (field === 'Content') {
           this.log!.content = this.newContent;
           this.toggleEditDescription();
         }
       });
     }
-    console.log('Title: ' + this.newTitle + '\n' + 'Content: ' + this.newContent);
   }
 
   onChangeValues(event: any, field: string) {
-    if (field == 'Title') {
-      this.newTitle = event;
-    } else if (field == 'Content') {
+    if (field == 'Content') {
       this.newContent = event;
     }
   }
@@ -246,5 +240,35 @@ export class LogEntryDetailsComponent {
   openFileInput() {
     // Trigger click on file input element to open file selection dialog
     this.fileInput!.nativeElement.click();
+  }
+
+  onDeleteFile(id : number) {
+    const fileRemoved = this.log?.files.filter(file => file.id == id)!;
+    if (fileRemoved){
+      this.httpService.deleteFiles(this.logId, this.log!!.workId, fileRemoved).pipe(
+        catchError(error => {
+          this.errorHandle.handleError(error);
+          return throwError(error);
+        })
+      ).subscribe(() => {
+        this.dataSource.data = this.dataSource.data.filter(file => fileRemoved[0].id != file.id);
+        this.files.delete(fileRemoved[0].fileName)
+      });
+    }
+  }
+
+  onDownloadFile(id: number) {
+    const fileDownloaded = this.log?.files.filter(file => file.id == id)!;
+    this.httpService.downloadFiles(this.logId, this.log!!.workId, fileDownloaded).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe((res) => {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(res);
+      link.download = 'file.zip';
+      link.click();
+    });
   }
 }

@@ -59,7 +59,6 @@ export interface Work {
 export interface LogEntrySimplified {
   id: number,
   author: Author,
-  title: string,
   editable: boolean,
   createdAt: string,
   attachments: boolean
@@ -67,13 +66,22 @@ export interface LogEntrySimplified {
 
 export interface LogEntry {
   workId: string,
-  title: string,
   content: string,
   editable: boolean,
   createdAt: string,
   modifiedAt: string,
   author: Author,
   files: SimpleFile[]
+}
+
+export interface MyLog {
+  id: number,
+  workId: string,
+  workName: string,
+  author: number,
+  editable: boolean,
+  attachments: boolean,
+  createdAt: string
 }
 
 export interface SimpleFile {
@@ -89,6 +97,15 @@ export interface InviteSimplified {
   workTitle: string,
   admin: string,
   role: string
+}
+
+export interface MemberProfile {
+  id: string,
+  name: string,
+  role: string,
+  email: string,
+  phone: string | null,
+  location: Location
 }
 
 interface Author {
@@ -183,6 +200,7 @@ export interface Verification {
 export class Role {
 
   private static composedRoles: { [key: string]: string } = {
+    'DONO': 'Dono da Obra',
     'MEMBRO': 'Membro',
     'ESPECTADOR': 'Espectador',
     'FISCALIZAÇÃO': 'Responsável de Fiscalização',
@@ -219,6 +237,7 @@ export class Role {
     return Role.invertedRoles[roleDescription] || roleDescription;
   }
 }
+
 export class WorkState {
 
   public static composeState(state: string){

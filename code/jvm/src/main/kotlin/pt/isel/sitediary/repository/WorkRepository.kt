@@ -32,4 +32,5 @@ interface WorkRepository {
     fun getWorksPending(location: Location): List<WorkVerifying>
     fun acceptPending(workId: UUID, user: String, dateAuth: Timestamp)
     fun declinePending(workId: UUID, user: String, dateAuth: Timestamp)
+    fun getMemberProfile(workId: String, member: String): MemberProfile?
 }

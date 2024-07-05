@@ -64,23 +64,11 @@ export class ProfileComponent {
     private route: ActivatedRoute,
     private urlService: OriginalUrlService,
     private errorHandle: ErrorHandler,
-    private navService: NavigationService) {
+    private navService: NavigationService
+  ) {
     this.profileSrc = './assets/profile.png';
     const username = String(this.route.snapshot.params['name']);
     this.loadUser(username);
-    this.httpService.getProfilePictureByUsername(username).pipe(
-      catchError(error => {
-        this.errorHandle.handleError(error);
-        return throwError(error);
-      })
-    ).subscribe((data) => {
-      if (data.size === 0) {
-        this.profileSrc = './assets/profile.png'
-      } else {
-        localStorage.setItem('profilePicture', URL.createObjectURL(data))
-        this.profileSrc = URL.createObjectURL(data)
-      }
-    })
     concelhos.forEach((value, key) => {
       value.forEach((v: string) => this.counties.push(v));
       this.districts.push(key);
@@ -89,7 +77,6 @@ export class ProfileComponent {
       value.forEach((x: string) => this.parishes.push(x));
     })
   }
-
   loadUser(username: string) {
     this.httpService.getProfile(username).pipe(
       catchError(error => {
@@ -114,7 +101,20 @@ export class ProfileComponent {
       } else if (user.role === 'CÂMARA') {
         this.user.role = 'Câmara Municipal';
       }
-    });
+    })
+    this.httpService.getProfilePictureByUsername(username).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe((data) => {
+      if (data.size === 0) {
+        this.profileSrc = './assets/profile.png'
+      } else {
+        localStorage.setItem('profilePicture', URL.createObjectURL(data))
+        this.profileSrc = URL.createObjectURL(data)
+      }
+    })
   }
 
   updateLocation(change: boolean) {

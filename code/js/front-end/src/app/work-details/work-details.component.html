@@ -35,7 +35,6 @@
               </div>
               <div class="sidebar-menu-text">
                 Registos
-                <span class="sidebar-menu-badge">{{ work?.log?.length }}</span>
               </div>
             </a>
           </li>
@@ -48,7 +47,6 @@
               </div>
               <div class="sidebar-menu-text">
                 Equipa
-                <span class="sidebar-menu-badge">{{ work?.members?.length }}</span>
               </div>
             </a>
           </li>
@@ -69,7 +67,7 @@
     </div>
   </div>
   <div class="content" *ngIf="showLayout">
-    <div class="log-content" *ngIf="tabIndex == 0">
+    <div *ngIf="tabIndex == 0">
       <div [class]="checkActionPermissions('log') ? 'top-bar' : 'top-bar-permission'">
         <input type="text" class="search-input" placeholder="Procurar Registo" [(ngModel)]="searchLogValue"
                (ngModelChange)="filterResults(searchLogValue)">
@@ -82,14 +80,15 @@
       <div>
         <mat-list *ngFor="let entry of filteredLogList">
           <mat-list-item (click)="onLogEntryClick(entry.id)">
-            <mat-icon matListItemIcon>article</mat-icon>
-            <div matListItemTitle>{{ entry.title }}</div>
-            <div matListItemLine>Registado por {{ entry.author.name }} a {{ entry.createdAt | date }}</div>
-            <div matListItemMeta>
+            <mat-icon class="item-icon" matListItemIcon>description</mat-icon>
+            <div matListItemTitle>{{ entry.createdAt}}</div>
+            <div matListItemLine>Registado por {{ entry.author.name }}</div>
+            <div matListItemMeta style="color: black">
               <mat-icon *ngIf="entry.attachments" >attach_file</mat-icon>
               <mat-icon *ngIf="entry.editable" >edit</mat-icon>
             </div>
           </mat-list-item>
+          <mat-divider></mat-divider>
         </mat-list>
       </div>
     </div>
@@ -185,7 +184,7 @@
         <mat-list *ngFor="let entry of filteredMembers">
           <mat-list-item (click)="onMemberClick(entry.name)">
             <div matListItemTitle>{{ entry.name }}</div>
-            <div matListItemLine>Role:  {{ entry.role }}</div>
+            <div matListItemLine>{{ entry.role }}</div>
           </mat-list-item>
           <mat-divider></mat-divider>
         </mat-list>

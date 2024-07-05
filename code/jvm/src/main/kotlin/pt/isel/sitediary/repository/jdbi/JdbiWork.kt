@@ -48,11 +48,11 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
                 "FROM MEMBRO JOIN UTILIZADOR ON uId = id WHERE oId = :id AND MEMBRO.pendente = 'false') AS membros, " +
                 "ARRAY(SELECT CONCAT(nome, ';', role, ';', associacao, ';', numero) FROM INTERVENIENTE " +
                 "WHERE oId = :id) AS technicians, ARRAY(SELECT CONCAT(REGISTO.id, ';', author, ';', " +
-                "UTILIZADOR.username, ';', MEMBRO.role, ';', titulo, ';', editable, ';', COUNT(i.name) > 0 OR " +
+                "UTILIZADOR.username, ';', MEMBRO.role, ';', editable, ';', COUNT(i.name) > 0 OR " +
                 "COUNT(d.name) > 0, ';', TO_CHAR(REGISTO.creation_date, 'YYYY-MM-DD')) FROM REGISTO LEFT JOIN " +
                 "IMAGEM i ON i.rId = REGISTO.id LEFT JOIN DOCUMENTO d ON d.rId = REGISTO.id JOIN UTILIZADOR ON " +
                 "author = UTILIZADOR.id JOIN MEMBRO ON uId = author WHERE REGISTO.oId = :id GROUP BY REGISTO.id, " +
-                "author, UTILIZADOR.username, MEMBRO.role, titulo, editable, REGISTO.creation_date) AS log, " +
+                "author, UTILIZADOR.username, MEMBRO.role, editable, REGISTO.creation_date) AS log, " +
                 "TERMO_ABERTURA.titular_licenca, TERMO_ABERTURA.predio, EMPRESA_CONSTRUCAO.nome AS company_name, " +
                 "EMPRESA_CONSTRUCAO.numero AS company_num, (SELECT COUNT(*) FROM IMAGEM WHERE oId = OBRA.id) " +
                 "AS imagens, (SELECT COUNT(*) FROM DOCUMENTO WHERE oId = OBRA.id) AS documentos, " +
@@ -239,7 +239,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         "select o.id, o.nome, ta.titular_licenca as owner, o.tipo, o.descricao, o.estado, o.freguesia, o.concelho," +
                 " o.distrito, o.rua, o.cpostal, ta.assinatura IS NOT NULL AS " +
                 "verification from OBRA o join TERMO_ABERTURA ta on ta.oId = o.id join MEMBRO m on ta.oid = m.oid " +
-                "where (freguesia = :parish and concelho = :county and distrito = :district) or (m.role = 'DONO' and m.uid = :id)"
+                "where (freguesia = :parish and concelho = :county and distrito = :district) or (m.oId = o.id and m.uid = :id)"
     )
         .bind("id", user.id)
         .bind("parish", location.parish)
@@ -361,6 +361,15 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
             .bind("user", user)
             .execute()
     }
+
+    override fun getMemberProfile(workId: String, member: String): MemberProfile? = handle.createQuery(
+        "select u.id, u.nome, u.apelido, u.email, m.role, u.telefone, u.freguesia, u.concelho, u.distrito " +
+                "from MEMBRO m join UTILIZADOR u on m.uId = u.id where m.oId = :workId and u.username = :username"
+    )
+        .bind("workId", workId)
+        .bind("username", member)
+        .mapTo(MemberProfile::class.java)
+        .singleOrNull()
 
     private fun addCouncilAsMember(workId: UUID, location: Location) {
         val councilId = handle.createQuery(

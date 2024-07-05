@@ -2,6 +2,7 @@ package pt.isel.sitediary.repository.jdbi
 
 import org.jdbi.v3.core.Handle
 import pt.isel.sitediary.domainmodel.work.LogEntry
+import pt.isel.sitediary.domainmodel.work.OwnLogSimplified
 import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.LogInputModel
 import pt.isel.sitediary.repository.LogRepository
@@ -18,11 +19,10 @@ class JdbiLog(private val handle: Handle) : LogRepository {
         docs: List<FileModel>?
     ): Int {
         val rId = handle.createUpdate(
-            "insert into registo(oId, titulo, texto, editable, creation_date, last_modification_date, author)" +
-                    "values (:workId, :title, :description, :editable, :createdAt, :createdAt, :author)"
+            "insert into registo(oId, texto, editable, creation_date, last_modification_date, author)" +
+                    "values (:workId, :description, :editable, :createdAt, :createdAt, :author)"
         )
             .bind("workId", log.workId)
-            .bind("title", log.title)
             .bind("description", log.description)
             .bind("editable", true)
             .bind("createdAt", createdAt)
@@ -36,7 +36,7 @@ class JdbiLog(private val handle: Handle) : LogRepository {
     }
 
     override fun getById(id: Int): LogEntry? = handle.createQuery(
-        "select distinct REGISTO.id, titulo, REGISTO.oid, texto, editable, creation_date, last_modification_date, author, " +
+        "select distinct REGISTO.id, REGISTO.oid, texto, editable, creation_date, last_modification_date, author, " +
                 "username, MEMBRO.role, ARRAY(SELECT CONCAT(id, ';', name, ';', 'Imagem', ';', upload_date) from IMAGEM where " +
                 "rId = :id) as images, ARRAY(SELECT CONCAT(id, ';', name, ';', 'Documento', ';', upload_date) from DOCUMENTO where " +
                 "rId = :id) as documents from REGISTO join UTILIZADOR on UTILIZADOR.id = author join MEMBRO on " +
@@ -45,6 +45,17 @@ class JdbiLog(private val handle: Handle) : LogRepository {
         .bind("id", id)
         .mapTo(LogEntry::class.java)
         .singleOrNull()
+
+    override fun getMyLogs(userId: Int): List<OwnLogSimplified> =
+        handle.createQuery(
+            "SELECT r.id, r.oId, o.nome, r.author, r.editable, COUNT(i.name) > 0 OR COUNT(d.name) > 0 as attachments, " +
+                    "TO_CHAR(r.creation_date, 'YYYY-MM-DD') as createdAt from REGISTO r join OBRA o on r.oId = o.id " +
+                    "LEFT JOIN IMAGEM i ON i.rId = r.id LEFT JOIN DOCUMENTO d ON d.rId = r.id where r.author = :id " +
+                    "group by r.id, r.oId, o.nome, r.author, r.editable, r.creation_date"
+        )
+            .bind("id", userId)
+            .mapTo(OwnLogSimplified:: class.java)
+            .list()
 
     override fun checkUserAccess(workId: UUID, userId: Int): Boolean = handle.createQuery(
         "select count(*) from MEMBRO where oId = :oId and uId = :uId and pendente = :pendente"
@@ -97,10 +108,9 @@ class JdbiLog(private val handle: Handle) : LogRepository {
         docs: List<FileModel>?
     ) {
         handle.createUpdate(
-            "update REGISTO set titulo = :title, texto = :description, last_modification_date = :modDate " +
+            "update REGISTO set texto = :description, last_modification_date = :modDate " +
                     "where id = :id"
         )
-            .bind("title", logInfo.title)
             .bind("description", logInfo.description)
             .bind("modDate", Timestamp(System.currentTimeMillis()))
             .bind("id", logId)

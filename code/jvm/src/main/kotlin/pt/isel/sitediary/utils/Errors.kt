@@ -58,6 +58,8 @@ class Errors(val status: Int, val reason: String) {
 
         val inviteNotFound = Errors(404, "Convite não existe.")
 
+        val memberNotFound = Errors(404, "Não existe nenhum membro nesta obra com esse nome de utilizador.")
+
         val notInviteOwner = Errors(403, "Não é dono deste convite.")
     }
 }

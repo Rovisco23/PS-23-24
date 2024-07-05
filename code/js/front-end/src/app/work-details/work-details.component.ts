@@ -42,7 +42,7 @@ import {OriginalUrlService} from "../utils/originalUrl.service";
     MatIconButton,
     RouterOutlet
   ],
-  providers: [HttpService],
+  providers: [HttpService, DatePipe],
   templateUrl: './work-details.component.html',
   styleUrl: './work-details.component.css'
 })
@@ -50,10 +50,6 @@ export class WorkDetailsComponent {
   route: ActivatedRoute = inject(ActivatedRoute);
   httpService = inject(HttpService);
   work: Work | undefined;
-  admin: boolean | undefined;
-  fiscal: string | undefined;
-  diretor: string | undefined;
-  coordenador: string | undefined;
   filteredLogList: LogEntrySimplified[] = [];
   filteredMembers: Member[] = [];
   workSrc = ''
@@ -62,26 +58,37 @@ export class WorkDetailsComponent {
   tabIndex = 0;
   showLayout: boolean = true;
 
-  constructor(private router: Router, private urlService: OriginalUrlService, private navService: NavigationService, private dialog: MatDialog, private errorHandle: ErrorHandler) {
+  constructor(private datePipe: DatePipe, private router: Router, private urlService: OriginalUrlService, private navService: NavigationService, private dialog: MatDialog, private errorHandle: ErrorHandler) {
     const workListingId = String(this.route.snapshot.params['id']);
-    this.httpService.getWorkById(workListingId).pipe(
+    const uri = this.router.url.split('/')
+    if (uri[3] === 'invite-members') this.tabIndex = 2
+    this.loadWork(workListingId);
+    if (this.router.url !== '/work-details/' + workListingId) {
+      this.showLayout = false
+    }
+  }
+
+  loadWork(id: string) {
+    this.httpService.getWorkById(id).pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
         return throwError(error);
       })
     ).subscribe((work: Work) => {
+      work.members = this.composeMemberRoles(work.members);
+      work.technicians = this.composeTechnicianRoles(work.technicians)
       this.work = work;
       this.work.state = WorkState.composeState(work.state);
       this.work.type = WorkState.composeType(work.type);
       this.filteredLogList = work.log;
       this.filteredMembers = work.members;
-      work.technicians = this.composeTechnicianRoles(work.technicians)
-      this.fiscal = work.members.find(member => member.role === 'FISCALIZAÇÃO')?.name
-      this.diretor = work.members.find(member => member.role === 'DIRETOR')?.name
-      this.coordenador = work.members.find(member => member.role === 'COORDENADOR')?.name
-      this.admin = this.work.members.find(member => member.role === 'ADMIN')?.id === Number(localStorage.getItem('userId'));
+      this.filteredLogList.map(log => {
+          const date = new Date(log.createdAt)
+          log.createdAt = this.datePipe.transform(date, 'longDate') ?? log.createdAt
+        }
+      )
     });
-    this.httpService.getWorkImage(workListingId).pipe(
+    this.httpService.getWorkImage(id).pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
         return throwError(error);
@@ -93,9 +100,6 @@ export class WorkDetailsComponent {
         this.workSrc = URL.createObjectURL(data)
       }
     })
-    if (this.router.url !== '/work-details/' + workListingId) {
-      this.showLayout = false
-    }
   }
 
   changeTab(id: number) {
@@ -121,6 +125,13 @@ export class WorkDetailsComponent {
     });
   }
 
+  private composeMemberRoles(members: Member[]) {
+    return members.map(m => {
+      m.role = Role.composeRole(m.role);
+      return m;
+    });
+  }
+
   onLogEntryClick(id: number) {
     this.showLayout = false
     this.navService.navLogEntry(this.work?.id ?? '', id)
@@ -138,7 +149,8 @@ export class WorkDetailsComponent {
       return;
     }
     this.filteredLogList = this.work!!.log.filter(
-      entry => entry.title.toLowerCase().includes(text.toLowerCase())
+      entry => entry.createdAt.toLowerCase().includes(text.toLowerCase()) ||
+        entry.author.name.toLowerCase().includes(text.toLowerCase())
     );
   }
 
@@ -179,18 +191,20 @@ export class WorkDetailsComponent {
   }
 
   checkWorkCanFinish() {
-    const isOwner = this.work?.members.find(member => member.role === 'DONO')?.id === Number(localStorage.getItem('userId'))
+    const isOwner = this.work?.members.find(member => member.role === 'Dono da Obra')?.id === Number(localStorage.getItem('userId'))
     return this.work?.state !== 'Terminada' && isOwner
   }
 
   checkActionPermissions(action: string) {
     const role = this.work?.members.find(member => member.id === Number(localStorage.getItem('userId')))?.role
-    if (!role){
+    if (!role) {
       return false
-    } else if (action === 'log'){
-      return role !== 'MEMBRO' && role !== 'ESPECTADOR'
+    } else if (action === 'log') {
+      return role !== 'Membro' && role !== 'Espectador'
     } else {
-      return role === 'ADMIN'
+      return role === 'Dono da Obra'
     }
   }
+
+
 }

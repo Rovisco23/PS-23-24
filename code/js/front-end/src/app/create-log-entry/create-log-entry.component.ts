@@ -60,7 +60,6 @@ export class CreateLogEntryComponent {
 
   workId: string = ''; // Initialize to empty string
   form: FormData = new FormData();
-  title: string = '';
   description: string = '';
   files: Map<string, File> = new Map<string, File>();
   displayedColumns: string[] = ['select', 'name'];
@@ -81,14 +80,10 @@ export class CreateLogEntryComponent {
       const parentId = parentRoute.snapshot.paramMap.get('id');
       this.workId = parentId || '';
     }
-    if (!this.workComponent.checkActionPermissions('log')) {
-      this.onBackCall()
-    }
   }
 
   onSubmit() {
     this.form.append('log', new Blob([JSON.stringify({
-      title: this.title,
       description: this.description,
       workId: this.workId
     })], { type: 'application/json' }));
@@ -117,7 +112,7 @@ export class CreateLogEntryComponent {
       } else {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
           data: {
-            title: 'Erro 400',
+            title: 'Erro',
             message: 'Ficheiros não podem ter o mesmo nome no registo',
           },
         });
@@ -150,6 +145,7 @@ export class CreateLogEntryComponent {
   }
 
   onBackCall() {
+    this.workComponent.loadWork(this.workId)
     this.workComponent.showLayout = true;
     this.navService.navWorkDetails(this.workId);
   }

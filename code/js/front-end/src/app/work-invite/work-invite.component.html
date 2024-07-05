@@ -1,10 +1,13 @@
-<div class="header">
-  <button (click)="onBackCall()" class="small-button">
-    <mat-icon class="small-icon">arrow_back</mat-icon>
-  </button>
-  <h2 class="title">Introduza o Email e a Role das pessoas que pertende convidar</h2>
-</div>
 <div class="container">
+  <div class="header">
+    <button mat-button (click)="onBackCall()" class="small-button">
+      <mat-icon class="small-icon important-icon">arrow_back</mat-icon>
+      Voltar
+    </button>
+  </div>
+</div>
+<div class="content">
+  <h3>Convidar membros para a obra</h3>
   <div class="form-container">
     <mat-form-field>
       <mat-label>Email</mat-label>

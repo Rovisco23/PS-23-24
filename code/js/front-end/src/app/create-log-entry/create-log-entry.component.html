@@ -5,19 +5,16 @@
       Voltar
     </button>
   </div>
-  <div class="content" >
-    <h1 class="title">Título</h1>
-    <textarea id="title" name="title" [(ngModel)]="title" (ngModelChange)="title = $event"></textarea>
-    <mat-divider></mat-divider>
+  <div class="content">
     <div class="description">
-      <h2>Descrição</h2>
-      <textarea  id="description" name="description" [(ngModel)]="description" (ngModelChange)="description = $event"></textarea>
+      <h3>Observação</h3>
+      <textarea id="description" name="description" [(ngModel)]="description" (ngModelChange)="description = $event"></textarea>
     </div>
     <mat-divider></mat-divider>
     <div class="files">
-      <h2>Ficheiros</h2>
+      <h3>Anexos</h3>
       <input type="file" (change)="onFileUpload($event)" #fileInput style="display:none">
-      <button  type="button" class="add-button" (click)="openFileInput()">Adicionar Ficheiro</button>
+      <button type="button" class="add-button" (click)="openFileInput()">Adicionar Ficheiro</button>
       <button *ngIf="!selection.isEmpty()" (click)="deleteFiles()">Apagar Ficheiros</button>
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
         <ng-container matColumnDef="select">
@@ -50,6 +47,3 @@
     </div>
   </div>
 </div>
-
-
-

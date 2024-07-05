@@ -78,14 +78,10 @@ export class WorkInviteComponent {
     private navService: NavigationService,
     private errorHandle: ErrorHandler
   ) {
-    this.workComponent.tabIndex = 2;
     const parentRoute = this.route.parent;
     if (parentRoute) {
       const parentId = parentRoute.snapshot.paramMap.get('id');
       this.workId = parentId ?? '';
-    }
-    if (!this.workComponent.checkActionPermissions('log')) {
-      this.onBackCall()
     }
     this.emailFormControl.valueChanges.subscribe(value => {
       this.email = value;
@@ -132,6 +128,7 @@ export class WorkInviteComponent {
   }
 
   onBackCall() {
+    this.workComponent.loadWork(this.workId);
     this.workComponent.showLayout = true;
     this.navService.navWorkDetails(this.workId);
   }

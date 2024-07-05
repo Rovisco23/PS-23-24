@@ -1,6 +1,6 @@
 <main class="main-container" *ngIf="showLayout">
   <mat-toolbar class="top-bar">
-    <button *ngIf="checkAdminRole()" (click)="toggleDrawer()" mat-icon-button class="side-bar-button">
+    <button (click)="toggleDrawer()" mat-icon-button class="side-bar-button">
       <mat-icon>menu</mat-icon>
     </button>
     <a [routerLink]="['/work']">
@@ -23,7 +23,7 @@
   </mat-toolbar>
   <section class="container">
     <mat-drawer-container class="full-height" hasBackdrop="false">
-      <mat-drawer *ngIf="checkAdminRole()" #drawer class="side-bar" mode="side">
+      <mat-drawer #drawer class="side-bar" mode="side">
         <button
           class="side-option-button"
           routerLinkActive="side-option-active"
@@ -33,20 +33,26 @@
         <button
           class="side-option-button"
           routerLinkActive="side-option-active"
+          routerLink="/my-logs"
+          (click)="onMyLogsCall()">Os Meus Registos
+        </button>
+        <button *ngIf="checkAdminRole()"
+          class="side-option-button"
+          routerLinkActive="side-option-active"
           routerLink="/users"
           (click)="onUsersCall()">Listar Utilizadores
         </button>
-        <button
+        <button *ngIf="checkAdminRole()"
           class="side-option-button"
           routerLinkActive="side-option-active"
           routerLink="/pending-users"
           (click)="onPendingUsersCall()">Utilizadores Pendentes
         </button>
-        <button
+        <button *ngIf="checkRole()"
           class="side-option-button"
           routerLinkActive="side-option-active"
           routerLink="/verifications"
-          (click)="onVerificationsCall()">Obras Pendentes
+          (click)="onVerificationsCall()">Verificação de Obras
         </button>
       </mat-drawer>
       <mat-drawer #drawerProfile class="profile-drawer" mode="over" position="end">

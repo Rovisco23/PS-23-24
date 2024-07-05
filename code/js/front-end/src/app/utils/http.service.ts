@@ -232,4 +232,14 @@ export class HttpService {
     const headers = this.getTokenHeader();
     return this.http.post<any>(`http://localhost:8080/api/finish-work?work=${work}`, {}, {headers: headers})
   }
+
+  getMyLogs() {
+    const headers = this.getTokenHeader();
+    return this.http.get<any>('http://localhost:8080/api/my-logs', {headers: headers})
+  }
+
+  getMemberWorkProfile(workId: string, username: string) {
+    const headers = this.getTokenHeader();
+    return this.http.get<any>(`http://localhost:8080/api/member-profile/${workId}/${username}`, {headers: headers})
+  }
 }

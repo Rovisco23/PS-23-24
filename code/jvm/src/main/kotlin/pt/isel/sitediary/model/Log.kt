@@ -5,7 +5,6 @@ import java.util.*
 
 data class LogInputModel(
     val workId: UUID,
-    val title: String,
     val description: String
 )
 
@@ -18,7 +17,6 @@ data class LogCredentialsModel(
 data class LogOutputModel(
     val workId: UUID,
     val author: Author,
-    val title: String,
     val content: String,
     val editable: Boolean,
     val createdAt: Date,

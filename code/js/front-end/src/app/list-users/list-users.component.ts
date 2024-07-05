@@ -67,8 +67,8 @@ export class ListUsersComponent {
     this.navService.navWork()
   }
 
-  onUserClick(username: string, id: string) {
+  onUserClick(username: string) {
     this.urlService.setOriginalUrl(this.router.url)
-    this.navService.navProfile(username, {queryParams: {userId: id}})
+    this.navService.navProfile(username)
   }
 }

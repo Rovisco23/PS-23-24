@@ -59,7 +59,6 @@ data class LogEntry(
     val id: Int,
     val workId: UUID,
     val author: Author,
-    val title: String,
     val content: String,
     val editable: Boolean,
     val createdAt: Date,
@@ -70,7 +69,16 @@ data class LogEntry(
 data class LogEntrySimplified(
     val id: Int,
     val author: Author,
-    val title: String,
+    val editable: Boolean,
+    val createdAt: Date,
+    val attachments: Boolean
+)
+
+data class OwnLogSimplified(
+    val id: Int,
+    val workId: UUID,
+    val workName: String,
+    val author: Int,
     val editable: Boolean,
     val createdAt: Date,
     val attachments: Boolean
@@ -118,6 +126,15 @@ data class OpeningTerm(
     val technicians: List<Technician>,
     val constructionCompany: ConstructionCompany, //
     val building: String //
+)
+
+data class MemberProfile(
+    val id: Int,
+    val name: String,
+    val role: String,
+    val email: String,
+    val phone: String?,
+    val location: Location
 )
 
 enum class WorkType(val description: String) {

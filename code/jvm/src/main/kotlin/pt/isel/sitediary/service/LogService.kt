@@ -131,4 +131,9 @@ class LogService(
             success(Unit)
         }
     }
+
+    fun getMyLogs(user: User) = transactionManager.run {
+        val logs = it.logRepository.getMyLogs(user.id)
+        success(logs)
+    }
 }

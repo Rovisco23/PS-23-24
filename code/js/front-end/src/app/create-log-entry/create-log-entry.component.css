@@ -84,17 +84,15 @@ mat-icon {
 }
 
 .submit {
-  justify-content: center;
+  display: block; /* Adicione isso para assegurar que o margin auto funcione */
+  margin: 20px auto; /* Centraliza horizontalmente e adiciona margem vertical */
   padding: 10px;
   background-color: #11113D;
   border-radius: 5px;
   border: 2px solid #FF7A00;
   color: #FF7A00;
-  height: 2%;
   user-select: none;
-  margin-bottom: 10px;
-  margin-top: 5px;
-  margin-right: 10px;
+  text-align: center; /* Centraliza o texto dentro do botão */
 }
 
 .submit:hover {

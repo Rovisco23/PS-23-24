@@ -22,6 +22,10 @@
   margin-right: 5px;
 }
 
+.important-icon {
+  margin-right: 5px !important;
+}
+
 .content {
   width: 100%;
 }
@@ -81,4 +85,20 @@
 
 mat-icon {
   cursor: pointer;
+}
+
+.mat-cell {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.file-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.file-menu-button {
+  margin-left: auto;
 }

@@ -26,6 +26,7 @@ object Paths {
         const val GET_IMAGE = "$PREFIX/work-image/{id}"
         const val GET_WORKS_PENDING = "$PREFIX/work-pending"
         const val ANSWER_PENDING = "$PREFIX/work-pending/{id}"
+        const val GET_MEMBER_PROFILE = "$PREFIX/member-profile/{id}/{username}"
     }
 
     object Invite {
@@ -36,6 +37,7 @@ object Paths {
 
     object Log {
         const val GET_BY_ID = "$PREFIX/logs/{id}"
+        const val GET_MY_LOGS = "$PREFIX/my-logs"
         const val GET_ALL_LOGS = "$PREFIX/logs"
         const val GET_LOG_FILES = "$PREFIX/logs-files"
         const val EDIT_LOG = "$PREFIX/logs/{id}"
