@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {AnswerInvite, Classes, InputWork, SimpleFile, User} from "./classes";
+import {AnswerInvite, Classes, EditWorkInputModel, InputWork, SimpleFile, User} from "./classes";
 
 @Injectable({
   providedIn: 'root',
@@ -241,5 +241,10 @@ export class HttpService {
   getMemberWorkProfile(workId: string, username: string) {
     const headers = this.getTokenHeader();
     return this.http.get<any>(`http://localhost:8080/api/member-profile/${workId}/${username}`, {headers: headers})
+  }
+
+  editWork(workId: string, work: EditWorkInputModel) {
+    const headers = this.getTokenHeader();
+    return this.http.put<any>(`http://localhost:8080/api/work/edit/${workId}`, work, {headers: headers})
   }
 }
