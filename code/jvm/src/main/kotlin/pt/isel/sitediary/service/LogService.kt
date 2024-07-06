@@ -8,6 +8,7 @@ import pt.isel.sitediary.domainmodel.user.containsMemberById
 import pt.isel.sitediary.domainmodel.work.LogEntry
 import pt.isel.sitediary.domainmodel.work.WorkState
 import pt.isel.sitediary.domainmodel.work.checkIfEditTimeElapsed
+import pt.isel.sitediary.model.DeleteFileModel
 import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.LogCredentialsModel
 import pt.isel.sitediary.model.LogInputModel
@@ -108,7 +109,7 @@ class LogService(
             success(Unit)
         }
 
-    fun deleteFile(body: LogCredentialsModel, userId: Int) = transactionManager.run {
+    fun deleteFiles(body: LogCredentialsModel, userId: Int) = transactionManager.run {
         val logRepository = it.logRepository
         val logEntry = logRepository.getById(body.logId)
         if (logEntry == null) {
@@ -124,6 +125,24 @@ class LogService(
             val images = body.files.filter { f -> f.contentType == "Imagem" }.map { img -> img.id }
             val documents = body.files.filter { f -> f.contentType == "Documento" }.map { doc -> doc.id }
             logRepository.deleteFiles(images, documents)
+            success(Unit)
+        }
+    }
+
+    fun deleteFile(body: DeleteFileModel, userId: Int) = transactionManager.run {
+        val logRepository = it.logRepository
+        val logEntry = logRepository.getById(body.logId)
+        if (logEntry == null) {
+            failure(Errors.logNotFound)
+        } else if (!logRepository.checkUserAccess(logEntry.workId, userId)) {
+            failure(Errors.notMember)
+        } else if (!logEntry.editable) {
+            failure(Errors.logNotEditable)
+        } else if (checkIfEditTimeElapsed(logEntry.createdAt, clock)) {
+            logRepository.finish(body.logId)
+            failure(Errors.logNotEditable)
+        } else {
+            if (body.type == "Imagem") logRepository.deleteImage(body.fileId) else logRepository.deleteDocument(body.fileId)
             success(Unit)
         }
     }

@@ -49,8 +49,7 @@ fun DetailsScreen(
     ) {
         TopBarGoBack(onBackRequested)
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             Column {
                 Row(
@@ -107,8 +106,8 @@ fun PreviewDetailsScreen() {
                     navController,
                     listOf(
                         BottomNavItem.Work.Details,
-                        BottomNavItem.Work.Logs,
-                        BottomNavItem.Work.Members
+                        BottomNavItem.Work.Log,
+                        BottomNavItem.Work.CreateLog
                     )
                 )
             }

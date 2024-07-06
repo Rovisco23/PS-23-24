@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
 import pt.isel.sitediary.domainmodel.work.LogEntry
+import pt.isel.sitediary.model.DeleteFileModel
 import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.LogCredentialsModel
 import pt.isel.sitediary.model.LogInputModel
@@ -102,6 +103,7 @@ class LogController(private val service: LogService) {
         val res = service.getLog(id, user.user)
         return handleResponse(res) {
             val log = LogOutputModel(
+                id = it.id,
                 workId = it.workId,
                 content = it.content,
                 editable = it.editable,
@@ -187,9 +189,21 @@ class LogController(private val service: LogService) {
     }
 
     @PostMapping(Paths.Log.DELETE_FILES)
-    @Operation(summary = "Delete Log", description = "Used to delete a log.")
-    fun deleteFile(
+    @Operation(summary = "Delete Log Files", description = "Used to delete one or more files from a log.")
+    fun deleteFiles(
         @RequestBody body: LogCredentialsModel,
+        @Parameter(hidden = true) user: AuthenticatedUser
+    ): ResponseEntity<*> {
+        val res = service.deleteFiles(body, user.user.id)
+        return handleResponse(res) {
+            ResponseEntity.ok().body(Unit)
+        }
+    }
+
+    @PostMapping(Paths.Log.DELETE_FILE)
+    @Operation(summary = "Delete Log File", description = "Used to delete a file from a log.")
+    fun deleteFile(
+        @RequestBody body: DeleteFileModel,
         @Parameter(hidden = true) user: AuthenticatedUser
     ): ResponseEntity<*> {
         val res = service.deleteFile(body, user.user.id)

@@ -8,10 +8,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import pt.isel.sitediary.domain.DeleteFileModel
 import pt.isel.sitediary.domain.Idle
 import pt.isel.sitediary.domain.LoadState
 import pt.isel.sitediary.domain.Loaded
+import pt.isel.sitediary.domain.LogInputModel
 import pt.isel.sitediary.domain.Profile
+import pt.isel.sitediary.domain.UploadInput
 import pt.isel.sitediary.domain.Work
 import pt.isel.sitediary.domain.getOrNull
 import pt.isel.sitediary.domain.idle
@@ -21,10 +24,10 @@ import pt.isel.sitediary.infrastructure.LoggedUserRepository
 import pt.isel.sitediary.services.LogService
 import pt.isel.sitediary.services.UserService
 import pt.isel.sitediary.services.WorkService
-import pt.isel.sitediary.ui.common.GetMainActivityValuesException
 import pt.isel.sitediary.ui.common.GetWorkException
 import pt.isel.sitediary.ui.common.LogException
 import pt.isel.sitediary.ui.common.ProfileException
+import java.io.File
 
 class WorkViewModel(
     private val workService: WorkService,
@@ -126,6 +129,7 @@ class WorkViewModel(
             }
         }
     }
+
     fun clearSelectedLog() {
         viewModelScope.launch {
             try {
@@ -133,6 +137,72 @@ class WorkViewModel(
                     ?: throw LogException("Something went wrong")
                 _workFlow.value = loading()
                 _workFlow.value = loaded(Result.success(oldValues.copy(selectedLog = null)))
+            } catch (e: LogException) {
+                val msg = e.message ?: "Something went wrong"
+                _workFlow.value = loaded(Result.failure(LogException(msg, e)))
+            }
+        }
+    }
+
+    fun uploadFiles(selectedFiles: HashMap<String, File>) {
+        val oldValues = _workFlow.value.getOrNull()
+            ?: throw LogException("Something went wrong")
+        _workFlow.value = loading()
+        viewModelScope.launch {
+            try {
+                val token = repo.getUserInfo()?.token ?: throw LogException("Login Required")
+                val update = logService.uploadFiles(
+                    UploadInput(
+                        oldValues.selectedLog!!.id,
+                        oldValues.id.toString(),
+                        oldValues.selectedLog.content,
+                        selectedFiles
+                    ),
+                    token
+                )
+                val work = workService.getWork(oldValues.id.toString(), token)
+                val log = logService.getLogById(oldValues.selectedLog.id, token)
+                _workFlow.value = loaded(Result.success(work.copy(selectedLog = log)))
+            } catch (e: LogException) {
+                val msg = e.message ?: "Something went wrong"
+                _workFlow.value = loaded(Result.failure(LogException(msg, e)))
+            }
+        }
+    }
+
+    fun deleteFile(fileId: Int, fileType: String) {
+        viewModelScope.launch {
+            val oldValues = _workFlow.value.getOrNull()
+                ?: throw LogException("Something went wrong")
+            _workFlow.value = loading()
+            try {
+                val token = repo.getUserInfo()?.token ?: throw LogException("Login Required")
+                val update = logService.deleteFile(
+                    DeleteFileModel(
+                        logId = oldValues.selectedLog!!.id,
+                        fileId = fileId,
+                        type = fileType
+                    ),
+                    token
+                )
+                val work = workService.getWork(oldValues.id.toString(), token)
+                val log = logService.getLogById(oldValues.selectedLog.id, token)
+                _workFlow.value = loaded(Result.success(work.copy(selectedLog = log)))
+            } catch (e: LogException) {
+                val msg = e.message ?: "Something went wrong"
+                _workFlow.value = loaded(Result.failure(LogException(msg, e)))
+            }
+        }
+    }
+
+    fun createLog(workId: String, input: LogInputModel) {
+        _workFlow.value = loading()
+        viewModelScope.launch {
+            try {
+                val token = repo.getUserInfo()?.token ?: throw LogException("Login Required")
+                val upload = logService.createLog(input, workId, token)
+                val work = workService.getWork(workId, token)
+                _workFlow.value = loaded(Result.success(work))
             } catch (e: LogException) {
                 val msg = e.message ?: "Something went wrong"
                 _workFlow.value = loaded(Result.failure(LogException(msg, e)))

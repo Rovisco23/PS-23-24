@@ -28,4 +28,6 @@ interface LogRepository {
     )
     fun deleteFiles(images: List<Int>, documents: List<Int>)
     fun getMyLogs(userId: Int): List<OwnLogSimplified>
+    fun deleteImage(fileId: Int)
+    fun deleteDocument(fileId: Int)
 }

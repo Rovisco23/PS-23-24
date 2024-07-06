@@ -7,10 +7,13 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import pt.isel.sitediary.domain.DeleteFileModel
 import pt.isel.sitediary.domain.LogEntry
 import pt.isel.sitediary.domain.LogInputModel
+import pt.isel.sitediary.domain.UploadInput
 import pt.isel.sitediary.ui.common.LogCreationException
 import pt.isel.sitediary.ui.common.LogException
 import java.io.IOException
@@ -51,25 +54,29 @@ class LogService(
     }
 
     suspend fun createLog(input: LogInputModel, workId: String, token: String) {
-
-        val requestBody = MultipartBody.Builder()
+        val requestBodyBuilder = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart(
                 "log",
                 null,
                 """{
                 "workId": "$workId",
-                "title": "${input.title}",
                 "description": "${input.description}"
                 }""".trimMargin().toRequestBody("application/json".toMediaTypeOrNull())
             )
-            .build()
+        input.selectedFiles.forEach { (fileName, file) ->
+            requestBodyBuilder.addFormDataPart(
+                "files",
+                fileName,
+                file.asRequestBody("image/*".toMediaTypeOrNull())
+            )
+        }
 
         val request = Request.Builder()
             .url("$templateURL/logs")
             .header("accept", "application/json")
             .header("Authorization", "Bearer $token")
-            .post(requestBody)
+            .post(requestBodyBuilder.build())
             .build()
         return suspendCoroutine {
             client.newCall(request).enqueue(object : Callback {
@@ -83,6 +90,81 @@ class LogService(
                         if (body != null) {
                             it.resumeWithException(LogCreationException(body.string()))
                         } else it.resumeWithException(LogCreationException("Failed to get Log"))
+                    } else it.resume(Unit)
+                }
+            })
+        }
+    }
+
+    suspend fun uploadFiles(input: UploadInput, token: String) {
+        val requestBodyBuilder = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart(
+                "log",
+                null,
+                """{
+                "workId": "${input.workId}",
+                "description": "${input.description}"
+                }""".trimMargin().toRequestBody("application/json".toMediaTypeOrNull())
+            )
+        input.selectedFiles.forEach { (fileName, file) ->
+            requestBodyBuilder.addFormDataPart(
+                "files",
+                fileName,
+                file.asRequestBody("image/*".toMediaTypeOrNull())
+            )
+        }
+
+        val request = Request.Builder()
+            .url("$templateURL/logs/${input.logId}")
+            .header("accept", "application/json")
+            .header("Authorization", "Bearer $token")
+            .put(requestBodyBuilder.build())
+            .build()
+
+        return suspendCoroutine {
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    it.resumeWithException(LogException("Failed to edit Log", e))
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    val body = response.body
+                    if (!response.isSuccessful) {
+                        if (body != null) {
+                            it.resumeWithException(LogException(body.string()))
+                        } else it.resumeWithException(LogException("Failed to edit Log"))
+                    } else it.resume(Unit)
+                }
+            })
+        }
+    }
+
+    suspend fun deleteFile(file: DeleteFileModel, token: String) {
+        val request = Request.Builder()
+            .url("$templateURL/delete-file")
+            .header("accept", "application/json")
+            .header("Authorization", "Bearer $token")
+            .post(
+                """{
+                "logId": "${file.logId}",
+                "fileId": "${file.fileId}",
+                "type": "${file.type}"
+                }""".trimMargin().toRequestBody("application/json".toMediaTypeOrNull())
+            )
+            .build()
+        return suspendCoroutine {
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    it.resumeWithException(LogException("Failed to delete file", e))
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    val body = response.body
+                    if (!response.isSuccessful) {
+                        if (body != null) {
+                            it.resumeWithException(LogException(body.string()))
+                        } else it.resumeWithException(LogException("Failed to delete file"))
                     } else it.resume(Unit)
                 }
             })

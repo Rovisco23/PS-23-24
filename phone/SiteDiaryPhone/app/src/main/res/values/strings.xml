@@ -3,7 +3,9 @@
     <string name="top_bar_go_back">Back</string>
     <string name="obras">Obras</string>
     <string name="perfil">Perfil</string>
-    <string name="detalhes">Detalhes</string>
-    <string name="registo">Ocorrências</string>
+    <string name="detalhes">Visão Geral</string>
+    <string name="registo">Registo</string>
+    <string name="registos">Registos</string>
     <string name="membros">Membros</string>
+    <string name="create_log">Criar Novo Registo</string>
 </resources>

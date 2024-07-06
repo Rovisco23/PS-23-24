@@ -165,57 +165,32 @@ fun TopBarLogGoBack(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarLogsGoBack(onBackRequested: () -> Unit = { }, onCreationRequested: () -> Unit = { }) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start,
-            modifier = Modifier.weight(1f)
-
-        ) {
-            IconButton(
-                onClick = onBackRequested,
-                modifier = Modifier
-                    .padding(start = 0.dp)
-                    .size(32.dp)
+fun TopBarWorkDetails(title: String) {
+    TopAppBar(
+        title = {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(id = R.string.top_bar_go_back),
-                    tint = Color(17, 17, 61),
-                    modifier = Modifier
-                        .padding(start = 0.dp)
-                        .size(32.dp)
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = title,
+                        color = Color(255, 122, 0),
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                    )
+                }
             }
-            Text(
-                text = "Voltar",
-                color = Color(17, 17, 61),
-                fontSize = 26.sp,
-                modifier = Modifier.padding(start = 8.dp)
-            )
-        }
-        IconButton(
-            onClick = onCreationRequested,
-            modifier = Modifier
-                .padding(start = 0.dp)
-                .size(48.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.AddCircle,
-                contentDescription = stringResource(id = R.string.top_bar_go_back),
-                tint = Color(17, 17, 61),
-                modifier = Modifier
-                    .padding(start = 0.dp)
-                    .size(48.dp)
-            )
-        }
-    }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color(17, 17, 61)
+        )
+    )
 }
 
 @Preview
@@ -224,10 +199,8 @@ private fun TopBarPreview() {
     SiteDiaryPhoneTheme {
         Column {
             DefaultTopBar()
-            //TopBarGoBack()
-            //TopBarLogGoBack(buttonText = "Geral")
-            //TopBarLogGoBack(buttonText = "Ficheiros")
-            TopBarLogsGoBack()
+            TopBarWorkDetails("Casa da D. Maria")
+            TopBarGoBack()
         }
     }
 }

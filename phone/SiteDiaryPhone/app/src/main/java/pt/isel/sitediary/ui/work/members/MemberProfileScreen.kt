@@ -105,8 +105,8 @@ fun PreviewMemberProfileScreen() {
                     navController,
                     listOf(
                         BottomNavItem.Work.Details,
-                        BottomNavItem.Work.Logs,
-                        BottomNavItem.Work.Members
+                        BottomNavItem.Work.Log,
+                        BottomNavItem.Work.CreateLog
                     )
                 )
             }

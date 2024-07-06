@@ -1,5 +1,6 @@
 package pt.isel.sitediary.domain
 
+import java.io.File
 import java.util.Date
 import java.util.UUID
 
@@ -7,7 +8,6 @@ data class LogEntry(
     val id: Int,
     val workId: UUID,
     val author: Author,
-    val title: String,
     val content: String,
     val editable: Boolean,
     val createdAt: Date,
@@ -15,14 +15,27 @@ data class LogEntry(
     val files: List<FileModel>
 )
 
+data class FileModel(
+    val id: Int,
+    val fileName: String,
+    val contentType: String
+)
+
+data class DeleteFileModel(
+    val logId: Int,
+    val fileId: Int,
+    val type: String
+)
+
 data class LogEntrySimplified(
     val id: Int,
     val author: Author,
-    val title: String,
-    val editable: Boolean,
     val createdAt: Date,
+    val editable: Boolean,
     val attachments: Boolean
 )
+
+data class LogValues(val logs: List<LogEntrySimplified>, val selectedLog: LogEntry?)
 
 data class Author(
     val id: Int,
@@ -30,12 +43,14 @@ data class Author(
     val role: String
 )
 
-data class FileModel(
-    val fileName: String,
-    val uploadDate: Date
+data class LogInputModel(
+    val description: String,
+    val selectedFiles: HashMap<String, File>
 )
 
-data class LogInputModel(
-    val title: String,
+data class UploadInput(
+    val logId: Int,
+    val workId: String,
     val description: String,
+    val selectedFiles: HashMap<String, File>
 )

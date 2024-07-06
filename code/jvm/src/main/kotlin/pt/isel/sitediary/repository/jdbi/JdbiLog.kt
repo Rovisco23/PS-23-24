@@ -54,8 +54,24 @@ class JdbiLog(private val handle: Handle) : LogRepository {
                     "group by r.id, r.oId, o.nome, r.author, r.editable, r.creation_date"
         )
             .bind("id", userId)
-            .mapTo(OwnLogSimplified:: class.java)
+            .mapTo(OwnLogSimplified::class.java)
             .list()
+
+    override fun deleteImage(fileId: Int) {
+        handle.createUpdate(
+            "delete from IMAGEM where id = :id"
+        )
+            .bind("id", fileId)
+            .execute()
+    }
+
+    override fun deleteDocument(fileId: Int) {
+        handle.createUpdate(
+            "delete from DOCUMENTO where id = :id"
+        )
+            .bind("id", fileId)
+            .execute()
+    }
 
     override fun checkUserAccess(workId: UUID, userId: Int): Boolean = handle.createQuery(
         "select count(*) from MEMBRO where oId = :oId and uId = :uId and pendente = :pendente"

@@ -1,5 +1,6 @@
 package pt.isel.sitediary.domain
 
+import java.io.File
 import java.util.UUID
 
 data class WorkListDto(
@@ -61,6 +62,7 @@ data class Work(
         images,
         docs
     )
+
 }
 
 data class WorkDetails(

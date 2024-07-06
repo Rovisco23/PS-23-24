@@ -15,6 +15,7 @@ data class LogCredentialsModel(
 )
 
 data class LogOutputModel(
+    val id: Int,
     val workId: UUID,
     val author: Author,
     val content: String,
@@ -29,4 +30,10 @@ data class FileOutputModel(
     val fileName: String,
     val contentType: String,
     val uploadDate: Date
+)
+
+data class DeleteFileModel(
+    val logId: Int,
+    val fileId: Int,
+    val type: String
 )

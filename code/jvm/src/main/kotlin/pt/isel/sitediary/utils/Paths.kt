@@ -42,6 +42,7 @@ object Paths {
         const val GET_LOG_FILES = "$PREFIX/logs-files"
         const val EDIT_LOG = "$PREFIX/logs/{id}"
         const val DELETE_FILES = "$PREFIX/delete-files"
+        const val DELETE_FILE = "$PREFIX/delete-file"
     }
 
 }
