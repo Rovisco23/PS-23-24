@@ -25,14 +25,16 @@ import java.io.File
 @Composable
 fun WorkDetailsView(
     workState: LoadState<Work>,
+    content: String,
     onBackRequested: () -> Unit = {},
     onLogSelected: (Int) -> Unit = {},
     onLogBackRequested: () -> Unit = {},
     onEditUploadRequested: () -> Unit = {},
-    onUploadRequested: () -> HashMap<String, File>,
-    onRemoveRequested: (String) -> HashMap<String, File>,
+    onUploadRequested: (String) -> Unit,
+    onRemoveRequested: (String, String) -> Unit,
     onCreateClicked: (String) -> Unit,
-    onDeleteSubmit: (Int, String) -> Unit
+    onDeleteSubmit: (Int, String) -> Unit,
+    onEditSubmit: (String) -> Unit = {}
 ) {
     workState.let {
         if (it is Loaded && it.value.isSuccess) {
@@ -57,7 +59,9 @@ fun WorkDetailsView(
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = BottomNavItem.Work.Log.route
+                        startDestination =
+                            if (!work.files.isNullOrEmpty()) BottomNavItem.Work.CreateLog.route
+                            else BottomNavItem.Work.Log.route
                     ) {
                         composable(BottomNavItem.Work.Details.route) {
                             DetailsScreen(work.toDetails(), innerPadding, onBackRequested)
@@ -71,11 +75,14 @@ fun WorkDetailsView(
                                 onBackRequested,
                                 onLogBackRequested,
                                 onEditUploadRequested,
-                                onDeleteSubmit
+                                onDeleteSubmit,
+                                onEditSubmit
                             )
                         }
                         composable(BottomNavItem.Work.CreateLog.route) {
                             CreateLogScreen(
+                                files = work.files ?: mutableMapOf(),
+                                content = content,
                                 onCreateClicked = onCreateClicked,
                                 onBackRequested = onBackRequested,
                                 onRemoveRequested = onRemoveRequested,

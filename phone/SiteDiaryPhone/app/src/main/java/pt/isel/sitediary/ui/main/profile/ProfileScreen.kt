@@ -1,7 +1,9 @@
 package pt.isel.sitediary.ui.main.profile
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
@@ -23,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,34 +45,43 @@ import pt.isel.sitediary.ui.theme.SiteDiaryPhoneTheme
 @Composable
 fun ProfileScreen(
     profile: Profile,
-    innerPadding: PaddingValues,
-    onLogoutRequest: () -> Unit
+    changeProfilePicture: () -> Unit,
+    onLogoutRequest: () -> Unit,
+    innerPadding: PaddingValues
 ) {
     val imageModifier = Modifier
-        .width(200.dp)
-        .height(200.dp)
+        .size(180.dp)
         .clip(CircleShape)
-        .padding(16.dp)
         .border(2.dp, Color(17, 17, 61), CircleShape)
+        .clickable { changeProfilePicture() }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(innerPadding)
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Column {
-                Row(modifier = Modifier.fillMaxWidth(),) {
-                    if (profile.profilePicture != null) {
-                        Image(
-                            bitmap = profile.profilePicture.asImageBitmap(),
-                            contentDescription = "Profile Picture",
-                            modifier = imageModifier
-                        )
-                    } else {
-                        Image(
-                            painter = painterResource(R.drawable.ic_default_profile),
-                            contentDescription = "Profile Picture",
-                            modifier = imageModifier
-                        )
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Box (
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(180.dp)
+                            .clip(CircleShape)
+                            .padding(16.dp)
+                    ) {
+                        if (profile.profilePicture != null) {
+                            Image(
+                                bitmap = profile.profilePicture.asImageBitmap(),
+                                contentDescription = "Profile Picture",
+                                contentScale = ContentScale.Crop,
+                                modifier = imageModifier
+                            )
+                        } else {
+                            Image(
+                                painter = painterResource(R.drawable.ic_default_profile),
+                                contentDescription = "Profile Picture",
+                                modifier = imageModifier
+                            )
+                        }
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         ProfileItem(label = "Nome", value = profile.user.getName())
@@ -79,7 +92,9 @@ fun ProfileScreen(
             }
         }
         HorizontalDivider(
-            modifier = Modifier.width(350.dp).align(Alignment.CenterHorizontally),
+            modifier = Modifier
+                .width(350.dp)
+                .align(Alignment.CenterHorizontally),
             thickness = 2.dp,
             color = Color(17, 17, 61)
         )
@@ -134,8 +149,10 @@ fun PreviewProfileScreen() {
                     ),
                     profilePicture = null
                 ),
+                {},
+                {},
                 innerPadding
-            ) {}
+            )
         }
     }
 }

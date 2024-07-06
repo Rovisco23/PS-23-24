@@ -17,16 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
-import androidx.compose.material.icons.automirrored.filled.StickyNote2
-import androidx.compose.material.icons.automirrored.filled.TextSnippet
 import androidx.compose.material.icons.filled.AttachFile
-import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.InsertDriveFile
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.StickyNote2
-import androidx.compose.material.icons.filled.TextSnippet
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -47,6 +39,7 @@ import androidx.navigation.compose.rememberNavController
 import pt.isel.sitediary.R
 import pt.isel.sitediary.domain.Author
 import pt.isel.sitediary.domain.LogEntrySimplified
+import pt.isel.sitediary.ui.common.formatDateLog
 import pt.isel.sitediary.ui.common.nav.BottomNavItem
 import pt.isel.sitediary.ui.common.nav.BottomNavigationBar
 import pt.isel.sitediary.ui.common.nav.DefaultTopBar

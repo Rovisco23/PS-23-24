@@ -1,21 +1,11 @@
 package pt.isel.sitediary.ui.work
 
-import android.Manifest
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.SurfaceTexture
-import android.hardware.camera2.CameraAccessException
-import android.hardware.camera2.CameraCaptureSession
-import android.hardware.camera2.CameraDevice
-import android.hardware.camera2.CameraManager
-import android.hardware.camera2.CaptureRequest
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.Surface
-import android.view.TextureView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
@@ -26,16 +16,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityOptionsCompat
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
-import okhttp3.internal.wait
 import pt.isel.sitediary.SiteDiaryApplication
 import pt.isel.sitediary.domain.Loaded
 import pt.isel.sitediary.domain.LogInputModel
-import pt.isel.sitediary.domain.UploadInput
 import pt.isel.sitediary.domain.idle
 import pt.isel.sitediary.ui.common.ErrorAlert
 import pt.isel.sitediary.ui.login.LoginActivity
@@ -58,6 +41,8 @@ class WorkDetailsActivity : ComponentActivity() {
     )
     private lateinit var galleryLauncher: ActivityResultLauncher<Intent>
     private val selectedFiles = hashMapOf<String, File>()
+    var content = ""
+    private var flag = false
 
     companion object {
         fun navigateTo(ctx: Context, workId: UUID?) {
@@ -91,6 +76,7 @@ class WorkDetailsActivity : ComponentActivity() {
                 val work by viewModel.work.collectAsState(initial = idle())
                 WorkDetailsView(
                     workState = work,
+                    content = content,
                     onBackRequested = { finish() },
                     onLogSelected = { logId ->
                         Log.v(ContentValues.TAG, "Log selected: $logId")
@@ -100,22 +86,27 @@ class WorkDetailsActivity : ComponentActivity() {
                         viewModel.clearSelectedLog()
                     },
                     onEditUploadRequested = {
+                        flag = true
                         openGallery()
-                        viewModel.uploadFiles(selectedFiles)
                     },
                     onUploadRequested = {
+                        flag = false
+                        content = it
                         openGallery()
-                        selectedFiles
                     },
-                    onRemoveRequested = {
-                        selectedFiles.remove(it)
-                        selectedFiles
+                    onRemoveRequested = { txt, fileName ->
+                        content = txt
+                        selectedFiles.remove(fileName)
+                        viewModel.updateFiles(selectedFiles)
                     },
                     onCreateClicked = {
                         viewModel.createLog(workId, LogInputModel(it, selectedFiles))
                     },
                     onDeleteSubmit = { fileId, fileType ->
                         viewModel.deleteFile(fileId, fileType)
+                    },
+                    onEditSubmit = {
+                        viewModel.editLog(it)
                     }
                 )
                 work.let {
@@ -175,7 +166,21 @@ class WorkDetailsActivity : ComponentActivity() {
             tempFile.outputStream().use { fileOutputStream ->
                 iS.copyTo(fileOutputStream)
             }
+            iS.close()
             tempFile
         } else null
     }
+
+    override fun onResume() {
+        super.onResume()
+        Log.v(ContentValues.TAG, "WorkDetailsActivity.onResume() called")
+        if (flag) {
+            Log.v(ContentValues.TAG, "EditUpload called")
+            viewModel.uploadFiles(selectedFiles)
+        } else {
+            Log.v(ContentValues.TAG, "Update called")
+            viewModel.updateFiles(selectedFiles)
+        }
+    }
+
 }

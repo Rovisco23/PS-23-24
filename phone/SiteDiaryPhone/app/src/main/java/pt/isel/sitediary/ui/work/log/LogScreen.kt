@@ -1,9 +1,7 @@
 package pt.isel.sitediary.ui.work.log
 
-import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,18 +15,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.Upload
-import androidx.compose.material.icons.outlined.ErrorOutline
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -48,12 +41,14 @@ import androidx.navigation.compose.rememberNavController
 import pt.isel.sitediary.domain.Author
 import pt.isel.sitediary.domain.FileModel
 import pt.isel.sitediary.domain.LogEntry
+import pt.isel.sitediary.ui.common.ConfirmFileDeletion
+import pt.isel.sitediary.ui.common.LogFileList
+import pt.isel.sitediary.ui.common.formatDate
 import pt.isel.sitediary.ui.common.nav.BottomNavItem
 import pt.isel.sitediary.ui.common.nav.BottomNavigationBar
 import pt.isel.sitediary.ui.common.nav.DefaultTopBar
 import pt.isel.sitediary.ui.common.nav.TopBarGoBack
 import pt.isel.sitediary.ui.theme.SiteDiaryPhoneTheme
-import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.Date
 import java.util.UUID
@@ -158,78 +153,21 @@ fun LogScreen(
                     )
                 }
             }
-            log.files.forEach {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.InsertDriveFile,
-                            contentDescription = "File Icon"
-                        )
-                        Text(
-                            text = it.fileName,
-                            fontSize = 20.sp
-                        )
-                    }
-                    if (log.editable) IconButton(onClick = { deleting = true; selected = it.id }) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete File Icon"
-                        )
-                    }
-                }
+            LogFileList(log.files, log.editable) {
+                deleting = true
+                selected = it
             }
-            if (deleting) AlertDialog(
-                onDismissRequest = { },
-                confirmButton = {
-                    OutlinedButton(
-                        border = BorderStroke(0.dp, Color.Unspecified),
-                        onClick = {
-                            deleting = false
-                            val file = log.files.find { it.id == selected }!!
-                            onDeleteSubmit(file.id, file.contentType)
-                            selected = 0
-                        }
-                    ) {
-                        Text(text = "Sim")
-                    }
+            if (deleting) ConfirmFileDeletion(
+                onConfirm = {
+                    deleting = false
+                    val file = log.files.find { it.id == selected }!!
+                    onDeleteSubmit(file.id, file.contentType)
+                    selected = 0
                 },
-                dismissButton = {
-                    OutlinedButton(
-                        border = BorderStroke(0.dp, Color.Unspecified),
-                        onClick = { deleting = false }
-                    ) {
-                        Text(text = "Cancelar")
-                    }
-
-                },
-                title = { Text(text = "Tem a certeza que quer eliminar o ficheiro?") },
-                text = { Text(text = "Ficheiros eliminados não são recuperáveis") },
-                icon = {
-                    Icon(
-                        imageVector = Icons.Outlined.ErrorOutline,
-                        contentDescription = "Warning"
-                    )
-                }
+                onDismiss = { deleting = false }
             )
         }
     }
-}
-
-@SuppressLint("SimpleDateFormat")
-fun formatDate(date: Date): String {
-    val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm")
-    return formatter.format(date)
-}
-@SuppressLint("SimpleDateFormat")
-fun formatDateLog(date: Date): String {
-    val formatter = SimpleDateFormat("dd/MM/yyyy")
-    val parts = formatter.format(date).split("/")
-    return parts[0] + " de " + parts[1] + " de " + parts[2]
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -247,17 +185,17 @@ fun PreviewLogScreen() {
                     name = "JaneDoe1234",
                     role = "Manager"
                 ),
-                content = "jiosgdijosdgjiosdjiogjiosdgjiosojidgjioioioioioioioioioioiojsgjois",
+                content = "A montagem do andaime foi realizada fora dos parâmetros estabelecidos, revelando uma falta de precisão e atenção aos detalhes. A equipe de construção demonstrou deficiências técnicas ao lidar com desafios específicos, resultando em um trabalho de qualidade insatisfatória que não atende às expectativas do cliente. A comunicação ineficaz e a falta de coordenação entre todos os envolvidos contribuíram significativamente para as falhas observadas nesta fase do projeto.",
                 editable = true,
                 createdAt = date,
                 modifiedAt = date,
                 files = listOf(
-                    FileModel(1, "file1", "Imagem"),
-                    FileModel(2, "file2", "Imagem"),
-                    FileModel(3, "file3", "Imagem"),
-                    FileModel(4, "file4", "Imagem"),
-                    FileModel(5, "file5", "Imagem"),
-                    FileModel(6, "file6", "Imagem")
+                    FileModel(1, "file1", "Image"),
+                    FileModel(2, "file2", "Image"),
+                    FileModel(3, "file3", "Image"),
+                    FileModel(4, "file4", "Image"),
+                    FileModel(5, "file5", "Image"),
+                    FileModel(6, "file6", "Image")
                 )
             )
         )
@@ -285,7 +223,7 @@ fun PreviewLogScreen() {
                 log,
                 innerPadding,
                 onEditSubmit = { log = log.copy(content = it) },
-                onDeleteSubmit = { fileId, type ->
+                onDeleteSubmit = { fileId, _ ->
                     log = log.copy(files = log.files.filter { it.id != fileId })
                 }
             )

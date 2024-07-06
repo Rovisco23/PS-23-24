@@ -9,12 +9,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import pt.isel.sitediary.domain.LoadState
-import pt.isel.sitediary.domain.WorkListAndProfile
+import pt.isel.sitediary.domain.MainValues
 import pt.isel.sitediary.ui.common.nav.BottomNavItem.Main.Logs
 import pt.isel.sitediary.ui.common.nav.BottomNavItem.Main.Home
 import pt.isel.sitediary.ui.common.nav.BottomNavItem.Main.UserProfile
 import pt.isel.sitediary.ui.common.nav.BottomNavigationBar
 import pt.isel.sitediary.ui.common.nav.DefaultTopBar
+import pt.isel.sitediary.ui.main.mylogs.MyLogsView
 import pt.isel.sitediary.ui.main.profile.ProfileView
 import pt.isel.sitediary.ui.main.workList.WorkListView
 import pt.isel.sitediary.ui.theme.SiteDiaryPhoneTheme
@@ -22,9 +23,15 @@ import java.util.UUID
 
 @Composable
 fun MainView(
-    mainValues: LoadState<WorkListAndProfile>,
+    mainValues: LoadState<MainValues>,
     onRefresh: () -> Unit = { },
-    onWorkSelected: (workId: UUID) -> Unit = { },
+    onWorkSelected: (UUID) -> Unit = { },
+    onLogSelected: (Int) -> Unit,
+    onLogBackRequested: () -> Unit,
+    onUploadRequested: () -> Unit,
+    onEditSubmit: (String) -> Unit,
+    onDeleteSubmit: (Int, String) -> Unit,
+    changeProfilePicture: () -> Unit,
     onLogoutRequest: () -> Unit = { }
 ) {
     SiteDiaryPhoneTheme {
@@ -39,10 +46,18 @@ fun MainView(
                     WorkListView(mainValues, onRefresh, onWorkSelected, innerPadding)
                 }
                 composable(Logs.route) {
-                    WorkListView(mainValues, onRefresh, onWorkSelected, innerPadding)
+                    MyLogsView(
+                        mainValues,
+                        innerPadding,
+                        onLogSelected,
+                        onLogBackRequested,
+                        onUploadRequested,
+                        onDeleteSubmit,
+                        onEditSubmit
+                    )
                 }
                 composable(UserProfile.route) {
-                    ProfileView(mainValues, onLogoutRequest, innerPadding)
+                    ProfileView(mainValues, changeProfilePicture, onLogoutRequest, innerPadding)
                 }
             }
         }

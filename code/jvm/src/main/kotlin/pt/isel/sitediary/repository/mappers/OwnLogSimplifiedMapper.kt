@@ -13,7 +13,7 @@ class OwnLogSimplifiedMapper : RowMapper<OwnLogSimplified> {
             id = rs.getInt("id"),
             workId = UUID.fromString(rs.getString("oId")),
             workName = rs.getString("nome"),
-            author = rs.getInt("author"),
+            author = rs.getString("author"),
             editable = rs.getBoolean("editable"),
             attachments = rs.getBoolean("attachments"),
             createdAt = Date.valueOf(rs.getString("createdAt"))

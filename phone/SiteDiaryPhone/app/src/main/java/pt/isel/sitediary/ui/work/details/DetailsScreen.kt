@@ -66,7 +66,6 @@ fun DetailsScreen(
                             .padding(8.dp)
                     )
                     Column {
-                        DetailItem(label = "Nome", value = details.name)
                         DetailItem(label = "Tipo", value = details.type.name)
                         DetailItem(label = "Estado", value = details.state.toString())
                     }

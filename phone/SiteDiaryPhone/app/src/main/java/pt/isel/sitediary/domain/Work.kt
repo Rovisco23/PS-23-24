@@ -46,7 +46,8 @@ data class Work(
     val technicians: List<Technician>,
     val verification: Boolean,
     val images: Int,
-    val docs: Int
+    val docs: Int,
+    val files: Map<String, File>? = null
 ) {
     fun toDetails() = WorkDetails(
         name,
@@ -62,7 +63,6 @@ data class Work(
         images,
         docs
     )
-
 }
 
 data class WorkDetails(

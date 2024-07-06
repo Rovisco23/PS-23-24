@@ -12,10 +12,18 @@ fun LogsView(
     onBackRequested: () -> Unit = {},
     onLogBackRequested: () -> Unit = {},
     onUploadRequested: () -> Unit = {},
-    onDeleteSubmit: (Int, String) -> Unit
+    onDeleteSubmit: (Int, String) -> Unit,
+    onEditSubmit: (String) -> Unit = {}
 ) {
     if (logValues.selectedLog != null) {
-        LogScreen(logValues.selectedLog, innerPadding, onLogBackRequested, onUploadRequested, onDeleteSubmit)
+        LogScreen(
+            logValues.selectedLog,
+            innerPadding,
+            onLogBackRequested,
+            onUploadRequested,
+            onDeleteSubmit,
+            onEditSubmit
+        )
     } else {
         LogsScreen(
             logValues.logs,

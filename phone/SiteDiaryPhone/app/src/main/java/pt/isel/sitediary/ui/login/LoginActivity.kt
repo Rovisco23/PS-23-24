@@ -34,7 +34,6 @@ class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.v(ContentValues.TAG, "LoginActivity.onCreate() called")
-        //viewModel.checkIfUserLogged()
         setContent {
             val authUser by viewModel.loggedUser.collectAsState(initial = idle())
             LoginScreen(

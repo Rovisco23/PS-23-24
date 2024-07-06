@@ -81,7 +81,7 @@ data class OwnLogSimplified(
     val id: Int,
     val workId: UUID,
     val workName: String,
-    val author: Int,
+    val author: String,
     val editable: Boolean,
     val createdAt: Date,
     val attachments: Boolean

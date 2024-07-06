@@ -70,24 +70,6 @@ class WorkViewModel(
         }
     }
 
-    fun getMemberProfile(userId: Int) {
-        viewModelScope.launch {
-            try {
-                val oldValues = _workFlow.value.getOrNull()
-                    ?: throw ProfileException("Something went wrong")
-                _workFlow.value = loading()
-                val token = repo.getUserInfo()?.token ?: throw ProfileException("Login Required")
-                val user = userService.getProfile(userId, token)
-                val profilePicture = userService.getProfilePicture(userId, token)
-                val profile = Profile(user, profilePicture)
-                _workFlow.value = loaded(Result.success(oldValues.copy(selectedMember = profile)))
-            } catch (e: ProfileException) {
-                val msg = e.message ?: "Something went wrong"
-                _workFlow.value = loaded(Result.failure(ProfileException(msg, e)))
-            }
-        }
-    }
-
     fun getLog(logId: Int) {
         viewModelScope.launch {
             try {
@@ -116,20 +98,6 @@ class WorkViewModel(
         _workFlow.value = idle()
     }
 
-    fun clearSelectedMember() {
-        viewModelScope.launch {
-            try {
-                val oldValues = _workFlow.value.getOrNull()
-                    ?: throw ProfileException("Something went wrong")
-                _workFlow.value = loading()
-                _workFlow.value = loaded(Result.success(oldValues.copy(selectedMember = null)))
-            } catch (e: ProfileException) {
-                val msg = e.message ?: "Something went wrong"
-                _workFlow.value = loaded(Result.failure(ProfileException(msg, e)))
-            }
-        }
-    }
-
     fun clearSelectedLog() {
         viewModelScope.launch {
             try {
@@ -145,27 +113,30 @@ class WorkViewModel(
     }
 
     fun uploadFiles(selectedFiles: HashMap<String, File>) {
-        val oldValues = _workFlow.value.getOrNull()
-            ?: throw LogException("Something went wrong")
-        _workFlow.value = loading()
         viewModelScope.launch {
-            try {
-                val token = repo.getUserInfo()?.token ?: throw LogException("Login Required")
-                val update = logService.uploadFiles(
-                    UploadInput(
-                        oldValues.selectedLog!!.id,
-                        oldValues.id.toString(),
-                        oldValues.selectedLog.content,
-                        selectedFiles
-                    ),
-                    token
-                )
-                val work = workService.getWork(oldValues.id.toString(), token)
-                val log = logService.getLogById(oldValues.selectedLog.id, token)
-                _workFlow.value = loaded(Result.success(work.copy(selectedLog = log)))
-            } catch (e: LogException) {
-                val msg = e.message ?: "Something went wrong"
-                _workFlow.value = loaded(Result.failure(LogException(msg, e)))
+            if (_workFlow.value is Loaded) {
+                val oldValues = _workFlow.value.getOrNull()
+                    ?: throw LogException("Something went wrong")
+                _workFlow.value = loading()
+                try {
+                    val token = repo.getUserInfo()?.token ?: throw LogException("Login Required")
+                    val update = logService.uploadFiles(
+                        UploadInput(
+                            oldValues.selectedLog!!.id,
+                            oldValues.id.toString(),
+                            oldValues.selectedLog.content,
+                            selectedFiles
+                        ),
+                        token
+                    )
+                    val work = workService.getWork(oldValues.id.toString(), token)
+                    val log = logService.getLogById(oldValues.selectedLog.id, token)
+                    _workFlow.value = loaded(Result.success(work.copy(selectedLog = log)))
+                    selectedFiles.clear()
+                } catch (e: LogException) {
+                    val msg = e.message ?: "Something went wrong"
+                    _workFlow.value = loaded(Result.failure(LogException(msg, e)))
+                }
             }
         }
     }
@@ -195,6 +166,7 @@ class WorkViewModel(
         }
     }
 
+
     fun createLog(workId: String, input: LogInputModel) {
         _workFlow.value = loading()
         viewModelScope.launch {
@@ -203,6 +175,46 @@ class WorkViewModel(
                 val upload = logService.createLog(input, workId, token)
                 val work = workService.getWork(workId, token)
                 _workFlow.value = loaded(Result.success(work))
+            } catch (e: LogException) {
+                val msg = e.message ?: "Something went wrong"
+                _workFlow.value = loaded(Result.failure(LogException(msg, e)))
+            }
+        }
+    }
+
+    fun updateFiles(selectedFiles: HashMap<String, File>) {
+        if (_workFlow.value is Loaded) {
+            viewModelScope.launch {
+                val oldValues = _workFlow.value.getOrNull()
+                    ?: throw LogException("Something went wrong")
+                _workFlow.value = loading()
+                try {
+                    val token = repo.getUserInfo()?.token ?: throw LogException("Login Required")
+                    _workFlow.value = loaded(Result.success(oldValues.copy(files = selectedFiles)))
+                } catch (e: LogException) {
+                    val msg = e.message ?: "Something went wrong"
+                    _workFlow.value = loaded(Result.failure(LogException(msg, e)))
+                }
+            }
+        }
+    }
+
+    fun editLog(content: String) {
+        viewModelScope.launch {
+            val oldValues = _workFlow.value.getOrNull()
+                ?: throw LogException("Something went wrong")
+            _workFlow.value = loading()
+            try {
+                val token = repo.getUserInfo()?.token ?: throw LogException("Login Required")
+                val upload = logService.editLog(
+                    oldValues.selectedLog!!.id,
+                    oldValues.id.toString(),
+                    content,
+                    token
+                )
+                val work = workService.getWork(oldValues.id.toString(), token)
+                val log = logService.getLogById(oldValues.selectedLog.id, token)
+                _workFlow.value = loaded(Result.success(work.copy(selectedLog = log)))
             } catch (e: LogException) {
                 val msg = e.message ?: "Something went wrong"
                 _workFlow.value = loaded(Result.failure(LogException(msg, e)))

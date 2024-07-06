@@ -3,14 +3,20 @@ package pt.isel.sitediary.services
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.google.gson.Gson
+import okhttp3.Call
+import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
 import pt.isel.sitediary.ui.common.LoginException
 import pt.isel.sitediary.domain.LoggedUser
 import pt.isel.sitediary.domain.User
-import pt.isel.sitediary.ui.common.LogoutException
+import pt.isel.sitediary.ui.common.EditProfileException
+import pt.isel.sitediary.ui.common.LogException
 import pt.isel.sitediary.ui.common.ProfileException
 import java.io.File
 import java.io.FileOutputStream
@@ -110,6 +116,39 @@ class UserService(
                             it.resume(bitmap)
                         }
                     }
+                }
+            })
+        }
+    }
+
+    suspend fun editProfilePicture(fileName: String, file: File, token: String) {
+        val requestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart(
+                "file",
+                fileName,
+                file.asRequestBody("image/jpg".toMediaTypeOrNull())
+            )
+            .build()
+        val request = Request.Builder()
+            .url("$templateURL/profile-picture")
+            .header("accept", "application/json")
+            .header("Authorization", "Bearer $token")
+            .put(requestBody)
+            .build()
+        return suspendCoroutine {
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    it.resumeWithException(EditProfileException("Failed to edit Log", e))
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    val body = response.body
+                    if (!response.isSuccessful) {
+                        if (body != null) {
+                            it.resumeWithException(EditProfileException(body.string()))
+                        } else it.resumeWithException(EditProfileException("Failed to edit Log"))
+                    } else it.resume(Unit)
                 }
             })
         }
