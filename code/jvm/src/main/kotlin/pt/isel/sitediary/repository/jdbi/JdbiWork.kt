@@ -4,6 +4,7 @@ import org.jdbi.v3.core.Handle
 import pt.isel.sitediary.domainmodel.user.Technician
 import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.work.*
+import pt.isel.sitediary.model.EditWorkInputModel
 import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.OpeningTermInputModel
 import pt.isel.sitediary.repository.WorkRepository
@@ -46,7 +47,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         "SELECT OBRA.id, OBRA.nome, OBRA.tipo, OBRA.descricao, OBRA.estado, OBRA.distrito, OBRA.concelho, " +
                 "OBRA.freguesia, OBRA.rua, OBRA.cpostal, ARRAY(SELECT CONCAT(uId, ';', username, ';', MEMBRO.role) " +
                 "FROM MEMBRO JOIN UTILIZADOR ON uId = id WHERE oId = :id AND MEMBRO.pendente = 'false') AS membros, " +
-                "ARRAY(SELECT CONCAT(nome, ';', role, ';', associacao, ';', numero) FROM INTERVENIENTE WHERE " +
+                "ARRAY(SELECT CONCAT(nome, ';', email, ';', role, ';', associacao, ';', numero) FROM INTERVENIENTE WHERE " +
                 "oId = :id) AS technicians, ARRAY(SELECT CONCAT(REGISTO.id, ';', author, ';', UTILIZADOR.username, " +
                 "';', (SELECT Membro.role from Membro join Registo r on r.oId = Membro.oId where Membro.uid = author " +
                 "and r.id = REGISTO.id), ';', editable, ';', COUNT(i.name) > 0 OR COUNT(d.name) > 0, ';', " +
@@ -57,7 +58,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
                 "REGISTO.creation_date) AS log, TERMO_ABERTURA.titular_licenca, TERMO_ABERTURA.predio, " +
                 "EMPRESA_CONSTRUCAO.nome AS company_name, EMPRESA_CONSTRUCAO.numero AS company_num, (SELECT COUNT(*) " +
                 "FROM IMAGEM WHERE oId = OBRA.id) AS imagens, (SELECT COUNT(*) FROM DOCUMENTO WHERE oId = OBRA.id) " +
-                "AS documentos, TERMO_ABERTURA.assinatura IS NOT NULL AS verification FROM OBRA JOIN TERMO_ABERTURA " +
+                "AS documentos, (TERMO_ABERTURA.assinatura IS NOT NULL and Obra.estado = 'EM PROGRESSO') AS verification FROM OBRA JOIN TERMO_ABERTURA " +
                 "ON TERMO_ABERTURA.oId = OBRA.id JOIN EMPRESA_CONSTRUCAO ON EMPRESA_CONSTRUCAO.id = " +
                 "TERMO_ABERTURA.empresa_construcao WHERE OBRA.id = :id"
     )
@@ -67,14 +68,14 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
 
     override fun getWorkList(userId: Int): List<WorkSimplified> = handle.createQuery(
         "select OBRA.id, OBRA.nome, ta.titular_licenca as owner, Obra.tipo, OBRA.descricao, OBRA.estado," +
-                " OBRA.freguesia, OBRA.concelho, OBRA.distrito, OBRA.rua, OBRA.cpostal, ta.assinatura IS NOT NULL AS " +
-                "verification from MEMBRO join OBRA on id = oId join TERMO_ABERTURA ta on OBRA.id = ta.oId " +
-                "where uId = :id and MEMBRO.pendente = 'false'"
+                " OBRA.freguesia, OBRA.concelho, OBRA.distrito, OBRA.rua, OBRA.cpostal, (ta.assinatura IS NOT NULL and " +
+                "OBRA.estado = 'EM PROGRESSO') AS verification from MEMBRO join OBRA on id = oId join TERMO_ABERTURA ta " +
+                "on OBRA.id = ta.oId where uId = :id and MEMBRO.pendente = 'false'"
     )
         .bind("id", userId)
         .mapTo(WorkSimplified::class.java)
         .list()
-
+/*
     override fun getOpeningTerm(workId: UUID): OpeningTerm = handle.createQuery(
         "select OBRA.nome, OBRA.tipo, TERMO_ABERTURA.titular_licenca, EMPRESA_CONSTRUCAO.nome as company_name, " +
                 "EMPRESA_CONSTRUCAO.numero as company_num, TERMO_ABERTURA.predio, ARRAY(select CONCAT(nif, ';', " +
@@ -86,7 +87,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
     )
         .bind("id", workId.toString())
         .mapTo(OpeningTerm::class.java)
-        .single()
+        .single()*/
 
     private fun getCouncil(location: Location) =
         handle.createQuery(
@@ -124,7 +125,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         user: User
     ): Int {
         val assinatura =
-            if (openingTerm.checkCouncilWork(user) && openingTerm.verification) user.name else null
+            if (openingTerm.checkCouncilWork(user) && !openingTerm.verification.isNullOrBlank()) user.name else null
         val time = if (assinatura != null) createdAt else null
         return handle.createUpdate(
             "insert into TERMO_ABERTURA(oId, inicio, camara, titular_licenca, empresa_construcao, autorizacao, assinatura, dt_assinatura, predio)" +
@@ -134,7 +135,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
             .bind("inicio", Timestamp.valueOf(LocalDateTime.now()))
             .bind("camara", councilId)
             .bind("titular_licença", openingTerm.holder)
-            .bind("doc", if (openingTerm.verification) openingTerm.verificationDoc else null)
+            .bind("doc", if (!openingTerm.verification.isNullOrBlank()) openingTerm.verification else null)
             .bind("empresa_construção", companyId)
             .bind("predio", openingTerm.building)
             .bind("assinatura", assinatura)
@@ -230,16 +231,16 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
 
     override fun getWorkListAdmin() = handle.createQuery(
         "select o.id, o.nome, ta.titular_licenca as owner,  o.tipo, o.descricao, o.estado, o.freguesia," +
-                " o.concelho, o.distrito, o.rua, o.cpostal, ta.assinatura IS NOT NULL AS " +
-                "verification from OBRA o join TERMO_ABERTURA ta on ta.oId = o.id"
+                " o.concelho, o.distrito, o.rua, o.cpostal, (ta.assinatura IS NOT NULL and " +
+                "o.estado = 'EM PROGRESSO') AS verification from OBRA o join TERMO_ABERTURA ta on ta.oId = o.id"
     )
         .mapTo(WorkSimplified::class.java)
         .list()
 
     override fun getWorkListCouncil(location: Location, user: User) = handle.createQuery(
         "select o.id, o.nome, ta.titular_licenca as owner, o.tipo, o.descricao, o.estado, o.freguesia, o.concelho," +
-                " o.distrito, o.rua, o.cpostal, ta.assinatura IS NOT NULL AS " +
-                "verification from OBRA o join TERMO_ABERTURA ta on ta.oId = o.id join MEMBRO m on ta.oid = m.oid " +
+                " o.distrito, o.rua, o.cpostal, (ta.assinatura IS NOT NULL and o.estado = 'EM PROGRESSO') AS verification " +
+                "from OBRA o join TERMO_ABERTURA ta on ta.oId = o.id join MEMBRO m on ta.oid = m.oid " +
                 "where (freguesia = :parish and concelho = :county and distrito = :district) or (m.oId = o.id and m.uid = :id)"
     )
         .bind("id", user.id)
@@ -372,6 +373,36 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         .mapTo(MemberProfile::class.java)
         .singleOrNull()
 
+    override fun editWork(workId: UUID, editWork: EditWorkInputModel) {
+        handle.createUpdate(
+            "update OBRA set nome = :nome, descricao = :descricao, tipo = :tipo, freguesia = :parish, concelho = :county, " +
+                    "distrito = :district, rua = :street, cpostal = :postalCode where id = :id"
+        )
+            .bind("id", workId.toString())
+            .bind("nome", editWork.name)
+            .bind("descricao", editWork.description)
+            .bind("tipo", editWork.type)
+            .bind("parish", editWork.address.location.parish)
+            .bind("county", editWork.address.location.county)
+            .bind("district", editWork.address.location.district)
+            .bind("street", editWork.address.street)
+            .bind("postalCode", editWork.address.postalCode)
+            .execute()
+
+        handle.createUpdate(
+            "delete from INTERVENIENTE where oId = :id"
+        )
+            .bind("id", workId.toString())
+            .execute()
+        val tId = handle.createQuery(
+            "select id from TERMO_ABERTURA where oId = :id"
+        )
+            .bind("id", workId.toString())
+            .mapTo(Int::class.java)
+            .single()
+        insertTechnicians(editWork.technicians, tId, workId)
+    }
+
     private fun addCouncilAsMember(workId: UUID, location: Location) {
         val councilId = handle.createQuery(
             "select id from UTILIZADOR where freguesia = :parish and " +
@@ -391,10 +422,10 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
     }
 
     private fun insertTechnicians(technicians: List<Technician>, tId: Int, workId: UUID) {
-        val query = StringBuilder("insert into INTERVENIENTE(tId, oId, nome, role, associacao, numero) values ")
+        val query = StringBuilder("insert into INTERVENIENTE(tId, oId, nome, email, role, associacao, numero) values ")
         technicians.forEach {
             query.append(
-                "($tId, '$workId', '${it.name}', '${it.role}', '${it.association.name}', " +
+                "($tId, '$workId', '${it.name}', '${it.email}', '${it.role}', '${it.association.name}', " +
                         "${it.association.number}), "
             )
         }

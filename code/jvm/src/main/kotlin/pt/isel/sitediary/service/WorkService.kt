@@ -7,12 +7,8 @@ import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.user.checkOwner
 import pt.isel.sitediary.domainmodel.user.containsMemberById
 import pt.isel.sitediary.domainmodel.work.*
-import pt.isel.sitediary.domainmodel.work.WorkState.IN_PROGRESS
-import pt.isel.sitediary.domainmodel.work.WorkState.VERIFYING
-import pt.isel.sitediary.model.FileModel
-import pt.isel.sitediary.model.InviteInputModel
-import pt.isel.sitediary.model.MemberInputModel
-import pt.isel.sitediary.model.OpeningTermInputModel
+import pt.isel.sitediary.domainmodel.work.WorkState.*
+import pt.isel.sitediary.model.*
 import pt.isel.sitediary.repository.transaction.TransactionManager
 import pt.isel.sitediary.utils.Errors
 import pt.isel.sitediary.utils.Result
@@ -49,7 +45,7 @@ class WorkService(
                     id = UUID.randomUUID(),
                     name = openingTerm.name,
                     description = openingTerm.description ?: "",
-                    state = if (openingTerm.verification && !openingTerm.checkCouncilWork(user)) VERIFYING else IN_PROGRESS,
+                    state = if (!openingTerm.verification.isNullOrBlank() && !openingTerm.checkCouncilWork(user)) VERIFYING else IN_PROGRESS,
                     type = WorkType.fromString(openingTerm.type) ?: WorkType.RESIDENCIAL,
                     address = Address(
                         Location(
@@ -76,12 +72,13 @@ class WorkService(
         } else if (user.role != "ADMIN" && !work.members.containsMemberById(user.id)) {
             failure(Errors.notMember)
         } else {
-            val workResult = work.copy( log = work.log.map { log ->
+            val workResult = work.copy(log = work.log.map { log ->
                 if (log.editable && checkIfEditTimeElapsed(log.createdAt, clock)) {
                     it.logRepository.finish(log.id)
                     log.copy(editable = false)
                 } else {
-                    log
+                    if (log.author.id != user.id) log.copy(editable = false)
+                    else log
                 }
             })
             success(workResult)
@@ -139,7 +136,7 @@ class WorkService(
             members.forEach { m ->
                 val id = userRep.getUserByEmail(m.email)?.id
                 if (id != null) {
-                    if (!work.members.containsMemberById(id)){
+                    if (!work.members.containsMemberById(id)) {
                         workRep.inviteMember(id, m.role, workId)
                     }
                 } else {
@@ -194,7 +191,7 @@ class WorkService(
     }
 
 
-    fun getOpeningTerm(workId: UUID, user: User) = transactionManager.run {
+    /*fun getOpeningTerm(workId: UUID, user: User) = transactionManager.run {
         val workRep = it.workRepository
         val work = workRep.getById(workId)
         if (work == null) {
@@ -205,7 +202,7 @@ class WorkService(
             val openingTerm = workRep.getOpeningTerm(workId)
             success(openingTerm)
         }
-    }
+    }*/
 
     fun finishWork(workId: UUID, userId: Int) = transactionManager.run {
         val workRep = it.workRepository
@@ -275,6 +272,34 @@ class WorkService(
                     failure(Errors.memberNotFound)
                 } else {
                     success(profile)
+                }
+            }
+        }
+
+    fun editWork(workId: UUID, editWork: EditWorkInputModel, user: User) =
+        transactionManager.run {
+            val workRep = it.workRepository
+            val addressRep = it.addressRepository
+            val work = workRep.getById(workId)
+            if (work == null) {
+                failure(Errors.workNotFound)
+            } else if (!work.members.checkOwner(user.id)) {
+                failure(Errors.notAdmin)
+            } else {
+                if (work.state == FINISHED) {
+                    failure(Errors.workAlreadyFinished)
+                } else {
+                    val location = addressRep.getLocation(
+                        editWork.address.location.parish,
+                        editWork.address.location.county,
+                        editWork.address.location.district
+                    )
+                    if (location == null) {
+                        failure(Errors.invalidLocation)
+                    } else {
+                        workRep.editWork(workId, editWork)
+                        success(Unit)
+                    }
                 }
             }
         }

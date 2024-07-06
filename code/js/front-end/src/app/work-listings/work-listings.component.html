@@ -1,9 +1,8 @@
 <mat-card class="card">
   <mat-card-header>
     <mat-card-title>{{ workListing.name }}
-      <span class="accepted">
-        <mat-icon *ngIf="workListing.verification">verified</mat-icon>
-      </span>
+        <mat-icon style="margin-left: 10px; color: green;" *ngIf="workListing.verification">verified</mat-icon>
+      <mat-icon style="margin-left: 10px; color: red;" *ngIf="workListing.state === 'REJEITADA'">cancel</mat-icon>
     </mat-card-title>
   </mat-card-header>
   <mat-card-content style="display: flex; flex-direction: column; justify-content: space-between; height: 100%">

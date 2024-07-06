@@ -261,7 +261,33 @@ class WorkController(private val service: WorkService) {
         }
     }
 
-    @GetMapping(Paths.Work.GET_OPENING_TERM)
+    @PutMapping(Paths.Work.EDIT_WORK)
+    @Operation(summary = "Start Work", description = "Used to start a new work")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "201", description = "Work created successfully",
+                content = [
+                    Content(mediaType = "application/json", schema = Schema(implementation = Unit::class))
+                ]
+            ),
+            ApiResponse(
+                responseCode = "400", description = "Invalid parameters",
+                content = [
+                    Content(mediaType = "application/json", schema = Schema(implementation = Errors::class))
+                ]
+            )
+        ]
+    )
+    fun editWork(@PathVariable id: UUID, @RequestBody work: EditWorkInputModel, @Parameter(hidden = true) user: AuthenticatedUser)
+            : ResponseEntity<*> {
+        val res = service.editWork(id, work, user.user)
+        return handleResponse(res) {
+            ResponseEntity.ok(it)
+        }
+    }
+
+    /*@GetMapping(Paths.Work.GET_OPENING_TERM)
     @Operation(
         summary = "Get opening term of a specific work",
         description = "Used to fetch the opening term of a work"
@@ -296,7 +322,7 @@ class WorkController(private val service: WorkService) {
                 .body(ByteArrayResource(outPutStream.toByteArray()))*/
             ResponseEntity.ok(it)
         }
-    }
+    }*/
 
     @PostMapping(Paths.Work.FINISH_WORK)
     @Operation(summary = "Finish Work", description = "Concludes the Work and creates a closing term for that work")

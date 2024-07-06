@@ -1,8 +1,13 @@
-import {Component, inject, ViewChild} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {freguesias, concelhos} from '../utils/utils';
 import {HttpService} from "../utils/http.service";
-import {InputWork, MyErrorStateMatcher, Technician, WorkTypes} from "../utils/classes";
-import {FormControl, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {
+  InputWork,
+  Role,
+  TechnicianCreation,
+  WorkTypes
+} from "../utils/classes";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatButton, MatFabButton} from "@angular/material/button";
 import {MatError, MatFormField, MatLabel, MatOption, MatSelect} from "@angular/material/select";
 import {CommonModule, NgForOf, NgIf} from "@angular/common";
@@ -14,12 +19,15 @@ import {
   MatHeaderCell, MatHeaderCellDef,
   MatHeaderRow,
   MatHeaderRowDef,
-  MatRow, MatRowDef, MatTable
+  MatRow, MatRowDef, MatTable, MatTableDataSource
 } from "@angular/material/table";
 import {MatInput} from "@angular/material/input";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
 import {NavigationService} from "../utils/navService";
+import {MatDivider} from "@angular/material/divider";
+import {ConfirmDialogComponent} from "../utils/dialogComponent";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-create-work',
@@ -48,65 +56,58 @@ import {NavigationService} from "../utils/navService";
     MatRowDef,
     MatTable,
     MatHeaderCellDef,
-    MatError
+    MatError,
+    MatDivider
   ],
   templateUrl: './create-work.component.html',
   styleUrl: './create-work.component.css'
 })
 export class CreateWorkComponent {
 
-  roles = new FormControl('', [
-    Validators.required,
-    Validators.pattern(/^(ARQUITETURA|ESTABILIDADE|ELETRICIDADE|GÁS|CANALIZAÇÃO|TELECOMUNICAÇÕES|TERMICO|ACUSTICO|TRANSPORTES)$/)
-  ]);
-
-  matcher = new MyErrorStateMatcher()
-  @ViewChild(MatTable, { static: false }) table: MatTable<Technician> | undefined;
-
-  addTechName = '';
-  addTechRole: string | null = this.roles.value;
-  addTechAssociation = '';
-  addTechNumber = 0;
-
+  techCreationList: TechnicianCreation[] = [{
+    position: 0,
+    name: '',
+    email: '',
+    role: 'Responsável de Fiscalização',
+    association: {name: '', number: 0},
+    submitted: false
+  }, {
+    position: 1,
+    name: '',
+    email: '',
+    role: 'Coordenador',
+    association: {name: '', number: 0},
+    submitted: false
+  }, {
+    position: 2,
+    name: '',
+    email: '',
+    role: 'Diretor de Obra',
+    association: {name: '', number: 0},
+    submitted: false
+  }];
   work: InputWork;
   types = Object.values(WorkTypes);
-  displayedColumns: string[] = ['name', 'role', 'association', 'delete'];
-
+  roles = ['Membro', 'Espectador', 'Técnico de Arquitetura', 'Técnico de Estabilidade',
+    'Técnico de Alimentação e Destribuição de Energia Elétrica', 'Técnico de Instalações de Gás',
+    'Técnico de Instalações de Água e Esgotos', 'Técnico de Instalações de Telecomunicações',
+    'Técnico de Comportamento Térmico', 'Técnico de Condicionamento Acústico',
+    'Técnico de Instalações de Eletromecânicas de Transporte']
 
   httpService = inject(HttpService)
-
-  diretor :Technician = {
-    name: '',
-    role: 'DIRETOR',
-    association: {
-      name: '',
-      number: 0
-    }
-  }
-
-  fiscal :Technician = {
-    name: '',
-    role: 'FISCALIZAÇÃO',
-    association: {
-      name: '',
-      number: 0
-    }
-  }
-
-  coordenador :Technician = {
-    name: '',
-    role: 'COORDENADOR',
-    association: {
-      name: '',
-      number: 0
-    }
-  }
 
   counties: string[] = [];
   parishes: string[] = [];
   districts: string[] = [];
 
-  constructor(private errorHandle: ErrorHandler, private navService: NavigationService) {
+  dataSource: MatTableDataSource<TechnicianCreation> = new MatTableDataSource<TechnicianCreation>(this.techCreationList);
+  displayedColumns: string[] = ['name', 'email', 'role', 'association', 'actions'];
+
+  constructor(
+    private dialog: MatDialog,
+    private errorHandle: ErrorHandler,
+    private navService: NavigationService
+  ) {
     this.work = {
       name: '',
       type: '',
@@ -127,13 +128,8 @@ export class CreateWorkComponent {
         postalCode: ''
       },
       technicians: [],
-      verification: false,
-      verificationDoc: null
+      verification: null,
     }
-
-    this.roles.valueChanges.subscribe(value => {
-      this.addTechRole = value;
-    });
     concelhos.forEach((value, key) => {
       value.forEach((v: string) => this.counties.push(v));
       this.districts.push(key);
@@ -141,6 +137,82 @@ export class CreateWorkComponent {
     freguesias.forEach((value) => {
       value.forEach((x: string) => this.parishes.push(x));
     })
+  }
+
+  addRowTech() {
+    const tech = {
+      position: this.techCreationList.length + 1,
+      name: '',
+      email: '',
+      role: '',
+      association: {name: '', number: 0},
+      submitted: false
+    }
+    this.techCreationList.push(tech);
+    this.dataSource.data = this.techCreationList;
+  }
+
+  removeTech(id: number) {
+    const tech = this.techCreationList.find(t => t.position === id);
+    const role = tech!.role
+    if (this.checkResponsability(tech!.position)){
+      this.techCreationList.find(t => t.position === id)!.submitted = false;
+      this.work.technicians = this.work.technicians.filter(t => t.email !== tech?.email);
+      this.dataSource.data = this.techCreationList;
+    } else {
+      if (role !== 'Membro' && role !== 'Espectador'){
+        this.roles.push(Role.composeRole(role))
+      }
+      this.techCreationList = this.techCreationList.filter(t => t.position !== id);
+      this.work.technicians = this.work.technicians.filter(t => t.email !== tech?.email);
+      this.dataSource.data = this.techCreationList;
+    }
+  }
+
+  submitTech(id: number){
+    const techCreation = this.techCreationList.find(t => t.position === id);
+    if (techCreation){
+      if (this.checkTech(techCreation)){
+        const tech = {
+          name: techCreation.name,
+          email: techCreation.email,
+          role: Role.decomposeRole(techCreation.role),
+          association: techCreation.association
+        }
+        this.work.technicians.push(tech);
+        this.techCreationList.find(t => t.position === id)!.submitted = true;
+        this.roles = this.roles.filter(role => role !== techCreation.role || role === 'Membro' || role === 'Espectador')
+      }
+    }
+  }
+
+  checkTech(tech: TechnicianCreation): boolean {
+    let errorMessage = '';
+    if (tech.role === '' || tech.email === '' || tech.name === '' || tech.association.name === '') {
+      errorMessage = 'É necessário preencher todos os campos.'
+    } else if(isNaN(tech.association.number) || tech.association.number <= 0) {
+      errorMessage = 'Número de associado inválido.'
+    } else if (tech.role !== 'Membro' && tech.role !== 'Espectador' &&
+      tech.role !== 'Diretor de Obra' && tech.role !== 'Coordenador' &&
+      tech.role !== 'Responsável de Fiscalização' && this.roles.find(role => role === tech.role) === undefined){
+      errorMessage = 'Já existe um técnico com esse papel.'
+    } else if (this.work.technicians.find(t => t.email === tech.email) !== undefined){
+      errorMessage = 'Já existe um técnico para esse email.'
+    } else if(this.work.technicians.find(t => t.association.name === tech.association.name && t.association.number === tech.association.number) !== undefined){
+      errorMessage = 'Já existe um técnico com nessa associação com o mesmo número de associado.'
+    }
+    if (errorMessage.length === 0) {
+      return true
+    } else {
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        data: {
+          title: 'Erro',
+          message: errorMessage,
+        },
+      });
+      dialogRef.afterClosed().subscribe(() => {});
+      return false
+    }
   }
 
   formatZipCode() {
@@ -201,46 +273,13 @@ export class CreateWorkComponent {
     });
   }
 
-  addTechnician() {
-    if (!this.addTechName || !this.addTechAssociation || !this.addTechNumber || !this.addTechRole ||
-      this.work.technicians.some(t => t.role === this.addTechRole)) {
-      return;
-    }
-    this.work.technicians.push({
-      name: this.addTechName,
-      role: this.addTechRole,
-      association: {
-        name: this.addTechAssociation,
-        number: this.addTechNumber
-      }
-    });
-    this.addTechName = '';
-    this.roles.reset();
-    this.addTechAssociation = '';
-    this.addTechNumber = 0;
-    this.table?.renderRows();
-  }
-
-  validateTechnician(tec: Technician) {
-    if (tec.name !== '' && tec.association.name !== '' && Number(tec.association.number) !== 0) {
-      if (!this.work.technicians.some(t => t.role === tec.role)) this.work.technicians.push(tec);
-    }
-    else {
-      this.work.technicians = this.work.technicians.filter(t => t.role !== tec.role);
-    }
-    this.table?.renderRows();
-  }
-
-  onRemoveTechnician(role: string) {
-    this.work.technicians = this.work.technicians.filter(t => t.role !== role);
-    this.table?.renderRows();
-  }
-
-  toggleVerification(event: any) {
-    this.work.verification = event.target.checked;
-  }
-
   onBackCall() {
-    this.navService.back()
+    this.navService.navWork()
   }
+
+  checkResponsability(id: number) {
+    const role = this.techCreationList.find(t => t.position === id)!.role;
+    return role === 'Diretor de Obra' || role === 'Coordenador' || role === 'Responsável de Fiscalização';
+  }
+
 }

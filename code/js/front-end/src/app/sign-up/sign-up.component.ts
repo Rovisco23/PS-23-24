@@ -52,8 +52,9 @@ export class SignUpComponent {
   httpService = inject(HttpService);
 
   constructor(private router: Router, private errorHandle: ErrorHandler, private navService: NavigationService) {
-    concelhos.forEach((value) => {
+    concelhos.forEach((value, key) => {
       value.forEach((v: string) => this.counties.push(v));
+      this.districts.push(key);
     })
     freguesias.forEach((value) => {
       value.forEach((x: string) => this.parishes.push(x));

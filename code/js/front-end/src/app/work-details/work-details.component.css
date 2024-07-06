@@ -181,42 +181,13 @@ form {
 }
 
 .container {
-  width: 50%; /* adjust the width to your liking */
-  margin: 20px ; /* center the container */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   padding: 20px;
-  background-color: transparent; /* light gray background */
-  border: 1px solid #ddd; /* light gray border */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* subtle shadow */
 }
 
-.row {
-  display: flex; /* make the row a flex container */
-  justify-content: space-between; /* space the columns evenly */
-}
 
-.col-md-6 {
-  flex-basis: 50%; /* make each column take up 50% of the row */
-  margin: 20px; /* add some margin between columns */
-}
-
-table {
-  width: 100%; /* make the table take up the full width of the column */
-  border-collapse: collapse; /* remove the border spacing */
-}
-
-th, td {
-  border: 1px solid transparent; /* light gray border */
-  padding: 10px; /* add some padding to the cells */
-  text-align: left; /* left-align the text */
-}
-
-th {
-  background-color: transparent; /* light gray background for headers */
-}
-
-td {
-  background-color: transparent; /* white background for data cells */
-}
 
 strong {
   font-weight: bold; /* make the strong text bold */
@@ -315,4 +286,196 @@ mat-list-item .item-icon {
 
 matListItemTitle {
   vertical-align: center;
+}
+technicians {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+
+.technicians table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.technicians .table-edit {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+label {
+  font-size: 14px;
+}
+
+.title {
+  margin-top: 5px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+
+mat-label {
+  font-size: 14px;
+  margin-right: 15px;
+  margin-left: 20px;
+}
+
+.topic {
+  margin-bottom: 10px;
+}
+
+.topic div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.topic-orientation {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.technicians th, .technicians td {
+  border: 1px solid #FF7A00;
+  text-align: center;
+  width: 25% !important;
+  max-width: 25% !important;
+}
+
+.technicians .table-edit th, .technicians .table-edit td {
+  border: 1px solid #FF7A00;
+  text-align: center;
+  width: 20% !important;
+  max-width: 20% !important;
+}
+
+.technicians th {
+  background-color: #11113D;
+  color: #FF7A00;
+}
+
+.technicians tr:nth-child(even) {
+  background-color: #f3f3f3;
+}
+
+
+.invite-tech-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.invite-tech-button .fab-style {
+  width: 30px;
+  height: 30px;
+  border-radius: 75%;
+  background-color: #11113D;
+  color: #FF7A00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #FF7A00;
+}
+
+.invite-tech-button .fab-style:hover {
+  background-color: #FF7A00;
+  color: white;
+}
+
+.submit {
+  display: block;
+  margin: 20px auto;
+  padding: 10px;
+  background-color: #11113D;
+  border-radius: 5px;
+  border: 2px solid #FF7A00;
+  color: #FF7A00;
+  user-select: none;
+  text-align: center;
+}
+
+.submit:hover {
+  background-color: #FF7A00;
+  color: white;
+  cursor: pointer;
+}
+
+.edit-input {
+  height: 17px;
+  max-width: 140px;
+  border: 1px solid #11113D;
+  border-radius: 5px;
+  padding: 5px 5px;
+}
+
+select {
+  max-height: 30px;
+  width: 200px;
+  border: 1px solid #11113D;
+  border-radius: 5px;
+  padding: 5px 5px;
+}
+
+.remove-button .fab-style {
+  width: 30px;
+  height: 30px;
+  border-radius: 75%;
+  background-color: white;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.remove-button .fab-style {
+  width: 30px;
+  height: 30px;
+  border-radius: 75%;
+  background-color: white;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-button .fab-style:hover {
+  background-color: red;
+  color: white;
+}
+
+.submit-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.submit-button .fab-style {
+  width: 30px;
+  height: 30px;
+  border-radius: 75%;
+  background-color: white;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submit-button .fab-style:hover {
+  background-color: green;
+  color: white;
 }

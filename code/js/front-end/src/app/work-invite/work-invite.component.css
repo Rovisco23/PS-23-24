@@ -52,26 +52,47 @@
 }
 
 .remove-button {
-  height: auto;
-  width: auto;
-  background-color: white;
-  color: black;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
-.remove-button:hover {
+.remove-button .fab-style {
+  width: 30px;
+  height: 30px;
+  border-radius: 75%;
+  background-color: white;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-button .fab-style:hover {
   background-color: red;
   color: white;
 }
 
 .submit-button {
-  height: auto;
-  width: auto;
-  background-color: white;
-  color: black;
-  margin-right: 20px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
-.submit-button:hover {
+.submit-button .fab-style {
+  width: 30px;
+  height: 30px;
+  border-radius: 75%;
+  background-color: white;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submit-button .fab-style:hover {
   background-color: green;
   color: white;
 }

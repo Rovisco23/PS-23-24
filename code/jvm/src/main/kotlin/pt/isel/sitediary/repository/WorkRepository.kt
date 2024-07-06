@@ -2,6 +2,7 @@ package pt.isel.sitediary.repository
 
 import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.work.*
+import pt.isel.sitediary.model.EditWorkInputModel
 import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.OpeningTermInputModel
 import java.sql.Timestamp
@@ -11,7 +12,7 @@ interface WorkRepository {
     fun createWork(work: WorkInput, createdAt: Timestamp, openingTerm: OpeningTermInputModel, user: User)
     fun getById(id: UUID): Work?
     fun getWorkList(userId: Int): List<WorkSimplified>
-    fun getOpeningTerm(workId: UUID): OpeningTerm
+    //fun getOpeningTerm(workId: UUID): OpeningTerm
     fun inviteMembers(invites: List<Invite>)
     fun getInviteList(userId: Int): List<InviteSimplified>
     fun getInvite(workId: UUID, userId: Int): InviteSimplified?
@@ -33,4 +34,5 @@ interface WorkRepository {
     fun acceptPending(workId: UUID, user: String, dateAuth: Timestamp)
     fun declinePending(workId: UUID, user: String, dateAuth: Timestamp)
     fun getMemberProfile(workId: String, member: String): MemberProfile?
+    fun editWork(workId: UUID, editWork: EditWorkInputModel)
 }

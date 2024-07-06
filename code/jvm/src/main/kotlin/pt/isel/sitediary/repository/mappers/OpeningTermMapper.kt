@@ -28,6 +28,7 @@ class OpeningTermMapper : RowMapper<OpeningTerm> {
                     val aux = it.removeSurrounding(x, x).split(";")
                     Technician(
                         name = aux[1],
+                        email = aux[0],
                         role = aux[2],
                         association = Association(
                             name = aux[3],

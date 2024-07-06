@@ -64,11 +64,6 @@ import {MatDialog} from "@angular/material/dialog";
 })
 export class WorkInviteComponent {
 
-  /*roles = new FormControl('', [
-    Validators.required,
-    Validators.pattern(/^(ESPECTADOR|MEMBRO|ARQUITETURA|ESTABILIDADE|ELETRICIDADE|GÁS|CANALIZAÇÃO|TELECOMUNICAÇÕES|TERMICO|ACUSTICO|TRANSPORTES)$/)
-  ]);*/
-
   roles = ['ESPECTADOR', 'MEMBRO', 'ARQUITETURA', 'ESTABILIDADE', 'ELETRICIDADE', 'GÁS', 'CANALIZAÇÃO', 'TELECOMUNICAÇÕES', 'TERMICO', 'ACUSTICO', 'TRANSPORTES'];
 
   workId: string = '';

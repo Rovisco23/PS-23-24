@@ -12,7 +12,7 @@ export interface Classes {
   verification: boolean;
 }
 
-interface Address {
+export interface Address {
   location: Location,
   street: String,
   postalCode: String
@@ -54,6 +54,23 @@ export interface Work {
   technicians: Technician[];
   images: number;
   docs: number;
+  verification: boolean;
+}
+
+export interface Technician {
+  name: string,
+  email: string,
+  role: string,
+  association: Association
+}
+
+export interface TechnicianCreation {
+  position: number,
+  name: string,
+  email: string,
+  role: string,
+  association: Association,
+  submitted: boolean
 }
 
 export interface LogEntrySimplified {
@@ -119,6 +136,17 @@ export interface Company {
   num: number;
 }
 
+export interface EditWorkInputModel {
+  name: string,
+  description: string,
+  address: Address,
+  type: string,
+  licenseHolder: string,
+  company: Company,
+  building: string,
+  technicians: Technician[]
+}
+
 export interface User {
   id: string
   username: string,
@@ -141,14 +169,7 @@ export interface InputWork {
   building: string;
   address: Address;
   technicians: Technician[];
-  verification: boolean,
-  verificationDoc: string | null
-}
-
-export interface Technician {
-  name: string;
-  role: string;
-  association: Association;
+  verification: string | null
 }
 
 export enum WorkTypes {

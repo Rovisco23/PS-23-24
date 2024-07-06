@@ -78,10 +78,11 @@ class WorkMapper : RowMapper<Work> {
                         val aux = it.removeSurrounding(x, x).split(";")
                         Technician(
                             name = aux[0],
-                            role = aux[1],
+                            email = aux[1],
+                            role = aux[2],
                             association = Association(
-                                name = aux[2],
-                                number = aux[3].toInt()
+                                name = aux[3],
+                                number = aux[4].toInt()
                             )
                         )
                     }

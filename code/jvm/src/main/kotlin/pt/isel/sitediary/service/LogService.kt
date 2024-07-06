@@ -64,7 +64,10 @@ class LogService(
                 logRepository.finish(logId)
                 val aux = log.copy(editable = false)
                 success(aux)
-            } else success(log)
+            } else {
+                if (log.author.id != user.id) success(log.copy(editable = false))
+                else success(log)
+            }
         }
     }
 

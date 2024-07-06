@@ -38,11 +38,11 @@
             </button>
           </th>
           <td mat-cell *matCellDef="let element">
-            <button *ngIf="!element.submitted" class="submit-button" mat-fab (click)="submitInvite(element.position)">
-              <span class="material-icons">check</span>
+            <button *ngIf="!element.submitted" class="submit-button" (click)="submitInvite(element.position)">
+              <span class="material-icons fab-style">check</span>
             </button>
-            <button class="remove-button" mat-fab (click)="removeInvite(element.position)">
-              <mat-icon>delete</mat-icon>
+            <button class="remove-button" (click)="removeInvite(element.position)">
+              <span class="material-icons fab-style">delete</span>
             </button>
           </td>
         </ng-container>

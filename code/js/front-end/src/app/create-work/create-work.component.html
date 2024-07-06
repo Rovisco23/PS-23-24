@@ -1,219 +1,153 @@
-<div class="header">
-  <button (click)="onBackCall()" class="small-button">
-    <mat-icon class="small-icon">arrow_back</mat-icon>
-  </button>
-  <h2 class="title">Criar Obra</h2>
-</div>
-<div class="content">
-  <div class="left-section">
-    <form (ngSubmit)="create()" class="example-form">
-      <div class="input-container">
-        <div class="input">
-          <label for="name" class="title">Nome da Obra</label>
-          <br>
-          <input type="text" id="name" name="name" [(ngModel)]="work.name" required>
-        </div>
-        <div class="input">
-          <div>
-            <label for="street" class="title">Tipo da Obra</label>
-            <br>
-            <select name="Type" [(ngModel)]="work.type">
-              <ng-container *ngFor="let type of types">
-                <option [value]="type">{{ type }}</option>
-              </ng-container>
-            </select>
-          </div>
-        </div>
-        <div class="input">
-          <label for="description" class="title">Descrição</label>
-          <br>
-          <input type="text" id="description" name="description" [(ngModel)]="work.description" required>
-        </div>
-        <div class="input">
-          <label for="holder" class="title">Titular da Licença</label>
-          <br>
-          <input type="text" id="holder" name="holder" [(ngModel)]="work.holder" required>
-        </div>
-        <div class="input">
-          <label for="company" class="title">Empresa</label>
-          <br>
-          <input style="margin-right: 3px" type="text" id="company" name="company" [(ngModel)]="work.company.name"
-                 placeholder="Nome" required>
-          <input type="text" id="companyNum" name="companyNum" [(ngModel)]="work.company.num"
-                 [ngModel]="work.company.num === 0? null : work.company.num"
-                 placeholder="Número" required>
-        </div>
-        <!--<div class="input">
-          <label for="street" class="title">Rua</label>
-          <br>
-          <input style="margin-right: 3px" type="text" id="street" name="street" [(ngModel)]="work.address.street"
-                 required>
-          <input type="text" id="zipCode" name="zipCode" [(ngModel)]="work.address.postalCode" required>
-          <br>
-          <label for="building" class="title">Prédio</label>
-          <input type="text" id="building" name="building" [(ngModel)]="work.building" required>
-        </div> -->
-        <div class="same-line-input-container">
-          <div class="input">
-            <label for="street" class="title">Rua</label>
-            <br>
-            <input style="margin-right: 3px" type="text" id="street" name="street" [(ngModel)]="work.address.street"
-                   required>
-            <input style="margin-right: 3px" type="text" name="postalCode" (input)="formatZipCode()"
-                   maxlength="8" [(ngModel)]="work.address.postalCode" required>
-          </div>
-          <div class="input">
-            <label for="building" class="title">Prédio</label>
-            <br>
-            <input type="text" id="building" name="building" [(ngModel)]="work.building" required>
-          </div>
-        </div>
-        <div class="same-line-input-container">
-          <div class="input">
-            <label for="district" class="title">Selecionar Distrito</label>
-            <br>
-            <select class="selector" id="district" name="district" [(ngModel)]="work.address.location.district">
-              <ng-container *ngFor="let distrito of districts">
-                <option [value]="distrito">{{ distrito }}</option>
-              </ng-container>
-            </select>
-          </div>
-          <div class="input">
-            <label for="county" class="title">Selecionar Concelho</label>
-            <br>
-            <select class="selector" id="county" name="county" [(ngModel)]="work.address.location.county"
-                    (change)="updateLocation(true)">
-              <ng-container *ngFor="let concelho of counties">
-                <option [value]="concelho">{{ concelho }}</option>
-              </ng-container>
-            </select>
-          </div>
-          <div class="input">
-            <label for="parish" class="title">Selecionar Freguesia</label>
-            <br>
-            <select class="selector" id="parish" name="Parish" [(ngModel)]="work.address.location.parish"
-                    (change)="updateLocation(false)">
-              <ng-container *ngFor="let freguesia of parishes">
-                <option [value]="freguesia">{{ freguesia }}</option>
-              </ng-container>
-            </select>
-          </div>
-        </div>
-        <div class="input">
-          <label for="nomeFiscal" class="title">Diretor</label>
-          <br>
-          <input style="margin-right: 3px" type="text" id="nomeDiretor" name="nomeDiretor" placeholder="Nome"
-                 [(ngModel)]="diretor.name" (ngModelChange)="validateTechnician(diretor)" required>
-          <input style="margin-right: 3px" type="text" id="associacaoNomeDiretor" name="associacaoNomeDiretor"
-                 placeholder="Nome da Associação"
-                 [(ngModel)]="diretor.association.name" (ngModelChange)="validateTechnician(diretor)" required>
-          <input type="text" id="associacaoNumDiretor" name="associacaoNumDiretor" placeholder="Número de Associado"
-                 [(ngModel)]="diretor.association.number"
-                 [ngModel]="diretor.association.number === 0? null : diretor.association.number"
-                 (ngModelChange)="validateTechnician(diretor)"
-                 required>
-        </div>
-        <div class="input">
-          <label for="nomeFiscal" class="title">Responsável de Fiscalização</label>
-          <br>
-          <input style="margin-right: 3px" type="text" id="nomeFiscal" name="nomeFiscal" placeholder="Nome"
-                 [(ngModel)]="fiscal.name" (ngModelChange)="validateTechnician(fiscal)" required>
-          <input style="margin-right: 3px" type="text" id="associacaoNomeFiscal" name="associacaoNomeFiscal"
-                 placeholder="Nome da Associação"
-                 [(ngModel)]="fiscal.association.name" (ngModelChange)="validateTechnician(fiscal)" required>
-          <input type="text" id="associacaoNumFiscal" name="associacaoNumFiscal" placeholder="Número de Associado"
-                 [(ngModel)]="fiscal.association.number"
-                 [ngModel]="fiscal.association.number === 0? null : fiscal.association.number"
-                 (ngModelChange)="validateTechnician(fiscal)"
-                 required>
-        </div>
-        <div class="input">
-          <label for="nomeCoord" class="title">Coordenador</label>
-          <br>
-          <input style="margin-right: 3px" type="text" id="nomeCoord" name="nomeCoord" placeholder="Nome"
-                 [(ngModel)]="coordenador.name" (ngModelChange)="validateTechnician(coordenador)"
-                 required>
-          <input style="margin-right: 3px" type="text" id="associacaoNomeCoord" name="associacaoNomeCoord"
-                 placeholder="Nome da Associação"
-                 [(ngModel)]="coordenador.association.name" (ngModelChange)="validateTechnician(coordenador)" required>
-          <input type="text" id="associacaoNumCoord" name="associacaoNumCoord" placeholder="Número de Associado"
-                 [(ngModel)]="coordenador.association.number"
-                 [ngModel]="coordenador.association.number === 0? null : coordenador.association.number"
-                 (ngModelChange)="validateTechnician(coordenador)"
-                 required>
-        </div>
-        <div class="input">
-          <label for="nomeCoord" class="title">Verificação da Câmara</label>
-          <br>
-          <input type="checkbox" (change)="toggleVerification($event)">
-          <input type="text" id="verificationDoc" name="verificationDoc" placeholder="Documento de Verificação"
-                 [(ngModel)]="work.verificationDoc">
-        </div>
-        <button mat-flat-button color="accent" class="submit-button" type="submit">Criar</button>
-      </div>
-    </form>
+<div class="container">
+  <div class="header">
+    <button mat-button (click)="onBackCall()" class="small-button">
+      <mat-icon class="small-icon">arrow_back</mat-icon>
+      Voltar
+    </button>
   </div>
-  <div class="right-section">
-    <div class="input">
-      <h3 class="title">Adicionar Técnico</h3>
-      <br>
-      <input style="margin-right: 3px" type="text" id="addAuthName" name="addAuthName" placeholder="Nome"
-             [(ngModel)]="addTechName" required>
-      <input style="margin-right: 3px" type="text" id="addAuthNameAssociation" name="addAuthNameAssociation"
-             placeholder="Nome da Associação" [(ngModel)]="addTechAssociation" required>
-      <input type="text" id="addAuthAssociatedNum" name="addAuthAssociatedNum" placeholder="Número de Associado"
-             [(ngModel)]="addTechNumber"
-             [ngModel]="addTechNumber === 0? null : addTechNumber" required>
-      <mat-form-field>
-        <mat-label>Escolha um Papel</mat-label>
-        <mat-select [formControl]="roles" [errorStateMatcher]="matcher">
-          <mat-option value=""></mat-option>
-          <mat-option value="ARQUITETURA">Arquitetura</mat-option>
-          <mat-option value="ESTABILIDADE">Estabilidade</mat-option>
-          <mat-option value="ELETRICIDADE">Eletricidade</mat-option>
-          <mat-option value="GÁS">Gás</mat-option>
-          <mat-option value="CANALIZAÇÃO">Canalização</mat-option>
-          <mat-option value="TELECOMUNICAÇÕES">Telecomunicações</mat-option>
-          <mat-option value="TERMICO">Térmico</mat-option>
-          <mat-option value="ACUSTICO">Acústico</mat-option>
-          <mat-option value="TRANSPORTES">Transportes</mat-option>
-        </mat-select>
-        <mat-error *ngIf="roles.hasError('required')">
-          Escolher um papel é <strong>obrigatório</strong>
-        </mat-error>
-      </mat-form-field>
-      <button class="add-button" mat-fab (click)="addTechnician()">
-        <mat-icon>add</mat-icon>
-      </button>
+  <div class="content">
+    <h3>Criar Obra</h3>
+    <div class="description">
+      <h4 class="title">Informação Geral</h4>
+      <div class="topic">
+        <div class="topic-orientation">
+          <mat-label>Nome da Obra:</mat-label>
+          <input type="text" id="workName" name="workName" placeholder="Nome da obra" [(ngModel)]="work.name" required>
+        </div>
+        <div class="topic-orientation">
+          <mat-label>Descrição:</mat-label>
+          <input type="text" id="workDescription" name="workDescription" placeholder="Descrição"
+                 [(ngModel)]="work.description" required>
+        </div>
+        <div class="topic-orientation">
+          <mat-label>Verificação da Câmara:</mat-label>
+          <input type="text" id="verification" name="verification" placeholder="Doc. de verificação"
+                 [(ngModel)]="work.verification" required>
+        </div>
+        <div class="topic-orientation">
+          <mat-label>Titular da Licença:</mat-label>
+          <input type="text" id="holder" name="holder" placeholder="Titular da licença" [(ngModel)]="work.holder"
+                 required>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <h4 class="title">Detalhes da Obra</h4>
+      <div class="topic">
+        <div>
+          <mat-label>Empresa de Construção:</mat-label>
+          <input type="text" id="companyName" name="companyName" placeholder="Nome da empresa"
+                 [(ngModel)]="work.company.name" required>
+          <input style="width: 5%; margin-left: 5px" type="text" id="companyNum" placeholder="N° do alvará"
+                 name="companyNum"
+                 [(ngModel)]="work.company.num" [ngModel]="work.company.num === 0? null : work.company.num" required>
+        </div>
+        <div>
+          <mat-label>Tipo de Obra:</mat-label>
+          <select name="Type" [(ngModel)]="work.type">
+            <ng-container *ngFor="let type of types">
+              <option [value]="type">{{ type }}</option>
+            </ng-container>
+          </select>
+        </div>
+        <div>
+          <mat-label>Localização:</mat-label>
+          <input type="text" id="building" placeholder="Prédio" name="building" [(ngModel)]="work.building" required>
+          <input style="margin-left: 5px" type="text" id="street" placeholder="Rua" name="street" [(ngModel)]="work.address.street" required>
+          <input style="width: 5%; margin-left: 5px" type="text" id="postalCode" placeholder="Código Postal" name="postalCode" (input)="formatZipCode()"
+                 [(ngModel)]="work.address.postalCode" required>
+          <select placeholder="Distrito" style="margin-left: 5px" class="selector" id="district" name="district"
+                  [(ngModel)]="work.address.location.district">
+            <option value="" disabled selected>Distrito</option>
+            <ng-container *ngFor="let distrito of districts">
+              <option [value]="distrito">{{ distrito }}</option>
+            </ng-container>
+          </select>
+          <select placeholder="Concelho" style="margin-left: 5px" class="selector" id="county" name="county"
+                  [(ngModel)]="work.address.location.county" (change)="updateLocation(true)">
+            <option value="" disabled selected>Concelho</option>
+            <ng-container *ngFor="let concelho of counties">
+              <option [value]="concelho">{{ concelho }}</option>
+            </ng-container>
+          </select>
+          <select placeholder="Freguesia" style="margin-left: 5px" class="selector" id="parish" name="Parish"
+                  [(ngModel)]="work.address.location.parish" (change)="updateLocation(false)">
+            <option value="" disabled selected>Freguesia</option>
+            <ng-container *ngFor="let freguesia of parishes">
+              <option [value]="freguesia">{{ freguesia }}</option>
+            </ng-container>
+          </select>
+        </div>
+      </div>
     </div>
-    <div class="table-container">
-      <table *ngIf="work" mat-table [dataSource]="work.technicians" class="table">
+    <mat-divider></mat-divider>
+    <div class="technicians">
+      <h4 class="title">Equipa Técnica</h4>
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef> Nome</th>
-          <td mat-cell *matCellDef="let element"> {{ element.name }}</td>
+          <th mat-header-cell *matHeaderCellDef>Nome</th>
+          <td mat-cell *matCellDef="let element">
+            <div *ngIf="element.submitted">{{ element.name }}</div>
+            <div *ngIf="!element.submitted">
+              <input type="text" id="name" name="name" placeholder="Nome" [(ngModel)]="element.name">
+            </div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <td mat-cell *matCellDef="let element">
+            <div *ngIf="element.submitted">{{ element.email }}</div>
+            <div *ngIf="!element.submitted">
+              <input type="text" id="email" name="email" placeholder="Email" [(ngModel)]="element.email">
+            </div>
+          </td>
         </ng-container>
         <ng-container matColumnDef="role">
-          <th mat-header-cell *matHeaderCellDef> Papel</th>
-          <td mat-cell *matCellDef="let element"> {{ element.role }}</td>
+          <th mat-header-cell *matHeaderCellDef>Papel na Obra</th>
+          <td mat-cell *matCellDef="let element">
+            <div *ngIf="element.submitted || checkResponsability(element.position)">{{ element.role }}</div>
+            <div *ngIf="!element.submitted && !checkResponsability(element.position)">
+              <select id="seletorOpcoes" [(ngModel)]="element.role">
+                <option *ngFor="let opcao of roles" [value]="opcao">{{ opcao }}</option>
+              </select>
+            </div>
+          </td>
         </ng-container>
         <ng-container matColumnDef="association">
-          <th mat-header-cell *matHeaderCellDef> Associação</th>
-          <td mat-cell *matCellDef="let element"> {{ element.association.name }} - {{ element.association.number }}</td>
-        </ng-container>
-        <ng-container matColumnDef="delete">
-          <th mat-header-cell *matHeaderCellDef> Remover</th>
+          <th mat-header-cell *matHeaderCellDef>Associação</th>
           <td mat-cell *matCellDef="let element">
-            <button
-              *ngIf="element.role !== 'FISCALIZAÇÃO' && element.role !== 'COORDENADOR' && element.role !== 'DIRETOR'"
-              class="remove-button"
-              mat-fab (click)="onRemoveTechnician(element.role)">
-              <mat-icon>delete</mat-icon>
+            <div *ngIf="element.submitted">{{ element.association.name }} | Número de
+              associado {{ element.association.number }}
+            </div>
+            <div *ngIf="!element.submitted">
+              <input type="text" id="associationName" name="associationName" placeholder="Nome da associação"
+                     [(ngModel)]="element.association.name">
+              <input type="number" id="associationNum" name="associationNum" placeholder="Número de associado"
+                     [(ngModel)]="element.association.number">
+            </div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>
+            <button class="add-button" mat-fab (click)="addRowTech()">
+              <mat-icon>add</mat-icon>
+            </button>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <button *ngIf="!element.submitted" class="submit-button" (click)="submitTech(element.position)">
+              <span class="material-icons fab-style">check</span>
+            </button>
+            <button *ngIf="!checkResponsability(element.position) || element.submitted" class="remove-button"
+                    (click)="removeTech(element.position)">
+              <span class="material-icons fab-style">delete</span>
             </button>
           </td>
         </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
+      <button class="submit" (click)="(create())">Criar</button>
+      <div style="height: 20px;"></div>
     </div>
   </div>
 </div>
+

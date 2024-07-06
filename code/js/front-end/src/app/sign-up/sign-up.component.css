@@ -31,11 +31,6 @@ body {
   align-items: center; /* Center items horizontally */
 }
 
-.input {
-  margin: 5px;
-  text-align: center;
-}
-
 .selector {
   margin: 5px;
   width: 200px;

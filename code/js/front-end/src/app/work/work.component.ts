@@ -38,7 +38,6 @@ export class WorkComponent {
   filteredWorkList: Classes[] = [];
   inputValue: string = '';
   httpService: HttpService = inject(HttpService);
-  numberOfVerifications: number = 0;
   workElements: number = 6;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;

@@ -15,6 +15,17 @@ data class WorkOutputModel(
     val address: Address
 )
 
+data class EditWorkInputModel(
+    val name: String,
+    val description: String,
+    val address: Address,
+    val type: String,
+    val licenseHolder: String,
+    val company: ConstructionCompany,
+    val building: String,
+    val technicians: List<Technician>
+)
+
 data class OpeningTermInputModel(
     val name: String,
     val type: String,
@@ -24,13 +35,12 @@ data class OpeningTermInputModel(
     val building: String,
     val address: Address,
     val technicians: List<Technician>,
-    val verification: Boolean,
-    val verificationDoc: String?
+    val verification: String?
 ) {
     fun checkParams() =
         name.isBlank() || holder.isBlank() || company.name.isBlank() || company.num <= 0 ||
                 building.isBlank() || address.location.parish.isBlank() || address.street.isBlank() ||
-                address.postalCode.isBlank() || address.location.county.isBlank() || verification && verificationDoc.isNullOrBlank()
+                address.postalCode.isBlank() || address.location.county.isBlank()
 
     fun checkTechnicians() =
         technicians.filter { it.role == "DIRETOR" || it.role == "FISCALIZAÇÃO" || it.role == "COORDENADOR" }.size < 3
