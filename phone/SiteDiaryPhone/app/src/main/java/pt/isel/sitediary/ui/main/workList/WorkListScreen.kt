@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Verified
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -104,15 +105,26 @@ fun WorkCard(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = work.name,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            maxLines = 1,
-                            textAlign = TextAlign.Start,
-                            color = Color(255, 122, 0),
-                            modifier = Modifier
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                text = work.name,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                textAlign = TextAlign.Start,
+                                color = Color(255, 122, 0),
+                                modifier = Modifier
+                            )
+                            if (work.verification) Icon(
+                                imageVector = Icons.Default.Verified,
+                                contentDescription = "Verification Icon",
+                                tint = Color.Green
+                            )
+                        }
                         Text(
                             text = work.state.toString(),
                             style = MaterialTheme.typography.bodyMedium,
@@ -189,7 +201,8 @@ fun PreviewWorkListScreen() {
                     ),
                     street = "Rua xpto",
                     postalCode = "1234-567",
-                )
+                ),
+                verification = true
             )
         ),
         searchText = "",

@@ -20,7 +20,6 @@ import pt.isel.sitediary.ui.theme.SiteDiaryPhoneTheme
 import pt.isel.sitediary.ui.work.create.CreateLogScreen
 import pt.isel.sitediary.ui.work.details.DetailsScreen
 import pt.isel.sitediary.ui.work.log.LogsView
-import java.io.File
 
 @Composable
 fun WorkDetailsView(
@@ -44,7 +43,7 @@ fun WorkDetailsView(
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
-                        TopBarWorkDetails(title = work.name)
+                        TopBarWorkDetails(title = work.name, work.verification)
                     },
                     bottomBar = {
                         BottomNavigationBar(

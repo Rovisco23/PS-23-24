@@ -123,12 +123,14 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         Log.v(ContentValues.TAG, "WorkDetailsActivity.onResume() called")
-        if (flag && selectedFiles.isNotEmpty()) {
-            Log.v(ContentValues.TAG, "EditProfilePicture called")
-            viewModel.editProfilePicture(selectedFiles)
-        } else {
-            Log.v(ContentValues.TAG, "Update Log Files called")
-            viewModel.uploadFiles(selectedFiles)
+        if (selectedFiles.isNotEmpty()) {
+            if (flag) {
+                Log.v(ContentValues.TAG, "EditProfilePicture called")
+                viewModel.editProfilePicture(selectedFiles)
+            } else {
+                Log.v(ContentValues.TAG, "Update Log Files called")
+                viewModel.uploadFiles(selectedFiles)
+            }
         }
     }
 

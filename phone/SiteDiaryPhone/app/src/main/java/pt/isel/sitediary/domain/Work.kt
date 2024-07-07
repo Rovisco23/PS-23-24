@@ -8,7 +8,8 @@ data class WorkListDto(
     val name: String,
     val owner: String,
     val state: String,
-    val address: Address
+    val address: Address,
+    val verification: String
 )
 
 fun Array<WorkListDto>.toWorkSimplifiedList() = map {
@@ -17,7 +18,8 @@ fun Array<WorkListDto>.toWorkSimplifiedList() = map {
         it.name,
         it.owner,
         WorkState.fromString(it.state)!!,
-        it.address
+        it.address,
+        it.verification.toBoolean()
     )
 }
 
@@ -26,7 +28,8 @@ data class WorkSimplified(
     val name: String,
     val owner: String,
     val state: WorkState,
-    val address: Address
+    val address: Address,
+    val verification: Boolean
 )
 
 data class Work(

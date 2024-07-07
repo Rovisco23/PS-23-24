@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Verified
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -167,7 +168,7 @@ fun TopBarLogGoBack(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarWorkDetails(title: String) {
+fun TopBarWorkDetails(title: String, verification: Boolean) {
     TopAppBar(
         title = {
             Box(
@@ -184,6 +185,11 @@ fun TopBarWorkDetails(title: String) {
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
                     )
+                    if (verification) Icon(
+                        imageVector = Icons.Default.Verified,
+                        contentDescription = "Verification Icon",
+                        tint = Color.Green
+                    )
                 }
             }
         },
@@ -199,7 +205,7 @@ private fun TopBarPreview() {
     SiteDiaryPhoneTheme {
         Column {
             DefaultTopBar()
-            TopBarWorkDetails("Casa da D. Maria")
+            TopBarWorkDetails("Casa da D. Maria", true)
             TopBarGoBack()
         }
     }
