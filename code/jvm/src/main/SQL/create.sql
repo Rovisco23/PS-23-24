@@ -20,7 +20,7 @@ create table UTILIZADOR
     username          varchar(255) unique,
     nif               integer unique,
     role              varchar(8),
-    password          varchar(15),
+    password          varchar(256),
     nome              varchar(50),
     apelido           varchar(50),
     associacao_nome   varchar(255),

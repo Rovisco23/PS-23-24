@@ -31,32 +31,42 @@ class UserService(
     private val usersDomain: UsersDomain,
     private val clock: Clock
 ) {
-    fun createUser(user: SignUpInputModel): UserCreationResult = transactionManager.run {
+    fun createUser(input: SignUpInputModel): UserCreationResult = transactionManager.run {
         val rep = it.usersRepository
-        if (user.checkParameters()) {
+        if (input.checkParameters()) {
             failure(Errors.invalidParameter)
-        } else if (rep.checkUsernameTaken(user.username) != null) { // username == null
+        } else if (!usersDomain.isSafePassword(input.password)) {
+            failure(Errors.invalidPassword)
+        } else if (rep.checkUsernameTaken(input.username) != null) { // username == null
             failure(Errors.usernameAlreadyInUse)
-        } else if (user.email.isBlank() || rep.checkEmailInUse(user.email)) {
+        } else if (input.email.isBlank() || rep.checkEmailInUse(input.email)) {
             failure(Errors.emailAlreadyInUse)
-        } else if (user.role != "OPERÁRIO" && user.role != "CÂMARA") {
+        } else if (input.role != "OPERÁRIO" && input.role != "CÂMARA") {
             failure(Errors.invalidRole)
-        } else if (!checkPhoneNumberFormat(user.phone)) {
+        } else if (!checkPhoneNumberFormat(input.phone)) {
             failure(Errors.invalidPhoneNumber)
-        } else if (!user.checkNifSize()) {
+        } else if (!input.checkNifSize()) {
             failure(Errors.invalidNif)
         } else {
-            val location = it.addressRepository.getLocation(user.parish, user.county, user.district)
+            val location = it.addressRepository.getLocation(input.parish, input.county, input.district)
             if (location == null) {
                 failure(Errors.invalidLocation)
-            } else if (rep.checkDummyEmail(user.email)) { // email != null
-                rep.updateDummyUser(user, location, user.role != "OPERÁRIO")
-                success(Unit)
             } else {
-                rep.createUser(user, location, user.role != "OPERÁRIO")
-                success(Unit)
+                val user = encodePassword(input)
+                if (rep.checkDummyEmail(input.email)) { // email != null
+                    rep.updateDummyUser(user, location, input.role != "OPERÁRIO")
+                    success(Unit)
+                } else {
+                    rep.createUser(user, location, input.role != "OPERÁRIO")
+                    success(Unit)
+                }
             }
         }
+    }
+
+    private fun encodePassword(input: SignUpInputModel): SignUpInputModel {
+        val password = usersDomain.hashPassword(input.password)
+        return input.copy(password = password)
     }
 
     /*
@@ -82,7 +92,8 @@ class UserService(
         return transactionManager.run {
             val uRep = it.usersRepository
             val tRep = it.tokenRepository
-            val userId = uRep.login(username, password)
+            val encodedPassword = usersDomain.hashPassword(password)
+            val userId = uRep.login(username, encodedPassword)
             if (userId == null) {
                 failure(Errors.invalidLoginParamCombination)
             } else {

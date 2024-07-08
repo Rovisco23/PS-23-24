@@ -13,6 +13,12 @@ class UsersDomain(
     private val config: UsersDomainConfig
 ) {
 
+    fun hashPassword(password: String): String = tokenEncoder.hashPassword(password)
+
+    //fun encodePassword(password: String): String = passwordEncoder.encode(password)
+
+    //fun validatePassword(password: String, encodedPassword: String): Boolean = passwordEncoder.matches(password, encodedPassword)
+
     fun generateTokenValue(): String =
         ByteArray(config.tokenSizeInBytes).let { byteArray ->
             SecureRandom.getInstanceStrong().nextBytes(byteArray)
