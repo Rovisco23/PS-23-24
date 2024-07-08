@@ -7,7 +7,7 @@ data class Address(
 )
 
 data class Location(
-    val district: String,
-    val county: String,
-    val parish: String
+    val district: String?,
+    val county: String?,
+    val parish: String?
 )

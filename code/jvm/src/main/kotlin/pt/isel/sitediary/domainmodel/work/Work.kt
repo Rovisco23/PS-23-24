@@ -118,8 +118,8 @@ data class ConstructionCompany(
 )
 
 data class Association(
-    val name: String,
-    val number: Int
+    val name: String?,
+    val number: Int?
 )
 
 data class OpeningTerm(

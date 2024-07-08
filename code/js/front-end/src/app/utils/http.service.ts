@@ -247,4 +247,9 @@ export class HttpService {
     const headers = this.getTokenHeader();
     return this.http.put<any>(`http://localhost:8080/api/work/edit/${workId}`, work, {headers: headers})
   }
+
+  changeWorkImage(id: string, form: FormData) {
+    const headers = this.getTokenHeader();
+    return this.http.put<any>(`http://localhost:8080/api/work-image/${id}`, form, {headers: headers})
+  }
 }

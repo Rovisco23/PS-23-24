@@ -29,6 +29,7 @@ import {SelectionModel} from "@angular/cdk/collections";
 import {ConfirmDialogComponent} from "../utils/dialogComponent";
 import {MatDialog} from "@angular/material/dialog";
 import {WorkDetailsComponent} from "../work-details/work-details.component";
+import {SnackBar} from "../utils/snackBarComponent";
 
 @Component({
   selector: 'app-create-log-entry',
@@ -72,7 +73,8 @@ export class CreateLogEntryComponent {
     private errorHandle: ErrorHandler,
     private navService: NavigationService,
     private workComponent: WorkDetailsComponent,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private snackBar: SnackBar
   ) {
     this.workComponent.tabIndex = 0;
     const parentRoute = this.route.parent;
@@ -101,6 +103,7 @@ export class CreateLogEntryComponent {
     ).subscribe((response: HttpResponse<any>) => {
       const headers = response.headers.get("Location") || '';
       this.navService.navUrl('work-details/'+ this.workId +'/'+headers);
+      this.snackBar.openSnackBar('Registo criado com sucesso.');
     });
   }
 

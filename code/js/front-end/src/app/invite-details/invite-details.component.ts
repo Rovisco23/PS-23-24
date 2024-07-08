@@ -1,5 +1,5 @@
 import {Component, inject} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {HttpService} from "../utils/http.service";
 import {AnswerInvite, InviteSimplified, Role} from "../utils/classes";
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/material/card";
@@ -14,6 +14,7 @@ import {NgIf} from "@angular/common";
 import {ErrorHandler} from "../utils/errorHandle";
 import {catchError, throwError} from "rxjs";
 import {NavigationService} from "../utils/navService";
+import {SnackBar} from "../utils/snackBarComponent";
 
 @Component({
   selector: 'app-invite-details',
@@ -43,7 +44,12 @@ export class InviteDetailsComponent {
 
   httpService = inject(HttpService);
 
-  constructor(private route: ActivatedRoute, private router: Router, private errorHandle: ErrorHandler, private navService: NavigationService) {
+  constructor(
+    private route: ActivatedRoute,
+    private errorHandle: ErrorHandler,
+    private navService: NavigationService,
+    private snackBar: SnackBar
+  ) {
     const inviteId =  String(this.route.snapshot.params['id']);
     this.httpService.getInvite(inviteId).pipe(
       catchError(error => {
@@ -82,6 +88,7 @@ export class InviteDetailsComponent {
       })
     ).subscribe(() => {
       this.navService.navWorkDetails(this.invite?.workId ?? '')
+      this.snackBar.openSnackBar('Convite aceite.');
     });
   }
 
@@ -100,6 +107,7 @@ export class InviteDetailsComponent {
       })
     ).subscribe(() => {
       this.navService.navWork()
+      this.snackBar.openSnackBar('Convite recusado.');
     });
   }
 

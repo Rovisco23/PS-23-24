@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, ElementRef, inject, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink, RouterOutlet} from '@angular/router';
 import {
   Address, Company, EditWorkInputModel,
@@ -37,6 +37,7 @@ import {
   MatTableDataSource
 } from "@angular/material/table";
 import {concelhos, freguesias} from "../utils/utils";
+import {SnackBar} from "../utils/snackBarComponent";
 
 @Component({
   selector: 'app-work-details',
@@ -81,7 +82,10 @@ export class WorkDetailsComponent {
   work: Work | undefined;
   filteredLogList: LogEntrySimplified[] = [];
   filteredMembers: Member[] = [];
-  workSrc = ''
+  workSrc = '';
+  form = new FormData();
+  editSrc: string | undefined = undefined;
+  newImageFile: any = ''
   searchLogValue = '';
   searchMemberValue = '';
   tabIndex = 0;
@@ -93,6 +97,9 @@ export class WorkDetailsComponent {
   displayedColumns: string[] = ['role', 'name', 'association', 'actions'];
   displayedColumnsEdit: string[] = ['name', 'email', 'role', 'association', 'actions'];
   editWork: boolean = false;
+  editPicture: boolean = false;
+  @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement> | undefined;
+
 
   types = Object.values(WorkTypes);
   roles = ['Membro', 'Espectador', 'Técnico de Arquitetura', 'Técnico de Estabilidade',
@@ -124,7 +131,15 @@ export class WorkDetailsComponent {
     }
   };
 
-  constructor(private datePipe: DatePipe, private router: Router, private urlService: OriginalUrlService, private navService: NavigationService, private dialog: MatDialog, private errorHandle: ErrorHandler) {
+  constructor(
+    private datePipe: DatePipe,
+    private router: Router,
+    private urlService: OriginalUrlService,
+    private navService: NavigationService,
+    private dialog: MatDialog,
+    private snackBar: SnackBar,
+    private errorHandle: ErrorHandler
+  ) {
     const workListingId = String(this.route.snapshot.params['id']);
     const uri = this.router.url.split('/')
     if (uri[3] === 'invite-members') this.tabIndex = 2
@@ -189,6 +204,19 @@ export class WorkDetailsComponent {
 
   toggleEditWork() {
     this.editWork = !this.editWork;
+  }
+
+  onImageChange(event: any) {
+    this.newImageFile = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      this.editSrc = reader.result as string;
+    };
+
+    if (!this.editPicture) this.editPicture = true
+    reader.readAsDataURL(this.newImageFile);
+    this.fileInput!.nativeElement.value = '';
   }
 
   changeTab(id: number) {
@@ -324,7 +352,8 @@ export class WorkDetailsComponent {
         })
       ).subscribe(() => {
         this.loadWork(this.work!.id)
-      });
+        this.snackBar.openSnackBar("Técnico convidado com sucesso")
+      })
     }
   }
 
@@ -347,6 +376,7 @@ export class WorkDetailsComponent {
     ).subscribe(() => {
         this.loadWork(this.work!.id)
         this.toggleEditWork()
+        this.snackBar.openSnackBar("Obra editada com sucesso")
       }
     )
   }
@@ -510,7 +540,7 @@ export class WorkDetailsComponent {
     return techList;
   }
 
-  checkCanRemoveTech(role: string){
+  checkCanRemoveTech(role: string) {
     return this.work?.members.find(member => member.role === role) === undefined
   }
 
@@ -525,5 +555,25 @@ export class WorkDetailsComponent {
       })
     })
     return techList;
+  }
+
+  onSubmitImageChange() {
+    this.form.append('file', this.newImageFile);
+    this.httpService.changeWorkImage(this.work!.id, this.form).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe(() => {
+      this.editPicture = false
+      this.workSrc = this.editSrc ?? '';
+      this.editSrc = undefined;
+      this.snackBar.openSnackBar('Imagem de obra alterada com sucesso.')
+    });
+  }
+
+  onCancelImageChange() {
+    this.editPicture = false;
+    this.editSrc = undefined;
   }
 }

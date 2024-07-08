@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {Router, RouterLink, RouterLinkActive} from "@angular/router";
+import {RouterLink, RouterLinkActive} from "@angular/router";
 import {HttpService} from "../utils/http.service";
 import {HttpClientModule} from "@angular/common/http";
 import {MatButton} from "@angular/material/button";
@@ -9,6 +9,7 @@ import {concelhos, freguesias} from "../utils/utils";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
 import {NavigationService} from "../utils/navService";
+import {SnackBar} from "../utils/snackBarComponent";
 
 @Component({
   selector: 'app-sign-up',
@@ -51,7 +52,11 @@ export class SignUpComponent {
 
   httpService = inject(HttpService);
 
-  constructor(private router: Router, private errorHandle: ErrorHandler, private navService: NavigationService) {
+  constructor(
+    private errorHandle: ErrorHandler,
+    private navService: NavigationService,
+    private snackBar: SnackBar
+  ) {
     concelhos.forEach((value, key) => {
       value.forEach((v: string) => this.counties.push(v));
       this.districts.push(key);
@@ -112,6 +117,8 @@ export class SignUpComponent {
     ).subscribe(() => {
       console.log("Sign Up Finished");
       this.navService.navLogin()
+      this.snackBar.openSnackBar('Conta criada com sucesso.');
+
     })
   }
 

@@ -9,6 +9,7 @@ import {catchError, throwError} from "rxjs";
 import {HttpService} from "../utils/http.service";
 import {MatIconButton} from "@angular/material/button";
 import {NavigationService} from "../utils/navService";
+import {SnackBar} from "../utils/snackBarComponent";
 
 @Component({
   selector: 'app-work-verifications',
@@ -36,7 +37,11 @@ export class WorkVerificationsComponent {
 
   inputValue: string = '';
 
-  constructor(private navService: NavigationService, private errorHandle: ErrorHandler) {
+  constructor(
+    private navService: NavigationService,
+    private errorHandle: ErrorHandler,
+    private snackBar: SnackBar
+  ) {
     this.httpService.getWorksPending().pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
@@ -61,12 +66,14 @@ export class WorkVerificationsComponent {
   onAccept(id: string) {
     this.httpService.answerPendingWork(id, true).pipe().subscribe(() => {
       this.navService.navWork();
+      this.snackBar.openSnackBar('Obra aceite.');
     })
   }
 
   onDecline(id: string) {
     this.httpService.answerPendingWork(id, false).pipe().subscribe(() => {
       this.navService.navWork();
+      this.snackBar.openSnackBar('Obra rejeitada.');
     })
   }
 

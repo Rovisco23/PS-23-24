@@ -46,15 +46,15 @@ data class EditProfileInputModel(
 
 data class GetUserModel(
     val id: Int,
-    val username: String,
-    val nif: Int,
+    val username: String?,
+    val nif: Int?,
     val email: String,
     val phone: String?,
-    val firstName: String,
-    val lastName: String,
-    val role: String,
-    val association: Association,
-    val location: Location
+    val firstName: String?,
+    val lastName: String?,
+    val role: String?,
+    val association: Association?,
+    val location: Location?
 )
 
 data class UserAndTokenModel(

@@ -1,5 +1,5 @@
 import {Component, inject} from '@angular/core';
-import {Router, RouterLink} from "@angular/router";
+import {RouterLink} from "@angular/router";
 import {HttpService} from "../utils/http.service";
 import {FormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
@@ -8,6 +8,7 @@ import {OriginalUrlService} from "../utils/originalUrl.service";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
 import {NavigationService} from "../utils/navService";
+import {SnackBar} from "../utils/snackBarComponent";
 
 @Component({
   selector: 'app-login',
@@ -28,7 +29,12 @@ export class LoginComponent {
 
   httpService = inject(HttpService);
 
-  constructor(private router: Router, private originalUrlService: OriginalUrlService, private errorHandle: ErrorHandler, private navService: NavigationService) {}
+  constructor(
+    private originalUrlService: OriginalUrlService,
+    private errorHandle: ErrorHandler,
+    private navService: NavigationService,
+    private snackBar: SnackBar
+  ) {}
 
   login(): void {
     this.httpService.login(this.username, this.password).pipe(
@@ -55,8 +61,10 @@ export class LoginComponent {
       if (redirect) {
         this.originalUrlService.resetOriginalUrl()
         this.navService.navUrl(redirect)
+        this.snackBar.openSnackBar('Login efetuado com sucesso.');
       } else {
         this.navService.navWork()
+        this.snackBar.openSnackBar('Login efetuado com sucesso.');
       }
     })
   }

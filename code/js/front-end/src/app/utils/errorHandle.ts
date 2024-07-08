@@ -7,17 +7,20 @@ import {NavigationService} from "./navService";
   providedIn: 'root',
 })
 export class ErrorHandler {
+  loginRequired = false;
 
   constructor(private dialog: MatDialog, private navService: NavigationService) {
   }
 
   handleError(error: any) {
     if (error.status === 401) {
-      localStorage.removeItem('token')
-      localStorage.removeItem('role')
-      localStorage.removeItem('userId')
-      localStorage.removeItem('username');
-        this.handleErrorInternal(error, () => this.navService.navLogin())
+      if (!this.loginRequired){
+        this.loginRequired = true;
+        this.handleErrorInternal(error, () => {
+          this.loginRequired = false;
+          this.navService.navLogin()
+        })
+      }
 
     } else if (error.status === 404 || error.status === 400 || error.status === 403) {
       const nothing = () => {

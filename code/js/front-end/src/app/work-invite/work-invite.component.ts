@@ -26,6 +26,7 @@ import {MatCheckbox} from "@angular/material/checkbox";
 import {MatMenu, MatMenuItem} from "@angular/material/menu";
 import {ConfirmDialogComponent} from "../utils/dialogComponent";
 import {MatDialog} from "@angular/material/dialog";
+import {SnackBar} from "../utils/snackBarComponent";
 
 @Component({
   selector: 'app-work-invite',
@@ -78,7 +79,8 @@ export class WorkInviteComponent {
     private route: ActivatedRoute,
     private navService: NavigationService,
     private errorHandle: ErrorHandler,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private snackBar: SnackBar
   ) {
     const parentRoute = this.route.parent;
     if (parentRoute) {
@@ -156,6 +158,7 @@ export class WorkInviteComponent {
       this.workComponent.loadWork(this.workId);
       this.workComponent.showLayout = true;
       this.navService.navWorkDetails(this.workId);
+      this.snackBar.openSnackBar('Convites enviados com sucesso.');
     });
   }
 

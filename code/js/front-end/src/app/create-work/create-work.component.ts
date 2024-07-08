@@ -28,6 +28,7 @@ import {NavigationService} from "../utils/navService";
 import {MatDivider} from "@angular/material/divider";
 import {ConfirmDialogComponent} from "../utils/dialogComponent";
 import {MatDialog} from "@angular/material/dialog";
+import {SnackBar} from "../utils/snackBarComponent";
 
 @Component({
   selector: 'app-create-work',
@@ -106,7 +107,8 @@ export class CreateWorkComponent {
   constructor(
     private dialog: MatDialog,
     private errorHandle: ErrorHandler,
-    private navService: NavigationService
+    private navService: NavigationService,
+    private snackBar: SnackBar
   ) {
     this.work = {
       name: '',
@@ -270,6 +272,7 @@ export class CreateWorkComponent {
     ).subscribe(() => {
       console.log("Work Created!");
       this.navService.navWork()
+      this.snackBar.openSnackBar('Obra criada com sucesso.');
     });
   }
 

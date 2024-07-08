@@ -35,4 +35,5 @@ interface WorkRepository {
     fun declinePending(workId: UUID, user: String, dateAuth: Timestamp)
     fun getMemberProfile(workId: String, member: String): MemberProfile?
     fun editWork(workId: UUID, editWork: EditWorkInputModel)
+    fun checkInvited(id: Int, workId: UUID): Boolean
 }

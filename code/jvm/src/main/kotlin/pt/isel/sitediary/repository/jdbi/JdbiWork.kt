@@ -153,6 +153,14 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         handle.createUpdate(query.toString().dropLast(2)).execute()
     }
 
+    override fun checkInvited(id: Int, workId: UUID): Boolean = handle.createQuery(
+        "select count(*) from MEMBRO where uId = :uId and oId = :oId and pendente = 'true'"
+    )
+        .bind("uId", id)
+        .bind("oId", workId.toString())
+        .mapTo(Int::class.java)
+        .single() > 0
+
     override fun getInviteList(userId: Int): List<InviteSimplified> = handle.createQuery(
         "with Table1 as (select Obra.id, Obra.nome as workTitle, Membro.role from Obra join Membro on Obra.id = " +
                 "Membro.oId where Membro.uId = :uId and pendente = :pending), Table2 as (select Obra.id, " +
@@ -208,11 +216,12 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
 
                 // Adicionar ao Interveniente
                 handle.createUpdate(
-                    "insert into INTERVENIENTE(tId, oId, nome, role, associacao, numero) values(:tId, :oId, :nome, " +
+                    "insert into INTERVENIENTE(tId, oId, nome, email, role, associacao, numero) values(:tId, :oId, :nome, :email, " +
                             ":role, :association,:num)"
                 )
                     .bind("tId", tId)
                     .bind("oId", inv.workId.toString())
+                    .bind("email", user.email)
                     .bind("nome", name)
                     .bind("role", inv.role)
                     .bind("association", user.association.name)
@@ -400,6 +409,15 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
             .bind("id", workId.toString())
             .mapTo(Int::class.java)
             .single()
+        val cId = getCompanyId(editWork.company.name, editWork.company.num)
+        handle.createUpdate(
+            "update TERMO_ABERTURA set titular_licenca = :titular, empresa_construcao = :empresa, predio = :predio where oId = :id"
+        )
+            .bind("titular", editWork.licenseHolder)
+            .bind("empresa", cId)
+            .bind("predio", editWork.building)
+            .bind("id", workId.toString())
+            .execute()
         insertTechnicians(editWork.technicians, tId, workId)
     }
 

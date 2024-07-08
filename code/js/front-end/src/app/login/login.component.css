@@ -52,7 +52,7 @@ body {
 .button {
   margin-top: 10px; /* Add some space between inputs and button */
   background-color: #FF7A00;
-  color: white;
+  color: white !important;
   margin-left: 60px;
 }
 

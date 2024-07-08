@@ -57,3 +57,7 @@
 .accepted {
   color: green;
 }
+
+button {
+  border-radius: 20%;
+}

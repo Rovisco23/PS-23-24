@@ -114,8 +114,8 @@ class UserService(
                         TokenExternalInfo(
                             tokenValue = tokenValue,
                             userId = userId,
-                            username = user.username,
-                            role = user.role,
+                            username = user.username ?: "",
+                            role = user.role ?: "",
                             tokenExpiration = usersDomain.getTokenExpiration(newToken)
                         )
                     )
@@ -172,9 +172,9 @@ class UserService(
             failure(Errors.invalidPhoneNumber)
         } else {
             val location = it.addressRepository.getLocation(
-                editUser.location.parish,
-                editUser.location.county,
-                editUser.location.district
+                editUser.location.parish ?: "",
+                editUser.location.county ?: "",
+                editUser.location.district ?: ""
             )
             if (location == null) {
                 failure(Errors.invalidLocation)

@@ -34,9 +34,9 @@ class WorkService(
         } else {
             val location =
                 addressRep.getLocation(
-                    openingTerm.address.location.parish,
-                    openingTerm.address.location.county,
-                    openingTerm.address.location.district
+                    openingTerm.address.location.parish ?: "",
+                    openingTerm.address.location.county ?: "",
+                    openingTerm.address.location.district ?: ""
                 )
             if (location == null) {
                 failure(Errors.invalidLocation)
@@ -136,7 +136,7 @@ class WorkService(
             members.forEach { m ->
                 val id = userRep.getUserByEmail(m.email)?.id
                 if (id != null) {
-                    if (!work.members.containsMemberById(id)) {
+                    if (!work.members.containsMemberById(id) && !workRep.checkInvited(id, workId)) {
                         workRep.inviteMember(id, m.role, workId)
                     }
                 } else {
@@ -290,9 +290,9 @@ class WorkService(
                     failure(Errors.workAlreadyFinished)
                 } else {
                     val location = addressRep.getLocation(
-                        editWork.address.location.parish,
-                        editWork.address.location.county,
-                        editWork.address.location.district
+                        editWork.address.location.parish ?: "",
+                        editWork.address.location.county ?: "",
+                        editWork.address.location.district ?: ""
                     )
                     if (location == null) {
                         failure(Errors.invalidLocation)

@@ -16,6 +16,7 @@ import {MatButton, MatIconButton} from "@angular/material/button";
 import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
 import {NavigationService} from "../utils/navService";
+import {SnackBar} from "../utils/snackBarComponent";
 
 @Component({
   selector: 'app-pending-users',
@@ -44,7 +45,11 @@ export class PendingUsersComponent {
 
   filteredPendingList: Pending[] = [];
 
-  constructor(private errorHandle: ErrorHandler, private navService: NavigationService) {
+  constructor(
+    private errorHandle: ErrorHandler,
+    private navService: NavigationService,
+    private snackBar: SnackBar
+  ) {
     this.httpService.getPendingUsers().pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
@@ -78,7 +83,7 @@ export class PendingUsersComponent {
       })
     ).subscribe(() => {
       this.filteredPendingList = this.filteredPendingList.filter(item => item.id !== id);
-      console.log("Accepted");
+      this.snackBar.openSnackBar('Conta de câmara aceite.');
     });
   }
 
@@ -90,7 +95,7 @@ export class PendingUsersComponent {
       })
     ).subscribe(() => {
       this.filteredPendingList = this.filteredPendingList.filter(item => item.id !== id);
-      console.log("Declined");
+      this.snackBar.openSnackBar('Conta de câmara rejeitada.');
     });
   }
 

@@ -39,8 +39,8 @@ data class OpeningTermInputModel(
 ) {
     fun checkParams() =
         name.isBlank() || holder.isBlank() || company.name.isBlank() || company.num <= 0 ||
-                building.isBlank() || address.location.parish.isBlank() || address.street.isBlank() ||
-                address.postalCode.isBlank() || address.location.county.isBlank()
+                building.isBlank() || address.location.parish?.isBlank() ?: "".isBlank()|| address.street.isBlank() ||
+                address.postalCode.isBlank() || address.location.county?.isBlank() ?: "".isBlank()
 
     fun checkTechnicians() =
         technicians.filter { it.role == "DIRETOR" || it.role == "FISCALIZAÇÃO" || it.role == "COORDENADOR" }.size < 3

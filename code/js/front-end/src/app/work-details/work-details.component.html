@@ -12,8 +12,26 @@
       <div class="sidebar-content">
         <span class="sidebar-title" *ngIf="!editWork">{{ work?.name }}</span>
         <input *ngIf="editWork" class="edit-input" type="text" id="workName" name="workName" placeholder="Nome da obra" [(ngModel)]="editWorkName" required>
-        <div class="image-container">
+        <div *ngIf="!checkActionPermissions('invite')" class="image-container">
           <img src="{{workSrc}}" class="work-image" alt="Work Image">
+        </div>
+        <div *ngIf="checkActionPermissions('invite')">
+          <input type="file" (change)="onImageChange($event)" #fileInput style="display:none">
+          <button type="button" class="image-container-change" (click)="fileInput.click()">
+            <img src="{{ editSrc ?? workSrc }}" alt="Profile Picture">
+          </button>
+        </div>
+        <div *ngIf="editPicture" style="display: flex; flex-direction: row; justify-content: center">
+          <div class="edit" *ngIf="editSrc" (click)="onSubmitImageChange()">
+            <div class="change-picture">
+              <span class="change-picture-button-text">Submeter</span>
+            </div>
+          </div>
+          <div class="edit" *ngIf="!(editSrc == './assets/profile.png') || editSrc" (click)="onCancelImageChange()">
+            <div class="change-picture">
+              <span class="change-picture-button-text">Cancelar</span>
+            </div>
+          </div>
         </div>
         <ul class="sidebar-menu">
           <li class="sidebar-menu-item">
