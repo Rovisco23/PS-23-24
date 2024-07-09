@@ -27,6 +27,7 @@ object Paths {
         const val GET_IMAGE = "$PREFIX/work-image/{id}"
         const val GET_WORKS_PENDING = "$PREFIX/work-pending"
         const val ANSWER_PENDING = "$PREFIX/work-pending/{id}"
+        const val ASK_WORK_VERIFICATION = "$PREFIX/work-verification"
         const val GET_MEMBER_PROFILE = "$PREFIX/member-profile/{id}/{username}"
     }
 

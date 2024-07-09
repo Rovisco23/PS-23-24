@@ -434,6 +434,23 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         insertTechnicians(editWork.technicians, tId, workId)
     }
 
+    override fun askWorkVerification(id: UUID, doc: String) {
+        handle.createUpdate(
+            "update TERMO_ABERTURA set autorizacao = :doc, assinatura = null, dt_assinatura = null where oId = :id"
+        )
+            .bind("doc", doc)
+            .bind("id", id.toString())
+            .execute(
+        )
+        handle.createUpdate(
+            "update OBRA set estado = :state where id = :id"
+        )
+            .bind("state", WorkState.VERIFYING.toString())
+            .bind("id", id.toString())
+            .execute(
+        )
+    }
+
     private fun addCouncilAsMember(workId: UUID, location: Location) {
         val councilId = handle.createQuery(
             "select id from UTILIZADOR where freguesia = :parish and " +

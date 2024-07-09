@@ -304,4 +304,17 @@ class WorkService(
             }
         }
 
+    fun askWorkVerification(verification: AskVerificationInputModel, user: User) = transactionManager.run {
+            val work = it.workRepository.getById(verification.workId)
+            if (verification.verificationDoc.isBlank()) {
+                failure(Errors.invalidVerificationDoc)
+            } else if (work == null) {
+                failure(Errors.workNotFound)
+            } else if (!work.members.checkOwner(user.id)) {
+                failure(Errors.notAdmin)
+            } else {
+                it.workRepository.askWorkVerification(verification.workId, verification.verificationDoc)
+                success(Unit)
+            }
+        }
 }

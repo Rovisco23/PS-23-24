@@ -59,6 +59,11 @@ data class WorkInput(
     val log: List<LogEntrySimplified>
 )
 
+data class AskVerificationInputModel(
+    val workId: UUID,
+    val verificationDoc: String
+)
+
 data class LogEntry(
     val id: Int,
     val workId: UUID,

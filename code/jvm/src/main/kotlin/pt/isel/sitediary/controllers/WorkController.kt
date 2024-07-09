@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
+import pt.isel.sitediary.domainmodel.work.AskVerificationInputModel
 import pt.isel.sitediary.domainmodel.work.OpeningTerm
 import pt.isel.sitediary.domainmodel.work.Work
 import pt.isel.sitediary.model.*
@@ -157,6 +158,42 @@ class WorkController(private val service: WorkService) {
         @Parameter(hidden = true) user: AuthenticatedUser
     ): ResponseEntity<*> {
         val res = service.answerPendingWork(id, user.user, answer)
+        return handleResponse(res) {
+            ResponseEntity.ok(it)
+        }
+    }
+
+    @PutMapping(Paths.Work.ASK_WORK_VERIFICATION)
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "List of work received successfully",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ListOfWorksOutputModel::class)
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "401", description = "Login Required",
+                content = [
+                    Content(mediaType = "application/json", schema = Schema(implementation = Errors::class))
+                ]
+            ),
+            ApiResponse(
+                responseCode = "403", description = "You don't have access to this resource",
+                content = [
+                    Content(mediaType = "application/json", schema = Schema(implementation = Errors::class))
+                ]
+            )
+        ]
+    )
+    fun askWorkVerification(
+        @RequestBody verification: AskVerificationInputModel,
+        @Parameter(hidden = true) user: AuthenticatedUser
+    ): ResponseEntity<*> {
+        val res = service.askWorkVerification(verification, user.user)
         return handleResponse(res) {
             ResponseEntity.ok(it)
         }

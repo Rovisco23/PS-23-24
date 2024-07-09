@@ -9,11 +9,16 @@ class Errors(val status: Int, val reason: String) {
             .header("Content-Type", "application/problem+json")
             .body<Any>(error.reason)
 
+        val invalidVerificationDoc = Errors(400, "Documento de verificação inválido.")
+
         val invalidTechnicians = Errors(400, "Para iniciar uma Obra é necessário ter " +
                 "Fiscal, Diretor e Coordenador de Obra.")
         val logNotEditable = Errors(400, "Este registo não pode ser editado.")
+
         val workFinished = Errors(400, "Não é possível fazer um registo numa obra terminada.")
+
         val notTechnician = Errors(403, "Não pode criar registo se não for um Técnico.")
+
         val membersMissing = Errors(400, "É necessário ter pelo menos um Fiscal e um Coordenador de Obra.")
 
         val workAlreadyFinished = Errors(400, "Obra terminada.")
