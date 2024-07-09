@@ -12,6 +12,7 @@ class PendingCouncilsMapper : RowMapper<PendingCouncils> {
     override fun map(rs: ResultSet?, ctx: StatementContext?): PendingCouncils? = if (rs != null) {
         PendingCouncils(
             id = rs.getInt("id"),
+            name = rs.getString("nome") + " " + rs.getString("apelido"),
             email = rs.getString("email"),
             nif = rs.getInt("nif"),
             location = Location(

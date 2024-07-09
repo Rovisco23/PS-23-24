@@ -8,7 +8,7 @@
       <span class="logo-description">Livro de Obra</span>
     </a>
     <div class="profile">
-      <button class="notifications" routerLink="invites">
+      <button class="notifications" (click)="onInvitesClick()">
         <mat-icon *ngIf="notification > 0" aria-hidden="false" aria-label="Example home icon" fontIcon="notifications"
                   [matBadge]="notification" matBadgeColor="warn">
         </mat-icon>

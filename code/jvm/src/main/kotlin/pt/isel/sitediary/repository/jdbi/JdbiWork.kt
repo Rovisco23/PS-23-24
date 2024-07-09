@@ -177,7 +177,8 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
     override fun getInvite(workId: UUID, userId: Int): InviteSimplified? = handle.createQuery(
         "select Obra.id, Obra.nome as workTitle, Membro.role, (select Utilizador.username from Membro join " +
                 "Utilizador on Membro.uId = Utilizador.id where Membro.oId = :oId and Membro.role = 'DONO') " +
-                "as owner from Obra join Membro on Obra.id = Membro.oId where uid = :uId and Membro.pendente = 'true'"
+                "as owner from Obra join Membro on Obra.id = Membro.oId where uid = :uId and Membro.pendente = 'true' " +
+                "and Membro.oId = :oId;"
     )
         .bind("oId", workId.toString())
         .bind("uId", userId)

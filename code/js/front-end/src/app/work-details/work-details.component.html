@@ -10,8 +10,13 @@
         </div>
       </div>
       <div class="sidebar-content">
-        <span class="sidebar-title" *ngIf="!editWork">{{ work?.name }}</span>
-        <input *ngIf="editWork" class="edit-input" type="text" id="workName" name="workName" placeholder="Nome da obra" [(ngModel)]="editWorkName" required>
+        <span class="sidebar-title" *ngIf="!editWork">
+          <mat-icon style="margin-right: 10px; color: green;" *ngIf="work?.verification">verified</mat-icon>
+          <mat-icon style="margin-right: 10px; color: red;" *ngIf="work?.state === 'Rejeitada'">cancel</mat-icon>
+          {{ work?.name }}
+        </span>
+        <input *ngIf="editWork" class="edit-input" style="margin-bottom: 10px" type="text" id="workName" name="workName" placeholder="Nome da obra"
+               [(ngModel)]="editWorkName" required>
         <div *ngIf="!checkActionPermissions('invite')" class="image-container">
           <img src="{{workSrc}}" class="work-image" alt="Work Image">
         </div>
@@ -71,6 +76,18 @@
             </a>
           </li>
           <li class="sidebar-menu-item">
+            <a class="sidebar-menu-link" *ngIf="checkCanAskVerification()" (click)="askVerification()">
+              <div class="sidebar-menu-icon">
+            <span class="material-icons">
+              check
+            </span>
+              </div>
+              <div class="sidebar-menu-text">
+                Pedir verificação
+              </div>
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
             <a class="sidebar-menu-link" *ngIf="checkWorkCanFinish()" (click)="finishWorkCall()">
               <div class="sidebar-menu-icon">
             <span class="material-icons">
@@ -82,6 +99,7 @@
               </div>
             </a>
           </li>
+          <div style="margin-top: 20px"></div>
         </ul>
       </div>
     </div>
@@ -147,7 +165,8 @@
         <div style="width: 100%;">
           <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between">
             <h3 class="title">Informação Geral</h3>
-            <button *ngIf="checkActionPermissions('invite') && !editWork" class="invite-tech-button" (click)="toggleEditWork()">
+            <button *ngIf="checkActionPermissions('invite') && !editWork" class="invite-tech-button"
+                    (click)="toggleEditWork()">
               <span class="material-icons fab-style">edit</span>
             </button>
             <button *ngIf="editWork" class="invite-tech-button" (click)="cancelEdit()">
@@ -171,31 +190,37 @@
             <div class="topic-orientation">
               <mat-label>Prédio:</mat-label>
               <span *ngIf="!editWork">{{ work?.building }}</span>
-              <input *ngIf="editWork" class="edit-input" type="text" id="building" placeholder="Prédio" name="building" [(ngModel)]="editBuilding" required>
+              <input *ngIf="editWork" class="edit-input" type="text" id="building" placeholder="Prédio" name="building"
+                     [(ngModel)]="editBuilding" required>
             </div>
             <div class="topic-orientation">
               <mat-label>Localização:</mat-label>
               <span *ngIf="!editWork">{{ work?.address?.street }} {{ work?.address?.postalCode }}
                 , {{ work?.address?.location?.parish }}, {{ work?.address?.location?.county }}
                 , {{ work?.address?.location?.district }}</span>
-              <input class="edit-input" *ngIf="editWork" style="margin-left: 5px" type="text" id="street" placeholder="Rua" name="street" [(ngModel)]="editAddress.street" required>
-              <input class="edit-input" *ngIf="editWork" style="width: 5%; margin-left: 5px" type="text" id="postalCode" placeholder="Código Postal" name="postalCode" (input)="formatZipCode()"
+              <input class="edit-input" *ngIf="editWork" style="margin-left: 5px" type="text" id="street"
+                     placeholder="Rua" name="street" [(ngModel)]="editAddress.street" required>
+              <input class="edit-input" *ngIf="editWork" style="width: 5%; margin-left: 5px" type="text" id="postalCode"
+                     placeholder="Código Postal" name="postalCode" (input)="formatZipCode()"
                      [(ngModel)]="editAddress.postalCode" required>
-              <select *ngIf="editWork" placeholder="Distrito" style="margin-left: 5px" class="selector" id="district" name="district"
+              <select *ngIf="editWork" placeholder="Distrito" style="margin-left: 5px" class="selector" id="district"
+                      name="district"
                       [(ngModel)]="editAddress.location.district">
                 <option value="" disabled selected>Distrito</option>
                 <ng-container *ngFor="let distrito of districts">
                   <option [value]="distrito">{{ distrito }}</option>
                 </ng-container>
               </select>
-              <select *ngIf="editWork" placeholder="Concelho" style="margin-left: 5px" class="selector" id="county" name="county"
+              <select *ngIf="editWork" placeholder="Concelho" style="margin-left: 5px" class="selector" id="county"
+                      name="county"
                       [(ngModel)]="editAddress.location.county" (change)="updateLocation(true)">
                 <option value="" disabled selected>Concelho</option>
                 <ng-container *ngFor="let concelho of counties">
                   <option [value]="concelho">{{ concelho }}</option>
                 </ng-container>
               </select>
-              <select *ngIf="editWork" placeholder="Freguesia" style="margin-left: 5px" class="selector" id="parish" name="Parish"
+              <select *ngIf="editWork" placeholder="Freguesia" style="margin-left: 5px" class="selector" id="parish"
+                      name="Parish"
                       [(ngModel)]="editAddress.location.parish" (change)="updateLocation(false)">
                 <option value="" disabled selected>Freguesia</option>
                 <ng-container *ngFor="let freguesia of parishes">
@@ -206,21 +231,25 @@
             <div class="topic-orientation">
               <mat-label>Titular da Licença:</mat-label>
               <span *ngIf="!editWork">{{ work?.licenseHolder }}</span>
-              <input class="edit-input" *ngIf="editWork" type="text" id="holder" name="holder" placeholder="Titular da licença" [(ngModel)]="editHolder"
+              <input class="edit-input" *ngIf="editWork" type="text" id="holder" name="holder"
+                     placeholder="Titular da licença" [(ngModel)]="editHolder"
                      required>
             </div>
             <div class="topic-orientation">
               <mat-label>Descrição:</mat-label>
               <span *ngIf="!editWork">{{ work?.description }}</span>
-              <input class="edit-input" *ngIf="editWork" type="text" id="workDescription" name="workDescription" placeholder="Descrição"
+              <input class="edit-input" *ngIf="editWork" type="text" id="workDescription" name="workDescription"
+                     placeholder="Descrição"
                      [(ngModel)]="editWorkDescription" required>
             </div>
             <div class="topic-orientation">
               <mat-label>Empresa de Construção:</mat-label>
               <span *ngIf="!editWork">{{ work?.company?.name }} - N°. do Alvará: {{ work?.company?.num }}</span>
-              <input class="edit-input" *ngIf="editWork" type="text" id="companyName" name="companyName" placeholder="Nome da empresa"
+              <input class="edit-input" *ngIf="editWork" type="text" id="companyName" name="companyName"
+                     placeholder="Nome da empresa"
                      [(ngModel)]="editCompany.name" required>
-              <input class="edit-input" *ngIf="editWork" style="width: 5%; margin-left: 5px" type="text" id="companyNum" placeholder="N° do alvará"
+              <input class="edit-input" *ngIf="editWork" style="width: 5%; margin-left: 5px" type="text" id="companyNum"
+                     placeholder="N° do alvará"
                      name="companyNum"
                      [(ngModel)]="editCompany.num" [ngModel]="editCompany.num === 0? null : editCompany.num" required>
             </div>
@@ -234,7 +263,8 @@
                 <td mat-cell *matCellDef="let element">
                   <div *ngIf="element.submitted">{{ element.name }}</div>
                   <div *ngIf="!element.submitted">
-                    <input class="edit-input" type="text" id="name" name="name" placeholder="Nome" [(ngModel)]="element.name">
+                    <input class="edit-input" type="text" id="name" name="name" placeholder="Nome"
+                           [(ngModel)]="element.name">
                   </div>
                 </td>
               </ng-container>
@@ -243,7 +273,8 @@
                 <td mat-cell *matCellDef="let element">
                   <div *ngIf="element.submitted">{{ element.email }}</div>
                   <div *ngIf="!element.submitted">
-                    <input class="edit-input" type="text" id="email" name="email" placeholder="Email" [(ngModel)]="element.email">
+                    <input class="edit-input" type="text" id="email" name="email" placeholder="Email"
+                           [(ngModel)]="element.email">
                   </div>
                 </td>
               </ng-container>
@@ -265,9 +296,11 @@
                     associado {{ element.association.number }}
                   </div>
                   <div *ngIf="!element.submitted">
-                    <input class="edit-input" type="text" id="associationName" name="associationName" placeholder="Nome da associação"
+                    <input class="edit-input" type="text" id="associationName" name="associationName"
+                           placeholder="Nome da associação"
                            [(ngModel)]="element.association.name">
-                    <input class="edit-input" style="margin-left: 5px" type="number" id="associationNum" name="associationNum" placeholder="Número de associado"
+                    <input class="edit-input" style="margin-left: 5px" type="number" id="associationNum"
+                           name="associationNum" placeholder="Número de associado"
                            [(ngModel)]="element.association.number">
                   </div>
                 </td>
@@ -282,8 +315,10 @@
                   <button *ngIf="!element.submitted" class="submit-button" (click)="submitTech(element.position)">
                     <span class="material-icons fab-style">check</span>
                   </button>
-                  <button *ngIf="checkCanRemoveTech(element.role) && (!checkResponsability(element.position) || element.submitted)" class="remove-button"
-                          (click)="removeTech(element.position)">
+                  <button
+                    *ngIf="checkCanRemoveTech(element.role) && (!checkResponsability(element.position) || element.submitted)"
+                    class="remove-button"
+                    (click)="removeTech(element.position)">
                     <span class="material-icons fab-style">delete</span>
                   </button>
                 </td>
@@ -315,7 +350,8 @@
                   <span>Convidar</span>
                 </th>
                 <td mat-cell *matCellDef="let element">
-                  <button *ngIf="checkNotMember(element.role) && checkActionPermissions('invite')" class="invite-tech-button" (click)="inviteTech(element.role)">
+                  <button *ngIf="checkNotMember(element.role) && checkActionPermissions('invite')"
+                          class="invite-tech-button" (click)="inviteTech(element.role)">
                     <span class="material-icons fab-style">person_add</span>
                   </button>
                 </td>
@@ -329,10 +365,11 @@
       </div>
     </div>
     <div class="members-content" *ngIf="tabIndex == 2">
-      <div [class]="checkActionPermissions('invite') ? 'top-bar' : 'top-bar-permission'">
+      <div [class]="checkActionPermissions('invite') && work?.state !== 'Rejeitada' ? 'top-bar' : 'top-bar-permission'">
         <input type="text" class="search-input" placeholder="Procurar Membro" [(ngModel)]="searchMemberValue"
                (ngModelChange)="filterMembers(searchMemberValue)">
-        <button *ngIf="checkActionPermissions('invite')" mat-fab color="primary" aria-label="Example icon button with a delete icon" class="log-button"
+        <button *ngIf="checkActionPermissions('invite') && work?.state !== 'Rejeitada'" mat-fab color="primary"
+                aria-label="Example icon button with a delete icon" class="log-button"
                 (click)="onInviteClick()">
           <mat-icon>add</mat-icon>
         </button>

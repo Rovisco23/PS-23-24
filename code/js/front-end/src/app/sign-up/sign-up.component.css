@@ -1,39 +1,20 @@
-body {
+body, html {
+  height: 100%;
   margin: 0;
   padding: 0;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #11113D;
-  overflow: hidden;
 }
 
 .container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.left {
-  text-align: center;
-  margin-right: 500px; /* Adjust as needed */
+  height: 100%;
+  width: 100%;
+  background-color: #11113D;
+  overflow: auto;
 }
 
 .logo {
-  max-width: 650px; /* Adjust as needed */
+  max-width: 60%; /* Adjust as needed */
   height: auto;
-}
-
-.right {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center items horizontally */
-}
-
-.selector {
-  margin: 5px;
-  width: 200px;
 }
 
 .title {
@@ -44,26 +25,90 @@ body {
 
 .page-title {
   color: #FF7A00;
-  font-size: 40px;
-  font-family: Helvetica, serif; /* Specify font family */
-  margin-bottom: auto;
 }
 
-.button {
-  margin-top: 10px; /* Add some space between inputs and button */
+form {
+  color: white;
+}
+
+.left, .right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+form {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+form .three-inputs {
+  display: flex;
+  flex-direction: row;
+  margin: 5px;
+}
+
+.field{
+  display: flex;
+  flex-direction: column;
+}
+
+form .three-inputs .field input {
+  height: 17px;
+  min-width: 140px;
+  max-width: 140px;
+  border: 1px solid #11113D;
+  border-radius: 5px;
+  padding: 5px 5px;
+  margin-bottom: 5px;
+}
+
+
+select {
+  max-height: 30px;
+  width: 150px;
+  border: 1px solid #11113D;
+  border-radius: 5px;
+  padding: 5px 5px;
+}
+
+.password-input-container {
+  position: relative;
+}
+
+.visibility-icon {
+  color: #FF7A00;
+  position: absolute;
+  top: 45%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+form .submit {
+  margin: 20px auto;
+  padding: 10px;
+  background-color: #11113D;
+  border-radius: 5px;
+  border: 2px solid #FF7A00;
+  color: #FF7A00;
+  user-select: none;
+  text-align: center;
+  justify-content: center;
+}
+
+form .submit:hover {
   background-color: #FF7A00;
   color: white;
-  margin-left: 60px;
-}
-
-label {
-  color: white;
-  text-align: center;
+  cursor: pointer;
 }
 
 .text {
   color: #FF7A00;
-  text-align: center;
 }
 
 .text a {

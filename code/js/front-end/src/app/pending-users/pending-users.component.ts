@@ -3,7 +3,7 @@ import {MatDivider} from "@angular/material/divider";
 import {MatIcon} from "@angular/material/icon";
 import {
   MatList,
-  MatListItem,
+  MatListItem, MatListItemIcon,
   MatListItemLine,
   MatListItemMeta,
   MatListItemTitle,
@@ -17,6 +17,7 @@ import {catchError, throwError} from "rxjs";
 import {ErrorHandler} from "../utils/errorHandle";
 import {NavigationService} from "../utils/navService";
 import {SnackBar} from "../utils/snackBarComponent";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-pending-users',
@@ -32,12 +33,16 @@ import {SnackBar} from "../utils/snackBarComponent";
     MatListItemMeta,
     MatButton,
     MatIconButton,
-    MatListSubheaderCssMatStyler
+    MatListSubheaderCssMatStyler,
+    ReactiveFormsModule,
+    FormsModule,
+    MatListItemIcon
   ],
   templateUrl: './pending-users.component.html',
   styleUrl: './pending-users.component.css'
 })
 export class PendingUsersComponent {
+  inputValue: string = '';
 
   httpService: HttpService = inject(HttpService);
 
@@ -67,12 +72,8 @@ export class PendingUsersComponent {
       return;
     }
     this.filteredPendingList = this.pendingList.filter(
-      entry => entry.email.toLowerCase().includes(text.toLowerCase())
+      entry => entry.username.toLowerCase().includes(text.toLowerCase())
     );
-  }
-
-  onItemClick(username: string) {
-    this.navService.navProfile(username);
   }
 
   onAccept(id: number) {

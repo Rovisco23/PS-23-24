@@ -20,6 +20,9 @@
 }
 
 .sidebar-title {
+  display: flex;
+  align-items: center; /* Alinha os itens verticalmente ao centro */
+  justify-content: center; /* Alinha os itens horizontalmente ao centro */
   text-align: center;
   font-size: 1.2em;
   font-weight: bold;
@@ -30,7 +33,6 @@
 .sidebar-content {
   padding: 10px;
 }
-
 
 .sidebar-menu {
   list-style: none;

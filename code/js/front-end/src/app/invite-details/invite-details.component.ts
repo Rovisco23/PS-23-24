@@ -67,12 +67,6 @@ export class InviteDetailsComponent {
     this.navService.navInviteList();
   }
 
-  checkIsNumber(value: string) {
-    const x = Number(value);
-    if (x <= 0) return false;
-    return !isNaN(x);
-  }
-
   onAcceptCall() {
     if (this.invite === undefined) return;
     const accept: AnswerInvite = {

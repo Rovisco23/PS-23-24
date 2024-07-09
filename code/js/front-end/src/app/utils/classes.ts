@@ -26,6 +26,7 @@ interface Location {
 
 export interface Pending {
   id: number,
+  name: string,
   email: string,
   username: string,
   nif: number,
@@ -55,6 +56,7 @@ export interface Work {
   images: number;
   docs: number;
   verification: boolean;
+  verificationDoc: string | null;
 }
 
 export interface Technician {

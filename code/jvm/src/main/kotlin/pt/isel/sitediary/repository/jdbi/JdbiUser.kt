@@ -215,7 +215,7 @@ class JdbiUser(private val handle: Handle) : UserRepository {
         .one()
 
     override fun getAllPendingCouncils(): List<PendingCouncils> = handle.createQuery(
-        "select id, email, username, nif, freguesia, concelho, distrito, associacao_nome, associacao_numero " +
+        "select id, nome, apelido, email, username, nif, freguesia, concelho, distrito, associacao_nome, associacao_numero " +
                 "from utilizador where role = 'OPERÁRIO' and pendente = true"
     )
         .mapTo(PendingCouncils::class.java)

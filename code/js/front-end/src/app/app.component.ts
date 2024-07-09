@@ -147,6 +147,12 @@ export class AppComponent {
     this.navService.navCreateWork()
   }
 
+
+  onInvitesClick() {
+    this.urlService.setOriginalUrl(this.router.url)
+    this.navService.navInviteList()
+  }
+
   getUserName() {
     return localStorage.getItem('username') ?? '';
   }
@@ -154,6 +160,4 @@ export class AppComponent {
   checkRole() {
     return localStorage.getItem('role') === 'ADMIN' || localStorage.getItem('role') === 'CÂMARA'
   }
-
-
 }

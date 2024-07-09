@@ -95,6 +95,7 @@ data class FileModel(val file: ByteArray, val fileName: String, val contentType:
 
 data class PendingCouncils(
     val id: Int,
+    val name: String,
     val email: String,
     val username: String,
     val nif: Int,

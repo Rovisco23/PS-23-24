@@ -99,6 +99,7 @@ export class WorkDetailsComponent {
   editWork: boolean = false;
   editPicture: boolean = false;
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement> | undefined;
+  verificationDoc: string | null = null;
 
 
   types = Object.values(WorkTypes);
@@ -172,6 +173,8 @@ export class WorkDetailsComponent {
       this.dataSourceEdit.data = this.techCreationList
       this.work = work;
       this.work.state = WorkState.composeState(work.state);
+      this.verificationDoc = work.verificationDoc
+      this.work.verificationDoc = work.verificationDoc
       this.work.type = WorkState.composeType(work.type);
       this.filteredLogList = work.log;
       this.filteredMembers = work.members;
@@ -204,6 +207,11 @@ export class WorkDetailsComponent {
 
   toggleEditWork() {
     this.editWork = !this.editWork;
+  }
+
+  checkCanAskVerification(){
+    return (this.work?.state === 'Rejeitada' || this.work?.state === 'Em Progresso' && !this.work.verification) &&
+      this.work?.members.find(member => member.role === 'Dono da Obra')?.id === Number(localStorage.getItem('userId'))
   }
 
   onImageChange(event: any) {
@@ -311,7 +319,7 @@ export class WorkDetailsComponent {
 
   checkWorkCanFinish() {
     const isOwner = this.work?.members.find(member => member.role === 'Dono da Obra')?.id === Number(localStorage.getItem('userId'))
-    return this.work?.state !== 'Terminada' && this.work?.state !== 'Rejeitada' && isOwner
+    return this.work?.state === 'Em Progresso' && isOwner
   }
 
   checkAskVerification() {
@@ -575,5 +583,32 @@ export class WorkDetailsComponent {
   onCancelImageChange() {
     this.editPicture = false;
     this.editSrc = undefined;
+  }
+
+  askVerification() {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Pedir verificação à câmara municipal de ' + this.work?.address.location.county,
+        message: 'Tem a certeza que deseja pedir verificação da obra?',
+        inputValue: this.verificationDoc // Passa o valor atual
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.verificationDoc = result; // Atualiza o valor de verificationDoc
+        this.httpService.askVerification(this.work!.id, this.verificationDoc ?? '').pipe(
+          catchError(error => {
+            this.errorHandle.handleError(error);
+            return throwError(error);
+          })
+        ).subscribe(() => {
+          this.loadWork(this.work!.id);
+          this.snackBar.openSnackBar("Pedido de verificação efetuado com sucesso");
+        });
+      } else {
+        this.snackBar.openSnackBar("Pedido de verificação não enviado. Documento inválido.");
+      }
+    });
   }
 }

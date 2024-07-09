@@ -1,25 +1,33 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: bold;
+  width: 60% !important;
+  max-width: 60% !important;
+  overflow-wrap: break-word; /* Ensures long words break to fit within the container */
+  word-wrap: break-word; /* Compatibility for older browsers */
+}
+
 .header {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-  height: 7%;
 }
 
 .small-button {
-  width: 2%;
-  height: auto;
-  margin: 10px;
-  background-color: transparent;
-  border: none;
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
 }
 
 .small-icon {
-  font-size: 200%;
-}
-
-input {
-  margin-left: 10px;
-  margin-bottom: 10px;
+  font-size: 30px;
+  margin-right: 5px;
 }
 
 input[type="text"] {
@@ -28,6 +36,34 @@ input[type="text"] {
   border-radius: 8px;
   margin-right: 4px;
   width: 30%; /* Adjust the width of the input */
+}
+
+mat-list {
+  padding: 0;
+}
+
+mat-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  align-content: center;
+}
+
+mat-list-item:hover {
+  background-color: lightgray;
+}
+
+mat-list-item .item-icon {
+  height: auto;
+  width: auto;
+  font-size: 40px;
+  color: #11113D;
+}
+
+input {
+  margin-left: 10px;
+  margin-bottom: 10px;
 }
 
 @media (max-width: 499px) {

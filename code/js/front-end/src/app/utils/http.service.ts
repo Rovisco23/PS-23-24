@@ -252,4 +252,9 @@ export class HttpService {
     const headers = this.getTokenHeader();
     return this.http.put<any>(`http://localhost:8080/api/work-image/${id}`, form, {headers: headers})
   }
+
+  askVerification(id: string, doc: string) {
+    const headers = this.getTokenHeader();
+    return this.http.put<any>(`http://localhost:8080/api/work-verification`, {workId: id, verificationDoc: doc}, {headers: headers})
+  }
 }

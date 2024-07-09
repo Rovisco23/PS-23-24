@@ -1,23 +1,32 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 80%;
+  height: 70%;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
 
 .small-button {
-  width: 2%;
-  height: auto;
-  margin: 10px;
-  background-color: white;
-  border: none;
-  vertical-align: center;
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
 }
 
 .small-icon {
-  font-size: 200%;
+  font-size: 30px;
+  margin-right: 5px;
 }
 
 .centered-actions {
