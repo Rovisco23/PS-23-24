@@ -24,6 +24,7 @@ data class Work(
     val log: List<LogEntrySimplified>,
     val technicians: List<Technician>,
     val verification: Boolean,
+    val verificationDoc: String?,
     val images: Int,
     val docs: Int
 ) {

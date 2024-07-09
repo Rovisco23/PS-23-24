@@ -129,6 +129,15 @@ class JdbiUser(private val handle: Handle) : UserRepository {
             .bind("associationNum", user.association?.number)
             .bind("id", user.id)
             .execute()
+
+        handle.createUpdate(
+            "update INTERVENIENTE set nome = :nome, associacao = :association, numero = :num where email = :email"
+        )
+            .bind("email", user.email)
+            .bind("nome", user.firstName + " " + user.lastName)
+            .bind("association", user.association?.name)
+            .bind("num", user.association?.number)
+            .execute()
     }
 
     override fun getUserByToken(token: TokenValidationInfo): Pair<User, Token>? = handle.createQuery(

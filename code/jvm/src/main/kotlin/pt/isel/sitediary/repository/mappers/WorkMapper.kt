@@ -88,6 +88,7 @@ class WorkMapper : RowMapper<Work> {
                     }
             },
             verification = rs.getBoolean("verification"),
+            verificationDoc = rs.getString("autorizacao"),
             images = rs.getInt("imagens"),
             docs = rs.getInt("documentos")
         )

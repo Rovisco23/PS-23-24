@@ -55,7 +55,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
                 "ON d.rId = REGISTO.id JOIN UTILIZADOR ON author = UTILIZADOR.id JOIN MEMBRO ON uId = author WHERE " +
                 "REGISTO.oId = :id GROUP BY REGISTO.id, author, UTILIZADOR.username, (SELECT Membro.role from Membro " +
                 "join Registo r on r.oId = Membro.oId where Membro.uid = author and r.id = REGISTO.id), editable, " +
-                "REGISTO.creation_date) AS log, TERMO_ABERTURA.titular_licenca, TERMO_ABERTURA.predio, " +
+                "REGISTO.creation_date) AS log, TERMO_ABERTURA.titular_licenca, TERMO_ABERTURA.autorizacao, TERMO_ABERTURA.predio, " +
                 "EMPRESA_CONSTRUCAO.nome AS company_name, EMPRESA_CONSTRUCAO.numero AS company_num, (SELECT COUNT(*) " +
                 "FROM IMAGEM WHERE oId = OBRA.id) AS imagens, (SELECT COUNT(*) FROM DOCUMENTO WHERE oId = OBRA.id) " +
                 "AS documentos, (TERMO_ABERTURA.assinatura IS NOT NULL and Obra.estado = 'EM PROGRESSO') AS verification FROM OBRA JOIN TERMO_ABERTURA " +
@@ -200,13 +200,14 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
                 .bind("oId", inv.workId.toString())
                 .mapTo(Int::class.java)
                 .single()
-            val roleExists = handle.createQuery(
-                "select count(*)=0 from Interveniente where role=:role"
+            val roleDoesntExists = handle.createQuery(
+                "select count(*)=0 from Interveniente where role=:role AND tid = :tId"
             )
                 .bind("role", inv.role)
+                .bind("tId", tId)
                 .mapTo(Boolean::class.java)
                 .single()
-            if (roleExists) {
+            if (roleDoesntExists) {
                 val name = handle.createQuery(
                     "select CONCAT(nome,' ',apelido) as nome from UTILIZADOR where id = :uId"
                 )
@@ -223,6 +224,18 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
                     .bind("oId", inv.workId.toString())
                     .bind("email", user.email)
                     .bind("nome", name)
+                    .bind("role", inv.role)
+                    .bind("association", user.association.name)
+                    .bind("num", user.association.number)
+                    .execute()
+            } else {
+                handle.createUpdate(
+                    "update INTERVENIENTE set nome = :nome, email = :email, associacao = :association, numero = :num where tId = :tId and oId = :oId and role = :role"
+                )
+                    .bind("oId", inv.workId.toString())
+                    .bind("tId", tId)
+                    .bind("email", user.email)
+                    .bind("nome", user.name)
                     .bind("role", inv.role)
                     .bind("association", user.association.name)
                     .bind("num", user.association.number)
