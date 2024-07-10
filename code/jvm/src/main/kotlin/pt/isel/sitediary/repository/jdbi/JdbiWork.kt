@@ -252,7 +252,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
             .execute()
     }
 
-    override fun getWorkListAdmin() = handle.createQuery(
+    override fun getWorkListAdmin(): List<WorkSimplified> = handle.createQuery(
         "select o.id, o.nome, ta.titular_licenca as owner,  o.tipo, o.descricao, o.estado, o.freguesia," +
                 " o.concelho, o.distrito, o.rua, o.cpostal, (ta.assinatura IS NOT NULL and " +
                 "o.estado = 'EM PROGRESSO') AS verification from OBRA o join TERMO_ABERTURA ta on ta.oId = o.id"
@@ -260,7 +260,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         .mapTo(WorkSimplified::class.java)
         .list()
 
-    override fun getWorkListCouncil(location: Location, user: User) = handle.createQuery(
+    override fun getWorkListCouncil(location: Location, user: User): List<WorkSimplified> = handle.createQuery(
         "select o.id, o.nome, ta.titular_licenca as owner, o.tipo, o.descricao, o.estado, o.freguesia, o.concelho," +
                 " o.distrito, o.rua, o.cpostal, (ta.assinatura IS NOT NULL and o.estado = 'EM PROGRESSO') AS verification " +
                 "from OBRA o join TERMO_ABERTURA ta on ta.oId = o.id join MEMBRO m on ta.oid = m.oid " +
@@ -450,6 +450,32 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
             .bind("id", id.toString())
             .execute(
         )
+    }
+
+    override fun deleteWork(id: Int) {
+        val workId = handle.createQuery(
+                "select oId from MEMBRO where uId = :id"
+        )
+            .bind("id", id)
+            .mapTo(UUID::class.java)
+            .single()
+        val constructionCompanyId = handle.createQuery(
+            "select empresa_construcao from TERMO_ABERTURA where oId = :id"
+        )
+            .bind("id", workId.toString())
+            .mapTo(Int::class.java)
+            .single()
+        handle.createUpdate(
+            "delete from INTERVENIENTE where oId = :id;" +
+                    "delete from TERMO_ABERTURA where oId = :id;" +
+                    "delete from EMPRESA_CONSTRUCAO where id = :companyId;" +
+                    "delete from IMAGEM_OBRA where work_id = :id;" +
+                    "delete from MEMBRO where oId = :id;" +
+                    "delete from OBRA where id = :id"
+        )
+            .bind("id", workId.toString())
+            .bind("companyId", constructionCompanyId)
+            .execute()
     }
 
     private fun addCouncilAsMember(workId: UUID, location: Location) {

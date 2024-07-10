@@ -73,7 +73,7 @@ class WorkService(
             failure(Errors.notMember)
         } else {
             val workResult = work.copy(log = work.log.map { log ->
-                if (log.editable && checkIfEditTimeElapsed(log.createdAt, clock)) {
+                if (log.editable && log.checkIfEditTimeElapsed(clock)) {
                     it.logRepository.finish(log.id)
                     log.copy(editable = false)
                 } else {
@@ -97,14 +97,18 @@ class WorkService(
     fun getWorksPending(user: User) =
         transactionManager.run {
             val rep = it.workRepository
-            if (user.role == "ADMIN") {
-                val works = rep.getAllWorksPending()
-                success(works)
-            } else if (user.role == "CÂMARA") {
-                val works = rep.getWorksPending(user.location)
-                success(works)
-            } else {
-                failure(Errors.forbidden)
+            when (user.role) {
+                "ADMIN" -> {
+                    val works = rep.getAllWorksPending()
+                    success(works)
+                }
+                "CÂMARA" -> {
+                    val works = rep.getWorksPending(user.location)
+                    success(works)
+                }
+                else -> {
+                    failure(Errors.forbidden)
+                }
             }
         }
 
@@ -260,14 +264,14 @@ class WorkService(
         success(it.workRepository.getNumberOfInvites(id))
     }
 
-    fun getMemberProfile(workId: String, member: String, user: User) =
+    fun getMemberProfile(workId: UUID, member: String, user: User) =
         transactionManager.run {
             val rep = it.workRepository
-            val work = rep.getById(UUID.fromString(workId))
+            val work = rep.getById(workId)
             if (work == null) {
                 failure(Errors.workNotFound)
             } else {
-                val profile = rep.getMemberProfile(workId, member)
+                val profile = rep.getMemberProfile(workId.toString(), member)
                 if (profile == null) {
                     failure(Errors.memberNotFound)
                 } else {

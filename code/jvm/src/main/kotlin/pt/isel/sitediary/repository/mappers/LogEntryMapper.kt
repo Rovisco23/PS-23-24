@@ -21,7 +21,7 @@ class LogEntryMapper : RowMapper<LogEntry> {
             content = rs.getString("texto"),
             editable = rs.getBoolean("editable"),
             createdAt = Date.from(rs.getTimestamp("creation_date").toInstant()),
-            lastModifiedAt = if (modificationDate != null) Date.from(modificationDate.toInstant()) else null,
+            lastModifiedAt = Date.from(modificationDate.toInstant()),
             author = Author(
                 id = rs.getInt("author"),
                 name = rs.getString("username"),

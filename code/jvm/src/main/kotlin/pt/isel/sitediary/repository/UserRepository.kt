@@ -32,4 +32,5 @@ interface UserRepository {
     fun getAllPendingCouncils(): List<PendingCouncils>
     fun declineCouncil(userId: Int)
     fun getAllUsers(): List<GetUserModel>
+    fun deleteUser(username: String)
 }

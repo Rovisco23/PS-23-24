@@ -12,7 +12,13 @@ data class LogCredentialsModel(
     val logId: Int,
     val workId: UUID,
     val files: List<FileOutputModel>
-)
+) {
+    fun filterFiles(): Pair<List<Int>, List<Int>> {
+        val images = files.filter { f -> f.contentType == "Imagem" }.map { img -> img.id }
+        val documents = files.filter { f -> f.contentType == "Documento" }.map { doc -> doc.id }
+        return Pair(images, documents)
+    }
+}
 
 data class LogOutputModel(
     val id: Int,
@@ -24,6 +30,14 @@ data class LogOutputModel(
     val modifiedAt: Date?,
     val files: List<FileOutputModel>
 )
+
+data class FileModel(val file: ByteArray, val fileName: String, val contentType: String)
+
+fun List<FileModel>.filterFiles(): Pair<List<FileModel>, List<FileModel>> {
+    val images = this.filter { f -> f.contentType == "Imagem" }
+    val documents = this.filter { f -> f.contentType == "Documento" }
+    return Pair(images, documents)
+}
 
 data class FileOutputModel(
     val id: Int,

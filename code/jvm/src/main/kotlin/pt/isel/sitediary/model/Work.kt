@@ -39,15 +39,15 @@ data class OpeningTermInputModel(
 ) {
     fun checkParams() =
         name.isBlank() || holder.isBlank() || company.name.isBlank() || company.num <= 0 ||
-                building.isBlank() || address.location.parish?.isBlank() ?: "".isBlank()|| address.street.isBlank() ||
-                address.postalCode.isBlank() || address.location.county?.isBlank() ?: "".isBlank()
+                building.isBlank() || address.location.parish?.isBlank() ?: true || address.street.isBlank() ||
+                address.postalCode.isBlank() || address.location.county?.isBlank() ?: true
 
     fun checkTechnicians() =
         technicians.filter { it.role == "DIRETOR" || it.role == "FISCALIZAÇÃO" || it.role == "COORDENADOR" }.size < 3
 
     fun checkCouncilWork(user: User): Boolean =
-        address.location.district == user.location.district && address.location.county == user.location.county && user.role == "CÂMARA"
-
+        address.location.district == user.location.district && address.location.county == user.location.county
+                && user.role == "CÂMARA"
 }
 
 data class MemberInputModel(

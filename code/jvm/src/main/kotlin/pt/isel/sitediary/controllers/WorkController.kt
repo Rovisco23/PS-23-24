@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
 import pt.isel.sitediary.domainmodel.work.AskVerificationInputModel
-import pt.isel.sitediary.domainmodel.work.OpeningTerm
 import pt.isel.sitediary.domainmodel.work.Work
 import pt.isel.sitediary.model.*
 import pt.isel.sitediary.service.WorkService
@@ -221,7 +220,7 @@ class WorkController(private val service: WorkService) {
     ): ResponseEntity<*> {
         val res = service.inviteMembers(members, id, user.user.id)
         return handleResponse(res) {
-            ResponseEntity.status(200).body(it)
+            ResponseEntity.ok(it)
         }
     }
 
@@ -229,19 +228,19 @@ class WorkController(private val service: WorkService) {
     fun getNumberOfInvites(@Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
         val res = service.getNumberOfInvites(user.user.id)
         return handleResponse(res) {
-            ResponseEntity.status(200).body(it)
+            ResponseEntity.ok(it)
         }
     }
 
     @GetMapping(Paths.Work.GET_MEMBER_PROFILE)
     fun getMemberProfile(
-        @PathVariable id: String,
+        @PathVariable id: UUID,
         @PathVariable username: String,
         @Parameter(hidden = true) user: AuthenticatedUser
     ): ResponseEntity<*> {
         val res = service.getMemberProfile(id, username, user.user)
         return handleResponse(res) {
-            ResponseEntity.status(200).body(it)
+            ResponseEntity.ok(it)
         }
     }
 
@@ -249,7 +248,7 @@ class WorkController(private val service: WorkService) {
     fun getInviteList(@Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
         val res = service.getInviteList(user.user.id)
         return handleResponse(res) {
-            ResponseEntity.status(200).body(it)
+            ResponseEntity.ok(it)
         }
     }
 
@@ -257,7 +256,7 @@ class WorkController(private val service: WorkService) {
     fun getInvite(@PathVariable id: UUID, @Parameter(hidden = true) user: AuthenticatedUser): ResponseEntity<*> {
         val res = service.getInvite(id, user.user.id)
         return handleResponse(res) {
-            ResponseEntity.status(200).body(it)
+            ResponseEntity.ok(it)
         }
     }
 
@@ -268,7 +267,7 @@ class WorkController(private val service: WorkService) {
     ): ResponseEntity<*> {
         val res = service.answerInvite(body, user.user)
         return handleResponse(res) {
-            ResponseEntity.status(200).body(it)
+            ResponseEntity.ok(it)
         }
     }
 

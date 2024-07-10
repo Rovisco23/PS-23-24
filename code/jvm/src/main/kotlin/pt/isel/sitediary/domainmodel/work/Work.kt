@@ -1,13 +1,9 @@
 package pt.isel.sitediary.domainmodel.work
 
-import kotlinx.datetime.toJavaInstant
 import org.apache.commons.mail.DefaultAuthenticator
 import org.apache.commons.mail.SimpleEmail
 import pt.isel.sitediary.domainmodel.user.Member
 import pt.isel.sitediary.domainmodel.user.Technician
-import pt.isel.sitediary.model.FileOutputModel
-import kotlinx.datetime.Clock
-import java.time.Duration
 import java.util.*
 
 data class Work(
@@ -64,35 +60,6 @@ data class AskVerificationInputModel(
     val verificationDoc: String
 )
 
-data class LogEntry(
-    val id: Int,
-    val workId: UUID,
-    val author: Author,
-    val content: String,
-    val editable: Boolean,
-    val createdAt: Date,
-    val lastModifiedAt: Date?,
-    val files: List<FileOutputModel>
-)
-
-data class LogEntrySimplified(
-    val id: Int,
-    val author: Author,
-    val editable: Boolean,
-    val createdAt: Date,
-    val attachments: Boolean
-)
-
-data class OwnLogSimplified(
-    val id: Int,
-    val workId: UUID,
-    val workName: String,
-    val author: String,
-    val editable: Boolean,
-    val createdAt: Date,
-    val attachments: Boolean
-)
-
 data class Author(
     val id: Int,
     val name: String,
@@ -129,12 +96,12 @@ data class Association(
 )
 
 data class OpeningTerm(
-    val name: String, //
-    val type: WorkType, //
+    val name: String,
+    val type: WorkType,
     val licenseHolder: String,
     val technicians: List<Technician>,
-    val constructionCompany: ConstructionCompany, //
-    val building: String //
+    val constructionCompany: ConstructionCompany,
+    val building: String
 )
 
 data class MemberProfile(
@@ -200,9 +167,4 @@ data class Invite(val id: UUID, val email: String, val role: String, val workId:
 
 data class InviteSimplified(val workId: UUID, val workTitle: String, val role: String, val admin: String){
     fun checkTechnician() = role != "MEMBRO" && role != "ESPECTADOR"
-}
-
-fun checkIfEditTimeElapsed(createdAt: Date, clock: Clock): Boolean {
-    val elapsedTime = Duration.between(createdAt.toInstant(), clock.now().toJavaInstant()).toMillis()
-    return elapsedTime >= Duration.ofHours(3).toMillis()
 }

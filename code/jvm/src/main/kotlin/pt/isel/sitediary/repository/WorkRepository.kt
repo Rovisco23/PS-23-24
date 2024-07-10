@@ -37,4 +37,5 @@ interface WorkRepository {
     fun editWork(workId: UUID, editWork: EditWorkInputModel)
     fun checkInvited(id: Int, workId: UUID): Boolean
     fun askWorkVerification(id: UUID, doc: String)
+    fun deleteWork(id: Int)
 }

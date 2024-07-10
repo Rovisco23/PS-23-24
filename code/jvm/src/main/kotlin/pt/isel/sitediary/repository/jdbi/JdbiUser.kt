@@ -248,4 +248,11 @@ class JdbiUser(private val handle: Handle) : UserRepository {
         .mapTo(Int::class.java)
         .single() == 1
 
+    override fun deleteUser(username: String) {
+        handle.createUpdate(
+            "delete from utilizador where username = :username"
+        )
+            .bind("username", username)
+            .execute()
+    }
 }

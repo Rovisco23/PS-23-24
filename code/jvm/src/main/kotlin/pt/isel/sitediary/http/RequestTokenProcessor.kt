@@ -19,13 +19,7 @@ class RequestTokenProcessor(
         if (tokenValue == "") {
             return null
         }
-        return usersService.getUserByToken(tokenValue)?.let {
-            logger.info("User found $it")
-            AuthenticatedUser(
-                it,
-                tokenValue
-            )
-        }
+        return getAuthenticatedUser(tokenValue)
     }
     fun processAuthorizationHeaderValue(authorizationValue: String?): AuthenticatedUser? {
         if (authorizationValue == null) {
@@ -38,13 +32,15 @@ class RequestTokenProcessor(
         if (parts[0].lowercase() != SCHEME) {
             return null
         }
-        return usersService.getUserByToken(parts[1])?.let {
-            logger.info("User found $it")
-            AuthenticatedUser(
-                it,
-                parts[1]
-            )
-        }
+        return getAuthenticatedUser(parts[1])
+    }
+
+    private fun getAuthenticatedUser(tokenValue: String) = usersService.getUserByToken(tokenValue)?.let {
+        logger.info("User found $it")
+        AuthenticatedUser(
+            it,
+            tokenValue
+        )
     }
 
     companion object {

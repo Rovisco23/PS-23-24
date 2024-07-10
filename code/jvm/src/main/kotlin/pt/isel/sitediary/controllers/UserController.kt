@@ -238,9 +238,12 @@ class UserController(private val service: UserService) {
             )
         ]
     )
-    fun editProfile(@RequestBody u: EditProfileInputModel, @Parameter(hidden = true) user: AuthenticatedUser)
-            : ResponseEntity<*> {
-        val res = service.editProfile(user = user.user, editUser = u)
+    fun editProfile(
+        @PathVariable id: Int,
+        @RequestBody u: EditProfileInputModel,
+        @Parameter(hidden = true) user: AuthenticatedUser
+    ) : ResponseEntity<*> {
+        val res = service.editProfile(id = id, user = user.user, editUser = u)
         return handleResponse(res) {
             ResponseEntity.ok(Unit)
         }

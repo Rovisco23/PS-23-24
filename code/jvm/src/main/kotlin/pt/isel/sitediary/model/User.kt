@@ -3,6 +3,7 @@ package pt.isel.sitediary.model
 import kotlinx.datetime.Instant
 import pt.isel.sitediary.domainmodel.authentication.Token
 import pt.isel.sitediary.domainmodel.authentication.TokenValidationInfo
+import pt.isel.sitediary.domainmodel.authentication.UsersDomain
 import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.domainmodel.work.Association
 import pt.isel.sitediary.domainmodel.work.Location
@@ -28,6 +29,19 @@ data class SignUpInputModel(
     fun checkParameters(): Boolean = email.isBlank() || role.isBlank() || username.isBlank() || password.isBlank() ||
             firstName.isBlank() || lastName.isBlank() || district.isBlank() || parish.isBlank() || county.isBlank() ||
             associationName.isBlank() || associationNum < 1
+
+    fun checkPhoneNumberFormat(): Boolean {
+        if (phone.isNullOrBlank()) {
+            return true
+        }
+        if (phone.length > 9 || phone.length < 9 || phone.toIntOrNull() == null) return false
+        return true
+    }
+
+    fun encodePassword(usersDomain: UsersDomain): SignUpInputModel {
+        val hashedPassword = usersDomain.hashPassword(password)
+        return copy(password = hashedPassword)
+    }
 }
 
 data class LoginInputModel(
@@ -42,7 +56,15 @@ data class EditProfileInputModel(
     val phone: String,
     val location: Location,
     val association: Association
-)
+) {
+    fun checkPhoneNumberFormat(): Boolean {
+        if (phone.isBlank()) {
+            return true
+        }
+        if (phone.length > 9 || phone.toIntOrNull() == null) return false
+        return true
+    }
+}
 
 data class GetUserModel(
     val id: Int,
@@ -90,8 +112,6 @@ data class TokenModel(val token: String)
 data class SessionInputModel(val userId: Int, val token: String)
 
 data class SessionValidation(val valid: Boolean)
-
-data class FileModel(val file: ByteArray, val fileName: String, val contentType: String)
 
 data class PendingCouncils(
     val id: Int,

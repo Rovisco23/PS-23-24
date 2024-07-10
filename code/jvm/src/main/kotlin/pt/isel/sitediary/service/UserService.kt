@@ -43,7 +43,7 @@ class UserService(
             failure(Errors.emailAlreadyInUse)
         } else if (input.role != "OPERÁRIO" && input.role != "CÂMARA") {
             failure(Errors.invalidRole)
-        } else if (!checkPhoneNumberFormat(input.phone)) {
+        } else if (!input.checkPhoneNumberFormat()) {
             failure(Errors.invalidPhoneNumber)
         } else if (!input.checkNifSize()) {
             failure(Errors.invalidNif)
@@ -52,7 +52,7 @@ class UserService(
             if (location == null) {
                 failure(Errors.invalidLocation)
             } else {
-                val user = encodePassword(input)
+                val user = input.encodePassword(usersDomain)
                 if (rep.checkDummyEmail(input.email)) { // email != null
                     rep.updateDummyUser(user, location, input.role != "OPERÁRIO")
                     success(Unit)
@@ -63,27 +63,6 @@ class UserService(
             }
         }
     }
-
-    private fun encodePassword(input: SignUpInputModel): SignUpInputModel {
-        val password = usersDomain.hashPassword(input.password)
-        return input.copy(password = password)
-    }
-
-    /*
-    * else if (rep.checkEmailInUse(user.email)) { // email != null
-            val l = it.addressRepository.getLocation(user.parish, user.county)
-            if (l == null) {
-                failure(Errors.invalidLocation)
-            } else {
-                val location = Location(l.district, l.county, l.parish)
-                val id = rep.createUser(user, location)
-                if (user.role != "OPERÁRIO") {
-                    rep.insertPending(id, user.role)
-                }
-                success(Unit)
-            }
-        }*/
-
 
     fun login(username: String, password: String): LoginResult {
         if (username.isBlank() || password.isBlank()) {
@@ -164,11 +143,13 @@ class UserService(
         }
     }
 
-    fun editProfile(user: User, editUser: EditProfileInputModel): UserEditResult = transactionManager.run {
+    fun editProfile(id: Int, user: User, editUser: EditProfileInputModel): UserEditResult = transactionManager.run {
         val rep = it.usersRepository
-        if (user.username != editUser.username && rep.checkUsernameTaken(editUser.username) != null) {
+        if (user.id != id) {
+            failure(Errors.forbidden)
+        } else if (user.username != editUser.username && rep.checkUsernameTaken(editUser.username) != null) {
             failure(Errors.usernameAlreadyInUse)
-        } else if (!checkPhoneNumberFormat(editUser.phone)) {
+        } else if (!editUser.checkPhoneNumberFormat()) {
             failure(Errors.invalidPhoneNumber)
         } else {
             val location = it.addressRepository.getLocation(
@@ -295,13 +276,5 @@ class UserService(
             val users = it.usersRepository.getAllUsers()
             success(users)
         }
-    }
-
-    private fun checkPhoneNumberFormat(phone: String?): Boolean {
-        if (phone.isNullOrBlank()) {
-            return true
-        }
-        if (phone.length > 9 || phone.toIntOrNull() == null) return false
-        return true
     }
 }
