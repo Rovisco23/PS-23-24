@@ -18,6 +18,7 @@ import {ErrorHandler} from "../utils/errorHandle";
 import {NavigationService} from "../utils/navService";
 import {SnackBar} from "../utils/snackBarComponent";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {OriginalUrlService} from "../utils/originalUrl.service";
 
 @Component({
   selector: 'app-pending-users',
@@ -53,7 +54,8 @@ export class PendingUsersComponent {
   constructor(
     private errorHandle: ErrorHandler,
     private navService: NavigationService,
-    private snackBar: SnackBar
+    private snackBar: SnackBar,
+    private urlService: OriginalUrlService
   ) {
     this.httpService.getPendingUsers().pipe(
       catchError(error => {
@@ -101,6 +103,12 @@ export class PendingUsersComponent {
   }
 
   onBackCall() {
-    this.navService.navWork()
+    const url = this.urlService.getOriginalUrl()
+    if (url === undefined){
+      this.navService.navWork()
+    } else {
+      this.urlService.resetOriginalUrl()
+      this.navService.navUrl(url)
+    }
   }
 }

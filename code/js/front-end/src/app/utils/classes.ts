@@ -227,6 +227,10 @@ export interface Verification {
   address: Address
 }
 
+export interface Password {
+  passwordValue: string
+}
+
 export class Role {
 
   private static composedRoles: { [key: string]: string } = {

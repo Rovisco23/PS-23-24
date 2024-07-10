@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
+import pt.isel.sitediary.domainmodel.user.Password
 import pt.isel.sitediary.model.EditProfileInputModel
 import pt.isel.sitediary.model.FileModel
 import pt.isel.sitediary.model.GetUserModel
@@ -244,6 +245,34 @@ class UserController(private val service: UserService) {
         @Parameter(hidden = true) user: AuthenticatedUser
     ) : ResponseEntity<*> {
         val res = service.editProfile(id = id, user = user.user, editUser = u)
+        return handleResponse(res) {
+            ResponseEntity.ok(Unit)
+        }
+    }
+
+    @PutMapping(Paths.User.CHANGE_PASSWORD)
+    @Operation(summary = "Change Password", description = "Change a user's password")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "Edition of profile accepted",
+                content = [
+                    Content(mediaType = "application/json", schema = Schema(implementation = GetUserModel::class))
+                ]
+            ),
+            ApiResponse(
+                responseCode = "400", description = "Invalid parameters",
+                content = [
+                    Content(mediaType = "application/json", schema = Schema(implementation = Errors::class))
+                ]
+            )
+        ]
+    )
+    fun changePassword(
+        @RequestBody password: Password,
+        @Parameter(hidden = true) user: AuthenticatedUser
+    ) : ResponseEntity<*> {
+        val res = service.changePassword(password, user.user)
         return handleResponse(res) {
             ResponseEntity.ok(Unit)
         }

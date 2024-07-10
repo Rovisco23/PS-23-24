@@ -9,6 +9,8 @@ class Errors(val status: Int, val reason: String) {
             .header("Content-Type", "application/problem+json")
             .body<Any>(error.reason)
 
+        val samePassword = Errors(400, "A nova palavra passe não pode ser igual à palavra passe atual.")
+
         val invalidVerificationDoc = Errors(400, "Documento de verificação inválido.")
 
         val invalidTechnicians = Errors(400, "Para iniciar uma Obra é necessário ter " +

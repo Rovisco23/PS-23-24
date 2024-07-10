@@ -1,20 +1,33 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: bold;
+  width: 60% !important;
+  max-width: 60% !important;
+  overflow-wrap: break-word; /* Ensures long words break to fit within the container */
+  word-wrap: break-word; /* Compatibility for older browsers */
+}
+
 .header {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-  height: 7%;
 }
 
 .small-button {
-  width: 2%;
-  height: auto;
-  margin: 10px;
-  background-color: transparent;
-  border: none;
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
 }
 
 .small-icon {
-  font-size: 200%;
+  font-size: 30px;
+  margin-right: 5px;
 }
 
 .search-input[type="text"] {

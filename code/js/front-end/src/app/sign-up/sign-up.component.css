@@ -58,13 +58,13 @@ form .three-inputs {
 }
 
 form .three-inputs .field input {
-  height: 17px;
-  min-width: 140px;
-  max-width: 140px;
-  border: 1px solid #11113D;
-  border-radius: 5px;
-  padding: 5px 5px;
-  margin-bottom: 5px;
+  height: 17px !important;
+  min-width: 140px !important;
+  max-width: 140px !important;
+  border: 1px solid #11113D !important;
+  border-radius: 5px !important;
+  padding: 5px 5px !important;
+  margin-bottom: 5px !important;
 }
 
 

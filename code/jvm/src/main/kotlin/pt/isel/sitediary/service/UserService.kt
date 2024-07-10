@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component
 import pt.isel.sitediary.domainmodel.authentication.Token
 import pt.isel.sitediary.domainmodel.authentication.TokenExternalInfo
 import pt.isel.sitediary.domainmodel.authentication.UsersDomain
+import pt.isel.sitediary.domainmodel.user.Password
 import pt.isel.sitediary.domainmodel.user.User
 import pt.isel.sitediary.model.EditProfileInputModel
 import pt.isel.sitediary.model.FileModel
@@ -275,6 +276,24 @@ class UserService(
         } else {
             val users = it.usersRepository.getAllUsers()
             success(users)
+        }
+    }
+
+    fun changePassword(password: Password, user: User) = transactionManager.run {
+        val rep = it.usersRepository
+        val currPassword = rep.getUserPassword(user.id)
+        if (currPassword == null) {
+            failure(Errors.userNotFound)
+        } else if (!usersDomain.isSafePassword(password.passwordValue)) {
+            failure(Errors.invalidPassword)
+        } else {
+            val newPassword = usersDomain.hashPassword(password.passwordValue)
+            if (currPassword == newPassword) {
+                failure(Errors.samePassword)
+            } else {
+                rep.changePassword(newPassword, user.id)
+                success(Unit)
+            }
         }
     }
 }

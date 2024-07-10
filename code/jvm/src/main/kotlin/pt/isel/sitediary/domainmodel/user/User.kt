@@ -20,3 +20,5 @@ data class User(
         role = role
     )
 }
+
+data class Password(val passwordValue: String)

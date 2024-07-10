@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {AnswerInvite, Classes, EditWorkInputModel, InputWork, SimpleFile, User} from "./classes";
+import {AnswerInvite, Classes, EditWorkInputModel, InputWork, Password, SimpleFile, User} from "./classes";
 
 @Injectable({
   providedIn: 'root',
@@ -256,5 +256,10 @@ export class HttpService {
   askVerification(id: string, doc: string) {
     const headers = this.getTokenHeader();
     return this.http.put<any>(`http://localhost:8080/api/work-verification`, {workId: id, verificationDoc: doc}, {headers: headers})
+  }
+
+  changePassword(password: Password) {
+    const headers = this.getTokenHeader();
+    return this.http.put<any>('http://localhost:8080/api/change-password', password, {headers: headers})
   }
 }

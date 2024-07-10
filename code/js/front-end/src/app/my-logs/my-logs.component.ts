@@ -14,6 +14,7 @@ import {RouterLink, RouterOutlet} from "@angular/router";
 import {MatButton, MatFabButton, MatIconButton} from "@angular/material/button";
 import {MatLabel} from "@angular/material/form-field";
 import {MatBadge} from "@angular/material/badge";
+import {OriginalUrlService} from "../utils/originalUrl.service";
 
 @Component({
   selector: 'app-my-logs',
@@ -51,7 +52,8 @@ export class MyLogsComponent {
     private navService: NavigationService,
     private errorHandle: ErrorHandler,
     private httpService: HttpService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private urlService: OriginalUrlService
   ) {
     this.fetchLogs();
   }
@@ -90,5 +92,15 @@ export class MyLogsComponent {
       entry => entry.createdAt.toLowerCase().includes(text) ||
         entry.workName.toLowerCase().includes(text)
     );
+  }
+
+  onBackCall() {
+    const url = this.urlService.getOriginalUrl()
+    if (url === undefined){
+      this.navService.navWork()
+    } else {
+      this.urlService.resetOriginalUrl()
+      this.navService.navUrl(url)
+    }
   }
 }

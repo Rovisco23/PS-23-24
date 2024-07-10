@@ -27,8 +27,12 @@ body, html {
   color: #FF7A00;
 }
 
-form {
+.form {
   color: white;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
 }
 
 .left, .right {
@@ -39,23 +43,18 @@ form {
   align-items: center;
 }
 
-form {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  text-align: center;
+
+.form input {
+  height: 17px !important;
+  min-width: 140px !important;
+  max-width: 140px !important;
+  border: 1px solid #11113D !important;
+  border-radius: 5px !important;
+  padding: 5px 5px !important;
+  margin-bottom: 5px !important;
 }
 
-form input {
-  height: 17px;
-  max-width: 140px;
-  border: 1px solid #11113D;
-  border-radius: 5px;
-  padding: 5px 5px;
-  margin-bottom: 5px;
-}
-
-form .submit {
+.form .submit {
   margin: 20px auto;
   padding: 10px;
   background-color: #11113D;
@@ -67,7 +66,7 @@ form .submit {
   justify-content: center;
 }
 
-form .submit:hover {
+.form .submit:hover {
   background-color: #FF7A00;
   color: white;
   cursor: pointer;

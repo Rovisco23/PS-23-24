@@ -1,8 +1,11 @@
-<div class="header">
-  <button (click)="onBackCall()" class="small-button">
-    <mat-icon class="small-icon">arrow_back</mat-icon>
-  </button>
-  <h2 class="title">Perfil</h2>
+<div class="main-container">
+  <div class="header">
+    <button mat-button (click)="onBackCall()" class="small-button">
+      <mat-icon class="small-icon">arrow_back</mat-icon>
+      Voltar
+    </button>
+  </div>
+  <span class="title">Perfil</span>
 </div>
 <div class="container" style="display: flex;justify-content: center">
   <div class="left-section">
@@ -173,6 +176,27 @@
             </div>
           </div>
           <div class="edit" (click)="onCancelEdit('location')">
+            <div class="edit-picture-button">
+              <span class="notification-text">Cancelar</span>
+            </div>
+          </div>
+        </div>
+        <div class="details-location" *ngIf="!editPassword">
+          <p>
+            Alterar palavra passe?
+            <mat-icon *ngIf="isOwner()" (click)="toggleEdit('password')">edit</mat-icon>
+          </p>
+        </div>
+        <div *ngIf="editPassword">
+          <input placeholder="Nome da associação" [(ngModel)]="newPassword.passwordValue" required>
+        </div>
+        <div *ngIf="editPassword" style="display: flex; flex-direction: row">
+          <div class="edit" (click)="onChangePassword()">
+            <div class="edit-picture-button">
+              <span class="notification-text">Submeter</span>
+            </div>
+          </div>
+          <div class="edit" (click)="onCancelEdit('password')">
             <div class="edit-picture-button">
               <span class="notification-text">Cancelar</span>
             </div>

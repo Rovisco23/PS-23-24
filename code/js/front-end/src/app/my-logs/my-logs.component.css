@@ -1,3 +1,35 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: bold;
+  width: 60% !important;
+  max-width: 60% !important;
+  overflow-wrap: break-word; /* Ensures long words break to fit within the container */
+  word-wrap: break-word; /* Compatibility for older browsers */
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.small-button {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.small-icon {
+  font-size: 30px;
+  margin-right: 5px;
+}
+
 mat-list {
   padding: 0;
 }

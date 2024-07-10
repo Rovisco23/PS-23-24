@@ -4,7 +4,7 @@ import {NgForOf} from "@angular/common";
 import {User} from "../utils/classes";
 import {HttpService} from "../utils/http.service";
 import {MatDivider} from "@angular/material/divider";
-import {MatIconButton} from "@angular/material/button";
+import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatList, MatListItem, MatListItemLine, MatListItemMeta, MatListItemTitle} from "@angular/material/list";
 import {FormsModule} from "@angular/forms";
 import {catchError, throwError} from "rxjs";
@@ -16,18 +16,19 @@ import {OriginalUrlService} from "../utils/originalUrl.service";
 @Component({
   selector: 'app-list-users',
   standalone: true,
-  imports: [
-    MatIcon,
-    MatDivider,
-    MatIconButton,
-    MatList,
-    MatListItem,
-    MatListItemLine,
-    MatListItemMeta,
-    MatListItemTitle,
-    NgForOf,
-    FormsModule
-  ],
+    imports: [
+        MatIcon,
+        MatDivider,
+        MatIconButton,
+        MatList,
+        MatListItem,
+        MatListItemLine,
+        MatListItemMeta,
+        MatListItemTitle,
+        NgForOf,
+        FormsModule,
+        MatButton
+    ],
   templateUrl: './list-users.component.html',
   styleUrl: './list-users.component.css'
 })
@@ -41,7 +42,12 @@ export class ListUsersComponent {
 
   filteredUsersList: User[] = []
 
-  constructor(private router: Router, private errorHandle: ErrorHandler, private navService: NavigationService, private urlService: OriginalUrlService) {
+  constructor(
+    private router: Router,
+    private errorHandle: ErrorHandler,
+    private navService: NavigationService,
+    private urlService: OriginalUrlService
+  ) {
     this.httpService.getAllUsers().pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
@@ -59,12 +65,21 @@ export class ListUsersComponent {
       return
     }
     this.filteredUsersList = this.usersList.filter(
-      user => user.username.toLowerCase().includes(text.toLowerCase())
+      user => user.username.toLowerCase().includes(text.toLowerCase()) ||
+        user.firstName.toLowerCase().includes(text.toLowerCase()) ||
+        user.lastName.toLowerCase().includes(text.toLowerCase()) ||
+        user.email.toLowerCase().includes(text.toLowerCase())
     )
   }
 
   onBackCall() {
-    this.navService.navWork()
+    const url = this.urlService.getOriginalUrl()
+    if (url === undefined){
+      this.navService.navWork()
+    } else {
+      this.urlService.resetOriginalUrl()
+      this.navService.navUrl(url)
+    }
   }
 
   onUserClick(username: string) {

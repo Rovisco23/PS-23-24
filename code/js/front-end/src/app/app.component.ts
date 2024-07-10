@@ -128,22 +128,27 @@ export class AppComponent {
   }
 
   onUsersCall() {
+    this.urlService.setOriginalUrl(this.router.url)
     this.navService.navUsers()
   }
 
   onPendingUsersCall() {
+    this.urlService.setOriginalUrl(this.router.url)
     this.navService.navPendingUsers()
   }
 
-  onMyLogsCall() {
+  onAllLogsCall() {
+    this.urlService.setOriginalUrl(this.router.url)
     this.navService.navMyLogs()
   }
 
   onVerificationsCall() {
+    this.urlService.setOriginalUrl(this.router.url)
     this.navService.navVerifications()
   }
 
   onCreateWorkCall() {
+    this.urlService.setOriginalUrl(this.router.url)
     this.navService.navCreateWork()
   }
 

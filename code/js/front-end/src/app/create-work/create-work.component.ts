@@ -29,6 +29,7 @@ import {MatDivider} from "@angular/material/divider";
 import {ConfirmDialogComponent} from "../utils/dialogComponent";
 import {MatDialog} from "@angular/material/dialog";
 import {SnackBar} from "../utils/snackBarComponent";
+import {OriginalUrlService} from "../utils/originalUrl.service";
 
 @Component({
   selector: 'app-create-work',
@@ -108,7 +109,8 @@ export class CreateWorkComponent {
     private dialog: MatDialog,
     private errorHandle: ErrorHandler,
     private navService: NavigationService,
-    private snackBar: SnackBar
+    private snackBar: SnackBar,
+    private urlService: OriginalUrlService
   ) {
     this.work = {
       name: '',
@@ -277,7 +279,13 @@ export class CreateWorkComponent {
   }
 
   onBackCall() {
-    this.navService.navWork()
+    const url = this.urlService.getOriginalUrl()
+    if (url === undefined){
+      this.navService.navWork()
+    } else {
+      this.urlService.resetOriginalUrl()
+      this.navService.navUrl(url)
+    }
   }
 
   checkResponsability(id: number) {

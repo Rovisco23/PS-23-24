@@ -33,4 +33,6 @@ interface UserRepository {
     fun declineCouncil(userId: Int)
     fun getAllUsers(): List<GetUserModel>
     fun deleteUser(username: String)
+    fun getUserPassword(id: Int): String?
+    fun changePassword(newPassword: String, id: Int)
 }

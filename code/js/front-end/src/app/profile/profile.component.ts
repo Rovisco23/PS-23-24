@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {HttpService} from "../utils/http.service";
-import {User} from "../utils/classes";
+import {Password, User} from "../utils/classes";
 import {ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 import {NgForOf, NgIf} from "@angular/common";
 import {MatIcon} from "@angular/material/icon";
@@ -11,6 +11,9 @@ import {OriginalUrlService} from "../utils/originalUrl.service";
 import {concelhos, freguesias} from "../utils/utils";
 import {AppComponent} from "../app.component";
 import {FormsModule} from "@angular/forms";
+import {ConfirmDialogComponent} from "../utils/dialogComponent";
+import {MatDialog} from "@angular/material/dialog";
+import {MatButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-profile',
@@ -22,7 +25,8 @@ import {FormsModule} from "@angular/forms";
     NgIf,
     MatIcon,
     FormsModule,
-    NgForOf
+    NgForOf,
+    MatButton
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
@@ -44,6 +48,9 @@ export class ProfileComponent {
   newLastName = '';
   newUsername = '';
   newPhone: string | null = '';
+  newPassword: Password = {
+    passwordValue: '',
+  };
   newAssociationName = '';
   newAssociationNumber = 0;
   newDistrict = '';
@@ -56,6 +63,7 @@ export class ProfileComponent {
   editAssociation: boolean = false;
   editUsername: boolean = false;
   editLocation: boolean = false;
+  editPassword: boolean = false;
 
   oldValue: any = undefined;
 
@@ -64,10 +72,12 @@ export class ProfileComponent {
     private route: ActivatedRoute,
     private urlService: OriginalUrlService,
     private errorHandle: ErrorHandler,
-    private navService: NavigationService
+    private navService: NavigationService,
+    private dialog: MatDialog
   ) {
     this.profileSrc = './assets/profile.png';
     const username = String(this.route.snapshot.params['name']);
+    if (username !== localStorage.getItem('username')) this.navService.navProfile(localStorage.getItem('username') ?? '')
     this.loadUser(username);
     concelhos.forEach((value, key) => {
       value.forEach((v: string) => this.counties.push(v));
@@ -77,6 +87,7 @@ export class ProfileComponent {
       value.forEach((x: string) => this.parishes.push(x));
     })
   }
+
   loadUser(username: string) {
     this.httpService.getProfile(username).pipe(
       catchError(error => {
@@ -199,9 +210,13 @@ export class ProfileComponent {
   }
 
   onBackCall() {
-    const url = this.urlService.getOriginalUrl() ?? '';
-    this.urlService.resetOriginalUrl();
-    this.navService.navUrl(url);
+    const url = this.urlService.getOriginalUrl()
+    if (url === undefined){
+      this.navService.navWork()
+    } else {
+      this.urlService.resetOriginalUrl()
+      this.navService.navUrl(url)
+    }
   }
 
   toggleEdit(field: string) {
@@ -217,6 +232,8 @@ export class ProfileComponent {
       this.editLocation = !this.editLocation;
     } else if (field === 'username') {
       this.editUsername = !this.editUsername;
+    } else if (field === 'password') {
+      this.editPassword = !this.editPassword;
     }
   }
 
@@ -243,6 +260,9 @@ export class ProfileComponent {
     } else if (field === 'username') {
       this.newUsername = this.user?.username ?? '';
       this.toggleEdit(field);
+    } else if (field === 'password') {
+      this.newPassword.passwordValue = '';
+      this.toggleEdit(field);
     }
   }
 
@@ -264,7 +284,7 @@ export class ProfileComponent {
   }
 
   resetValues(field: string) {
-    if (this.user){
+    if (this.user) {
       if (field === 'name') {
         this.user.firstName = this.oldValue[0];
         this.user.lastName = this.oldValue[1];
@@ -328,6 +348,41 @@ export class ProfileComponent {
         this.oldValue = this.user.username
         this.user.username = this.newUsername
       }
+    }
+  }
+
+  onChangePassword() {
+    if (this.checkPassword()){
+      this.httpService.changePassword(this.newPassword).pipe(
+        catchError(error => {
+          this.errorHandle.handleError(error);
+          return throwError(error);
+        })
+      ).subscribe(() => {
+        this.toggleEdit('password')
+      });
+    }
+  }
+
+  private checkPassword() {
+    let errorMessage: string | null = null;
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordPattern.test(this.newPassword.passwordValue)) {
+      errorMessage = 'Password inválida. A password deve ter pelo menos 8 caracteres, uma letra maiúscula, uma letra minúscula, um número e um símbolo.';
+    } else if (this.newPassword.passwordValue?.indexOf(this.user?.username ?? "") !== -1) {
+      errorMessage = 'Password inválida. A password não pode conter o nome de utilizador.';
+    }
+    if (errorMessage === null){
+      return true
+    } else {
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        data: {
+          title: 'Erro',
+          message: errorMessage,
+        },
+      });
+      dialogRef.afterClosed().subscribe(() => {});
+      return false;
     }
   }
 }

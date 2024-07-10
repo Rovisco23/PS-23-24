@@ -1,20 +1,33 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: bold;
+  width: 60% !important;
+  max-width: 60% !important;
+  overflow-wrap: break-word; /* Ensures long words break to fit within the container */
+  word-wrap: break-word; /* Compatibility for older browsers */
+}
+
 .header {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-  height: 7%;
 }
 
 .small-button {
-  width: 2%;
-  height: auto;
-  margin: 10px;
-  background-color: white;
-  border: none;
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
 }
 
 .small-icon {
-  font-size: 200%;
+  font-size: 30px;
+  margin-right: 5px;
 }
 
 .left-section {
@@ -119,7 +132,25 @@
   display: inline;
 }
 
-.details, .details-location, .details-association, .details-phone {
+input {
+  height: 17px !important;
+  min-width: 140px !important;
+  max-width: 140px !important;
+  border: 1px solid #11113D !important;
+  border-radius: 5px !important;
+  padding: 5px 5px !important;
+  margin-bottom: 5px !important;
+}
+
+select {
+  max-height: 30px;
+  width: 150px;
+  border: 1px solid #11113D;
+  border-radius: 5px;
+  padding: 5px 5px;
+}
+
+.details, .details-location, .details-association, .details-phone, .details-password {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
@@ -130,7 +161,7 @@
 }
 
 .information {
-  margin-top: 70px;
+  margin-top: 30px;
 }
 
 .details-sub-title {
@@ -193,4 +224,8 @@
 .selector {
   margin: 5px;
   width: 200px;
+}
+
+.edit-password {
+
 }

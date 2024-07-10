@@ -70,6 +70,19 @@ class JdbiUser(private val handle: Handle) : UserRepository {
         .mapTo(Int::class.java)
         .singleOrNull()
 
+    override fun getUserPassword(id: Int) = handle.createQuery(
+        "select password from UTILIZADOR where id = :id"
+    )
+        .bind("id", id)
+        .mapTo(String::class.java)
+        .singleOrNull()
+
+    override fun changePassword(newPassword: String, id: Int) {
+        handle.createUpdate("update UTILIZADOR set password = :password where id = :id")
+            .bind("password", newPassword)
+            .bind("id", id)
+            .execute()
+    }
 
     override fun getUserById(id: Int): GetUserModel? = handle.createQuery(
         "select * from UTILIZADOR where id = :id "

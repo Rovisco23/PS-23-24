@@ -43,21 +43,20 @@ export class WorkComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(private navService: NavigationService, private router: Router, private errorHandle: ErrorHandler) {
-    if (localStorage.getItem('token')) {
-      this.httpService.getWorkListings().pipe(
-        catchError(error => {
-          this.errorHandle.handleError(error);
-          return throwError(error);
-        })
-      ).subscribe(res => {
-        this.workListingsList = res;
-        this.workElements = res.length;
-        this.filteredWorkList = this.workListingsList.slice(0, 6);
-      });
-      if (localStorage.getItem('role') === 'CÂMARA') {
-      }
+    this.httpService.getWorkListings().pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe(res => {
+      this.workListingsList = res;
+      this.workElements = res.length;
+      this.filteredWorkList = this.workListingsList.slice(0, 6);
+    });
+    if (localStorage.getItem('role') === 'CÂMARA') {
     }
   }
+
 
   onPageChange(event: PageEvent) {
     const startIndex = event.pageIndex * event.pageSize;
@@ -78,11 +77,11 @@ export class WorkComponent {
     this.paginator.pageIndex = 0; // Reset the paginator to the first page
   }
 
-  checkCouncil(){
+  checkCouncil() {
     return localStorage.getItem('role') === 'CÂMARA';
   }
 
-  councilVerifications(){
+  councilVerifications() {
     this.navService.navVerifications();
   }
 
