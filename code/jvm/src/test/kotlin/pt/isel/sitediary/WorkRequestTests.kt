@@ -8,11 +8,16 @@ import org.junit.jupiter.api.Test
 import org.postgresql.ds.PGSimpleDataSource
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
+import org.springframework.core.io.FileSystemResource
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.util.LinkedMultiValueMap
+import org.springframework.util.MultiValueMap
+import org.springframework.web.reactive.function.BodyInserters
 import pt.isel.sitediary.repository.transaction.JdbiTransactionManager
 import pt.isel.sitediary.utils.Paths
 import pt.isel.sitediary.utils.configureWithAppRequirements
+import java.nio.file.Files
 import java.util.*
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -21,7 +26,6 @@ class WorkRequestTests {
     private val jdbcDatabaseURL = System.getenv("JDBC_DATABASE_URL") ?: databaseURL
     private val dataSource = PGSimpleDataSource().apply { setURL(jdbcDatabaseURL) }
     private val transactionManager = JdbiTransactionManager(Jdbi.create(dataSource).configureWithAppRequirements())
-
     @LocalServerPort
     var port: Int = 0
     private val name = "Joaquimtest1+"
@@ -138,6 +142,57 @@ class WorkRequestTests {
                 "role": "MEMBRO"
             }
         ]
+    """
+    private val editBody = """
+        {
+            "name": "Obra de Teste Editada",
+            "type": "RESIDENCIAL",
+            "description": "Isto é uma obra de teste",
+            "licenseHolder": "Teste 1",
+            "company": {
+                "name": "Companhia de Construção",
+                "num": 1234
+            },
+            "building": "Predio C",
+            "address": {
+                "location": {
+                    "district": "Lisboa",
+                    "county": "Lisboa",
+                    "parish": "Marvila"
+                },
+                "street": "Rua de teste",
+                "postalCode": "1234-567"
+            },
+            "technicians": [
+                {
+                    "name": "Teste 2",
+                    "email": "test2@gmail.com",
+                    "role": "DIRETOR",
+                    "association": {
+                        "name": "Associação",
+                        "number": 1
+                    }
+                },
+                {
+                    "name": "Teste 3",
+                    "email": "test3@gmail.com",
+                    "role": "FISCALIZAÇÃO",
+                    "association": {
+                        "name": "Associação",
+                        "number": 2
+                    }
+                },
+                {
+                    "name": "Teste 4",
+                    "email": "test4@gmail.com",
+                    "role": "COORDENADOR",
+                    "association": {
+                        "name": "Associação",
+                        "number": 3
+                    }
+                }
+            ]
+        }
     """
 
     @BeforeEach
@@ -404,15 +459,153 @@ class WorkRequestTests {
             it.workRepository.deleteWork(id)
         }
     }
-}
 
-fun main() {
-    val jdbcDatabaseURL = System.getenv("JDBC_DATABASE_URL") ?: throw IllegalArgumentException("JDBC_DATABASE_URL environment variable not set")
-    val dataSource = PGSimpleDataSource().apply { setURL(jdbcDatabaseURL) }
-    val transactionManager = JdbiTransactionManager(Jdbi.create(dataSource).configureWithAppRequirements())
-    transactionManager.run {
-        it.workRepository.deleteWork(164)
-        it.usersRepository.deleteUser("Joaquimtest1+")
-        it.usersRepository.deleteUser("Joaquimtest2+")
+    @Test
+    fun `Edit Work Test`() {
+        val client = WebTestClient.bindToServer().baseUrl("http://localhost:$port").build()
+        client.post().uri(Paths.Work.GET_ALL_WORKS)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer $token")
+            .bodyValue(createWorkBody)
+            .exchange()
+        client.get().uri(Paths.Work.GET_ALL_WORKS)
+            .header("Authorization", "Bearer $token")
+            .exchange()
+            .expectBody()
+            .jsonPath("$[0].id").value<String> { workId = UUID.fromString(it) }
+        client.put().uri(Paths.Work.EDIT_WORK, workId)
+            .header("Authorization", "Bearer $token")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(editBody)
+            .exchange()
+            .expectStatus().isOk
+        transactionManager.run {
+            it.workRepository.deleteWork(id)
+        }
+    }
+
+    @Test
+    fun `Finish Work Test`() {
+        val client = WebTestClient.bindToServer().baseUrl("http://localhost:$port").build()
+        client.post().uri(Paths.Work.GET_ALL_WORKS)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer $token")
+            .bodyValue(createWorkBody)
+            .exchange()
+        client.get().uri(Paths.Work.GET_ALL_WORKS)
+            .header("Authorization", "Bearer $token")
+            .exchange()
+            .expectBody()
+            .jsonPath("$[0].id").value<String> { workId = UUID.fromString(it) }
+        client.post().uri(Paths.Work.FINISH_WORK + "?work=$workId")
+            .header("Authorization", "Bearer $token")
+            .contentType(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus().isOk
+        transactionManager.run {
+            it.workRepository.deleteWork(id)
+        }
+    }
+
+    @Test
+    fun `Change Work Image`() {
+        val file = Files.createTempFile("test-work-picture", ".png").toFile()
+        file.writeBytes(ByteArray(1024) { 0 })
+        val fileResource = FileSystemResource(file)
+        file.deleteOnExit()
+        val body: MultiValueMap<String, Any> = LinkedMultiValueMap()
+        body.add("file", fileResource)
+        val client = WebTestClient.bindToServer().baseUrl("http://localhost:$port").build()
+        client.post().uri(Paths.Work.GET_ALL_WORKS)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer $token")
+            .bodyValue(createWorkBody)
+            .exchange()
+        client.get().uri(Paths.Work.GET_ALL_WORKS)
+            .header("Authorization", "Bearer $token")
+            .exchange()
+            .expectBody()
+            .jsonPath("$[0].id").value<String> { workId = UUID.fromString(it) }
+        client.put().uri(Paths.Work.GET_IMAGE, workId)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .header("Authorization", "Bearer $token")
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .body(BodyInserters.fromMultipartData(body))
+            .exchange()
+            .expectStatus().isOk
+        transactionManager.run {
+            it.workRepository.deleteWork(id)
+        }
+    }
+
+    @Test
+    fun `Remove Work Image`() {
+        val file = Files.createTempFile("test-work-picture", ".png").toFile()
+        file.writeBytes(ByteArray(1024) { 0 })
+        val fileResource = FileSystemResource(file)
+        file.deleteOnExit()
+        val body: MultiValueMap<String, Any> = LinkedMultiValueMap()
+        body.add("file", fileResource)
+        val client = WebTestClient.bindToServer().baseUrl("http://localhost:$port").build()
+        client.post().uri(Paths.Work.GET_ALL_WORKS)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer $token")
+            .bodyValue(createWorkBody)
+            .exchange()
+        client.get().uri(Paths.Work.GET_ALL_WORKS)
+            .header("Authorization", "Bearer $token")
+            .exchange()
+            .expectBody()
+            .jsonPath("$[0].id").value<String> { workId = UUID.fromString(it) }
+        client.put().uri(Paths.Work.GET_IMAGE, workId)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .header("Authorization", "Bearer $token")
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .body(BodyInserters.fromMultipartData(body))
+            .exchange()
+        client.put().uri(Paths.Work.GET_IMAGE, workId)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .header("Authorization", "Bearer $token")
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .body(BodyInserters.fromMultipartData(LinkedMultiValueMap<String, Any>()))
+            .exchange()
+            .expectStatus().isOk
+        transactionManager.run {
+            it.workRepository.deleteWork(id)
+        }
+    }
+
+    @Test
+    fun `Get Work Image`() {
+        val file = Files.createTempFile("test-work-picture", ".png").toFile()
+        file.writeBytes(ByteArray(1024) { 0 })
+        val fileResource = FileSystemResource(file)
+        file.deleteOnExit()
+        val body: MultiValueMap<String, Any> = LinkedMultiValueMap()
+        body.add("file", fileResource)
+        val client = WebTestClient.bindToServer().baseUrl("http://localhost:$port").build()
+        client.post().uri(Paths.Work.GET_ALL_WORKS)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer $token")
+            .bodyValue(createWorkBody)
+            .exchange()
+        client.get().uri(Paths.Work.GET_ALL_WORKS)
+            .header("Authorization", "Bearer $token")
+            .exchange()
+            .expectBody()
+            .jsonPath("$[0].id").value<String> { workId = UUID.fromString(it) }
+        client.put().uri(Paths.Work.GET_IMAGE, workId)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .header("Authorization", "Bearer $token")
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .body(BodyInserters.fromMultipartData(body))
+            .exchange()
+        client.get().uri(Paths.Work.GET_IMAGE, workId)
+            .header("Authorization", "Bearer $token")
+            .exchange()
+            .expectStatus().isOk
+        transactionManager.run {
+            it.workRepository.deleteWork(id)
+        }
     }
 }

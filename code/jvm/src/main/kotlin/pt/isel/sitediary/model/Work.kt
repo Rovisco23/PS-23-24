@@ -17,12 +17,12 @@ data class WorkOutputModel(
 
 data class EditWorkInputModel(
     val name: String,
-    val description: String,
-    val address: Address,
     val type: String,
+    val description: String,
     val licenseHolder: String,
     val company: ConstructionCompany,
     val building: String,
+    val address: Address,
     val technicians: List<Technician>
 )
 

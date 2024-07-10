@@ -76,6 +76,16 @@ class JdbiLog(private val handle: Handle) : LogRepository {
             .execute()
     }
 
+    override fun deleteLog(workId: UUID) {
+        handle.createUpdate(
+            "delete from IMAGEM where oId = :id;" +
+            "delete from DOCUMENTO where oId = :id;" +
+            "delete from REGISTO where oId = :id"
+        )
+            .bind("id", workId.toString())
+            .execute()
+    }
+
     override fun checkUserAccess(workId: UUID, userId: Int): Boolean = handle.createQuery(
         "select count(*) from MEMBRO where oId = :oId and uId = :uId and pendente = :pendente"
     )
