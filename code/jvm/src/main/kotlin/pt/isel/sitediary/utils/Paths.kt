@@ -23,6 +23,7 @@ object Paths {
         const val GET_BY_ID = "$PREFIX/work/{id}"
         const val GET_ALL_WORKS = "$PREFIX/work"
         const val GET_OPENING_TERM = "$PREFIX/opening-term/{id}"
+        const val GET_SITE_DIARY = "$PREFIX/site-diary/{id}"
         const val EDIT_WORK = "$PREFIX/work/edit/{id}"
         const val FINISH_WORK = "$PREFIX/finish-work"
         const val GET_IMAGE = "$PREFIX/work-image/{id}"

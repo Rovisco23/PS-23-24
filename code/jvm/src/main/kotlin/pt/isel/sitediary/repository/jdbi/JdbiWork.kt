@@ -476,6 +476,19 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
             .execute()
     }
 
+    override fun getSiteDiary(workId: UUID): SiteDiary = handle.createQuery(
+        "select autorizacao, assinatura, dt_assinatura, o.concelho, o.freguesia, o.rua, o.cpostal, predio, " +
+                "ec.nome as nome_empresa, ec.numero as numero_empresa, titular_licenca, o.tipo, " +
+                "ARRAY(SELECT CONCAT(role, ';', nome, ';', associacao, ';', numero) FROM INTERVENIENTE " +
+                "WHERE oId = :id) AS technicians, ARRAY(SELECT CONCAT(texto, ';', u.username, ';', creation_date, " +
+                "';', last_modification_date) FROM REGISTO join Utilizador u on u.id = author WHERE oId = :id) " +
+                "AS logs from TERMO_ABERTURA ta join Obra o on o.id = ta.oId join empresa_construcao ec on " +
+                "ec.id = empresa_construcao where ta.oId = :id"
+    )
+        .bind("id", workId.toString())
+        .mapTo(SiteDiary::class.java)
+        .single()
+
     private fun addCouncilAsMember(workId: UUID, location: Location) {
         val councilId = handle.createQuery(
             "select id from UTILIZADOR where freguesia = :parish and " +

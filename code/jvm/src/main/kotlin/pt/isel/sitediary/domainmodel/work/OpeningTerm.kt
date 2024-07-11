@@ -25,19 +25,23 @@ data class OpeningTerm(
     val location: OpeningTermLocation,
     val licenseHolder: String,
     val authors: Map<String, OpeningTermAuthor>,
-    /*val fiscalization: OpeningTermAuthor,
-    val coordinator: OpeningTermAuthor,
-    val architect: OpeningTermAuthor,
-    val stability: OpeningTermAuthor,
-    val electricity: OpeningTermAuthor,
-    val gas: OpeningTermAuthor,
-    val water: OpeningTermAuthor,
-    val phone: OpeningTermAuthor,
-    val isolation: OpeningTermAuthor,
-    val acoustic: OpeningTermAuthor,
-    val transport: OpeningTermAuthor,
-    val director: OpeningTermAuthor,*/
     val company: ConstructionCompany,
     val type: String,
-) {
-}
+)
+
+data class SiteDiaryLog(
+    val content: String,
+    val author: String,
+    val createdAt: String,
+    val lastModificationAt: String
+)
+
+data class SiteDiary(
+    val verification: OpeningTermVerification,
+    val location: OpeningTermLocation,
+    val licenseHolder: String,
+    val authors: Map<String, OpeningTermAuthor>,
+    val logs: List<SiteDiaryLog>,
+    val company: ConstructionCompany,
+    val type: String,
+)

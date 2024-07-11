@@ -38,4 +38,5 @@ interface WorkRepository {
     fun checkInvited(id: Int, workId: UUID): Boolean
     fun askWorkVerification(id: UUID, doc: String)
     fun deleteWork(id: Int)
+    fun getSiteDiary(workId: UUID): SiteDiary
 }

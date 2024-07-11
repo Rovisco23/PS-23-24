@@ -1,19 +1,19 @@
 package pt.isel.sitediary.repository.mappers
 
-
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
 import pt.isel.sitediary.domainmodel.work.ConstructionCompany
-import pt.isel.sitediary.domainmodel.work.OpeningTerm
-import pt.isel.sitediary.domainmodel.work.OpeningTermAuthor
 import pt.isel.sitediary.domainmodel.work.OpeningTermLocation
 import pt.isel.sitediary.domainmodel.work.OpeningTermVerification
+import pt.isel.sitediary.domainmodel.work.SiteDiary
+import pt.isel.sitediary.domainmodel.work.SiteDiaryLog
 import java.sql.ResultSet
 
-class OpeningTermMapper : RowMapper<OpeningTerm> {
-    override fun map(rs: ResultSet?, ctx: StatementContext?): OpeningTerm? = if (rs != null) {
+class SiteDiaryMapper : RowMapper<SiteDiary> {
+    override fun map(rs: ResultSet?, ctx: StatementContext?): SiteDiary? = if (rs != null) {
         val technicians = makeMap(rs.getString("technicians").removeSurrounding("{", "}"))
-        OpeningTerm(
+        val logs = makeList(rs.getString("logs").removeSurrounding("{", "}"))
+        SiteDiary(
             verification = OpeningTermVerification(
                 doc = rs.getString("autorizacao") ?: "",
                 signature = rs.getString("assinatura") ?: "",
@@ -32,37 +32,25 @@ class OpeningTermMapper : RowMapper<OpeningTerm> {
                 name = rs.getString("nome_empresa"),
                 num = rs.getInt("numero_empresa")
             ),
-            type = rs.getString("tipo")
+            type = rs.getString("tipo"),
+            logs = logs
         )
     } else null
 }
 
-fun makeMap(str: String): Map<String, OpeningTermAuthor> {
-    val map = mutableMapOf<String, OpeningTermAuthor>()
+private fun makeList(str: String): List<SiteDiaryLog> {
+    val list = mutableListOf<SiteDiaryLog>()
     str.split(",")
         .map {
             val aux = it.removeSurrounding('"'.toString(), '"'.toString()).split(";")
-            map[mapToAuthor(aux[0])] = OpeningTermAuthor(
-                name = aux[1],
-                association = aux[2],
-                num = aux[3].toInt()
+            list.add(
+                SiteDiaryLog(
+                    content = aux[0],
+                    author = aux[1],
+                    createdAt = aux[2].split(".")[0].dropLast(3),
+                    lastModificationAt = aux[3]
+                )
             )
         }
-    return map
-}
-
-fun mapToAuthor(str: String): String = when (str) {
-    "DIRETOR" -> "director"
-    "FISCALIZAÇÃO" -> "fiscalization"
-    "COORDENADOR" -> "coordinator"
-    "ARQUITETURA" -> "architect"
-    "ESTABILIDADE" -> "stability"
-    "ELETRICIDADE" -> "electricity"
-    "GÁS" -> "gas"
-    "CANALIZAÇÃO" -> "water"
-    "TELECOMUNICAÇÕES" -> "phone"
-    "TERMICO" -> "isolation"
-    "ACUSTICO" -> "acoustic"
-    "TRANSPORTES" -> "transport"
-    else -> throw IllegalArgumentException("Invalid author type")
+    return list
 }
