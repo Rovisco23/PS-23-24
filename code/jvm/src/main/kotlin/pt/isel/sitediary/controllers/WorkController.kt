@@ -1,6 +1,5 @@
 package pt.isel.sitediary.controllers
 
-import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
@@ -22,15 +21,14 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
 import pt.isel.sitediary.domainmodel.work.AskVerificationInputModel
+import pt.isel.sitediary.domainmodel.work.OpeningTerm
 import pt.isel.sitediary.domainmodel.work.Work
 import pt.isel.sitediary.model.*
 import pt.isel.sitediary.service.WorkService
 import pt.isel.sitediary.utils.Errors
 import pt.isel.sitediary.utils.Paths
 import pt.isel.sitediary.utils.handleResponse
-import java.io.ByteArrayOutputStream
 import java.net.URI
-import java.nio.file.Files
 import java.util.*
 
 
@@ -326,7 +324,7 @@ class WorkController(private val service: WorkService) {
         }
     }
 
-    /*@GetMapping(Paths.Work.GET_OPENING_TERM)
+    @GetMapping(Paths.Work.GET_OPENING_TERM)
     @Operation(
         summary = "Get opening term of a specific work",
         description = "Used to fetch the opening term of a work"
@@ -361,7 +359,7 @@ class WorkController(private val service: WorkService) {
                 .body(ByteArrayResource(outPutStream.toByteArray()))*/
             ResponseEntity.ok(it)
         }
-    }*/
+    }
 
     @PostMapping(Paths.Work.FINISH_WORK)
     @Operation(summary = "Finish Work", description = "Concludes the Work and creates a closing term for that work")
@@ -418,14 +416,4 @@ class WorkController(private val service: WorkService) {
             ResponseEntity.ok().header("Location", "/work/${id}").body(Unit)
         }
     }
-}
-
-fun main() {
-    val htmlContent = String(Files.readAllBytes(java.nio.file.Paths.get("docs\\OpeningTerm.html")))
-    val outPutStream = ByteArrayOutputStream()
-    PdfRendererBuilder()
-        .useFastMode()
-        .withHtmlContent(htmlContent, null)
-        .toStream(outPutStream)
-        .run()
 }

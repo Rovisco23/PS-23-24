@@ -95,15 +95,6 @@ data class Association(
     val number: Int?
 )
 
-data class OpeningTerm(
-    val name: String,
-    val type: WorkType,
-    val licenseHolder: String,
-    val technicians: List<Technician>,
-    val constructionCompany: ConstructionCompany,
-    val building: String
-)
-
 data class MemberProfile(
     val id: Int,
     val name: String,

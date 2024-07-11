@@ -17,67 +17,67 @@
   <div class="form-section">
     <p>a) TITULAR DA LICENÇA/DO TÍTULO (3) <span class="input-camp">{{ openingTerm.licenseHolder }}</span></p>
     <p>b) TÉCNICO RESPONSÁVEL PELA DIREÇÃO DE FISCALIZAÇÃO DA OBRA
-      <span class="input-camp">{{ openingTerm.authors["fiscalization"].name }}</span> inscrito na (4)
-      <span class="input-camp">{{ openingTerm.authors["fiscalization"].association }}</span>, com o nº
-      <span class="input-camp">{{ openingTerm.authors["fiscalization"].num }}</span></p>
+      <span class="input-camp">{{ openingTerm.authors.get("fiscalization")?.name }}</span> inscrito na (4)
+      <span class="input-camp">{{ openingTerm.authors.get("fiscalization")?.association }}</span>, com o nº
+      <span class="input-camp">{{ openingTerm.authors.get("fiscalization")?.num }}</span></p>
     <p>c) COORDENADOR DE PROJETO
-      <span class="input-camp">{{ openingTerm.authors["coordinator"].name }}</span> inscrito na (4)
-      <span class="input-camp">{{ openingTerm.authors["coordinator"].association }}</span>, com o nº
-      <span class="input-camp">{{ openingTerm.authors["coordinator"].num }}</span></p>
+      <span class="input-camp">{{ openingTerm.authors.get("coordinator")?.name }}</span> inscrito na (4)
+      <span class="input-camp">{{ openingTerm.authors.get("coordinator")?.association }}</span>, com o nº
+      <span class="input-camp">{{ openingTerm.authors.get("coordinator")?.num }}</span></p>
   </div>
   <div class="form-section">
     <p>AUTORES DOS PROJETOS:</p>
     <p>Arquitetura
-      <span class="input-camp">{{ openingTerm.authors["architect"].name }}</span> inscrito na (4)
-      <span class="input-camp">{{ openingTerm.authors["architect"].association }}</span>, com o nº
-      <span class="input-camp">{{ openingTerm.authors["architect"].num }}</span></p>
+      <span class="input-camp">{{ openingTerm.authors.get("architect")?.name }}</span> inscrito na (4)
+      <span class="input-camp">{{ openingTerm.authors.get("architect")?.association }}</span>, com o nº
+      <span class="input-camp">{{ openingTerm.authors.get("architect")?.num }}</span></p>
     <p>Estabilidade
-      <span class="input-camp">{{ openingTerm.authors["stability"].name }}</span> inscrito na (4)
-      <span class="input-camp">{{ openingTerm.authors["stability"].association }}</span>, com o nº
-      <span class="input-camp">{{ openingTerm.authors["stability"].num }}</span></p>
+      <span class="input-camp">{{ openingTerm.authors.get("stability")?.name }}</span> inscrito na (4)
+      <span class="input-camp">{{ openingTerm.authors.get("stability")?.association }}</span>, com o nº
+      <span class="input-camp">{{ openingTerm.authors.get("stability")?.num }}</span></p>
     <p>Alimentação e distribuição de energia elétrica
-      <span class="input-camp">{{ openingTerm.authors["electricity"].name }}</span>inscrito na (4)
-      <span class="input-camp">{{ openingTerm.authors["electricity"].association }}</span>, com o nº
-      <span class="input-camp">{{ openingTerm.authors["electricity"].num }}</span>
+      <span class="input-camp">{{ openingTerm.authors.get("electricity")?.name }}</span>inscrito na (4)
+      <span class="input-camp">{{ openingTerm.authors.get("electricity")?.association }}</span>, com o nº
+      <span class="input-camp">{{ openingTerm.authors.get("electricity")?.num }}</span>
     </p>
     <p>Instalação de gás
-      <span class="input-camp">{{ openingTerm.authors["gas"].name }}</span> inscrito na (4)
-      <span class="input-camp">{{ openingTerm.authors["gas"].association }}</span>, com o nº
-      <span class="input-camp">{{ openingTerm.authors["gas"].num }}</span>
+      <span class="input-camp">{{ openingTerm.authors.get("gas")?.name }}</span> inscrito na (4)
+      <span class="input-camp">{{ openingTerm.authors.get("gas")?.association }}</span>, com o nº
+      <span class="input-camp">{{ openingTerm.authors.get("gas")?.num }}</span>
     </p>
     <p>Águas e esgotos
-      <span class="input-camp">{{ openingTerm.authors["water"].name }}</span> inscrito na (4)
-      <span class="input-camp">{{ openingTerm.authors["water"].association }}</span>, com o nº
-      <span class="input-camp">{{ openingTerm.authors["water"].num }}</span>
+      <span class="input-camp">{{ openingTerm.authors.get("water")?.name }}</span> inscrito na (4)
+      <span class="input-camp">{{ openingTerm.authors.get("water")?.association }}</span>, com o nº
+      <span class="input-camp">{{ openingTerm.authors.get("water")?.num }}</span>
     </p>
     <p>Instalações telefónicas e de telecomunicações
-      <span class="input-camp">{{ openingTerm.authors["phone"].name }}</span>inscrito na (4)
-      <span class="input-camp">{{ openingTerm.authors["phone"].association }}</span>, com o nº
-      <span class="input-camp">{{ openingTerm.authors["phone"].num }}</span>
+      <span class="input-camp">{{ openingTerm.authors.get("phone")?.name }}</span>inscrito na (4)
+      <span class="input-camp">{{ openingTerm.authors.get("phone")?.association }}</span>, com o nº
+      <span class="input-camp">{{ openingTerm.authors.get("phone")?.num }}</span>
     </p>
     <p>Comportamento térmico
-      <span class="input-camp">{{ openingTerm.authors["isolation"].name }}</span> inscrito na (4)
-      <span class="input-camp">{{ openingTerm.authors["isolation"].association }}</span>, com o nº
-      <span class="input-camp">{{ openingTerm.authors["isolation"].num }}</span>
+      <span class="input-camp">{{ openingTerm.authors.get("isolation")?.name }}</span> inscrito na (4)
+      <span class="input-camp">{{ openingTerm.authors.get("isolation")?.association }}</span>, com o nº
+      <span class="input-camp">{{ openingTerm.authors.get("isolation")?.num }}</span>
     </p>
     <p>Condicionamento acústico
-      <span class="input-camp">{{ openingTerm.authors["acoustic"].name }}</span> inscrito na (4)
-      <span class="input-camp">{{ openingTerm.authors["acoustic"].association }}</span>, com o nº
-      <span class="input-camp">{{ openingTerm.authors["acoustic"].association }}</span>
+      <span class="input-camp">{{ openingTerm.authors.get("acoustic")?.name }}</span> inscrito na (4)
+      <span class="input-camp">{{ openingTerm.authors.get("acoustic")?.association }}</span>, com o nº
+      <span class="input-camp">{{ openingTerm.authors.get("acoustic")?.association }}</span>
     </p>
     <p>Instalações eletromecânicas de transporte de pessoas e/ou mercadorias
-      <span class="input-camp">{{ openingTerm.authors["transport"].name }}</span> inscrito na (4)
-      <span class="input-camp">{{ openingTerm.authors["transport"].association }}</span>, com o nº
-      <span class="input-camp">{{ openingTerm.authors["transport"].num }}</span>
+      <span class="input-camp">{{ openingTerm.authors.get("transport")?.name }}</span> inscrito na (4)
+      <span class="input-camp">{{ openingTerm.authors.get("transport")?.association }}</span>, com o nº
+      <span class="input-camp">{{ openingTerm.authors.get("transport")?.num }}</span>
     </p>
   </div>
   <div class="form-section">
     <p>d) EMPRESA DE CONSTRUÇÃO <span class="input-camp">{{ openingTerm.company.name }}</span></p>
     <p>Nº do alvará (5) <span class="input-camp">{{ openingTerm.company.num }}</span></p>
     <p>e) DIRETOR DA OBRA (6)
-      <span class="input-camp">{{ openingTerm.authors["director"].name }}</span> inscrito na (4)
-      <span class="input-camp">{{ openingTerm.authors["director"].association }}</span>, com o nº
-      <span class="input-camp">{{ openingTerm.authors["director"].num }}</span>
+      <span class="input-camp">{{ openingTerm.authors.get("director")?.name }}</span> inscrito na (4)
+      <span class="input-camp">{{ openingTerm.authors.get("director")?.association }}</span>, com o nº
+      <span class="input-camp">{{ openingTerm.authors.get("director")?.num }}</span>
     </p>
     <p>f) TIPO DE OBRA A EXECUTAR (7) <span class="input-camp">{{ openingTerm.type }}</span></p>
     <p>g) IDENTIFICAÇÃO DO PRÉDIO</p>

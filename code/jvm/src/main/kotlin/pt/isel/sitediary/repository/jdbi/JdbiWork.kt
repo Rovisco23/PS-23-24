@@ -75,19 +75,17 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
         .bind("id", userId)
         .mapTo(WorkSimplified::class.java)
         .list()
-/*
+
     override fun getOpeningTerm(workId: UUID): OpeningTerm = handle.createQuery(
-        "select OBRA.nome, OBRA.tipo, TERMO_ABERTURA.titular_licenca, EMPRESA_CONSTRUCAO.nome as company_name, " +
-                "EMPRESA_CONSTRUCAO.numero as company_num, TERMO_ABERTURA.predio, ARRAY(select CONCAT(nif, ';', " +
-                "username, ';', MEMBRO.role, ';', associacao_nome, ';', associacao_numero) from MEMBRO join " +
-                "UTILIZADOR on uId = UTILIZADOR.id where MEMBRO.oId = :id and MEMBRO.role != 'ADMIN' and " +
-                "MEMBRO.role != 'MEMBRO' and MEMBRO.role != 'ESPECTADOR') as tecnicos from TERMO_ABERTURA join " +
-                "EMPRESA_CONSTRUCAO on EMPRESA_CONSTRUCAO.id = TERMO_ABERTURA.empresa_construcao join OBRA on " +
-                "OBRA.id = TERMO_ABERTURA.oId where TERMO_ABERTURA.oId = :id"
+        "select autorizacao, assinatura, dt_assinatura, o.concelho, o.freguesia, o.rua, o.cpostal, predio, " +
+                "ec.nome as nome_empresa, ec.numero as numero_empresa, titular_licenca, o.tipo, " +
+                "ARRAY(SELECT CONCAT(role, ';', nome, ';', associacao, ';', numero) FROM INTERVENIENTE " +
+                "WHERE oId = :id) AS technicians from TERMO_ABERTURA ta join Obra o on o.id = ta.oId join " +
+                "empresa_construcao ec on ec.id = empresa_construcao where ta.oId = :id"
     )
         .bind("id", workId.toString())
         .mapTo(OpeningTerm::class.java)
-        .single()*/
+        .single()
 
     private fun getCouncil(location: Location) =
         handle.createQuery(

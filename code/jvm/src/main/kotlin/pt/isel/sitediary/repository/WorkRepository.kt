@@ -12,7 +12,7 @@ interface WorkRepository {
     fun createWork(work: WorkInput, createdAt: Timestamp, openingTerm: OpeningTermInputModel, user: User)
     fun getById(id: UUID): Work?
     fun getWorkList(userId: Int): List<WorkSimplified>
-    //fun getOpeningTerm(workId: UUID): OpeningTerm
+    fun getOpeningTerm(workId: UUID): OpeningTerm
     fun inviteMembers(invites: List<Invite>)
     fun getInviteList(userId: Int): List<InviteSimplified>
     fun getInvite(workId: UUID, userId: Int): InviteSimplified?

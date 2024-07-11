@@ -20,7 +20,7 @@ data class OpeningTermAuthor(
     val num: Int
 )
 
-data class OpeningTermHTML(
+data class OpeningTerm(
     val verification: OpeningTermVerification,
     val location: OpeningTermLocation,
     val licenseHolder: String,

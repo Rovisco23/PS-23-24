@@ -195,7 +195,7 @@ class WorkService(
     }
 
 
-    /*fun getOpeningTerm(workId: UUID, user: User) = transactionManager.run {
+    fun getOpeningTerm(workId: UUID, user: User) = transactionManager.run {
         val workRep = it.workRepository
         val work = workRep.getById(workId)
         if (work == null) {
@@ -206,7 +206,7 @@ class WorkService(
             val openingTerm = workRep.getOpeningTerm(workId)
             success(openingTerm)
         }
-    }*/
+    }
 
     fun finishWork(workId: UUID, userId: Int) = transactionManager.run {
         val workRep = it.workRepository
