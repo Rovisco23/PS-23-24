@@ -255,7 +255,10 @@ export class HttpService {
 
   askVerification(id: string, doc: string) {
     const headers = this.getTokenHeader();
-    return this.http.put<any>(`http://localhost:8080/api/work-verification`, {workId: id, verificationDoc: doc}, {headers: headers})
+    return this.http.put<any>(`http://localhost:8080/api/work-verification`, {
+      workId: id,
+      verificationDoc: doc
+    }, {headers: headers})
   }
 
   changePassword(password: Password) {
@@ -263,8 +266,11 @@ export class HttpService {
     return this.http.put<any>('http://localhost:8080/api/change-password', password, {headers: headers})
   }
 
-  downloadOpeningTerm(id: string, lines: string[] ) {
+  getOpeningTerm(id: string) {
     const headers = this.getTokenHeader();
-    return this.http.post<any>(`http://localhost:8080/api/opening-term/${id}`, {data: lines} ,{headers: headers})
+    return this.http.get<any>(`http://localhost:8080/api/opening-term/${id}`, {
+      headers: headers,
+      responseType: 'blob' as 'json'
+    })
   }
 }

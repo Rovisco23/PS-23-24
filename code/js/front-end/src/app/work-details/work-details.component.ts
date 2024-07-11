@@ -4,7 +4,7 @@ import {
   Address, Company, EditWorkInputModel,
   Invite,
   LogEntrySimplified,
-  Member, OpeningTerm,
+  Member,
   Role,
   Technician,
   TechnicianCreation,
@@ -38,7 +38,6 @@ import {
 } from "@angular/material/table";
 import {concelhos, freguesias} from "../utils/utils";
 import {SnackBar} from "../utils/snackBarComponent";
-import {PDFServiceComponent} from "../pdfservice/pdfservice.component";
 
 @Component({
   selector: 'app-work-details',
@@ -141,7 +140,6 @@ export class WorkDetailsComponent {
     private dialog: MatDialog,
     private snackBar: SnackBar,
     private errorHandle: ErrorHandler,
-    private openingTermService: PDFServiceComponent
   ) {
     const workListingId = String(this.route.snapshot.params['id']);
     const uri = this.router.url.split('/')
@@ -615,13 +613,16 @@ export class WorkDetailsComponent {
   }
 
   getOpeningTerm() {
-    this.httpService.downloadOpeningTerm(this.work!.id, this.openingTermService.generatePdf()).pipe(
+    this.httpService.getOpeningTerm(this.work!.id).pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
         return throwError(error);
       })
-    ).subscribe((res: OpeningTerm) => {
-      const x = res;
+    ).subscribe((res) => {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(res);
+      link.download = 'termo_abertura_'+ this.work!.id +'.zip';
+      link.click();
     })
   }
 }
