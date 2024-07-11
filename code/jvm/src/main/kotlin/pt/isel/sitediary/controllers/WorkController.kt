@@ -346,17 +346,32 @@ class WorkController(private val service: WorkService) {
             : ResponseEntity<*> {
         val res = service.getOpeningTerm(id, user.user)
         return handleResponse(res) {
-            /*val htmlContent = String(Files.readAllBytes(java.nio.file.Paths.get("docs\\OpeningTerm.html")))
-            val outPutStream = ByteArrayOutputStream()
-            PdfRendererBuilder()
-                .useFastMode()
-                .withHtmlContent(htmlContent, null)
-                .toStream(outPutStream)
-                .run()
-            ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "Attachment;filename=TermoAbertura.pdf")
-                .contentType(MediaType.parseMediaType("application/pdf"))
-                .body(ByteArrayResource(outPutStream.toByteArray()))*/
+            ResponseEntity.ok(it)
+        }
+    }
+
+    @GetMapping(Paths.Work.GET_SITE_DIARY)
+    @Operation(
+        summary = "Get opening term of a specific work",
+        description = "Used to fetch the opening term of a work"
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "Opening term received successfully",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = OpeningTerm::class)
+                    )
+                ]
+            )
+        ]
+    )
+    fun getSiteDiary(@PathVariable id: UUID, @Parameter(hidden = true) user: AuthenticatedUser)
+            : ResponseEntity<*> {
+        val res = service.getSiteDiary(id, user.user)
+        return handleResponse(res) {
             ResponseEntity.ok(it)
         }
     }

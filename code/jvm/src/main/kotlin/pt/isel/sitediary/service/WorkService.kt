@@ -321,4 +321,17 @@ class WorkService(
                 success(Unit)
             }
         }
+
+    fun getSiteDiary(workId: UUID, user: User) = transactionManager.run {
+        val workRep = it.workRepository
+        val work = workRep.getById(workId)
+        if (work == null) {
+            failure(Errors.workNotFound)
+        } else if (user.role != "ADMIN" && !work.members.containsMemberById(user.id)) {
+            failure(Errors.notMember)
+        } else {
+            val siteDiary = workRep.getSiteDiary(workId)
+            success(siteDiary)
+        }
+    }
 }
