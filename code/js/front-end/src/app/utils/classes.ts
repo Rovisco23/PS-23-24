@@ -212,11 +212,33 @@ export interface Association {
   number: number;
 }
 
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
+export interface OpeningTermLocation {
+  county: string,
+  parish: string,
+  street: string,
+  postalCode: string,
+  building: string
+}
+
+export interface OpeningTermVerification {
+  doc: string,
+  signature: string,
+  dt_signature: string
+}
+
+export interface OpeningTermAuthor {
+  name: string,
+  association: string,
+  num: number
+}
+
+export interface OpeningTerm {
+  verification: OpeningTermVerification,
+  location: OpeningTermLocation,
+  licenseHolder: string,
+  authors: Map<string, OpeningTermAuthor>,
+  company: Company,
+  type: string,
 }
 
 export interface Verification {

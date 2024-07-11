@@ -262,4 +262,9 @@ export class HttpService {
     const headers = this.getTokenHeader();
     return this.http.put<any>('http://localhost:8080/api/change-password', password, {headers: headers})
   }
+
+  downloadOpeningTerm(id: string, lines: string[] ) {
+    const headers = this.getTokenHeader();
+    return this.http.post<any>(`http://localhost:8080/api/opening-term/${id}`, {data: lines} ,{headers: headers})
+  }
 }

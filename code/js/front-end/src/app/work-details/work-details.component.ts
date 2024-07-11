@@ -4,7 +4,7 @@ import {
   Address, Company, EditWorkInputModel,
   Invite,
   LogEntrySimplified,
-  Member,
+  Member, OpeningTerm,
   Role,
   Technician,
   TechnicianCreation,
@@ -38,6 +38,7 @@ import {
 } from "@angular/material/table";
 import {concelhos, freguesias} from "../utils/utils";
 import {SnackBar} from "../utils/snackBarComponent";
+import {PDFServiceComponent} from "../pdfservice/pdfservice.component";
 
 @Component({
   selector: 'app-work-details',
@@ -139,7 +140,8 @@ export class WorkDetailsComponent {
     private navService: NavigationService,
     private dialog: MatDialog,
     private snackBar: SnackBar,
-    private errorHandle: ErrorHandler
+    private errorHandle: ErrorHandler,
+    private openingTermService: PDFServiceComponent
   ) {
     const workListingId = String(this.route.snapshot.params['id']);
     const uri = this.router.url.split('/')
@@ -610,5 +612,16 @@ export class WorkDetailsComponent {
         this.snackBar.openSnackBar("Pedido de verificação não enviado. Documento inválido.");
       }
     });
+  }
+
+  getOpeningTerm() {
+    this.httpService.downloadOpeningTerm(this.work!.id, this.openingTermService.generatePdf()).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe((res: OpeningTerm) => {
+      const x = res;
+    })
   }
 }

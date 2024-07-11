@@ -76,6 +76,18 @@
             </a>
           </li>
           <li class="sidebar-menu-item">
+            <a class="sidebar-menu-link" (click)="getOpeningTerm()">
+              <div class="sidebar-menu-icon">
+            <span class="material-icons">
+              check
+            </span>
+              </div>
+              <div class="sidebar-menu-text">
+                Termo de Abertura
+              </div>
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
             <a class="sidebar-menu-link" *ngIf="checkCanAskVerification()" (click)="askVerification()">
               <div class="sidebar-menu-icon">
             <span class="material-icons">

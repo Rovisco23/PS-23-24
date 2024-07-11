@@ -90,7 +90,7 @@ export class CreateWorkComponent {
   }];
   work: InputWork;
   types = Object.values(WorkTypes);
-  roles = ['Membro', 'Espectador', 'Técnico de Arquitetura', 'Técnico de Estabilidade',
+  roles = ['Técnico de Arquitetura', 'Técnico de Estabilidade',
     'Técnico de Alimentação e Destribuição de Energia Elétrica', 'Técnico de Instalações de Gás',
     'Técnico de Instalações de Água e Esgotos', 'Técnico de Instalações de Telecomunicações',
     'Técnico de Comportamento Térmico', 'Técnico de Condicionamento Acústico',

@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {NgIf} from "@angular/common";
-import {Company} from "../utils/classes";
+import {OpeningTerm, OpeningTermAuthor} from "../utils/classes";
+import jsPDF from "jspdf";
 
 @Component({
   selector: 'app-pdfservice',
@@ -9,9 +10,12 @@ import {Company} from "../utils/classes";
     NgIf
   ],
   templateUrl: './pdfservice.component.html',
-  styleUrl: './pdfservice.component.css'
+  styleUrls: ['./pdfservice.component.css']
 })
 export class PDFServiceComponent {
+
+  @ViewChild('content', {static: false}) element!: ElementRef;
+
   openingTerm: OpeningTerm = {
     verification: {
       doc: "doc",
@@ -45,35 +49,13 @@ export class PDFServiceComponent {
       num: 0
     },
     type: "type",
+  };
 
+  generatePdf() {
+    const doc = new jsPDF('p', 'mm', 'a4');
+
+    const content = this.element.nativeElement;
+
+    return doc.splitTextToSize(content.innerText, 180)
   }
-}
-
-interface OpeningTermLocation {
-  county: string,
-  parish: string,
-  street: string,
-  postalCode: string,
-  building: string
-}
-
-interface OpeningTermVerification {
-  doc: string,
-  signature: string,
-  dt_signature: string
-}
-
-interface OpeningTermAuthor {
-  name: string,
-  association: string,
-  num: number
-}
-
-interface OpeningTerm {
-  verification: OpeningTermVerification,
-  location: OpeningTermLocation,
-  licenseHolder: string,
-  authors: Map<string, OpeningTermAuthor>,
-  company: Company,
-  type: string,
 }

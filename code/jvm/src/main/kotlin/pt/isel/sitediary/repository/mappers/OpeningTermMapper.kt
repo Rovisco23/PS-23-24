@@ -15,7 +15,7 @@ class OpeningTermMapper : RowMapper<OpeningTerm> {
         val technicians = makeMap(rs.getString("technicians").removeSurrounding("{", "}"))
         OpeningTerm(
             verification = OpeningTermVerification(
-                doc = rs.getString("autorizacao"),
+                doc = rs.getString("autorizacao") ?: "",
                 signature = rs.getString("assinatura") ?: "",
                 dt_signature = rs.getString("dt_assinatura") ?: ""
             ),
