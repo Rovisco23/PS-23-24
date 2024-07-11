@@ -1,0 +1,74 @@
+<body *ngIf="openingTerm">
+<div class="container">
+  <div class="form-section">
+    <h2>TERMO DE ABERTURA</h2>
+    <p>Nos termos do artigo 97º do Decreto-Lei nº 555/99, de 16 de dezembro, com a redação dada pelo Decreto-Lei nº
+      26/2010, de 30 de março e da Portaria nº 1268/2008, de 6 de novembro, é lavrado o presente termo de abertura do
+      livro de obra para nele serem exarados, na data da sua ocorrência, todos os factos e observações relativos à
+      execução da obra, bem como o registo periódico do seu estado de execução.</p>
+    <div *ngIf="openingTerm.verification.doc !== null">
+      <p>A presente obra dispõe de verificação com o documento (1) <span
+        class="input-camp">{{ openingTerm.verification.doc }}</span></p>
+      <p>Câmara Municipal de <span class="input-camp">{{ openingTerm.location.county }}</span></p>
+      <p>Identificações e indicações obrigatórias de acordo com o previsto no ponto 4 da Portaria nº 1268/2008:</p>
+    </div>
+  </div>
+  <div class="form-section">
+    <p>a) TITULAR DA LICENÇA/DO TÍTULO (3) <span class="input-camp">{{ openingTerm.licenseHolder }}</span></p>
+    <p>b) TÉCNICO RESPONSÁVEL PELA DIREÇÃO DE FISCALIZAÇÃO DA OBRA <span
+      class="input-camp">{{ openingTerm.fiscalization.name }}</span> inscrito na (4) <span
+      class="input-camp">{{ openingTerm.fiscalization.association }}</span>, com o nº <span
+      class="input-camp">{{ openingTerm.fiscalization.num }}</span></p>
+    <p>c) COORDENADOR DE PROJETO <span class="input-camp">{{ openingTerm.coordinator.name }}</span> inscrito na (4)
+      <span class="input-camp">{{ openingTerm.coordinator.association }}</span>, com o nº <span
+        class="input-camp">{{ openingTerm.coordinator.num }}</span></p>
+  </div>
+  <div class="form-section">
+    <p>AUTORES DOS PROJETOS:</p>
+    <p>Arquitetura <span class="input-camp">{{ openingTerm.architect.name }}</span> inscrito na (4) <span
+      class="input-camp">{{ openingTerm.architect.association }}</span>, com o nº <span
+      class="input-camp">{{ openingTerm.architect.num }}</span></p>
+    <p>Estabilidade <span class="input-camp">{{ openingTerm.stability.name }}</span> inscrito na (4) <span
+      class="input-camp">{{ openingTerm.stability.association }}</span>, com o nº <span
+      class="input-camp">{{ openingTerm.stability.num }}</span></p>
+    <p>Alimentação e distribuição de energia elétrica <span class="input-camp">{{ openingTerm.electricity.name }}</span>
+      inscrito na (4) <span class="input-camp">{{ openingTerm.electricity.association }}</span>, com o nº <span
+        class="input-camp">{{ openingTerm.electricity.num }}</span></p>
+    <p>Instalação de gás <span class="input-camp">{{ openingTerm.gas.name }}</span> inscrito na (4) <span
+      class="input-camp">{{ openingTerm.gas.association }}</span>, com o nº <span
+      class="input-camp">{{ openingTerm.gas.num }}</span></p>
+    <p>Águas e esgotos <span class="input-camp">{{ openingTerm.water.name }}</span> inscrito na (4) <span
+      class="input-camp">{{ openingTerm.water.association }}</span>, com o nº <span
+      class="input-camp">{{ openingTerm.water.num }}</span></p>
+    <p>Instalações telefónicas e de telecomunicações <span class="input-camp">{{ openingTerm.phone.name }}</span>
+      inscrito na (4) <span class="input-camp">{{ openingTerm.phone.association }}</span>, com o nº <span
+        class="input-camp">{{ openingTerm.phone.num }}</span></p>
+    <p>Comportamento térmico <span class="input-camp">{{ openingTerm.isolation.name }}</span> inscrito na (4) <span
+      class="input-camp">{{ openingTerm.isolation.association }}</span>, com o nº <span
+      class="input-camp">{{ openingTerm.isolation.num }}</span></p>
+    <p>Condicionamento acústico <span class="input-camp">{{ openingTerm.acustic.name }}</span> inscrito na (4) <span
+      class="input-camp">{{ openingTerm.acustic.association }}</span>, com o nº <span
+      class="input-camp">{{ openingTerm.acustic.association }}</span></p>
+    <p>Instalações eletromecânicas de transporte de pessoas e/ou mercadorias <span
+      class="input-camp">{{ openingTerm.transport.name }}</span>
+      inscrito na (4) <span class="input-camp">{{ openingTerm.transport.association }}</span>, com o nº <span
+        class="input-camp">{{ openingTerm.transport.num }}</span></p>
+  </div>
+  <div class="form-section">
+    <p>d) EMPRESA DE CONSTRUÇÃO <span class="input-camp">{{ openingTerm.company.name }}</span></p>
+    <p>Nº do alvará (5) <span class="input-camp">{{ openingTerm.company.num }}</span></p>
+    <p>e) DIRETOR DA OBRA (6) <span class="input-camp">{{ openingTerm.director.name }}</span> inscrito na (4) <span
+      class="input-camp">{{ openingTerm.director.association }}</span>, com o nº <span
+      class="input-camp">{{ openingTerm.director.num }}</span></p>
+    <p>f) TIPO DE OBRA A EXECUTAR (7) <span class="input-camp">{{ openingTerm.type }}</span></p>
+    <p>g) IDENTIFICAÇÃO DO PRÉDIO</p>
+    <p>sito em <span class="input-camp">{{ openingTerm.location.street }}</span> da freguesia de <span
+      class="input-camp">{{ openingTerm.location.parish }}, {{ openingTerm.location.postalCode }}</span> com a
+      identificação <span class="input-camp">{{ openingTerm.location.building }}</span></p>
+  </div>
+  <div class="form-section">
+    <p>Data <span class="input-camp">{{ openingTerm.verification.dt_signature }}</span></p>
+    <p>Assinatura (8) <span class="input-camp">{{ openingTerm.verification.signature }}</span></p>
+  </div>
+</div>
+</body>

@@ -1,0 +1,39 @@
+body {
+  font-family: Arial, sans-serif;
+  justify-content: center;
+}
+
+p {
+  margin-bottom: 5px;
+}
+.container {
+  width: 70%;
+  margin: 0 auto;
+}
+
+.form-section {
+  margin-bottom: 20px;
+}
+
+.form-section h2 {
+  text-align: center;
+}
+
+.form-section p {
+  margin: 5px 0;
+}
+
+.form-section input {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  box-sizing: border-box;
+}
+
+.signature input {
+  width: auto;
+}
+
+.input-camp {
+  color: blue;
+}

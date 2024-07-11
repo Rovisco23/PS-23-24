@@ -1,5 +1,6 @@
 package pt.isel.sitediary.controllers
 
+import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
@@ -27,7 +28,9 @@ import pt.isel.sitediary.service.WorkService
 import pt.isel.sitediary.utils.Errors
 import pt.isel.sitediary.utils.Paths
 import pt.isel.sitediary.utils.handleResponse
+import java.io.ByteArrayOutputStream
 import java.net.URI
+import java.nio.file.Files
 import java.util.*
 
 
@@ -415,4 +418,14 @@ class WorkController(private val service: WorkService) {
             ResponseEntity.ok().header("Location", "/work/${id}").body(Unit)
         }
     }
+}
+
+fun main() {
+    val htmlContent = String(Files.readAllBytes(java.nio.file.Paths.get("docs\\OpeningTerm.html")))
+    val outPutStream = ByteArrayOutputStream()
+    PdfRendererBuilder()
+        .useFastMode()
+        .withHtmlContent(htmlContent, null)
+        .toStream(outPutStream)
+        .run()
 }
