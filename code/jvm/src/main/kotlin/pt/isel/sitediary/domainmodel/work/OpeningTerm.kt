@@ -44,4 +44,13 @@ data class SiteDiary(
     val logs: List<SiteDiaryLog>,
     val company: ConstructionCompany,
     val type: String,
-)
+) {
+    fun toOpeningTerm(): OpeningTerm = OpeningTerm(
+        verification = verification,
+        location = location,
+        licenseHolder = licenseHolder,
+        authors = authors,
+        company = company,
+        type = type
+    )
+}

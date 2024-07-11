@@ -1,5 +1,6 @@
 package pt.isel.sitediary.controllers
 
+import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
@@ -23,11 +24,17 @@ import pt.isel.sitediary.domainmodel.authentication.AuthenticatedUser
 import pt.isel.sitediary.domainmodel.work.AskVerificationInputModel
 import pt.isel.sitediary.domainmodel.work.OpeningTerm
 import pt.isel.sitediary.domainmodel.work.Work
-import pt.isel.sitediary.model.*
+import pt.isel.sitediary.model.EditWorkInputModel
+import pt.isel.sitediary.model.FileModel
+import pt.isel.sitediary.model.InviteInputModel
+import pt.isel.sitediary.model.ListOfWorksOutputModel
+import pt.isel.sitediary.model.MemberInputModel
+import pt.isel.sitediary.model.OpeningTermInputModel
 import pt.isel.sitediary.service.WorkService
 import pt.isel.sitediary.utils.Errors
 import pt.isel.sitediary.utils.Paths
 import pt.isel.sitediary.utils.handleResponse
+import java.io.ByteArrayOutputStream
 import java.net.URI
 import java.util.*
 
@@ -316,7 +323,11 @@ class WorkController(private val service: WorkService) {
             )
         ]
     )
-    fun editWork(@PathVariable id: UUID, @RequestBody work: EditWorkInputModel, @Parameter(hidden = true) user: AuthenticatedUser)
+    fun editWork(
+        @PathVariable id: UUID,
+        @RequestBody work: EditWorkInputModel,
+        @Parameter(hidden = true) user: AuthenticatedUser
+    )
             : ResponseEntity<*> {
         val res = service.editWork(id, work, user.user)
         return handleResponse(res) {
@@ -346,7 +357,17 @@ class WorkController(private val service: WorkService) {
             : ResponseEntity<*> {
         val res = service.getOpeningTerm(id, user.user)
         return handleResponse(res) {
-            ResponseEntity.ok(it)
+            val htmlContent = String(it)
+            val outPutStream = ByteArrayOutputStream()
+            PdfRendererBuilder()
+                .useFastMode()
+                .withHtmlContent(htmlContent, null)
+                .toStream(outPutStream)
+                .run()
+            ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "Attachment;filename=Termo de Abertura.pdf")
+                .contentType(MediaType.parseMediaType("application/pdf"))
+                .body(ByteArrayResource(outPutStream.toByteArray()))
         }
     }
 
@@ -372,7 +393,17 @@ class WorkController(private val service: WorkService) {
             : ResponseEntity<*> {
         val res = service.getSiteDiary(id, user.user)
         return handleResponse(res) {
-            ResponseEntity.ok(it)
+            val htmlContent = String(it)
+            val outPutStream = ByteArrayOutputStream()
+            PdfRendererBuilder()
+                .useFastMode()
+                .withHtmlContent(htmlContent, null)
+                .toStream(outPutStream)
+                .run()
+            ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "Attachment;filename=Livro de Obra.pdf")
+                .contentType(MediaType.parseMediaType("application/pdf"))
+                .body(ByteArrayResource(outPutStream.toByteArray()))
         }
     }
 

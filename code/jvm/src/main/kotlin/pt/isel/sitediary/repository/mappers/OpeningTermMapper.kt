@@ -8,6 +8,7 @@ import pt.isel.sitediary.domainmodel.work.OpeningTerm
 import pt.isel.sitediary.domainmodel.work.OpeningTermAuthor
 import pt.isel.sitediary.domainmodel.work.OpeningTermLocation
 import pt.isel.sitediary.domainmodel.work.OpeningTermVerification
+import pt.isel.sitediary.service.NO_INPUT
 import java.sql.ResultSet
 
 class OpeningTermMapper : RowMapper<OpeningTerm> {
@@ -15,9 +16,9 @@ class OpeningTermMapper : RowMapper<OpeningTerm> {
         val technicians = makeMap(rs.getString("technicians").removeSurrounding("{", "}"))
         OpeningTerm(
             verification = OpeningTermVerification(
-                doc = rs.getString("autorizacao") ?: "",
-                signature = rs.getString("assinatura") ?: "",
-                dt_signature = rs.getString("dt_assinatura") ?: ""
+                doc = rs.getString("autorizacao") ?: NO_INPUT,
+                signature = rs.getString("assinatura") ?: NO_INPUT,
+                dt_signature = rs.getString("dt_assinatura") ?: NO_INPUT
             ),
             location = OpeningTermLocation(
                 county = rs.getString("concelho"),
