@@ -26,68 +26,22 @@ export class PDFServiceComponent {
       building: "building"
     },
     licenseHolder: "licenseHolder",
-    fiscalization: {
-      name: "name",
-      association: "association",
-      num: 0
-    },
-    coordinator: {
-      name: "name",
-      association: "association",
-      num: 0
-    },
-    architect: {
-      name: "name",
-      association: "association",
-      num: 0
-    },
-    stability: {
-      name: "name",
-      association: "association",
-      num: 0
-    },
-    electricity: {
-      name: "name",
-      association: "association",
-      num: 0
-    },
-    gas: {
-      name: "name",
-      association: "association",
-      num: 0
-    },
-    water: {
-      name: "name",
-      association: "association",
-      num: 0
-    },
-    phone: {
-      name: "name",
-      association: "association",
-      num: 0
-    },
-    isolation: {
-      name: "name",
-      association: "association",
-      num: 0
-    },
-    acustic: {
-      name: "name",
-      association: "association",
-      num: 0
-    },
-    transport: {
-      name: "name",
-      association: "association",
-      num: 0
-    },
+    authors: new Map<string, OpeningTermAuthor>([
+      ["fiscalization", {name: "name", association: "association", num: 0}],
+      ["coordinator", {name: "name", association: "association", num: 0}],
+      ["architect", {name: "name", association: "association", num: 0}],
+      ["stability", {name: "name", association: "association", num: 0}],
+      ["electricity", {name: "name", association: "association", num: 0}],
+      ["gas", {name: "name", association: "association", num: 0}],
+      ["water", {name: "name", association: "association", num: 0}],
+      ["phone", {name: "name", association: "association", num: 0}],
+      ["isolation", {name: "name", association: "association", num: 0}],
+      ["acustic", {name: "name", association: "association", num: 0}],
+      ["transport", {name: "name", association: "association", num: 0}],
+      ["director", {name: "name", association: "association", num: 0}]
+    ]),
     company: {
       name: "name",
-      num: 0
-    },
-    director: {
-      name: "name",
-      association: "association",
       num: 0
     },
     type: "type",
@@ -119,18 +73,7 @@ interface OpeningTerm {
   verification: OpeningTermVerification,
   location: OpeningTermLocation,
   licenseHolder: string,
-  fiscalization: OpeningTermAuthor,
-  coordinator: OpeningTermAuthor,
-  architect: OpeningTermAuthor,
-  stability: OpeningTermAuthor,
-  electricity: OpeningTermAuthor,
-  gas: OpeningTermAuthor,
-  water: OpeningTermAuthor,
-  phone: OpeningTermAuthor,
-  isolation: OpeningTermAuthor,
-  acustic: OpeningTermAuthor,
-  transport: OpeningTermAuthor,
+  authors: Map<string, OpeningTermAuthor>,
   company: Company,
-  director: OpeningTermAuthor,
   type: string,
 }
