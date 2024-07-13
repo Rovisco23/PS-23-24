@@ -3,9 +3,9 @@ FROM postgres
 USER postgres
 WORKDIR /app
 
-COPY jvm/src/main/kotlin/SQL/create.sql /docker-entrypoint-initdb.d/1_create.sql
-COPY jvm/src/main/kotlin/SQL/init.sql /docker-entrypoint-initdb.d/2_insert-test-data.sql
-COPY jvm/src/main/kotlin/SQL/localidades.csv /docker-entrypoint-initdb.d/localidades.csv
+COPY jvm/src/main/SQL/create.sql /docker-entrypoint-initdb.d/1_create.sql
+COPY jvm/src/main/SQL/init.sql /docker-entrypoint-initdb.d/2_insert-test-data.sql
+COPY jvm/src/main/SQL/localidades.csv /docker-entrypoint-initdb.d/localidades.csv
 
 COPY --chown=postgres:postgres ./tests/scripts/wait-for-postgres.sh ./bin/wait-for-postgres.sh
 RUN chmod +x ./bin/wait-for-postgres.sh

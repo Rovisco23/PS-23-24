@@ -20,7 +20,7 @@ services:
       dockerfile: ./tests/Dockerfile-spring
     environment:
       SERVER_PORT: 8080
-      JDBC_DOCKER_URL: "jdbc:postgresql://db-tests:5432/postgres?user=postgres&password=postgres"
+      JDBC_DOCKER_URL: jdbc:postgresql://db-tests:5432/postgres?user=postgres&password=postgres"
     ports:
       - 8080:8080
     depends_on:

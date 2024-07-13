@@ -11,7 +11,7 @@ drop table if exists OBRA;
 drop table if exists SESSAO;
 drop table if exists PROFILE_PICTURE;
 drop table if exists UTILIZADOR;
---drop table if exists LOCALIDADE;
+drop table if exists LOCALIDADE;
 
 create table UTILIZADOR
 (
@@ -132,14 +132,14 @@ create table EMPRESA_CONSTRUCAO
     primary key (id)
 );
 
---create table LOCALIDADE
---(
---    id        serial,
---    distrito  varchar(255) not null,
---    concelho  varchar(255) not null,
---    freguesia varchar(255) not null,
---    primary key (id)
---);
+create table LOCALIDADE
+(
+    id        serial,
+    distrito  varchar(255) not null,
+    concelho  varchar(255) not null,
+    freguesia varchar(255) not null,
+    primary key (id)
+);
 
 create table TERMO_ABERTURA
 (
