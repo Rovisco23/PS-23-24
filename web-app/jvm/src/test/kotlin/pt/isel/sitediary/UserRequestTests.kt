@@ -19,8 +19,7 @@ import java.nio.file.Files
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserRequestTests {
-    private val databaseURL = ""
-    private val jdbcDatabaseURL = System.getenv("JDBC_DATABASE_URL") ?: databaseURL
+    private val jdbcDatabaseURL = System.getenv("JDBC_DATABASE_URL")
     private val dataSource = PGSimpleDataSource().apply { setURL(jdbcDatabaseURL) }
     private val transactionManager = JdbiTransactionManager(Jdbi.create(dataSource).configureWithAppRequirements())
     @LocalServerPort

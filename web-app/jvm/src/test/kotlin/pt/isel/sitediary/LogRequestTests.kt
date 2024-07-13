@@ -20,8 +20,7 @@ import java.util.*
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class LogRequestTests {
-    private val databaseURL = ""
-    private val jdbcDatabaseURL = System.getenv("JDBC_DATABASE_URL") ?: databaseURL
+    private val jdbcDatabaseURL = System.getenv("JDBC_DATABASE_URL")
     private val dataSource = PGSimpleDataSource().apply { setURL(jdbcDatabaseURL) }
     private val transactionManager = JdbiTransactionManager(Jdbi.create(dataSource).configureWithAppRequirements())
     @LocalServerPort
@@ -311,16 +310,5 @@ class LogRequestTests {
         transactionManager.run {
             it.logRepository.deleteLog(workId)
         }
-    }
-}
-
-fun main() {
-    val jdbcDatabaseURL = System.getenv("JDBC_DATABASE_URL") ?: throw IllegalArgumentException("JDBC_DATABASE_URL environment variable not set")
-    val dataSource = PGSimpleDataSource().apply { setURL(jdbcDatabaseURL) }
-    val transactionManager = JdbiTransactionManager(Jdbi.create(dataSource).configureWithAppRequirements())
-    transactionManager.run {
-        it.logRepository.deleteLog(UUID.fromString("c7d8769c-e286-4102-a907-6144d95c0a3f"))
-        it.workRepository.deleteWork(263)
-        it.usersRepository.deleteUser("Joaquimtest1+")
     }
 }
