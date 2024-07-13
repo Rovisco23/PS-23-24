@@ -40,6 +40,7 @@ class SiteDiaryMapper : RowMapper<SiteDiary> {
 
 private fun makeList(str: String): List<SiteDiaryLog> {
     val list = mutableListOf<SiteDiaryLog>()
+    if (str.isEmpty()) return list
     str.split(",")
         .map {
             val aux = it.removeSurrounding('"'.toString(), '"'.toString()).split(";")
