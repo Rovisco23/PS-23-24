@@ -79,11 +79,23 @@
             <a class="sidebar-menu-link" (click)="getOpeningTerm()">
               <div class="sidebar-menu-icon">
             <span class="material-icons">
-              check
+              description
             </span>
               </div>
               <div class="sidebar-menu-text">
                 Termo de Abertura
+              </div>
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
+            <a class="sidebar-menu-link" *ngIf="work?.state === 'Terminada'" (click)="getSiteDiary()">
+              <div class="sidebar-menu-icon">
+            <span class="material-icons">
+              menu_book
+            </span>
+              </div>
+              <div class="sidebar-menu-text">
+                Livro de Obra
               </div>
             </a>
           </li>

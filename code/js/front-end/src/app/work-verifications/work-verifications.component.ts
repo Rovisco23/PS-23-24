@@ -89,4 +89,18 @@ export class WorkVerificationsComponent {
       this.navService.navUrl(url)
     }
   }
+
+  getOpeningTerm(workId: string) {
+    this.httpService.getOpeningTerm(workId).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe((res) => {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(res);
+      link.download = 'termo_abertura_'+ workId +'.pdf';
+      link.click();
+    })
+  }
 }

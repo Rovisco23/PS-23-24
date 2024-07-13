@@ -52,11 +52,38 @@
 }
 
 .description {
+  display: flex;
+  flex-direction: column;
   margin-bottom: 20px;
   width: 60% !important;
   max-width: 60% !important;
   overflow-wrap: break-word; /* Ensures long words break to fit within the container */
   word-wrap: break-word; /* Compatibility for older browsers */
+}
+
+.button-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  margin-left: 0; /* Add this line */
+}
+
+.submit {
+  display: block; /* Adicione isso para assegurar que o margin auto funcione */
+  margin: 5px;
+  padding: 10px;
+  background-color: #11113D;
+  border-radius: 5px;
+  border: 2px solid #FF7A00;
+  color: #FF7A00;
+  user-select: none;
+  text-align: center; /* Centraliza o texto dentro do botão */
+}
+
+.submit:hover {
+  background-color: #FF7A00;
+  color: white;
+  cursor: pointer;
 }
 
 .files table {
@@ -102,4 +129,15 @@ mat-icon {
 
 .file-menu-button {
   margin-left: auto;
+}
+
+textarea {
+  min-height: 17px;
+  height: 17px;
+  min-width: 200px;
+  width: 200px;
+  max-width: 50%;
+  border: 1px solid #11113D;
+  border-radius: 5px;
+  padding: 5px 5px;
 }

@@ -625,4 +625,18 @@ export class WorkDetailsComponent {
       link.click();
     })
   }
+
+  getSiteDiary() {
+    this.httpService.getSiteDiary(this.work!.id).pipe(
+      catchError(error => {
+        this.errorHandle.handleError(error);
+        return throwError(error);
+      })
+    ).subscribe((res) => {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(res);
+      link.download = 'diario_obra_'+ this.work!.id +'.pdf';
+      link.click();
+    })
+  }
 }

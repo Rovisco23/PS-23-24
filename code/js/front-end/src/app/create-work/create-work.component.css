@@ -122,6 +122,17 @@ input {
   padding: 5px 5px;
 }
 
+textarea {
+  min-height: 17px;
+  height: 17px;
+  min-width: 200px;
+  width: 200px;
+  max-width: 50%;
+  border: 1px solid #11113D;
+  border-radius: 5px;
+  padding: 5px 5px;
+}
+
 select {
   max-height: 30px;
   width: 200px;

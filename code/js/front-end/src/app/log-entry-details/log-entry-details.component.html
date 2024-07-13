@@ -18,8 +18,10 @@
       </h3>
       <p *ngIf="!editDescription">{{ log.content }}</p>
       <textarea *ngIf="editDescription" id="newContent" name="newContent" [(ngModel)]="newContent" (ngModelChange)="onChangeValues($event, 'Content')"></textarea>
-      <button *ngIf="editDescription" (click)="onEditLogCall('Content')">Submit</button>
-      <button *ngIf="editDescription" (click)="toggleEditDescription(true)">Cancelar</button>
+      <div class="button-row">
+        <button class="submit" *ngIf="editDescription" (click)="onEditLogCall('Content')">Submit</button>
+        <button class="submit" *ngIf="editDescription" (click)="toggleEditDescription(true)">Cancelar</button>
+      </div>
     </div>
     <mat-divider></mat-divider>
     <div class="files">

@@ -38,6 +38,34 @@ input[type="text"] {
   width: 30%; /* Adjust the width of the input */
 }
 
+mat-list {
+  padding: 0;
+}
+
+mat-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  align-content: center;
+}
+
+mat-list-item:hover {
+  background-color: lightgray;
+  cursor: pointer;
+}
+
+mat-list-item .item-icon {
+  height: auto;
+  width: auto;
+  font-size: 40px;
+  color: #11113D;
+}
+
+matListItemTitle {
+  vertical-align: center;
+}
+
 input {
   margin-left: 10px;
   margin-bottom: 10px;

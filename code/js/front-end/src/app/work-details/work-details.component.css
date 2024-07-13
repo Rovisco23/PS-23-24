@@ -324,12 +324,12 @@ mat-list-item .item-icon {
 matListItemTitle {
   vertical-align: center;
 }
+
 technicians {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
-
 
 .technicians table {
   width: 100%;

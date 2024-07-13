@@ -265,10 +265,12 @@ export class CreateWorkComponent {
   }
 
   create() {
+    const type = this.work.type;
     this.work.type = this.work.type.toUpperCase();
     this.httpService.createWork(this.work).pipe(
       catchError(error => {
         this.errorHandle.handleError(error);
+        this.work.type = type
         return throwError(error);
       })
     ).subscribe(() => {

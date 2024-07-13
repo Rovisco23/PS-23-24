@@ -273,4 +273,12 @@ export class HttpService {
       responseType: 'blob' as 'json'
     })
   }
+
+  getSiteDiary(workId: string) {
+    const headers = this.getTokenHeader();
+    return this.http.get<any>(`http://localhost:8080/api/site-diary/${workId}`, {
+      headers: headers,
+      responseType: 'blob' as 'json'
+    })
+  }
 }
