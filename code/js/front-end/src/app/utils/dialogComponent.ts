@@ -90,6 +90,10 @@ export class ConfirmDialogComponent {
   }
 
   confirm() {
-    this.dialogRef.close(this.inputValue); // Retorna o valor atualizado ao fechar o diálogo
+    if (this.data.title.includes('Pedir verificação')) {
+      this.dialogRef.close(this.inputValue); // Return inputValue if title includes 'Pedir verificação'
+    } else {
+      this.dialogRef.close(true); // Return true otherwise
+    }
   }
 }

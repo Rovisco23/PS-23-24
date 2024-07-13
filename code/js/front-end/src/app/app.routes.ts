@@ -17,13 +17,8 @@ import {WorkVerificationsComponent} from "./work-verifications/work-verification
 import {CouncilGuard} from "./utils/council.guard";
 import {MyLogsComponent} from "./my-logs/my-logs.component";
 import {MemberProfileComponent} from "./member-profile/member-profile.component";
-import {PDFServiceComponent} from "./pdfservice/pdfservice.component";
 export const routes: Routes = [
-  {
-    path: 'pdf',
-    component: PDFServiceComponent,
-    title: 'PDF Service'
-  },
+
   {
     path: 'work',
     component: WorkComponent,
