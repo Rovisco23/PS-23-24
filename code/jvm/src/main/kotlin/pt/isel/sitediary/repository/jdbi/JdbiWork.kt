@@ -55,7 +55,7 @@ class JdbiWork(private val handle: Handle) : WorkRepository {
                 "ON d.rId = REGISTO.id JOIN UTILIZADOR ON author = UTILIZADOR.id JOIN MEMBRO ON uId = author WHERE " +
                 "REGISTO.oId = :id GROUP BY REGISTO.id, author, UTILIZADOR.username, (SELECT Membro.role from Membro " +
                 "join Registo r on r.oId = Membro.oId where Membro.uid = author and r.id = REGISTO.id), editable, " +
-                "REGISTO.creation_date) AS log, TERMO_ABERTURA.titular_licenca, TERMO_ABERTURA.autorizacao, TERMO_ABERTURA.predio, " +
+                "REGISTO.creation_date ORDER BY REGISTO.creation_date) AS log, TERMO_ABERTURA.titular_licenca, TERMO_ABERTURA.autorizacao, TERMO_ABERTURA.predio, " +
                 "EMPRESA_CONSTRUCAO.nome AS company_name, EMPRESA_CONSTRUCAO.numero AS company_num, (SELECT COUNT(*) " +
                 "FROM IMAGEM WHERE oId = OBRA.id) AS imagens, (SELECT COUNT(*) FROM DOCUMENTO WHERE oId = OBRA.id) " +
                 "AS documentos, (TERMO_ABERTURA.assinatura IS NOT NULL and Obra.estado = 'EM PROGRESSO') AS verification FROM OBRA JOIN TERMO_ABERTURA " +

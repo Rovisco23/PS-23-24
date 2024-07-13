@@ -60,7 +60,7 @@ fun LogScreen(
     onBackRequested: () -> Unit = {},
     onUploadRequested: () -> Unit = {},
     onDeleteSubmit: (Int, String) -> Unit,
-    onEditSubmit: (String) -> Unit = {}
+    onEditSubmit: (String) -> Unit = {},
 ) {
     var editing by remember { mutableStateOf(false) }
     var deleting by remember { mutableStateOf(false) }
