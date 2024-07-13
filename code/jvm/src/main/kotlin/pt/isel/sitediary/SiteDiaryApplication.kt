@@ -17,11 +17,9 @@ import kotlin.time.Duration.Companion.hours
 @SpringBootApplication
 class SiteDiaryApplication {
 
-    private val databaseURL = ""
-
     @Bean
     fun jdbi(): Jdbi {
-        val jdbcDatabaseURL = System.getenv(/*"JDBC_DATABASE_URL"*/"JDBC_DOCKER_URL" ) ?: databaseURL
+        val jdbcDatabaseURL = System.getenv("JDBC_DATABASE_URL")
         val dataSource = PGSimpleDataSource()
         dataSource.setURL(jdbcDatabaseURL)
         return Jdbi.create(dataSource).configureWithAppRequirements()
@@ -47,7 +45,7 @@ class SiteDiaryApplication {
 class CorsConfiguration : WebMvcConfigurer {
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
-            .allowedOrigins("*") // Adjust this to your Angular app's domain
+            .allowedOrigins("http://localhost:4200") // Adjust this to your Angular app's domain
             .allowedMethods("GET", "POST", "PUT", "DELETE")
             .allowedHeaders("*")
             .exposedHeaders("Location")
