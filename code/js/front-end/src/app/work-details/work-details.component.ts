@@ -621,7 +621,7 @@ export class WorkDetailsComponent {
     ).subscribe((res) => {
       const link = document.createElement('a');
       link.href = URL.createObjectURL(res);
-      link.download = 'termo_abertura_'+ this.work!.id +'.zip';
+      link.download = 'termo_abertura_'+ this.work!.id +'.pdf';
       link.click();
     })
   }
