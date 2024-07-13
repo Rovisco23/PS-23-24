@@ -48,7 +48,7 @@ private fun makeList(str: String): List<SiteDiaryLog> {
                     content = aux[0],
                     author = aux[1],
                     createdAt = aux[2].split(".")[0].dropLast(3),
-                    lastModificationAt = aux[3]
+                    lastModificationAt = aux[3].split(".")[0].dropLast(3)
                 )
             )
         }

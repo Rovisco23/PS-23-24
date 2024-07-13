@@ -54,7 +54,7 @@ class JdbiLog(private val handle: Handle) : LogRepository {
                     "COUNT(d.name) > 0 as attachments, TO_CHAR(r.creation_date, 'YYYY-MM-DD') as createdAt from " +
                     "REGISTO r join Membro on Membro.oId = r.oId join OBRA o on r.oId = o.id LEFT JOIN IMAGEM i ON " +
                     "i.rId = r.id LEFT JOIN DOCUMENTO d ON d.rId = r.id where Membro.uId = :id group by r.id, r.oId, " +
-                    "o.nome, r.editable, r.creation_date"
+                    "o.nome, r.editable, r.creation_date order by r.creation_date"
         )
             .bind("id", userId)
             .mapTo(OwnLogSimplified::class.java)

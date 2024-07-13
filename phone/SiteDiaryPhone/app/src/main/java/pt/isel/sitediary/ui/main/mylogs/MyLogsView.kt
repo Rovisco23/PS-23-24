@@ -35,7 +35,8 @@ fun MyLogsView(
                     LogsScreen(
                         values.logs,
                         innerPadding,
-                        onLogSelected
+                        onLogSelected,
+                        needTopBar = false
                     )
                 }
             }

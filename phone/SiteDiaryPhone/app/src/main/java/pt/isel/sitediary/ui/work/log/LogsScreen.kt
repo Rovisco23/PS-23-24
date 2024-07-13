@@ -53,10 +53,11 @@ fun LogsScreen(
     logs: List<LogEntrySimplified>,
     innerPadding: PaddingValues,
     onLogSelected: (logId: Int) -> Unit = {},
-    onBackRequested: () -> Unit = {}
+    onBackRequested: () -> Unit = {},
+    needTopBar: Boolean = true
 ) {
     Column(modifier = Modifier.padding(innerPadding)) {
-        TopBarGoBack(onBackRequested)
+        if (needTopBar) TopBarGoBack(onBackRequested)
         LazyColumn(
             contentPadding = PaddingValues(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -117,7 +118,9 @@ fun LogCard(
                             textAlign = TextAlign.Start,
                             color = Color.White,
                             maxLines = 1,
-                            modifier = Modifier.fillMaxWidth().weight(1f)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
                         )
                         if (log.attachments) Icon(
                             imageVector = Icons.Default.AttachFile,

@@ -88,7 +88,9 @@ class MainViewModel(
                 val loggedUser =
                     repo.getUserInfo() ?: throw GetMainActivityValuesException("Login Required")
                 val workList = workService.getAllWork(loggedUser.token)
-                _mainValuesFlow.value = loaded(Result.success(oldValues.copy(workList = workList)))
+                val logs = logService.getAllLogs(loggedUser.token)
+                _mainValuesFlow.value =
+                    loaded(Result.success(oldValues.copy(workList = workList, logs = logs)))
             } catch (e: GetMainActivityValuesException) {
                 val msg = e.message ?: "Something went wrong"
                 _mainValuesFlow.value =

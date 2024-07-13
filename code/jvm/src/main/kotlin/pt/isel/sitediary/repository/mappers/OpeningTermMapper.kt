@@ -18,7 +18,7 @@ class OpeningTermMapper : RowMapper<OpeningTerm> {
             verification = OpeningTermVerification(
                 doc = rs.getString("autorizacao") ?: NO_INPUT,
                 signature = rs.getString("assinatura") ?: NO_INPUT,
-                dt_signature = rs.getString("dt_assinatura") ?: NO_INPUT
+                dt_signature = (rs.getString("dt_assinatura") ?: NO_INPUT).split(".")[0].dropLast(3)
             ),
             location = OpeningTermLocation(
                 county = rs.getString("concelho"),
