@@ -242,8 +242,8 @@ export class LogEntryDetailsComponent {
     this.fileInput!.nativeElement.click();
   }
 
-  onDeleteFile(id : number) {
-    const fileRemoved = this.log?.files.filter(file => file.id == id)!;
+  onDeleteFile(id: number, name : string) {
+    const fileRemoved = this.log?.files.filter(file => file.id == id && file.fileName == name)!;
     if (fileRemoved){
       this.httpService.deleteFiles(this.logId, this.log!!.workId, fileRemoved).pipe(
         catchError(error => {

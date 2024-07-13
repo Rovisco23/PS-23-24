@@ -18,10 +18,14 @@ export class ErrorHandler {
         this.loginRequired = true;
         this.handleErrorInternal(error, () => {
           this.loginRequired = false;
+          localStorage.removeItem('userId');
+          localStorage.removeItem('username');
+          localStorage.removeItem('token');
+          localStorage.removeItem('role');
+          localStorage.removeItem('profilePicture');
           this.navService.navLogin()
         })
       }
-
     } else if (error.status === 404 || error.status === 400 || error.status === 403) {
       const nothing = () => {
       }

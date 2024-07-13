@@ -64,7 +64,7 @@
                   <mat-icon>download</mat-icon>
                   <span>Transferir Ficheiro</span>
                 </button>
-                <button *ngIf="isEditable()" mat-menu-item (click)="onDeleteFile(element.id)">
+                <button *ngIf="isEditable()" mat-menu-item (click)="onDeleteFile(element.id, element.fileName)">
                   <mat-icon>delete</mat-icon>
                   <span>Remover Ficheiro</span>
                 </button>

@@ -34,8 +34,8 @@ data class LogOutputModel(
 data class FileModel(val file: ByteArray, val fileName: String, val contentType: String)
 
 fun List<FileModel>.filterFiles(): Pair<List<FileModel>, List<FileModel>> {
-    val images = this.filter { f -> f.contentType == "Imagem" }
-    val documents = this.filter { f -> f.contentType == "Documento" }
+    val images = this.filter { f -> f.contentType.startsWith("image") }
+    val documents = this.filter { f -> f.contentType.startsWith("application") }
     return Pair(images, documents)
 }
 
