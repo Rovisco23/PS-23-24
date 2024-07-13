@@ -2,11 +2,14 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {AnswerInvite, Classes, EditWorkInputModel, InputWork, Password, SimpleFile, User} from "./classes";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root',
 })
 export class HttpService {
+
+  private readonly server = 'http://127.0.0.1:8080/api'
 
   constructor(private http: HttpClient) {
   }
@@ -19,17 +22,17 @@ export class HttpService {
   }
 
   login(user: string, password: string): Observable<any> {
-    return this.http.post<any>('http://localhost:8080/api/login', {user, password})
+    return this.http.post<any>(this.server + '/login', {user, password})
   }
 
   logout(token: string): Observable<any> {
-    return this.http.post<any>('http://localhost:8080/api/logout', {token})
+    return this.http.post<any>(this.server + '/logout', {token})
   }
 
   signup(email: string, username: string, password: string, firstName: string, lastName: string, nif: number,
          phone: string, parish: string, county: string, district: string, role: string, associationName: string, associationNum: number)
     : Observable<any> {
-    return this.http.post<any>('http://localhost:8080/api/signup', {
+    return this.http.post<any>(this.server + '/signup', {
       email,
       username,
       password,
@@ -47,36 +50,28 @@ export class HttpService {
   }
 
   checkToken(): Observable<any> {
-    return this.http.get<any>('http://localhost:8080/api/checkToken')
+    return this.http.get<any>(this.server + '/checkToken')
   }
 
   getWorkListings(): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.get<Classes[]>('http://localhost:8080/api/work?skip=0', {headers: headers})
-  }
-
-  nextPage(offset: number): Classes[] {
-    return this.workListingsList.slice(offset, 20);
-  }
-
-  previousPage(offset: number): Classes[] {
-    return this.workListingsList.slice(offset - 10, offset);
+    return this.http.get<Classes[]>(this.server + '/work?skip=0', {headers: headers})
   }
 
   getWorkById(id: string): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.get<Classes>(`http://localhost:8080/api/work/${id}`, {headers: headers})
+    return this.http.get<Classes>(this.server + `/work/${id}`, {headers: headers})
   }
 
   getProfile(username: string): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.get<any>(`http://localhost:8080/api/users/username/${username}`, {headers: headers})
+    return this.http.get<any>(this.server + `/users/username/${username}`, {headers: headers})
   }
 
   editProfile(user: User) {
     const id = localStorage.getItem('userId');
     const headers = this.getTokenHeader();
-    return this.http.put<any>(`http://localhost:8080/api/users/${id}`, {
+    return this.http.put<any>(this.server + `/users/${id}`, {
       username: user.username,
       firstName: user.firstName,
       lastName: user.lastName,
@@ -88,17 +83,17 @@ export class HttpService {
 
   createWork(work: InputWork): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.post<any>('http://localhost:8080/api/work', work, {headers: headers})
+    return this.http.post<any>(this.server + '/work', work, {headers: headers})
   }
 
   createLogEntry(logEntry: FormData): Observable<any> {
     const headers = this.getTokenHeader()
-    return this.http.post<any>('http://localhost:8080/api/logs', logEntry, {headers: headers, observe: 'response'})
+    return this.http.post<any>(this.server + '/logs', logEntry, {headers: headers, observe: 'response'})
   }
 
   getProfilePicture() {
     const headers = this.getTokenHeader();
-    return this.http.get<any>('http://localhost:8080/api/profile-picture', {
+    return this.http.get<any>(this.server + '/profile-picture', {
       headers: headers,
       responseType: 'blob' as 'json'
     })
@@ -106,7 +101,7 @@ export class HttpService {
 
   getProfilePictureByUsername(username: string) {
     const headers = this.getTokenHeader();
-    return this.http.get<any>(`http://localhost:8080/api/profile-picture-username/${username}`, {
+    return this.http.get<any>(this.server + `/profile-picture-username/${username}`, {
       headers: headers,
       responseType: 'blob' as 'json'
     })
@@ -114,32 +109,32 @@ export class HttpService {
 
   inviteMembers(workId: string, invites: any): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.post<any>(`http://localhost:8080/api/invite/${workId}`, invites, {headers: headers})
+    return this.http.post<any>(this.server + `/invite/${workId}`, invites, {headers: headers})
   }
 
   getInviteList(): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.get<any>('http://localhost:8080/api/invite', {headers: headers})
+    return this.http.get<any>(this.server + '/invite', {headers: headers})
   }
 
   getInvite(id: string): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.get<any>(`http://localhost:8080/api/invite/${id}`, {headers: headers})
+    return this.http.get<any>(this.server + `/invite/${id}`, {headers: headers})
   }
 
   answerInvite(answer: AnswerInvite): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.put<any>('http://localhost:8080/api/invite', answer, {headers: headers})
+    return this.http.put<any>(this.server + '/invite', answer, {headers: headers})
   }
 
   changeProfilePicture(form: FormData) {
     const headers = this.getTokenHeader();
-    return this.http.put<any>('http://localhost:8080/api/profile-picture', form, {headers: headers})
+    return this.http.put<any>(this.server + '/profile-picture', form, {headers: headers})
   }
 
   getWorkImage(workId: string): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.get<any>(`http://localhost:8080/api/work-image/${workId}`, {
+    return this.http.get<any>(this.server + `/work-image/${workId}`, {
       headers: headers,
       responseType: 'blob' as 'json'
     })
@@ -147,36 +142,22 @@ export class HttpService {
 
   getLogById(logId: string): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.get<any>(`http://localhost:8080/api/logs/${logId}`, {headers: headers})
+    return this.http.get<any>(this.server + `/logs/${logId}`, {headers: headers})
   }
 
   editLog(log: FormData, logId: string): Observable<any> {
     const headers = this.getTokenHeader();
-    return this.http.put<any>(`http://localhost:8080/api/logs/${logId}`, log, {headers: headers, observe: 'response'})
-  }
-
-  getFiles(logId: string, workId: string) {
-    const headers = this.getTokenHeader();
-    return this.http.post<any>('http://localhost:8080/api/logs-files',
-      {
-        logId: logId,
-        workId: workId
-      },
-      {
-        headers: headers,
-        responseType: 'blob' as 'json'
-      }
-    )
+    return this.http.put<any>(this.server + `/logs/${logId}`, log, {headers: headers, observe: 'response'})
   }
 
   getPendingUsers() {
     const headers = this.getTokenHeader();
-    return this.http.get<any>('http://localhost:8080/api/pending', {headers: headers})
+    return this.http.get<any>(this.server + '/pending', {headers: headers})
   }
 
   answerPending(userId: number, accepted: boolean) {
     const headers = this.getTokenHeader();
-    return this.http.put<any>('http://localhost:8080/api/pending', {userId, accepted}, {headers: headers})
+    return this.http.put<any>(this.server + '/pending', {userId, accepted}, {headers: headers})
   }
 
   getAllUsers() {
@@ -186,7 +167,7 @@ export class HttpService {
 
   downloadFiles(logId: string, workId: string, downloadFiles: SimpleFile[]) {
     const headers = this.getTokenHeader();
-    return this.http.post<any>('http://localhost:8080/api/logs-files',
+    return this.http.post<any>(this.server + '/logs-files',
       {
         logId: logId,
         workId: workId,
@@ -201,12 +182,12 @@ export class HttpService {
 
   getNumberOfInvites() {
     const headers = this.getTokenHeader();
-    return this.http.get<any>('http://localhost:8080/api/invite-number', {headers: headers})
+    return this.http.get<any>(this.server + '/invite-number', {headers: headers})
   }
 
   deleteFiles(logId: string, workId: string, filesToDelete: SimpleFile[]) {
     const headers = this.getTokenHeader();
-    return this.http.post<any>('http://localhost:8080/api/delete-files',
+    return this.http.post<any>(this.server + '/delete-files',
       {
         logId: logId,
         workId: workId,
@@ -220,42 +201,42 @@ export class HttpService {
 
   getWorksPending() {
     const headers = this.getTokenHeader();
-    return this.http.get<any>('http://localhost:8080/api/work-pending', {headers: headers})
+    return this.http.get<any>(this.server + '/work-pending', {headers: headers})
   }
 
   answerPendingWork(workId: string, answer: boolean) {
     const headers = this.getTokenHeader();
-    return this.http.put<any>(`http://localhost:8080/api/work-pending/${workId}`, answer, {headers: headers})
+    return this.http.put<any>(this.server + `/work-pending/${workId}`, answer, {headers: headers})
   }
 
   finishWork(work: string) {
     const headers = this.getTokenHeader();
-    return this.http.post<any>(`http://localhost:8080/api/finish-work?work=${work}`, {}, {headers: headers})
+    return this.http.post<any>(this.server + `/finish-work?work=${work}`, {}, {headers: headers})
   }
 
   getMyLogs() {
     const headers = this.getTokenHeader();
-    return this.http.get<any>('http://localhost:8080/api/my-logs', {headers: headers})
+    return this.http.get<any>(this.server + '/my-logs', {headers: headers})
   }
 
   getMemberWorkProfile(workId: string, username: string) {
     const headers = this.getTokenHeader();
-    return this.http.get<any>(`http://localhost:8080/api/member-profile/${workId}/${username}`, {headers: headers})
+    return this.http.get<any>(this.server + `/member-profile/${workId}/${username}`, {headers: headers})
   }
 
   editWork(workId: string, work: EditWorkInputModel) {
     const headers = this.getTokenHeader();
-    return this.http.put<any>(`http://localhost:8080/api/work/edit/${workId}`, work, {headers: headers})
+    return this.http.put<any>(this.server + `/work/edit/${workId}`, work, {headers: headers})
   }
 
   changeWorkImage(id: string, form: FormData) {
     const headers = this.getTokenHeader();
-    return this.http.put<any>(`http://localhost:8080/api/work-image/${id}`, form, {headers: headers})
+    return this.http.put<any>(this.server + `/work-image/${id}`, form, {headers: headers})
   }
 
   askVerification(id: string, doc: string) {
     const headers = this.getTokenHeader();
-    return this.http.put<any>(`http://localhost:8080/api/work-verification`, {
+    return this.http.put<any>(this.server + `/work-verification`, {
       workId: id,
       verificationDoc: doc
     }, {headers: headers})
@@ -263,12 +244,12 @@ export class HttpService {
 
   changePassword(password: Password) {
     const headers = this.getTokenHeader();
-    return this.http.put<any>('http://localhost:8080/api/change-password', password, {headers: headers})
+    return this.http.put<any>(this.server + '/change-password', password, {headers: headers})
   }
 
   getOpeningTerm(id: string) {
     const headers = this.getTokenHeader();
-    return this.http.get<any>(`http://localhost:8080/api/opening-term/${id}`, {
+    return this.http.get<any>(this.server + `/opening-term/${id}`, {
       headers: headers,
       responseType: 'blob' as 'json'
     })
@@ -276,7 +257,7 @@ export class HttpService {
 
   getSiteDiary(workId: string) {
     const headers = this.getTokenHeader();
-    return this.http.get<any>(`http://localhost:8080/api/site-diary/${workId}`, {
+    return this.http.get<any>(this.server + `/site-diary/${workId}`, {
       headers: headers,
       responseType: 'blob' as 'json'
     })

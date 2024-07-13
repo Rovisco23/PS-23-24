@@ -1,0 +1,39 @@
+version: "3.3"
+services:
+  db-tests:
+    container_name: db-tests
+    build:
+      context: .
+      dockerfile: ./tests/Dockerfile-db-test
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - 5432:5432
+            
+  spring-service:
+    container_name: spring-service
+    hostname: spring-service
+    build:
+      context: .
+      dockerfile: ./tests/Dockerfile-spring
+    environment:
+      SERVER_PORT: 8080
+      JDBC_DOCKER_URL: "jdbc:postgresql://db-tests:5432/postgres?user=postgres&password=postgres"
+    ports:
+      - 8080:8080
+    depends_on:
+      - db-tests
+          
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: ./tests/Dockerfile-nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./tests/nginx:/etc/nginx
+    depends_on:
+      - spring-service

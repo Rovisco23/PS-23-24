@@ -16,6 +16,5 @@ values ('a49508@alunos.isel.pt', 'ADMIN', 'JMota15', 't1S51egvB9silDAQyyIfT_gNbe
         'Santa Clara', 'Lisboa', 'Lisboa', 'Site Diary Team', 2, false);
 
 -- Alterar local do ficheiro conforme necessário
-COPY LOCALIDADE (distrito, concelho, freguesia)
-    FROM 'E:\Documentos\Universidade\Projeto\PS-23-24\docs\localidades.csv' DELIMITER ';' CSV HEADER;
+COPY LOCALIDADE (distrito, concelho, freguesia) FROM '/docker-entrypoint-initdb.d/localidades.csv' DELIMITER ';' CSV HEADER;
 
