@@ -100,7 +100,7 @@ class WorkDetailsActivity : ComponentActivity() {
                         viewModel.updateFiles(selectedFiles)
                     },
                     onCreateClicked = {
-                        viewModel.createLog(workId, LogInputModel(it, selectedFiles))
+                        viewModel.createLog(workId, it, selectedFiles)
                     },
                     onDeleteSubmit = { fileId, fileType ->
                         viewModel.deleteFile(fileId, fileType)

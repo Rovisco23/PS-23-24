@@ -19,7 +19,7 @@ interface DependenciesContainer {
 class SiteDiaryApplication : Application(), DependenciesContainer {
     private val httpClient: OkHttpClient = OkHttpClient.Builder().build()
     private val gson: Gson = Gson()
-    private val url = "https://9d23-2001-818-d9f6-e100-9486-e29e-bb8d-41b7.ngrok-free.app"
+    private val url = "https://6786-2001-818-d9f6-e100-e585-4885-c71e-a434.ngrok-free.app"
     val userService = UserService(httpClient, gson, url)
     val workService = WorkService(httpClient, gson, url)
     val logService = LogService(httpClient, gson, url)

@@ -154,4 +154,6 @@ enum class WorkState(private val description: String) {
             else -> null
         }
     }
+
+    fun isFinished() = this == FINISHED
 }

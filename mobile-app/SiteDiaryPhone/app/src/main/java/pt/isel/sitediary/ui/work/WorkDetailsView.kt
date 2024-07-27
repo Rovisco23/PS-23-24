@@ -48,10 +48,13 @@ fun WorkDetailsView(
                     bottomBar = {
                         BottomNavigationBar(
                             navController,
-                            listOf(
+                            if (!work.state.isFinished()) listOf(
                                 BottomNavItem.Work.Details,
                                 BottomNavItem.Work.Log,
                                 BottomNavItem.Work.CreateLog
+                            ) else listOf(
+                                BottomNavItem.Work.Details,
+                                BottomNavItem.Work.Log
                             )
                         )
                     }
@@ -59,8 +62,8 @@ fun WorkDetailsView(
                     NavHost(
                         navController = navController,
                         startDestination =
-                            if (!work.files.isNullOrEmpty()) BottomNavItem.Work.CreateLog.route
-                            else BottomNavItem.Work.Log.route
+                        if (!work.files.isNullOrEmpty()) BottomNavItem.Work.CreateLog.route
+                        else BottomNavItem.Work.Log.route
                     ) {
                         composable(BottomNavItem.Work.Details.route) {
                             DetailsScreen(work.toDetails(), innerPadding, onBackRequested)
@@ -96,6 +99,5 @@ fun WorkDetailsView(
             LoadingScreen()
         }
     }
-
 }
 

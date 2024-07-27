@@ -167,14 +167,16 @@ class WorkViewModel(
     }
 
 
-    fun createLog(workId: String, input: LogInputModel) {
+    fun createLog(workId: String, description: String, selectedFiles: HashMap<String, File>) {
         _workFlow.value = loading()
         viewModelScope.launch {
             try {
                 val token = repo.getUserInfo()?.token ?: throw LogException("Login Required")
-                val upload = logService.createLog(input, workId, token)
+                val upload =
+                    logService.createLog(LogInputModel(description, selectedFiles), workId, token)
                 val work = workService.getWork(workId, token)
                 _workFlow.value = loaded(Result.success(work))
+                selectedFiles.clear()
             } catch (e: LogException) {
                 val msg = e.message ?: "Something went wrong"
                 _workFlow.value = loaded(Result.failure(LogException(msg, e)))

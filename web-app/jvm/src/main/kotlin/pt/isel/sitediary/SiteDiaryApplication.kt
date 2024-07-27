@@ -19,7 +19,7 @@ class SiteDiaryApplication {
 
     @Bean
     fun jdbi(): Jdbi {
-        val jdbcDatabaseURL = System.getenv("JDBC_DOCKER_URL") ?: System.getenv("JDBC_DATABASE_URL")
+        val jdbcDatabaseURL = /*System.getenv("JDBC_DOCKER_URL") ?:*/ System.getenv("JDBC_DATABASE_URL")
         val dataSource = PGSimpleDataSource()
         dataSource.setURL(jdbcDatabaseURL)
         return Jdbi.create(dataSource).configureWithAppRequirements()
